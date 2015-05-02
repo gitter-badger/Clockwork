@@ -26,3 +26,10 @@
 *.exe
 *.out
 *.app
+*.vcxproj
+project/CMakeFiles/TargetDirectories.txt
+*.check_cache
+*.log
+*.tlog
+*.ilk
+project/
