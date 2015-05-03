@@ -6,14 +6,16 @@
 
 int main()
 {	
-	Vector3f test(0, 1, 0);
-	Vector3f test2(1, 0, 0);
+	Quaternion test(1, 0, 0, 1);
+	Quaternion test2(0, 1, 0, 1);
+	
 
-	Vector3f test3 = test + test2;
+	Quaternion test3 = test + test2;
 
 	printf("X:  %f ", test3.GetX());
 	printf("Y:  %f ", test3.GetY());
 	printf("Z:  %f ", test3.GetZ());
+	printf("W:  %f ", test3.GetW());
 
 
 	system("PAUSE");
