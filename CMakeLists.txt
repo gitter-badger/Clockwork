@@ -63,25 +63,41 @@ add_executable(ClockworkEngine ${HDRS} ${SRCS})
 SET(ClockworkEngine_CMAKE_DIR "${ClockworkEngine_SOURCE_DIR}/cmake")
 
 find_package(OpenGL REQUIRED)
+INCLUDE(${ClockworkEngine_CMAKE_DIR}/Packages/FindGLEW.cmake)
+
+INCLUDE(${ClockworkEngine_CMAKE_DIR}/Packages/FindSDL2.cmake)
 
 if(WIN32)
 	INCLUDE(${ClockworkEngine_CMAKE_DIR}/Packages/FindDirectX.cmake)
 endif()
 
-include_directories(
-	${ClockworkEngine_SOURCE_DIR}/headers
-	${ClockworkEngine_SOURCE_DIR}/sources
-
-)
-
-
-
 if(WIN32)
-	include_directories( ${DirectX_D3D11_INCLUDE_DIR} )
-	target_link_libraries( ClockworkEngine ${DirectX_D3D11_LIBRARY})
+	include_directories(
+		${ClockworkEngine_SOURCE_DIR}/headers
+		${ClockworkEngine_SOURCE_DIR}/sources
+		${GLEW_INCLUDE_DIRS}
+		${SDL2_INCLUDE_DIRS}
+		${DirectX_D3D11_INCLUDE_DIR} 
+	)
+
+	target_link_libraries( ClockworkEngine
+		${OPENGL_LIBRARIES}
+		${GLEW_LIBRARIES}
+		${SDL2_LIBRARIES}
+		${DirectX_D3D11_LIBRARY}
+	)
+else()
+	include_directories(
+		${ClockworkEngine_SOURCE_DIR}/headers
+		${ClockworkEngine_SOURCE_DIR}/sources
+		${GLEW_INCLUDE_DIRS}
+		${SDL2_INCLUDE_DIRS}
+	)
+
+	target_link_libraries( ClockworkEngine
+		${OPENGL_LIBRARIES}
+		${GLEW_LIBRARIES}
+		${SDL2_LIBRARIES}
+	)
 endif()
 
-if(WIN32)
-	include_directories( ${DirectX_D3DX11_INCLUDE_DIR} )
-	target_link_libraries( ClockworkEngine ${DirectX_D3DX11_LIBRARY})
-endif()

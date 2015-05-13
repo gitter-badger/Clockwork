@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include "../Core/IRenderer.h"
 
@@ -9,7 +9,7 @@ public:
 	~DXRenderer(){/* Not used */ }
 
 	// Initilaize the renderer
-	void Init();
+	void Init(int width, int height);
 
 	// Render to the render window
 	//TODO: Pass root entity
