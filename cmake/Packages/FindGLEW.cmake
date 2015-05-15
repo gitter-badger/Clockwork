@@ -1,5 +1,5 @@
 #############################################
-# Try to find ASSMIP and set the following: #
+# Try to find GLEW and set the following: #
 #                                           #
 # GLEW_FOUND                                #
 # GLEW_INCLUDE_DIRS                         #

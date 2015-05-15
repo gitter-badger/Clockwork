@@ -65,7 +65,7 @@ SET(ClockworkEngine_CMAKE_DIR "${ClockworkEngine_SOURCE_DIR}/cmake")
 find_package(OpenGL REQUIRED)
 INCLUDE(${ClockworkEngine_CMAKE_DIR}/Packages/FindGLEW.cmake)
 
-INCLUDE(${ClockworkEngine_CMAKE_DIR}/Packages/FindSDL2.cmake)
+INCLUDE(${ClockworkEngine_CMAKE_DIR}/Packages/FindGLFW.cmake)
 
 if(WIN32)
 	INCLUDE(${ClockworkEngine_CMAKE_DIR}/Packages/FindDirectX.cmake)
@@ -76,14 +76,14 @@ if(WIN32)
 		${ClockworkEngine_SOURCE_DIR}/headers
 		${ClockworkEngine_SOURCE_DIR}/sources
 		${GLEW_INCLUDE_DIRS}
-		${SDL2_INCLUDE_DIRS}
+		${GLFW_INCLUDE_DIRS}
 		${DirectX_D3D11_INCLUDE_DIR} 
 	)
 
 	target_link_libraries( ClockworkEngine
 		${OPENGL_LIBRARIES}
 		${GLEW_LIBRARIES}
-		${SDL2_LIBRARIES}
+		${GLFW_LIBRARIES}
 		${DirectX_D3D11_LIBRARY}
 	)
 else()
@@ -91,13 +91,13 @@ else()
 		${ClockworkEngine_SOURCE_DIR}/headers
 		${ClockworkEngine_SOURCE_DIR}/sources
 		${GLEW_INCLUDE_DIRS}
-		${SDL2_INCLUDE_DIRS}
+		${GLFW_INCLUDE_DIRS}
 	)
 
 	target_link_libraries( ClockworkEngine
 		${OPENGL_LIBRARIES}
 		${GLEW_LIBRARIES}
-		${SDL2_LIBRARIES}
+		${GLFW_LIBRARIES}
 	)
 endif()
 
