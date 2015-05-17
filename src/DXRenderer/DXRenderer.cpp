@@ -1,7 +1,7 @@
 #include "DXRenderer.h"
 #include <stdio.h>
 
-void DXRenderer::Init(int width, int height)
+void DXRenderer::Init()
 {
 	printf("LOG: DXRenderer: Init \n");
 }

@@ -19,16 +19,13 @@ void Clockwork::Init(Renderer renderer)
 		break;
 	}
 
-	m_renderer->Init(1280, 720);
+	m_renderer->Init();
 }
 
 void Clockwork::Run()
 {
-    while(!m_renderer->ShouldClose())
-    {
-        m_renderer->Update();
-        m_renderer->Render();
-    }
+	//m_renderer->Update();
+	m_renderer->Render();
 }
 
 void Clockwork::Shutdown()
