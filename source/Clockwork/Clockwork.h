@@ -1,14 +1,14 @@
-#pragma once 
+#pragma once
 
 #include "../Utilities/ClPlatform.h"
 
-#include "../GLRenderer/GLRenderer.h"
+#include "../OpenGL3Renderer/GL3Renderer.h"
 
 #if PLATFORM  == PLATFORM_WIN32
-	#include "../DXRenderer/DXRenderer.h"
+	#include "../DirectX11Renderer/DX3Renderer.h"
 #endif
 
-#include "IRenderer.h"
+#include "../Core/IRenderer.h"
 
 class Clockwork
 {
@@ -34,5 +34,5 @@ public:
 	void Shutdown();
 private:
 	IRenderer* m_renderer;
-	
+
 };

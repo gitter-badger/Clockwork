@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 
-#include "Core/Clockwork.h"
+#include "../Clockwork/Clockwork.h"
 
 int main()
 {

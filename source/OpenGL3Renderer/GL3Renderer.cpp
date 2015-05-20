@@ -1,7 +1,7 @@
-#include "GLRenderer.h"
+#include "GL3Renderer.h"
 #include <stdio.h>
 
-void GLRenderer::Init()
+void GLRenderer::Init(int width, int height)
 {
     GLenum err = glewInit();
     if (GLEW_OK != err)

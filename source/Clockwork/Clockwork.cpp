@@ -19,7 +19,7 @@ void Clockwork::Init(Renderer renderer)
 		break;
 	}
 
-	m_renderer->Init();
+	m_renderer->Init(800, 600);
 }
 
 void Clockwork::Run()
