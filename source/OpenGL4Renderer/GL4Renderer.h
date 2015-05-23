@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Core/IRenderer.h"
-#include <GL/glew.h>
+#include "GL4Window.h"
 
 class GL4Renderer : public IRenderer
 {
@@ -12,6 +12,8 @@ public:
 	// Initilaize the renderer
 	void Init(int width, int height);
 
+	void Update();
+
 	// Render to the render window
 	//TODO: Pass root entity
 	void Render();
@@ -20,5 +22,5 @@ public:
 	void Shutdown();
 
 private:
-
+    GL4Window m_window;
 };

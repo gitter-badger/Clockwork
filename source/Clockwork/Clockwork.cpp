@@ -6,7 +6,7 @@ void Clockwork::Init(Renderer renderer)
 	switch (renderer)
 	{
 	case OpenGL4:
-		m_renderer = new GL4Renderer;
+ 		m_renderer = new GL4Renderer;
 		break;
 	case DirectX11:
 #if PLATFORM == PLATFORM_WIN32
@@ -24,8 +24,11 @@ void Clockwork::Init(Renderer renderer)
 
 void Clockwork::Run()
 {
-	//m_renderer->Update();
-	m_renderer->Render();
+    while(!m_renderer->GetIsClosed())
+	{
+        m_renderer->Update();
+        m_renderer->Render();
+    }
 }
 
 void Clockwork::Shutdown()

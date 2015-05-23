@@ -11,4 +11,9 @@ public:
 	virtual void Update()				     = 0;
 	virtual void Render()	                 = 0;
 	virtual void Shutdown()                  = 0;
+
+	bool GetIsClosed() { return m_isClosed; }
+
+protected:
+    bool m_isClosed;
 };
