@@ -2,7 +2,7 @@
 
 #include "../Utilities/ClPlatform.h"
 
-#include "../OpenGL3Renderer/GL3Renderer.h"
+#include "../OpenGL4Renderer/GL4Renderer.h"
 
 #if PLATFORM  == PLATFORM_WIN32
 	#include "../DirectX11Renderer/DX3Renderer.h"

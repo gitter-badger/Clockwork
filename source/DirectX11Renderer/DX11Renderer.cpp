@@ -1,4 +1,4 @@
-#include "DX11Renderer.h"
+#include "../DX11Renderer.h"
 #include <stdio.h>
 
 void DXRenderer::Init()

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 
 class IWindow
 {
@@ -9,9 +10,11 @@ public:
   virtual void SwapBuffers()                      = 0;
   virtual void DestroyWindow()                    = 0;
 
+  int  GetWidth()   { return m_width;   }
+  int  GetHeight()  { return m_height;  }
+  bool GetClosed()  { return m_isClosed;}
 
-
-private:
+protected:
   int   m_width;
   int   m_height;
   bool  m_isClosed;

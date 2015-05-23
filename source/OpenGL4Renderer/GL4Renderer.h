@@ -3,11 +3,11 @@
 #include "../Core/IRenderer.h"
 #include <GL/glew.h>
 
-class GLRenderer : public IRenderer
+class GL4Renderer : public IRenderer
 {
 public:
-	GLRenderer(){/* Not used */ }
-	~GLRenderer(){/* Not used */ }
+	GL4Renderer(){/* Not used */ }
+	~GL4Renderer(){/* Not used */ }
 
 	// Initilaize the renderer
 	void Init(int width, int height);

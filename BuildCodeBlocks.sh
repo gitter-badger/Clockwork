@@ -1,7 +1,7 @@
-BUILT_TARGET="Debug"
+BUILT_TARGET="Release"
 
 if [ "$#" == 0 ]; then
-	BUILD_TARGET="Debug"
+	BUILD_TARGET="Release"
 else
 	BUILD_TARGET="$1"
 fi
