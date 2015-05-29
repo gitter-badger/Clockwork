@@ -1,2 +1,0 @@
-/usr/bin/ar cr libSTB.a  CMakeFiles/STB.dir/stb_vorbis.c.o CMakeFiles/STB.dir/stb_image.c.o CMakeFiles/STB.dir/stb_image_write.c.o
-/usr/bin/ranlib libSTB.a

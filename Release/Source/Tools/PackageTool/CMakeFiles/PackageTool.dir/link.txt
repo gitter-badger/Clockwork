@@ -1,1 +1,0 @@
-/usr/bin/c++    -Wno-invalid-offsetof -ffast-math -m64 -O3 -DNDEBUG    CMakeFiles/PackageTool.dir/PackageTool.cpp.o  -o ../../../bin/tool/PackageTool -rdynamic ../../../lib/libClockwork.a ../../ThirdParty/LZ4/libLZ4.a -ldl -lpthread -lrt -lpthread -lpthread -lGL -lrt -lGL 

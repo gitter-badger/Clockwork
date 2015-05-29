@@ -1,1 +1,0 @@
-/home/josh/Documents/Clockwork3D/Source/Clockwork/Math/Quaternion.h

@@ -1,1 +1,0 @@
-/usr/bin/c++    -Wno-invalid-offsetof -ffast-math -m64 -O3 -DNDEBUG    CMakeFiles/RampGenerator.dir/RampGenerator.cpp.o  -o ../../../bin/tool/RampGenerator -rdynamic ../../../lib/libClockwork.a ../../ThirdParty/STB/libSTB.a -ldl -lpthread -lrt -lpthread -lpthread -lGL -lrt -lGL 

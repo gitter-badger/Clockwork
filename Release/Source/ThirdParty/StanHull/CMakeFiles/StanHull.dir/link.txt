@@ -1,2 +1,0 @@
-/usr/bin/ar cr libStanHull.a  CMakeFiles/StanHull.dir/hull.cpp.o
-/usr/bin/ranlib libStanHull.a
