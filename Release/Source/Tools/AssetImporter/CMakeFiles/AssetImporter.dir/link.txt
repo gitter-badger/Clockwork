@@ -1,0 +1,1 @@
+/usr/bin/c++    -Wno-invalid-offsetof -ffast-math -m64 -O3 -DNDEBUG    CMakeFiles/AssetImporter.dir/AssetImporter.cpp.o  -o ../../../bin/tool/AssetImporter -rdynamic ../../../lib/libClockwork.a ../../ThirdParty/Assimp/libAssimp.a -ldl -lpthread -lrt -lpthread -lpthread -lGL -lrt -lGL 

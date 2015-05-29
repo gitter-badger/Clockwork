@@ -1,0 +1,1 @@
+/usr/bin/c++    -Wno-invalid-offsetof -ffast-math -m64 -O3 -DNDEBUG    CMakeFiles/OgreImporter.dir/OgreImporter.cpp.o  -o ../../../bin/tool/OgreImporter -rdynamic ../../../lib/libClockwork.a -ldl -lpthread -lrt -lpthread -lpthread -lGL -lrt -lGL 

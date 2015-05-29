@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="Clockwork-Docs" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\CMake\;CMake Files\CMake\Modules\;CMake Files\Source\;CMake Files\Source\ThirdParty\;CMake Files\Source\ThirdParty\FreeType\;CMake Files\Source\ThirdParty\JO\;CMake Files\Source\ThirdParty\LZ4\;CMake Files\Source\ThirdParty\PugiXml\;CMake Files\Source\ThirdParty\rapidjson\;CMake Files\Source\ThirdParty\SDL\;CMake Files\Source\ThirdParty\StanHull\;CMake Files\Source\ThirdParty\STB\;CMake Files\Source\ThirdParty\AngelScript\;CMake Files\Source\ThirdParty\Civetweb\;CMake Files\Source\ThirdParty\kNet\;CMake Files\Source\ThirdParty\Detour\;CMake Files\Source\ThirdParty\DetourCrowd\;CMake Files\Source\ThirdParty\DetourTileCache\;CMake Files\Source\ThirdParty\Recast\;CMake Files\Source\ThirdParty\Box2D\;CMake Files\Source\ThirdParty\Bullet\;CMake Files\Source\ThirdParty\GLEW\;CMake Files\Source\ThirdParty\LibCpuId\;CMake Files\Source\ThirdParty\Assimp\;CMake Files\Source\Clockwork\;CMake Files\Source\Tools\;CMake Files\Source\Tools\ClockworkPlayer\;CMake Files\Source\Tools\AssetImporter\;CMake Files\Source\Tools\OgreImporter\;CMake Files\Source\Tools\PackageTool\;CMake Files\Source\Tools\RampGenerator\;CMake Files\Source\Tools\SpritePacker\;CMake Files\Source\Tools\ScriptCompiler\;CMake Files\Docs\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/Docs" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Docs/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Docs/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Docs/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Docs/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMake/Modules/Clockwork-CMake-common.cmake">
+          <Option virtualFolder="CMake Files\CMake\Modules\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMake/Modules/GenerateExportHeader.cmake">
+          <Option virtualFolder="CMake Files\CMake\Modules\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMake/Modules/exportheader.cmake.in">
+          <Option virtualFolder="CMake Files\CMake\Modules\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMake/Modules/FindClockwork.cmake">
+          <Option virtualFolder="CMake Files\CMake\Modules\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMake/Modules/FindClockwork.cmake">
+          <Option virtualFolder="CMake Files\CMake\Modules\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/FreeType/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\FreeType\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/JO/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\JO\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/LZ4/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\LZ4\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/PugiXml/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\PugiXml\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/rapidjson/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\rapidjson\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/SDL/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\SDL\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/StanHull/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\StanHull\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/STB/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\STB\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/AngelScript/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\AngelScript\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Civetweb/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Civetweb\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/kNet/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\kNet\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Detour/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Detour\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/DetourCrowd/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\DetourCrowd\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/DetourTileCache/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\DetourTileCache\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Recast/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Recast\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Box2D/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Box2D\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Bullet/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Bullet\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/GLEW/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\GLEW\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/LibCpuId/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\LibCpuId\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Assimp\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Assimp\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Clockwork/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Clockwork\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Clockwork/Clockwork.pc.in">
+          <Option virtualFolder="CMake Files\Source\Clockwork\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/ClockworkPlayer/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\ClockworkPlayer\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/ClockworkPlayer/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\ClockworkPlayer\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/AssetImporter/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\AssetImporter\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/AssetImporter/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\AssetImporter\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/OgreImporter/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\OgreImporter\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/OgreImporter/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\OgreImporter\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/PackageTool/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\PackageTool\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/PackageTool/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\PackageTool\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/RampGenerator/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\RampGenerator\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/RampGenerator/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\RampGenerator\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/SpritePacker/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\SpritePacker\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/SpritePacker/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\SpritePacker\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/ScriptCompiler/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\ScriptCompiler\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/ScriptCompiler/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\ScriptCompiler\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Docs/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Docs\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Docs/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Docs\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>

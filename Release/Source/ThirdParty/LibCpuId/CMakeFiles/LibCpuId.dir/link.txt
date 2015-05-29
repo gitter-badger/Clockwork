@@ -1,0 +1,2 @@
+/usr/bin/ar cr libLibCpuId.a  CMakeFiles/LibCpuId.dir/src/cpuid_main.c.o CMakeFiles/LibCpuId.dir/src/rdtsc.c.o CMakeFiles/LibCpuId.dir/src/recog_amd.c.o CMakeFiles/LibCpuId.dir/src/recog_intel.c.o CMakeFiles/LibCpuId.dir/src/libcpuid_util.c.o CMakeFiles/LibCpuId.dir/src/asm-bits.c.o
+/usr/bin/ranlib libLibCpuId.a

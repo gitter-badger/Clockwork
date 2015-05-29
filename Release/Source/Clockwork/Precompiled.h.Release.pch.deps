@@ -1,0 +1,13 @@
+deps: /home/josh/Documents/Clockwork3D/Source/Clockwork/Precompiled.h \
+ /home/josh/Documents/Clockwork3D/Release/Source/Clockwork/Clockwork.h \
+ /home/josh/Documents/Clockwork3D/Source/Clockwork/Container/HashMap.h \
+ /home/josh/Documents/Clockwork3D/Source/Clockwork/Container/../Container/HashBase.h \
+ /home/josh/Documents/Clockwork3D/Source/Clockwork/Container/../Container/../Container/Allocator.h \
+ /home/josh/Documents/Clockwork3D/Source/Clockwork/Container/../Container/../Container/Hash.h \
+ /home/josh/Documents/Clockwork3D/Source/Clockwork/Container/../Container/../Container/Swap.h \
+ /home/josh/Documents/Clockwork3D/Source/Clockwork/Container/../Container/Pair.h \
+ /home/josh/Documents/Clockwork3D/Source/Clockwork/Container/../Container/Sort.h \
+ /home/josh/Documents/Clockwork3D/Source/Clockwork/Container/../Container/../Container/VectorBase.h \
+ /home/josh/Documents/Clockwork3D/Source/Clockwork/Container/../Container/Vector.h \
+ /home/josh/Documents/Clockwork3D/Source/Clockwork/Container/HashSet.h \
+ /home/josh/Documents/Clockwork3D/Source/Clockwork/Container/Str.h

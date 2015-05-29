@@ -1,0 +1,1 @@
+/usr/bin/c++    -Wno-invalid-offsetof -ffast-math -m64 -O3 -DNDEBUG    CMakeFiles/ClockworkPlayer.dir/ClockworkPlayer.cpp.o  -o ../../../bin/ClockworkPlayer -rdynamic ../../../lib/libClockwork.a -ldl -lpthread -lrt -lpthread -lpthread -lGL -ldl -lpthread -lrt -lpthread -lrt -lGL 

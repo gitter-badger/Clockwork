@@ -1,0 +1,1672 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+   <FileVersion major="1" minor="6" />
+   <Project>
+      <Option title="Clockwork-Tools" />
+      <Option makefile_is_custom="1" />
+      <Option compiler="gcc" />
+      <Option virtualFolders="CMake Files\;CMake Files\CMake\;CMake Files\CMake\Modules\;CMake Files\Source\;CMake Files\Source\ThirdParty\;CMake Files\Source\ThirdParty\FreeType\;CMake Files\Source\ThirdParty\JO\;CMake Files\Source\ThirdParty\LZ4\;CMake Files\Source\ThirdParty\PugiXml\;CMake Files\Source\ThirdParty\rapidjson\;CMake Files\Source\ThirdParty\SDL\;CMake Files\Source\ThirdParty\StanHull\;CMake Files\Source\ThirdParty\STB\;CMake Files\Source\ThirdParty\AngelScript\;CMake Files\Source\ThirdParty\Civetweb\;CMake Files\Source\ThirdParty\kNet\;CMake Files\Source\ThirdParty\Detour\;CMake Files\Source\ThirdParty\DetourCrowd\;CMake Files\Source\ThirdParty\DetourTileCache\;CMake Files\Source\ThirdParty\Recast\;CMake Files\Source\ThirdParty\Box2D\;CMake Files\Source\ThirdParty\Bullet\;CMake Files\Source\ThirdParty\GLEW\;CMake Files\Source\ThirdParty\LibCpuId\;CMake Files\Source\ThirdParty\Assimp\;CMake Files\Source\Clockwork\;CMake Files\Source\Tools\;CMake Files\Source\Tools\ClockworkPlayer\;CMake Files\Source\Tools\AssetImporter\;CMake Files\Source\Tools\OgreImporter\;CMake Files\Source\Tools\PackageTool\;CMake Files\Source\Tools\RampGenerator\;CMake Files\Source\Tools\SpritePacker\;CMake Files\Source\Tools\ScriptCompiler\;CMake Files\Docs\;" />
+      <Build>
+      <Target title="all">
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/Source/Tools" />
+         <Option type="4" />
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="ClockworkPlayer">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/ClockworkPlayer" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ClockworkPlayer/Makefile&quot;  VERBOSE=1 ClockworkPlayer" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ClockworkPlayer/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ClockworkPlayer/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ClockworkPlayer/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="ClockworkPlayer/fast">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/ClockworkPlayer" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ClockworkPlayer/Makefile&quot;  VERBOSE=1 ClockworkPlayer/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ClockworkPlayer/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ClockworkPlayer/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ClockworkPlayer/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="AssetImporter">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/AssetImporter" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/Tools/AssetImporter/../../ThirdParty/Assimp/include" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 AssetImporter" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="AssetImporter/fast">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/AssetImporter" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/Tools/AssetImporter/../../ThirdParty/Assimp/include" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 AssetImporter/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Assimp">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp/libAssimp.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add option="-DASSIMP_BUILD_BOOST_WORKAROUND" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/unzip" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 Assimp" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="Assimp/fast">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp/libAssimp.a" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp" />
+         <Option object_output="./" />
+         <Option type="2" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add option="-DASSIMP_BUILD_BOOST_WORKAROUND" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/unzip" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 Assimp/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="OgreImporter">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/OgreImporter" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 OgreImporter" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="OgreImporter/fast">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/OgreImporter" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 OgreImporter/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="PackageTool">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/PackageTool" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 PackageTool" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="PackageTool/fast">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/PackageTool" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 PackageTool/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="RampGenerator">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/RampGenerator" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 RampGenerator" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="RampGenerator/fast">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/RampGenerator" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 RampGenerator/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="SpritePacker">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/SpritePacker" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/Tools/SpritePacker/../../ThirdParty/STB" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 SpritePacker" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="SpritePacker/fast">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/SpritePacker" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Source/Tools/SpritePacker/../../ThirdParty/STB" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 SpritePacker/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="ScriptCompiler">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/ScriptCompiler" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 ScriptCompiler" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      <Target title="ScriptCompiler/fast">
+         <Option output="/home/josh/Documents/Clockwork3D/Release/bin/tool/ScriptCompiler" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/home/josh/Documents/Clockwork3D/Release/bin/tool" />
+         <Option object_output="./" />
+         <Option type="1" />
+         <Option compiler="gcc" />
+         <Compiler>
+            <Add option="-DCLOCKWORK_SSE" />
+            <Add option="-DCLOCKWORK_FILEWATCHER" />
+            <Add option="-DCLOCKWORK_PROFILING" />
+            <Add option="-DCLOCKWORK_LOGGING" />
+            <Add option="-DKNET_UNIX" />
+            <Add option="-DCLOCKWORK_OPENGL" />
+            <Add option="-DGLEW_STATIC" />
+            <Add option="-DGLEW_NO_GLU" />
+            <Add option="-DCLOCKWORK_ANGELSCRIPT" />
+            <Add option="-DCLOCKWORK_NAVIGATION" />
+            <Add option="-DCLOCKWORK_NETWORK" />
+            <Add option="-DCLOCKWORK_PHYSICS" />
+            <Add option="-DCLOCKWORK_CLOCKWORK2D" />
+            <Add option="-DCLOCKWORK_STATIC_DEFINE" />
+            <Add option="-DHAVE_STDINT_H" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty" />
+            <Add directory="/home/josh/Documents/Clockwork3D/Release/include/Clockwork/ThirdParty/Bullet" />
+            <Add directory="/usr/include" />
+            <Add directory="/usr/include/c++/4.9" />
+            <Add directory="/usr/include/c++/4.9/backward" />
+            <Add directory="/usr/include/x86_64-linux-gnu" />
+            <Add directory="/usr/include/x86_64-linux-gnu/c++/4.9" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include" />
+            <Add directory="/usr/lib/gcc/x86_64-linux-gnu/4.9/include-fixed" />
+            <Add directory="/usr/local/include" />
+         </Compiler>
+         <MakeCommands>
+            <Build command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 ScriptCompiler/fast" />
+            <CompileFile command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/usr/bin/make -f &quot;/home/josh/Documents/Clockwork3D/Release/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean" />
+         </MakeCommands>
+      </Target>
+      </Build>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/3DSConverter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/3DSLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ACLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ASELoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ASEParser.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Assimp.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/AssimpCExport.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/AssimpPCH.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/B3DImporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BVHLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BaseImporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BaseProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Bitmap.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderBMesh.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderDNA.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderModifier.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderScene.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderTessellator.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/COBLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/CSMLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/CalcTangentsProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ColladaExporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ColladaLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ColladaParser.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ComputeUVMappingProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ConvertToLHProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/DXFLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/DeboneProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/DefaultIOStream.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/DefaultIOSystem.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/DefaultLogger.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Exporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXAnimation.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXBinaryTokenizer.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXConverter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXDeformer.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXDocument.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXDocumentUtil.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXImporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXMaterial.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXMeshGeometry.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXModel.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXNodeAttribute.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXParser.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXProperties.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXTokenizer.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXUtil.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FindDegenerates.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FindInstancesProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FindInvalidDataProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FixNormalsStep.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/GenFaceNormalsProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/GenVertexNormalsProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/HMPLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCBoolean.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCCurve.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCGeometry.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCMaterial.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCOpenings.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCProfile.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCReaderGen.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCUtil.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IRRLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IRRMeshLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IRRShared.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Importer.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ImporterRegistry.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ImproveCacheLocality.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/JoinVerticesProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LWOAnimation.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LWOBLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LWOLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LWOMaterial.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LWSLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LimitBoneWeightsProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/M3Importer.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD2Loader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD3Loader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD5Loader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD5Parser.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MDCLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MDLLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MDLMaterialLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MS3DLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MakeVerboseFormat.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MaterialSystem.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/NDOLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/NFFLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OFFLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ObjExporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ObjFileImporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ObjFileMtlImporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ObjFileParser.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OgreBinarySerializer.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OgreImporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OgreMaterial.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OgreStructs.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OgreXmlSerializer.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OptimizeGraph.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OptimizeMeshes.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/PlyExporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/PlyLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/PlyParser.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/PostStepRegistry.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/PretransformVertices.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ProcessHelper.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Q3BSPFileImporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Q3BSPFileParser.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Q3BSPZipArchive.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Q3DLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/RawLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/RemoveComments.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/RemoveRedundantMaterials.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/RemoveVCProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SGSpatialSort.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SMDLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/STEPFileEncoding.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/STEPFileReader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/STLExporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/STLLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SceneCombiner.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ScenePreprocessor.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SkeletonMeshBuilder.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SortByPTypeProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SpatialSort.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SplitByBoneCountProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SplitLargeMeshes.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/StandardShapes.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Subdivision.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/TargetAnimation.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/TerragenLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/TextureTransform.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/TriangulateProcess.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/UnrealLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ValidateDataStructure.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/VertexTriangleAdjacency.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/XFileImporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/XFileParser.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/XGLLoader.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/ConvertUTF/ConvertUTF.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/clipper/clipper.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/irrXML/irrXML.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/poly2tri/poly2tri/common/shapes.cc">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/poly2tri/poly2tri/sweep/advancing_front.cc">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/poly2tri/poly2tri/sweep/cdt.cc">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/poly2tri/poly2tri/sweep/sweep.cc">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/poly2tri/poly2tri/sweep/sweep_context.cc">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/unzip/ioapi.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/unzip/unzip.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/adler32.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/compress.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/crc32.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/deflate.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/infback.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/inffast.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/inflate.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/inftrees.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/trees.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/zutil.c">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/AssetImporter/AssetImporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/ClockworkPlayer/ClockworkPlayer.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/OgreImporter/OgreImporter.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/PackageTool/PackageTool.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/RampGenerator/RampGenerator.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/ScriptCompiler/ScriptCompiler.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/SpritePacker/SpritePacker.cpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/3DSHelper.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/3DSLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ACLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ASELoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ASEParser.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/AssimpPCH.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/B3DImporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BVHLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BaseImporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BaseProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Bitmap.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderBMesh.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderDNA.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderDNA.inl">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderIntermediate.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderModifier.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderScene.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderSceneGen.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlenderTessellator.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BlobIOSystem.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround/boost/foreach.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround/boost/format.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround/boost/make_shared.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround/boost/math/common_factor_rt.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround/boost/scoped_array.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround/boost/scoped_ptr.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround/boost/shared_array.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround/boost/shared_ptr.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround/boost/static_assert.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/BoostWorkaround/boost/tuple/tuple.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ByteSwap.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/CInterfaceIOWrapper.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/COBLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/COBScene.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/CSMLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/CalcTangentsProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ColladaExporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ColladaHelper.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ColladaLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ColladaParser.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ComputeUVMappingProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ConvertToLHProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/DXFHelper.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/DXFLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/DeboneProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/DefaultIOStream.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/DefaultIOSystem.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/DefaultProgressHandler.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXCompileConfig.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXConverter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXDocument.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXDocumentUtil.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXImportSettings.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXImporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXParser.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXProperties.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXTokenizer.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FBXUtil.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FileLogStream.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FindDegenerates.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FindInstancesProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FindInvalidDataProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/FixNormalsStep.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/GenFaceNormalsProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/GenVertexNormalsProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/GenericProperty.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/HMPFileData.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/HMPLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/HalfLifeFileData.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Hash.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCReaderGen.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFCUtil.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IFF.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IRRLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IRRMeshLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/IRRShared.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Importer.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ImproveCacheLocality.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/JoinVerticesProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LWOAnimation.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LWOFileData.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LWOLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LWSLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LimitBoneWeightsProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LineSplitter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/LogAux.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/M3Importer.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD2FileData.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD2Loader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD2NormalTable.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD3FileData.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD3Loader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD4FileData.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD5Loader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MD5Parser.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MDCFileData.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MDCLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MDCNormalTable.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MDLDefaultColorMap.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MDLFileData.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MDLLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MS3DLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MakeVerboseFormat.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/MaterialSystem.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/NDOLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/NFFLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OFFLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ObjExporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ObjFileData.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ObjFileImporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ObjFileMtlImporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ObjFileParser.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ObjTools.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OgreBinarySerializer.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OgreImporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OgreParsingUtils.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OgreStructs.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OgreXmlSerializer.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OptimizeGraph.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/OptimizeMeshes.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ParsingUtils.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/PlyExporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/PlyLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/PlyParser.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/PolyTools.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/PretransformVertices.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ProcessHelper.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Profiler.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Q3BSPFileData.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Q3BSPFileImporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Q3BSPFileParser.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Q3BSPZipArchive.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Q3DLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/RawLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/RemoveComments.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/RemoveRedundantMaterials.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/RemoveVCProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SGSpatialSort.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SMDLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/STEPFile.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/STEPFileEncoding.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/STEPFileReader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/STLExporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/STLLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SceneCombiner.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ScenePreprocessor.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ScenePrivate.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SkeletonMeshBuilder.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SmoothingGroups.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SortByPTypeProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SpatialSort.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SplitByBoneCountProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/SplitLargeMeshes.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/StandardShapes.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/StdOStreamLogStream.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/StreamReader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/StringComparison.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Subdivision.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/TargetAnimation.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/TerragenLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/TextureTransform.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/TinyFormatter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/TriangulateProcess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/UnrealLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/ValidateDataStructure.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Vertex.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/VertexTriangleAdjacency.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/Win32DebugLogStream.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/XFileHelper.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/XFileImporter.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/XFileParser.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/XGLLoader.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/fast_atof.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/irrXMLWrapper.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/pstdint.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/code/qnan.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/ConvertUTF/ConvertUTF.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/clipper/clipper.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/irrXML/CXMLReaderImpl.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/irrXML/heapsort.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/irrXML/irrArray.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/irrXML/irrString.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/irrXML/irrTypes.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/irrXML/irrXML.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/poly2tri/poly2tri/common/shapes.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/poly2tri/poly2tri/common/utils.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/poly2tri/poly2tri/sweep/advancing_front.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/poly2tri/poly2tri/sweep/cdt.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/poly2tri/poly2tri/sweep/sweep.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/poly2tri/poly2tri/sweep/sweep_context.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/unzip/crypt.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/unzip/ioapi.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/unzip/unzip.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/crc32.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/deflate.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/inffast.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/inffixed.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/inflate.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/inftrees.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/trees.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/zconf.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/zlib.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/contrib/zlib/zutil.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/Compiler/poppack1.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/Compiler/pushpack1.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/DefaultLogger.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/Exporter.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/IOStream.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/IOSystem.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/Importer.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/LogStream.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/Logger.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/NullLogger.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/ProgressHandler.hpp">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/ai_assert.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/anim.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/camera.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/cexport.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/cfileio.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/cimport.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/color4.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/color4.inl">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/config.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/defs.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/importerdesc.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/light.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/material.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/material.inl">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/matrix3x3.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/matrix3x3.inl">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/matrix4x4.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/matrix4x4.inl">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/mesh.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/postprocess.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/quaternion.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/quaternion.inl">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/scene.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/texture.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/types.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/vector2.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/vector2.inl">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/vector3.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/vector3.inl">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/include/assimp/version.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/ClockworkPlayer/ClockworkPlayer.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/OgreImporter/OgreImporterUtils.h">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/bin/CoreData">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/bin/Data">
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMake/Modules/Clockwork-CMake-common.cmake">
+          <Option virtualFolder="CMake Files\CMake\Modules\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMake/Modules/GenerateExportHeader.cmake">
+          <Option virtualFolder="CMake Files\CMake\Modules\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMake/Modules/exportheader.cmake.in">
+          <Option virtualFolder="CMake Files\CMake\Modules\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMake/Modules/FindClockwork.cmake">
+          <Option virtualFolder="CMake Files\CMake\Modules\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/CMake/Modules/FindClockwork.cmake">
+          <Option virtualFolder="CMake Files\CMake\Modules\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/FreeType/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\FreeType\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/JO/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\JO\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/LZ4/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\LZ4\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/PugiXml/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\PugiXml\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/rapidjson/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\rapidjson\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/SDL/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\SDL\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/StanHull/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\StanHull\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/STB/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\STB\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/AngelScript/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\AngelScript\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Civetweb/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Civetweb\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/kNet/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\kNet\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Detour/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Detour\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/DetourCrowd/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\DetourCrowd\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/DetourTileCache/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\DetourTileCache\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Recast/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Recast\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Box2D/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Box2D\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Bullet/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Bullet\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/GLEW/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\GLEW\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/LibCpuId/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\LibCpuId\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Assimp\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/ThirdParty/Assimp/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\ThirdParty\Assimp\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Clockwork/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Clockwork\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Clockwork/Clockwork.pc.in">
+          <Option virtualFolder="CMake Files\Source\Clockwork\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/ClockworkPlayer/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\ClockworkPlayer\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/ClockworkPlayer/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\ClockworkPlayer\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/AssetImporter/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\AssetImporter\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/AssetImporter/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\AssetImporter\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/OgreImporter/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\OgreImporter\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/OgreImporter/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\OgreImporter\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/PackageTool/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\PackageTool\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/PackageTool/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\PackageTool\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/RampGenerator/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\RampGenerator\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/RampGenerator/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\RampGenerator\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/SpritePacker/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\SpritePacker\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/SpritePacker/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\SpritePacker\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/ScriptCompiler/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\ScriptCompiler\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Source/Tools/ScriptCompiler/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Source\Tools\ScriptCompiler\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Docs/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Docs\" />
+      </Unit>
+      <Unit filename="/home/josh/Documents/Clockwork3D/Docs/CMakeLists.txt">
+          <Option virtualFolder="CMake Files\Docs\" />
+      </Unit>
+   </Project>
+</CodeBlocks_project_file>
