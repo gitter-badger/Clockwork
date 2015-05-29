@@ -1,12 +1,12 @@
 #Clockwork Engine
  Clockwork is a 3D game engine build built by Sunwell studio, it is designed to be state of the art and rival professional grade engines. This is only in a Pre-Alpha state.
 
-###Dependecies
+##Dependecies
 
- ###Windows
+###Windows
  	-June 2010 DirectX SDK(This is not necessary if building on Visual Studio 2012 or newer)
 
- ###Linux
+###Linux
  	Debian based
  	-libx11-dev
  	-libxrandr-dev
@@ -19,18 +19,18 @@
  	-alsa-lib-devel 
  	-mesa-libGL-devel
 
- ###Mac
+###Mac
  	-Xcode command line tools
  
- ###Androud
+###Androud
  	-Android SDK
  	-Android NDK (minimum API level 12) 
 
- ###Emscripten
+###Emscripten
  	-Emscripten SDK
  	-MinGW (On Windows)
 
- ###Raspberry Pi
+###Raspberry Pi
  	Raspbian
  	-libasound2-dev
  	-libudev-dev
