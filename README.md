@@ -3,41 +3,41 @@
 
 ###Dependecies
 
-    ###Windows
-    	-June 2010 DirectX SDK(This is not necessary if building on Visual Studio 2012 or newer)
+ ###Windows
+ 	-June 2010 DirectX SDK(This is not necessary if building on Visual Studio 2012 or newer)
 
-    ###Linux
-    	Debian based
-    	-libx11-dev
-    	-libxrandr-dev
-    	-libasound2-dev
-    	-libgl1-mesa-dev
+ ###Linux
+ 	Debian based
+ 	-libx11-dev
+ 	-libxrandr-dev
+ 	-libasound2-dev
+ 	-libgl1-mesa-dev
 
-    	RedHat based
-    	-libX11-devel
-    	-libXrandr-devel
-    	-alsa-lib-devel 
-    	-mesa-libGL-devel
+ 	RedHat based
+ 	-libX11-devel
+ 	-libXrandr-devel
+ 	-alsa-lib-devel 
+ 	-mesa-libGL-devel
 
-    ###Mac
-    	-Xcode command line tools
-    
-    ###Androud
-    	-Android SDK
-    	-Android NDK (minimum API level 12) 
+ ###Mac
+ 	-Xcode command line tools
+ 
+ ###Androud
+ 	-Android SDK
+ 	-Android NDK (minimum API level 12) 
 
-    ###Emscripten
-    	-Emscripten SDK
-    	-MinGW (On Windows)
+ ###Emscripten
+ 	-Emscripten SDK
+ 	-MinGW (On Windows)
 
-    ###Raspberry Pi
-    	Raspbian
-    	-libasound2-dev
-    	-libudev-dev
+ ###Raspberry Pi
+ 	Raspbian
+ 	-libasound2-dev
+ 	-libudev-dev
 
-    	Pidora
-    	-alsa-lib-devel
-    	-systemd-devel
+ 	Pidora
+ 	-alsa-lib-devel
+ 	-systemd-devel
 
 
 
