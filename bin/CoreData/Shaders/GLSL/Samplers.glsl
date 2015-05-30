@@ -1,8 +1,6 @@
 #ifdef COMPILEPS
 uniform sampler2D sDiffMap;
 uniform samplerCube sDiffCubeMap;
-uniform sampler2D sMataMap;
-uniform sampler2D sRougMap;
 uniform sampler2D sNormalMap;
 uniform sampler2D sSpecMap;
 uniform sampler2D sEmissiveMap;
