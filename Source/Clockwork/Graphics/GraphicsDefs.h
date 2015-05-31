@@ -216,7 +216,7 @@ enum TextureUnit
     TU_ALBEDOBUFFER = 0,
     TU_ROUGHNESS = 1,
     TU_MATALIC = 2,
-    TU_NORMAL = 10,
+    TU_NORMAL = 3,
     TU_NORMALBUFFER = 3,
     TU_SPECULAR = 4,
     TU_EMISSIVE = 5,

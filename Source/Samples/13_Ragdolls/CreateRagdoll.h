@@ -1,4 +1,4 @@
-/#pragma once
+#pragma once
 
 #include <Clockwork/Physics/CollisionShape.h>
 #include <Clockwork/Physics/Constraint.h>

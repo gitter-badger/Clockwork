@@ -81,7 +81,7 @@ TextureUnit ParseTextureUnitName(String name)
         // Check also for shorthand names
         if (name == "diffusemap")
             unit = TU_DIFFUSE;
-        else if (name == "albedomap")
+        else if (name == "albedo")
             unit = TU_DIFFUSE;
         else if (name == "roughnessmap")
             unit = TU_ROUGHNESS;
