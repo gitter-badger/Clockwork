@@ -33,3 +33,4 @@ project/CMakeFiles/TargetDirectories.txt
 *.tlog
 *.ilk
 project/
+/ReleaseD3D11/
