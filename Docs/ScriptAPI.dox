@@ -1397,11 +1397,6 @@ namespace Clockwork
 - %Clear %Sel. %On %Defocus : bool
 - %Select %On %Click %End : bool
 
-### LuaScriptInstance
-- %Is %Enabled : bool
-- %Script %File : ResourceRef
-- %Script %Object %Type : String
-
 ### Menu
 - %Name : String
 - %Position : IntVector2
@@ -13588,6 +13583,8 @@ Properties:
 
 - TU_DIFFUSE
 - TU_ALBEDOBUFFER
+- TU_MATALIC
+- TU_ROUGHNESS
 - TU_NORMAL
 - TU_NORMALBUFFER
 - TU_SPECULAR

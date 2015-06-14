@@ -2,9 +2,9 @@ namespace Clockwork
 {
 
 /**
-\mainpage Clockwork - cross-platform 2D and 3D game engine
+\mainpage Clockwork - cross-platform 2D and 3D game engine. 
 
-Clockwork (http://clockwork3d.github.io/) is a free lightweight, cross-platform 2D and 3D game engine implemented in C++ and released under the MIT license. It utilizes either Direct3D9 or OpenGL for rendering (%Shader %Model 2 or OpenGL 2.0 required as minimum.)
+Clockwork is a lightweight game engine and cross platform game engine. 
 
 For getting started, see:
 
@@ -47,83 +47,6 @@ For further reference, see:
 \ref LuaScriptAPI "Lua scripting API (generated)" <br>
 \ref EventList "Event list (generated)" <br>
 \ref AttributeList "Attribute list (generated)" <br>
-
-For Clockwork related links and projects, see \ref ExternalLinks "External links".
-
-For credits, copyright and licensing information, see \ref Credits & \ref License.
-
-For release history and major changes, see \ref History.
-
-\page Credits Credits
-
-Clockwork development, contributions and bugfixes by:
-- Lasse &Ouml;&ouml;rni (loorni@gmail.com, AgentC at GameDev.net)
-- Wei Tjong Yao
-- Aster Jian
-- Colin Barrett
-- Erik Beran
-- Danny Boisvert
-- Carlo Carollo
-- Pete Chown
-- Sebastian Delatorre (primitivewaste)
-- Josh Engebretson
-- Chris Friesen
-- Alex Fuller
-- Mika Heinonen
-- Graham King
-- Jason Kinzer
-- Gunnar Kriik
-- Ali K&auml;m&auml;r&auml;inen
-- Pete Leigh
-- Jonne Nauha
-- Paul Noome
-- David Palacios
-- Alex Parlett
-- Jordan Patterson
-- Vladimir Pobedinsky
-- Nick Royer
-- Jonathan Sandusky
-- Miika Santala
-- Joshua Tippetts
-- Daniel Wiberg
-- Steven Zhang
-- AGreatFish
-- Enhex
-- Firegorilla
-- Magic.Lixin
-- Mike3D
-- Modanung
-- OvermindDL1
-- Skrylar
-- andmar1x
-- amadeus_osa
-- atship
-- att
-- celeron55
-- hdunderscore
-- marynate
-- mightyCelu
-- nemerle
-- ninjastone
-- raould
-- rasteron
-- reattiva
-- rifai
-- skaiware
-- szamq
-- thebluefish
-
-Clockwork is greatly inspired by OGRE (http://www.ogre3d.org/) and Horde3D (http://www.horde3d.org/). Additional inspiration & research used:
-
-- Rectangle packing by Jukka Jyl&auml;nki (clb) (http://clb.demon.fi/projects/rectangle-bin-packing/)
-- Tangent generation from Terathon (http://www.terathon.com/code/tangent.html)
-- Fast, Minimum Storage Ray/Triangle Intersection by M&ouml;ller & Trumbore (http://www.graphics.cornell.edu/pubs/1997/MT97.pdf)
-- Linear-Speed Vertex Cache Optimisation by Tom Forsyth (http://home.comcast.net/~tom_forsyth/papers/fast_vert_cache_opt.html)
-- Software rasterization of triangles based on Chris Hecker's Perspective %Texture Mapping series in the Game Developer magazine (http://chrishecker.com/Miscellaneous_Technical_Articles)
-- Networked Physics by Glenn Fiedler (http://gafferongames.com/game-physics/networked-physics/)
-- Euler Angle Formulas by David Eberly (http://www.geometrictools.com/Documentation/EulerAngles.pdf)
-- Red Black Trees by Julienne Walker (http://eternallyconfuzzled.com/tuts/datastructures/jsw_tut_rbtree.aspx)
-- Comparison of several sorting algorithms by Juha Nieminen (http://warp.povusers.org/SortComparison/)
 
 Clockwork uses the following third-party libraries:
 

@@ -34,3 +34,5 @@ project/CMakeFiles/TargetDirectories.txt
 *.ilk
 project/
 /ReleaseD3D11/
+/Editor refactor/
+/Documentation/

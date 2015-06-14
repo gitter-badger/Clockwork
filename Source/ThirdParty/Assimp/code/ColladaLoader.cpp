@@ -41,8 +41,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /** @file Implementation of the Collada loader */
 
-// Modified by Lasse Oorni for Clockwork
-
 #include "AssimpPCH.h"
 #ifndef ASSIMP_BUILD_NO_COLLADA_IMPORTER
 
@@ -135,6 +133,7 @@ void ColladaLoader::InternReadFile( const std::string& pFile, aiScene* pScene, I
 	mLights.clear();
 	mCameras.clear();
 	mTextures.clear();
+	mAnims.clear();
 
 	// parse the input file
 	ColladaParser parser( pIOHandler, pFile);
@@ -320,8 +319,7 @@ void ColladaLoader::BuildLightsForNode( const ColladaParser& pParser, const Coll
 		out->mType = (aiLightSourceType)srcLight->mType;
 
 		// collada lights point in -Z by default, rest is specified in node transform
-        // Clockwork: lights should use positive Z as local direction
-        out->mDirection = aiVector3D(0.f, 0.f,1.f);
+		out->mDirection = aiVector3D(0.f,0.f,-1.f);
 
 		out->mAttenuationConstant = srcLight->mAttConstant;
 		out->mAttenuationLinear = srcLight->mAttLinear;
@@ -907,6 +905,8 @@ void ColladaLoader::StoreAnimations( aiScene* pScene, const ColladaParser& pPars
 		pScene->mAnimations = new aiAnimation*[mAnims.size()];
 		std::copy( mAnims.begin(), mAnims.end(), pScene->mAnimations);
 	}
+
+	mAnims.clear();
 }
 
 // ------------------------------------------------------------------------------------------------
