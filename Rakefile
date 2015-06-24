@@ -2,8 +2,8 @@ require 'pathname'
 require 'json'
 require 'yaml'
 
-# Usage: rake sync (only intended to be used in a fork with remote 'upstream' set to clockwork3d/Clockwork)
-desc 'Fetch and merge upstream clockwork3d/Clockwork to a Clockwork fork'
+# Usage: rake sync (only intended to be used in a fork with remote 'upstream' set to dragonCASTjosh/Clockwork)
+desc 'Fetch and merge upstream dragonCASTjosh/Clockwork to a Clockwork fork'
 task :sync do
   system "git fetch upstream && git checkout master && git pull && git merge -m 'Sync at #{Time.now.localtime}.' upstream/master && git push && git checkout -" or abort
 end
@@ -19,7 +19,7 @@ task :scaffolding do
   abs_path = Pathname.new(abs_path).realpath
   puts "\nNew project created in #{abs_path}\n\n"
   puts "You may need to first set 'CLOCKWORK_HOME' environment variable or use 'CLOCKWORK_HOME' build option to point to your Clockwork build tree or your custom Clockwork SDK installation location."
-  puts "Please see http://clockwork3d.github.io/documentation/HEAD/_using_library.html for more detail. For example:\n\n"
+  puts "Please see http://dragonCASTjosh.github.io/documentation/HEAD/_using_library.html for more detail. For example:\n\n"
   if ENV['OS']
     puts "set \"CLOCKWORK_HOME=/path/to/Clockwork/build-tree/or/SDK\"\ncd #{abs_path}\nrake cmake CLOCKWORK_LUAJIT=1\nrake make\n\n"
     puts "Alternatively you can call one of the batch files directly, such as, cmake_generic.bat ../native-Build -DCLOCKWORK_LUAJIT=1 and build using VS IDE"
@@ -139,12 +139,12 @@ task :make do
   system "cd \"#{build_tree}\" && #{ccache_envvar} cmake --build . #{cmake_build_options} -- #{build_options} #{filter}" or abort
 end
 
-# Usage: rake android [parameter='--es pickedLibrary ClockworkPlayer'] [intent=.SampleLauncher] [package=com.github.clockwork3d] [success_indicator='Initialized engine'] [payload='sleep 30'] [api=19] [abi=armeabi-v7a] [avd=test_#{api}_#{abi}] [retries=10] [retry_interval=10]
+# Usage: rake android [parameter='--es pickedLibrary ClockworkPlayer'] [intent=.SampleLauncher] [package=com.github.Clockwork] [success_indicator='Initialized engine'] [payload='sleep 30'] [api=19] [abi=armeabi-v7a] [avd=test_#{api}_#{abi}] [retries=10] [retry_interval=10]
 desc 'Test run already installed APK in Android (virtual) device, default to Clockwork Samples APK if no parameter is given'
 task :android do
   parameter = ENV['parameter'] || '--es pickedLibrary ClockworkPlayer'
   intent = ENV['intent'] || '.SampleLauncher'
-  package = ENV['package'] || 'com.github.clockwork3d'
+  package = ENV['package'] || 'com.github.Clockwork'
   success_indicator = ENV['success_indicator'] || 'Initialized engine'
   payload = ENV['payload'] || 'sleep 30'
   api = ENV['api'] || 19
@@ -235,7 +235,7 @@ task :ci_site_update do
   # Skip when :ci rake task was skipped
   next unless File.exist?('../Build/CMakeCache.txt')
   # Pull or clone
-  system 'cd ../doc-Build 2>/dev/null && git pull -q -r || git clone --depth 1 -q https://github.com/clockwork3d/clockwork3d.github.io.git ../doc-Build' or abort 'Failed to pull/clone'
+  system 'cd ../doc-Build 2>/dev/null && git pull -q -r || git clone --depth 1 -q https://github.com/dragonCASTjosh/Clockwork.github.io.git ../doc-Build' or abort 'Failed to pull/clone'
   # Update credits from README.md to about.md
   system "ruby -lne 'BEGIN { credits = false }; puts $_ if credits; credits = true if /bugfixes by:/; credits = false if /^$/' README.md |ruby -i -le 'credits = STDIN.read; puts ARGF.read.gsub(/(?<=bugfixes by\n).*?(?=##)/m, credits)' ../doc-Build/about.md" or abort 'Failed to update credits'
   # Setup doxygen to use minimal theme
@@ -249,10 +249,10 @@ task :ci_site_update do
   end
   # Generate and sync doxygen pages
   system "cd ../Build && make -j$NUMJOBS doc >/dev/null 2>&1 && ruby -i -pe 'gsub(/(<\\/?h)3([^>]*?>)/, %q{\\14\\2}); gsub(/(<\\/?h)2([^>]*?>)/, %q{\\13\\2}); gsub(/(<\\/?h)1([^>]*?>)/, %q{\\12\\2})' Docs/html/_*.html && rsync -a --delete Docs/html/ ../doc-Build/documentation/#{release}" or abort 'Failed to generate/rsync doxygen pages'
-  # Supply GIT credentials and push site documentation to clockwork3d/clockwork3d.github.io.git
-  system "cd ../doc-Build && pwd && git config user.name $GIT_NAME && git config user.email $GIT_EMAIL && git remote set-url --push origin https://$GH_TOKEN@github.com/clockwork3d/clockwork3d.github.io.git && git add -A . && ( git commit -qm \"Travis CI: site documentation update at #{Time.now.utc}.\n\nCommit: https://github.com/$TRAVIS_REPO_SLUG/commit/$TRAVIS_COMMIT\n\nMessage: $COMMIT_MESSAGE\" || true) && git push -q >/dev/null 2>&1" or abort 'Failed to update site'
+  # Supply GIT credentials and push site documentation to dragonCASTjosh/clockwork.github.io.git
+  system "cd ../doc-Build && pwd && git config user.name $GIT_NAME && git config user.email $GIT_EMAIL && git remote set-url --push origin https://$GH_TOKEN@github.com/dragonCASTjosh/clockwork.github.io.git && git add -A . && ( git commit -qm \"Travis CI: site documentation update at #{Time.now.utc}.\n\nCommit: https://github.com/$TRAVIS_REPO_SLUG/commit/$TRAVIS_COMMIT\n\nMessage: $COMMIT_MESSAGE\" || true) && git push -q >/dev/null 2>&1" or abort 'Failed to update site'
   unless ENV['RELEASE_TAG'] || `git fetch -qf origin #{ENV['TRAVIS_BRANCH']}; git log -1 --pretty=format:'%H' FETCH_HEAD` != ENV['TRAVIS_COMMIT']
-    # Supply GIT credentials and push API documentation to clockwork3d/Clockwork.git (only when changes are detected)
+    # Supply GIT credentials and push API documentation to dragonCASTjosh/Clockwork.git (only when changes are detected)
     system 'pwd && git config user.name $GIT_NAME && git config user.email $GIT_EMAIL && git remote set-url --push origin https://$GH_TOKEN@github.com/$TRAVIS_REPO_SLUG.git && git add Docs/*API*'
     if system("git commit -qm 'Test commit to detect API changes'")
       # Automatically give instruction to do packaging when API has changed, unless the instruction is already given in this commit
@@ -268,13 +268,13 @@ desc 'Update Emscripten HTML5 samples to GitHub Pages'
 task :ci_emscripten_samples_update do
   puts "\nUpdating Emscripten samples in main website..."
   # Pull or clone
-  system 'cd ../doc-Build 2>/dev/null && git pull -q -r || git clone --depth 1 -q https://github.com/clockwork3d/clockwork3d.github.io.git ../doc-Build' or abort 'Failed to pull/clone'
+  system 'cd ../doc-Build 2>/dev/null && git pull -q -r || git clone --depth 1 -q https://github.com/dragonCASTjosh/clockwork.github.io.git ../doc-Build' or abort 'Failed to pull/clone'
   # Sync Emscripten samples
   system "rsync -a --delete --exclude tool ../Build/bin/ ../doc-Build/samples" or abort 'Failed to rsync Emscripten samples'
   # Update Emscripten json data file
   update_emscripten_data or abort 'Failed to update Emscripten json data file'
   root_commit, _ = get_root_commit_and_recipients
-  system "cd ../doc-Build && git config user.name $GIT_NAME && git config user.email $GIT_EMAIL && git remote set-url --push origin https://$GH_TOKEN@github.com/clockwork3d/clockwork3d.github.io.git && git add -A . && ( git commit -qm \"Travis CI: Emscripten samples update at #{Time.now.utc}.\n\nCommit: https://github.com/$TRAVIS_REPO_SLUG/commit/#{root_commit}\n\nMessage: #{`git log --format=%B -n 1 #{root_commit}`}\" || true) && git push -q >/dev/null 2>&1" or abort 'Failed to update Emscripten samples'
+  system "cd ../doc-Build && git config user.name $GIT_NAME && git config user.email $GIT_EMAIL && git remote set-url --push origin https://$GH_TOKEN@github.com/dragonCASTjosh/clockwork.github.io.git && git add -A . && ( git commit -qm \"Travis CI: Emscripten samples update at #{Time.now.utc}.\n\nCommit: https://github.com/$TRAVIS_REPO_SLUG/commit/#{root_commit}\n\nMessage: #{`git log --format=%B -n 1 #{root_commit}`}\" || true) && git push -q >/dev/null 2>&1" or abort 'Failed to update Emscripten samples'
 end
 
 # Usage: NOT intended to be used manually
@@ -569,7 +569,7 @@ def android_wait_for_device retries = -1, retry_interval = 10, package = 'androi
   return retries == 0 ? nil : 0
 end
 
-def android_test_run parameter = '--es pickedLibrary ClockworkPlayer', intent = '.SampleLauncher', package = 'com.github.clockwork3d', success_indicator = 'Added resource path /apk/CoreData/', payload = 'sleep 30'
+def android_test_run parameter = '--es pickedLibrary ClockworkPlayer', intent = '.SampleLauncher', package = 'com.github.Clockwork', success_indicator = 'Added resource path /apk/CoreData/', payload = 'sleep 30'
   # The device should have been found at this point
   return nil unless $specific_device
   # Capture adb's stdout and interpret it because adb neither uses stderr nor returns proper exit code on error
@@ -656,13 +656,13 @@ def xcode_build ios, project, target = 'ALL_BUILD', extras = ''
   return 0
 end
 
-def append_new_release release, filename = '../doc-Build/_data/clockwork3d.json'
+def append_new_release release, filename = '../doc-Build/_data/Clockwork.json'
   begin
-    clockwork3d_hash = JSON.parse File.read filename
-    unless clockwork3d_hash['releases'].last == release
-      clockwork3d_hash['releases'] << release
+    clockwork_hash = JSON.parse File.read filename
+    unless clockwork_hash['releases'].last == release
+      clockwork_hash['releases'] << release
     end
-    File.open(filename, 'w') { |file| file.puts clockwork3d_hash.to_json }
+    File.open(filename, 'w') { |file| file.puts clockwork_hash.to_json }
     return 0
   rescue
     nil
