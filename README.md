@@ -5,6 +5,7 @@
 
 ###Windows
  	-June 2010 DirectX SDK(This is not necessary if building on Visual Studio 2012 or newer)
+ 	-cmake
 
 ###Linux
  	Debian based
@@ -12,15 +13,18 @@
  	-libxrandr-dev
  	-libasound2-dev
  	-libgl1-mesa-dev
+ 	-cmake
 
  	RedHat based
  	-libX11-devel
  	-libXrandr-devel
  	-alsa-lib-devel 
  	-mesa-libGL-devel
+ 	-cmake
 
 ###Mac
  	-Xcode command line tools
+ 	-cmake
  
 ###Androud
  	-Android SDK
@@ -34,12 +38,12 @@
  	Raspbian
  	-libasound2-dev
  	-libudev-dev
+ 	-cmake
 
  	Pidora
  	-alsa-lib-devel
  	-systemd-devel
-
-
+ 	-cmake
 
 ##How to build
 
