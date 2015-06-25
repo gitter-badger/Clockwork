@@ -91,7 +91,7 @@ before_script:
   - if [ "$CC"  == "clang" ]; then ln -s $(which ccache) $HOME/clang && ln -s $(which ccache) $HOME/clang++ && export PATH=$HOME:$PATH; fi
   - rake ci_setup_cache
 script:
-  - rake ci
+  - rake ci Test
   - if [ $SITE_UPDATE ]; then rake ci_site_update || ! [ $RELEASE_TAG ]; fi
   - if [ $PACKAGE_UPLOAD ]; then rake ci_package_upload && if [ $LINUX ] && [ ! "$CLOCKWORK_64BIT" == "0" ]; then rake ci_package_upload CLOCKWORK_USE_LIB64_RPM=1; fi || ! [ $RELEASE_TAG ]; fi
 after_script:
