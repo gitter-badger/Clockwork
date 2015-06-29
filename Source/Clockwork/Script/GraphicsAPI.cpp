@@ -268,8 +268,7 @@ static void RegisterRenderPath(asIScriptEngine* engine)
     engine->RegisterEnum("TextureUnit");
     engine->RegisterEnumValue("TextureUnit", "TU_DIFFUSE", TU_DIFFUSE);
     engine->RegisterEnumValue("TextureUnit", "TU_ALBEDOBUFFER", TU_ALBEDOBUFFER);
-    engine->RegisterEnumValue("TextureUnit", "TU_MATALIC", TU_MATALIC);
-    engine->RegisterEnumValue("TextureUnit", "TU_ROUGHNESS", TU_ROUGHNESS);
+    engine->RegisterEnumValue("TextureUnit", "TU_PROPERTIES", TU_PROPRITIES);
     engine->RegisterEnumValue("TextureUnit", "TU_NORMAL", TU_NORMAL);
     engine->RegisterEnumValue("TextureUnit", "TU_NORMALBUFFER", TU_NORMALBUFFER);
     engine->RegisterEnumValue("TextureUnit", "TU_SPECULAR", TU_SPECULAR);

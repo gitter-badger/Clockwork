@@ -51,6 +51,8 @@ void PS()
         #endif
         vec4 albedoInput = texture2D(sAlbedoBuffer, vScreenPos);
         vec4 normalInput = texture2D(sNormalBuffer, vScreenPos);
+        vec4 propitiesInput = texture2D(sPropitiesMap, vScreenPos);
+        vec4 specColour = texture2D(sSpecMap, vScreenPos);
     #else
         #ifdef HWDEPTH
             float depth = ReconstructDepth(texture2DProj(sDepthBuffer, vScreenPos).r);
@@ -64,14 +66,35 @@ void PS()
         #endif
         vec4 albedoInput = texture2DProj(sAlbedoBuffer, vScreenPos);
         vec4 normalInput = texture2DProj(sNormalBuffer, vScreenPos);
+        vec4 propitiesInput = texture2DProj(sPropitiesMap, vScreenPos);
+        vec4 specColour = texture2DProj(sSpecMap, vScreenPos);
     #endif
 
     vec3 normal = normalize(normalInput.rgb * 2.0 - 1.0);
     vec4 projWorldPos = vec4(worldPos, 1.0);
     vec3 lightColor;
     vec3 lightDir;
-    
-    float diff = GetDiffuse(normal, worldPos, lightDir);
+
+    #ifdef DIRLIGHT
+        lightDir = cLightDirPS;
+    #else
+        vec3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w;
+        float lightDist = length(lightVec);
+        lightDir = lightVec / lightDist;
+    #endif
+
+    vec3 diffColor = albedoInput.rgb * (1.0 * propitiesInput.r);
+    vec3 specColor = mix(0.8 * specColor.rgb, albedoInput.rgb, propitiesInput.r);
+
+    float halfVec = normalize(normalize(-worldPos) + lightDir);
+
+    float NdotV = dot(normal, -worldPos);
+    float NdotL = dot(normal, lightDir);
+    float NdotH = dot(normal, halfVec);
+    float VdotH = dot(-worldPos, halfVec);
+
+
+    float diff = GetBurleyDiffuse(diffColor, propitiesInput.g, NdotV, NdotL, VdotH);
 
     #ifdef SHADOW
         diff *= GetShadowDeferred(projWorldPos, depth);
@@ -88,9 +111,13 @@ void PS()
     #endif
 
     #ifdef SPECULAR
-        float spec = GetSpecular(normal, -worldPos, lightDir, normalInput.a * 255.0);
-        gl_FragColor = diff * vec4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
+        float specDiff = GetSpecularDist(propitiesInput.g, NdotH);
+        float specFresnel = GetFresnel(specColor, VdotH);
+        float specGeoShadow = GetSpecularGeoShadow(propitiesInput.g,NdotV, NdotL);
+
+        float spec = specDiff * specFresnel * specGeoShadow;
+        gl_FragColor = (diff * spec) * (propitiesInput.b * NdotL * lightColor * lightDir);
     #else
-        gl_FragColor = diff * vec4(lightColor * albedoInput.rgb, 0.0);
+        gl_FragColor = diff * vec4(lightColor, 0.0);
     #endif
 }

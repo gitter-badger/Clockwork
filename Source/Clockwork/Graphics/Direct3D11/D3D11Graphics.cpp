@@ -2659,8 +2659,7 @@ void Graphics::SetTextureUnitMappings()
 {
     textureUnits_["DiffMap"] = TU_DIFFUSE;
     textureUnits_["DiffCubeMap"] = TU_DIFFUSE;
-    textureUnits_["MatalicMap"] = TU_MATALIC;
-    textureUnits_["RoughnessMap"] = TU_ROUGHNESS;
+    textureUnits_["PropitiesMap"] = TU_PROPRITIES;
     textureUnits_["NormalMap"] = TU_NORMAL;
     textureUnits_["SpecMap"] = TU_SPECULAR;
     textureUnits_["EmissiveMap"] = TU_EMISSIVE;

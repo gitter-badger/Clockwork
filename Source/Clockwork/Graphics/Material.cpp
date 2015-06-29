@@ -28,8 +28,7 @@ extern const char* wrapModeNames[];
 static const char* textureUnitNames[] =
 {
     "diffuse",
-    "roughness",
-    "matalic",
+    "propties",
     "normal",
     "specular",
     "emissive",
@@ -83,10 +82,8 @@ TextureUnit ParseTextureUnitName(String name)
             unit = TU_DIFFUSE;
         else if (name == "albedo")
             unit = TU_DIFFUSE;
-        else if (name == "roughnessmap")
-            unit = TU_ROUGHNESS;
-        else if (name == "matalicmap")
-            unit = TU_MATALIC;
+        else if (name == "propitiesmap")
+            unit = TU_PROPRITIES;
         else if (name == "normalmap")
             unit = TU_NORMAL;
         else if (name == "specularmao")

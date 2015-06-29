@@ -160,13 +160,12 @@ enum TextureUnit
 {
     TU_DIFFUSE = 0,
     TU_ALBEDOBUFFER = 0,
-    TU_MATALIC =1,
-    TU_ROUGHNESS = 2
-    TU_NORMAL = 3,
-    TU_NORMALBUFFER = 3,
-    TU_SPECULAR = 4,
-    TU_EMISSIVE = 5,
-    TU_ENVIRONMENT = 6,
+    TU_PROPERTIES =1,
+    TU_NORMAL = 2,
+    TU_NORMALBUFFER = 2,
+    TU_SPECULAR = 3,
+    TU_EMISSIVE = 4,
+    TU_ENVIRONMENT = 5,
 };
 
 enum FaceCameraMode

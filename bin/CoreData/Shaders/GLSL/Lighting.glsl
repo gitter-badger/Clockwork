@@ -94,6 +94,50 @@ float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir)
     #endif
 }
 
+// [Burley 2012, "Physically-Based Shading at Disney"]
+// [Lagrade et al. 2014, "Moving Frostbite to Physically Based Rendering"]
+vec3 GetBurleyDiffuse(vec3 diffColor, float roughness, float NdotV, float NdotL, float VdotH)
+{
+  float FD90 = ( 0.5 + 2 * VdotH * VdotH ) * roughness;
+
+  float InvNdotV = 1 - NdotV;
+  float NdotVPow5 = InvNdotV * InvNdotV;
+  NdotVPow5 = NdotVPow5 * NdotVPow5 * InvNdotV;
+
+  float InvNdotL = 1 - NdotL;
+  float NdotLPow5 = InvNdotL * InvNdotL;
+  NdotLPow5 = NdotLPow5 * NdotLPow5 * InvNdotL;
+
+  float FdV = 1 + (FD90 - 1) * NdotVPow5;
+	float FdL = 1 + (FD90 - 1) * NdotLPow5;
+
+  return diffColor * ( 1 / 3.14159 * FdV * FdL ) * ( 1 - 0.3333 * roughness );
+  //return diffColor *  3.14159;
+}
+
+//GGX
+// [Walter et al. 2007, "Microfacet models for refraction through rough surfaces"]
+float GetSpecularDist(float roughness, float NdotH)
+{
+  float a = roughness * roughness;
+  float a2 = a * a;
+  float d = (((NdotH * a2) - NdotH) * NdotH) + 1;
+  return a2 * (3.14159 * (d * d));
+}
+
+vec3 GetSpecularFresnel(vec3 color, float VdotH)
+{
+  float fc = exp2( (-5.55473 * VdotH - 6.98316) * VdotH );
+	return vec3(fc, fc, fc) + (1 - fc) * color;
+}
+
+float GetSpecularGeoShadow(float roughness, float NdotV, float NdotL)
+{
+  float k = (roughness * roughness) * 0.5;
+  vec2 gvi = vec2(NdotV, NdotL) * (1 - k) * vec2(k,k);
+  return 0.25/(gvi.x * gvi.y);
+}
+
 float GetDiffuseVolumetric(vec3 worldPos)
 {
     #ifdef DIRLIGHT
@@ -214,7 +258,7 @@ float GetDirShadow(const vec4 iShadowPos[NUMCASCADES], float depth)
         shadowPos = iShadowPos[2];
     else
         shadowPos = iShadowPos[3];
-        
+
     return GetDirShadowFade(GetShadow(shadowPos), depth);
 }
 #else
