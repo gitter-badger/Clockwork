@@ -52,7 +52,7 @@ void PS()
         vec4 albedoInput = texture2D(sAlbedoBuffer, vScreenPos);
         vec4 normalInput = texture2D(sNormalBuffer, vScreenPos);
         vec4 propitiesInput = texture2D(sPropitiesMap, vScreenPos);
-        vec4 specColour = texture2D(sSpecMap, vScreenPos);
+        vec4 specInput = texture2D(sSpecMap, vScreenPos);
     #else
         #ifdef HWDEPTH
             float depth = ReconstructDepth(texture2DProj(sDepthBuffer, vScreenPos).r);
@@ -66,8 +66,12 @@ void PS()
         #endif
         vec4 albedoInput = texture2DProj(sAlbedoBuffer, vScreenPos);
         vec4 normalInput = texture2DProj(sNormalBuffer, vScreenPos);
-        vec4 propitiesInput = texture2DProj(sPropitiesMap, vScreenPos);
-        vec4 specColour = texture2DProj(sSpecMap, vScreenPos);
+        #ifdef PBR
+          vec4 propitiesInput = texture2DProj(sPropitiesMap, vScreenPos);
+        #else
+          vec4 propitiesInput = vec4(0.5,0.48, 1,0.0);
+        #endif
+        vec4 specInput = texture2DProj(sSpecMap, vScreenPos);
     #endif
 
     vec3 normal = normalize(normalInput.rgb * 2.0 - 1.0);
@@ -84,17 +88,17 @@ void PS()
     #endif
 
     vec3 diffColor = albedoInput.rgb * (1.0 * propitiesInput.r);
-    vec3 specColor = mix(0.8 * specColor.rgb, albedoInput.rgb, propitiesInput.r);
+    vec3 specColor =  mix(0.25 * vec3(propitiesInput.a), albedoInput.rgb, propitiesInput.r);
 
-    float halfVec = normalize(normalize(-worldPos) + lightDir);
+    vec3 halfVec = normalize(normalize(-worldPos) + lightDir);
 
-    float NdotV = dot(normal, -worldPos);
-    float NdotL = dot(normal, lightDir);
-    float NdotH = dot(normal, halfVec);
-    float VdotH = dot(-worldPos, halfVec);
+    float NdotV = abs(dot(normal, -worldPos))  + 1e-5;
+    float NdotL = clamp(dot(normal, lightDir), 0, 1);
+    float NdotH = clamp(dot(normal, halfVec), 0, 1);
+    float VdotH = clamp(dot(-worldPos, halfVec), 0 ,1);
 
 
-    float diff = GetBurleyDiffuse(diffColor, propitiesInput.g, NdotV, NdotL, VdotH);
+    vec3 diff = GetBurleyDiffuse(diffColor, propitiesInput.g, NdotV, NdotL, VdotH);
 
     #ifdef SHADOW
         diff *= GetShadowDeferred(projWorldPos, depth);
@@ -112,12 +116,14 @@ void PS()
 
     #ifdef SPECULAR
         float specDiff = GetSpecularDist(propitiesInput.g, NdotH);
-        float specFresnel = GetFresnel(specColor, VdotH);
+        vec3 specFresnel = GetSpecularFresnel(specColor, VdotH);
         float specGeoShadow = GetSpecularGeoShadow(propitiesInput.g,NdotV, NdotL);
 
-        float spec = specDiff * specFresnel * specGeoShadow;
-        gl_FragColor = (diff * spec) * (propitiesInput.b * NdotL * lightColor * lightDir);
+        vec3 spec = specDiff * specFresnel * specGeoShadow;
+        vec4 result = vec4((diff * spec ) * (propitiesInput.b * NdotL * lightColor) ,0.0);
+        //Diffuse * (LobeEnergy[2] * DiffSpecMask.r) + (D * Vis * DiffSpecMask.g) * F;
+        gl_FragColor =  result;
     #else
-        gl_FragColor = diff * vec4(lightColor, 0.0);
+        gl_FragColor = vec4((diff ) * (propitiesInput.b * NdotL * lightColor) ,0.0);
     #endif
 }

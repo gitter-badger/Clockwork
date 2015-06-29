@@ -48,6 +48,10 @@ void PS()
         #else
             vec3 worldPos = vFarRay * depth;
         #endif
+        vec4 albedoInput = texture2D(sAlbedoBuffer, vScreenPos);
+        vec4 normalInput = texture2D(sNormalBuffer, vScreenPos);
+        vec4 propitiesInput = texture2D(sPropitiesMap, vScreenPos);
+        vec4 specColour = texture2D(sSpecMap, vScreenPos);
         vec4 normalInput = texture2D(sNormalBuffer, vScreenPos);
     #else
         #ifdef HWDEPTH
@@ -60,6 +64,10 @@ void PS()
         #else
             vec3 worldPos = vFarRay * depth / vScreenPos.w;
         #endif
+        vec4 albedoInput = texture2DProj(sAlbedoBuffer, vScreenPos);
+        vec4 normalInput = texture2DProj(sNormalBuffer, vScreenPos);
+        vec4 propitiesInput = texture2DProj(sPropitiesMap, vScreenPos);
+        vec4 specColour = texture2DProj(sSpecMap, vScreenPos);
         vec4 normalInput = texture2DProj(sNormalBuffer, vScreenPos);
     #endif
 
@@ -68,13 +76,32 @@ void PS()
     vec3 lightColor;
     vec3 lightDir;
 
+
+    #ifdef DIRLIGHT
+        lightDir = cLightDirPS;
+    #else
+        vec3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w;
+        float lightDist = length(lightVec);
+        lightDir = lightVec / lightDist;
+    #endif
+
+    vec3 diffColor = albedoInput.rgb * (1.0 * propitiesInput.r);
+    vec3 specColor = mix(0.8 * specColor.rgb, albedoInput.rgb, propitiesInput.r);
+
+    float halfVec = normalize(normalize(-worldPos) + lightDir);
+
+    float NdotV = dot(normal, -worldPos);
+    float NdotL = dot(normal, lightDir);
+    float NdotH = dot(normal, halfVec);
+    float VdotH = dot(-worldPos, halfVec);
+
     // Accumulate light at half intensity to allow 2x "overburn"
-    float diff = 0.5 * GetDiffuse(normal, worldPos, lightDir);
+    float diff = 0.5 * GetBurleyDiffuse(diffColor, propitiesInput.g, NdotV, NdotL, VdotH);
 
     #ifdef SHADOW
         diff *= GetShadowDeferred(projWorldPos, depth);
     #endif
-    
+
     #if defined(SPOTLIGHT)
         vec4 spotPos = projWorldPos * cLightMatricesPS[0];
         lightColor = spotPos.w > 0.0 ? texture2DProj(sLightSpotMap, spotPos).rgb * cLightColor.rgb : vec3(0.0);
@@ -86,8 +113,12 @@ void PS()
     #endif
 
     #ifdef SPECULAR
-        float spec = lightColor.g * GetSpecular(normal, -worldPos, lightDir, normalInput.a * 255.0);
-        gl_FragColor = diff * vec4(lightColor, spec * cLightColor.a);
+        float specDiff = GetSpecularDist(propitiesInput.g, NdotH);
+        float specFresnel = GetFresnel(specColor, VdotH);
+        float specGeoShadow = GetSpecularGeoShadow(propitiesInput.g,NdotV, NdotL);
+
+        float spec = specDiff * specFresnel * specGeoShadow;
+        gl_FragColor = (diff * spec) * (propitiesInput.b * NdotL * lightColor * lightDir);
     #else
         gl_FragColor = diff * vec4(lightColor, 0.0);
     #endif
