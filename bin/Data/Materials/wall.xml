@@ -3,13 +3,12 @@
 	<technique name="Techniques/DiffNormalSpec.xml" quality="0" loddistance="0" />
 	<texture unit="diffuse" name="Textures/pk02_wall05b.tga" />
 	<texture unit="normal" name="Textures/pk02_wall05b_norm.tga" />
-	<texture unit="specular" name="Textures/pk02_wall05b_gloss.tga" />
 	<parameter name="UOffset" value="1 0 0 0" />
 	<parameter name="VOffset" value="0 1 0 0" />
-	<parameter name="MatDiffColor" value="0.6 0.6 0.6 1" />
+	<parameter name="MatDiffColor" value="1 1 1 1" />
 	<parameter name="MatEmissiveColor" value="0 0 0 1" />
 	<parameter name="MatEnvMapColor" value="1 1 1" />
-	<parameter name="MatSpecColor" value="0 0 0 0" />
+	<parameter name="MatSpecColor" value="1 1 1 0" />
 	<cull value="ccw" />
 	<shadowcull value="ccw" />
 	<fill value="solid" />

@@ -1,1 +1,1 @@
-/home/josh/Documents/Clockwork-master/bin/NinjaSnowWar.sh
+/home/josh/Documents/Clockwork/Clockwork/bin/NinjaSnowWar.sh

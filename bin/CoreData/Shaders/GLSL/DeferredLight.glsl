@@ -3,6 +3,7 @@
 #include "Transform.glsl"
 #include "ScreenPos.glsl"
 #include "Lighting.glsl"
+#include "BRDF.glsl"
 
 #ifdef DIRLIGHT
     varying vec2 vScreenPos;
@@ -69,7 +70,7 @@ void PS()
         #ifdef PBR
           vec4 propitiesInput = texture2DProj(sPropitiesMap, vScreenPos);
         #else
-          vec4 propitiesInput = vec4(0.5,0.48, 1,0.0);
+          vec4 propitiesInput = vec4(1,0.7, 1,0.0);
         #endif
         vec4 specInput = texture2DProj(sSpecMap, vScreenPos);
     #endif
@@ -78,12 +79,14 @@ void PS()
     vec4 projWorldPos = vec4(worldPos, 1.0);
     vec3 lightColor;
     vec3 lightDir;
+    float lightDist;
 
     #ifdef DIRLIGHT
         lightDir = cLightDirPS;
+        lightDist = 10000000;
     #else
         vec3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w;
-        float lightDist = length(lightVec);
+        lightDist = length(lightVec);
         lightDir = lightVec / lightDist;
     #endif
 
@@ -98,7 +101,7 @@ void PS()
     float VdotH = clamp(dot(-worldPos, halfVec), 0 ,1);
 
 
-    vec3 diff = GetBurleyDiffuse(diffColor, propitiesInput.g, NdotV, NdotL, VdotH);
+    vec3 diff = GetPBRDiffuse(diffColor, propitiesInput.g, NdotV, NdotL, VdotH, 0) * texture2D(sLightRampMap, vec2(lightDist, 0.0)).r;
 
     #ifdef SHADOW
         diff *= GetShadowDeferred(projWorldPos, depth);
@@ -115,12 +118,13 @@ void PS()
     #endif
 
     #ifdef SPECULAR
-        float specDiff = GetSpecularDist(propitiesInput.g, NdotH);
-        vec3 specFresnel = GetSpecularFresnel(specColor, VdotH);
-        float specGeoShadow = GetSpecularGeoShadow(propitiesInput.g,NdotV, NdotL);
+        float specDist = GetPBRSpecD(propitiesInput.g, NdotH, 1);
+        vec3 specFresnel = GetPBRSpecF(specColor, VdotH);
+        float specGeoShadow = GetPBRSpecG(propitiesInput.g,NdotV, NdotL, NdotH);
 
-        vec3 spec = specDiff * specFresnel * specGeoShadow;
-        vec4 result = vec4((diff * spec ) * (propitiesInput.b * NdotL * lightColor) ,0.0);
+        vec3 spec = specDist * specFresnel * specGeoShadow;
+        vec4 result = vec4(lightColor, 0.0) *  vec4((diff * spec ) * (propitiesInput.b * NdotL * lightColor) ,0.0);
+        //vec4 result = vec4(diff * (0) + (specDist * specGeoShadow * 1) * specFresnel,0.0);
         //Diffuse * (LobeEnergy[2] * DiffSpecMask.r) + (D * Vis * DiffSpecMask.g) * F;
         gl_FragColor =  result;
     #else
