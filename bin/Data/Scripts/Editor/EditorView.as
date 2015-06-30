@@ -84,7 +84,7 @@ class ViewportContext
     uint index = 0;
     uint viewportId = 0;
     UIElement@ viewportContextUI;
-    UIElement@ statusBar;
+  //  UIElement@ statusBar;
     Text@ cameraPosText;
 
     Window@ settingsWindow;
@@ -135,20 +135,20 @@ class ViewportContext
         viewportContextUI.SetFixedSize(viewport.rect.width, viewport.rect.height);
         viewportContextUI.clipChildren = true;
 
-        statusBar = BorderImage("ToolBar");
-        statusBar.style = "EditorToolBar";
-        viewportContextUI.AddChild(statusBar);
+      //  statusBar = BorderImage("ToolBar");
+      //  statusBar.style = "EditorToolBar";
+      //  viewportContextUI.AddChild(statusBar);
 
-        statusBar.SetLayout(LM_HORIZONTAL);
-        statusBar.SetAlignment(HA_LEFT, VA_BOTTOM);
-        statusBar.layoutSpacing = 4;
-        statusBar.opacity = uiMaxOpacity;
+      //  statusBar.SetLayout(LM_HORIZONTAL);
+    //    statusBar.SetAlignment(HA_LEFT, VA_BOTTOM);
+    //    statusBar.layoutSpacing = 4;
+      //  statusBar.opacity = uiMaxOpacity;
 
         Button@ settingsButton = CreateSmallToolBarButton("Settings");
-        statusBar.AddChild(settingsButton);
+      //  statusBar.AddChild(settingsButton);
 
         cameraPosText = Text();
-        statusBar.AddChild(cameraPosText);
+      //  statusBar.AddChild(cameraPosText);
 
         cameraPosText.SetFont(font, 11);
         cameraPosText.color = Color(1, 1, 0);
@@ -194,20 +194,20 @@ class ViewportContext
         viewportContextUI.SetFixedSize(viewport.rect.width, viewport.rect.height);
         if (viewport.rect.left < 34)
         {
-            statusBar.layoutBorder = IntRect(34 - viewport.rect.left, 4, 4, 8);
+          //  statusBar.layoutBorder = IntRect(34 - viewport.rect.left, 4, 4, 8);
             IntVector2 pos = settingsWindow.position;
             pos.x = 32 - viewport.rect.left;
             settingsWindow.position = pos;
         }
         else
         {
-            statusBar.layoutBorder = IntRect(8, 4, 4, 8);
+        //    statusBar.layoutBorder = IntRect(8, 4, 4, 8);
             IntVector2 pos = settingsWindow.position;
             pos.x = 5;
             settingsWindow.position = pos;
         }
 
-        statusBar.SetFixedSize(viewport.rect.width, 22);
+      //  statusBar.SetFixedSize(viewport.rect.width, 22);
     }
 
     void ToggleOrthographic()
@@ -427,7 +427,7 @@ void SetRenderPath(const String&in newRenderPathName)
             }
         }
     }
-    
+
     // If renderPath is null, the engine default will be used
     for (uint i = 0; i < renderer.numViewports; ++i)
         renderer.viewports[i].renderPath = renderPath;
