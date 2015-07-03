@@ -3,6 +3,7 @@
 #include "Transform.hlsl"
 #include "ScreenPos.hlsl"
 #include "Lighting.hlsl"
+#include "BRDF.hlsl"
 
 void VS(float4 iPos : POSITION,
     #ifdef DIRLIGHT
@@ -73,6 +74,11 @@ void PS(
         float4 normalInput = Sample2DProj(NormalBuffer, iScreenPos);
     #endif
     
+    float matalic = 1.0;
+    
+    float3 diffColor = albedoInput.rgb * (1.0 * matalic);
+    float3 specColor =  lerp(0.25 * float3(1.0, 1.0, 1.0), albedoInput.rgb, matalic);
+    
     float3 normal = normalize(normalInput.rgb * 2.0 - 1.0);
     float4 projWorldPos = float4(worldPos, 1.0);
     float3 lightColor;
@@ -94,8 +100,17 @@ void PS(
     #endif
 
     #ifdef SPECULAR
-        float spec = GetSpecular(normal, -worldPos, lightDir, normalInput.a * 255.0);
-        oColor = diff * float4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
+        float Roughness = 0.2;
+        float3 halfVec = normalize(normalize(-worldPos) + lightDir);
+        float NdotH = dot(normal, halfVec);
+        float NdotV = dot(normal, - worldPos);
+        float NdotL = dot(normal, lightDir);
+        float VdotH = dot(-worldPos , halfVec);
+        float D = GetBRDFDistrabution(Roughness, NdotH, 1);
+        float G = GetBRDFGeometricVisibility(Roughness , NdotV, NdotL, NdotH, 4);
+        float3 F = GetBRDFFresnel(specColor, VdotH , 2);
+        float3 spec = D * G * F;
+        oColor = float4(diffColor * diff +  diff * spec, 0.0); ///* float4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
     #else
         oColor = diff * float4(lightColor * albedoInput.rgb, 0.0);
     #endif
