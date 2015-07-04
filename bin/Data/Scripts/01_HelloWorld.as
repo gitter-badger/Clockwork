@@ -16,6 +16,7 @@ void Start()
 
     // Finally, hook-up this HelloWorld instance to handle update events
     SubscribeToEvents();
+    
 }
 
 void CreateText()

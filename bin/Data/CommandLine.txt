@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 Scripts/Editor.as
+=======
+Scripts/Editor.as -w -s
+>>>>>>> origin/PBR

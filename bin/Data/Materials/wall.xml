@@ -8,7 +8,11 @@
 	<parameter name="MatDiffColor" value="1 1 1 1" />
 	<parameter name="MatEmissiveColor" value="0 0 0 1" />
 	<parameter name="MatEnvMapColor" value="1 1 1" />
+<<<<<<< HEAD
 	<parameter name="MatSpecColor" value="1 1 1 0" />
+=======
+	<parameter name="MatSpecColor" value="0 0 0 0" />
+>>>>>>> origin/PBR
 	<cull value="ccw" />
 	<shadowcull value="ccw" />
 	<fill value="solid" />

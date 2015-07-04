@@ -4,6 +4,7 @@
 #include "ScreenPos.hlsl"
 #include "Lighting.hlsl"
 #include "Fog.hlsl"
+#include "BRDF.hlsl"
 
 void VS(float4 iPos : POSITION,
     #ifndef BILLBOARD
@@ -188,7 +189,7 @@ void PS(
             if (diffInput.a < 0.5)
                 discard;
         #endif
-        float4 diffColor = cMatDiffColor * diffInput;
+        float4 diffColor = cMatDiffColor * diffInput * (1.0 * matalic);
     #else
         float4 diffColor = cMatDiffColor;
     #endif
