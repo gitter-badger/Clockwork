@@ -94,8 +94,8 @@ before_script:
   - rake ci_setup_cache
 script:
   - rake ci
-  - if [ $SITE_UPDATE ]; then rake ci_site_update || ! [ $RELEASE_TAG ]; fi
-  - if [ $PACKAGE_UPLOAD ]; then rake ci_package_upload && if [ $LINUX ] && [ ! "$CLOCKWORK_64BIT" == "0" ]; then rake ci_package_upload CLOCKWORK_USE_LIB64_RPM=1; fi || ! [ $RELEASE_TAG ]; fi
+  #- if [ $SITE_UPDATE ]; then rake ci_site_update || ! [ $RELEASE_TAG ]; fi
+  #- if [ $PACKAGE_UPLOAD ]; then rake ci_package_upload && if [ $LINUX ] && [ ! "$CLOCKWORK_64BIT" == "0" ]; then rake ci_package_upload CLOCKWORK_USE_LIB64_RPM=1; fi || ! [ $RELEASE_TAG ]; fi
 after_script:
   - rake ci_teardown_cache
   - if [ ${TRAVIS_JOB_NUMBER##*.} == 1 ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then rake ci_create_mirrors; fi
