@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #if defined(CLOCKWORK_D3D11)

@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Graphics/GraphicsDefs.h"
@@ -52,32 +54,46 @@ public:
 
     /// Return pass name.
     const String& GetName() const { return name_; }
+
     /// Return pass index. This is used for optimal render-time pass queries that avoid map lookups.
     unsigned GetIndex() const { return index_; }
+
     /// Return blend mode.
     BlendMode GetBlendMode() const { return blendMode_; }
+
     /// Return depth compare mode.
     CompareMode GetDepthTestMode() const { return depthTestMode_; }
+
     /// Return pass lighting mode.
     PassLightingMode GetLightingMode() const { return lightingMode_; }
+
     /// Return last shaders loaded frame number.
     unsigned GetShadersLoadedFrameNumber() const { return shadersLoadedFrameNumber_; }
+
     /// Return depth write mode.
     bool GetDepthWrite() const { return depthWrite_; }
+
     /// Return alpha masking hint.
     bool GetAlphaMask() const { return alphaMask_; }
+
     /// Return whether requires desktop level hardware.
     bool IsDesktop() const { return isDesktop_; }
+
     /// Return vertex shader name.
     const String& GetVertexShader() const { return vertexShaderName_; }
+
     /// Return pixel shader name.
     const String& GetPixelShader() const { return pixelShaderName_; }
+
     /// Return vertex shader defines.
     const String& GetVertexShaderDefines() const { return vertexShaderDefines_; }
+
     /// Return pixel shader defines.
     const String& GetPixelShaderDefines() const { return pixelShaderDefines_; }
+
     /// Return vertex shaders.
     Vector<SharedPtr<ShaderVariation> >& GetVertexShaders() { return vertexShaders_; }
+
     /// Return pixel shaders.
     Vector<SharedPtr<ShaderVariation> >& GetPixelShaders() { return pixelShaders_; }
 
@@ -143,14 +159,19 @@ public:
 
     /// Return whether requires desktop level hardware.
     bool IsDesktop() const { return isDesktop_; }
+
     /// Return whether technique is supported by the current hardware.
     bool IsSupported() const { return !isDesktop_ || desktopSupport_; }
+
     /// Return whether has a pass.
     bool HasPass(unsigned passIndex) const { return passIndex < passes_.Size() && passes_[passIndex].Get() != 0; }
+
     /// Return whether has a pass by name. This overload should not be called in time-critical rendering loops; use a pre-acquired pass index instead.
     bool HasPass(const String& passName) const;
+
     /// Return a pass, or null if not found.
     Pass* GetPass(unsigned passIndex) const { return passIndex < passes_.Size() ? passes_[passIndex].Get() : 0; }
+
     /// Return a pass by name, or null if not found. This overload should not be called in time-critical rendering loops; use a pre-acquired pass index instead.
     Pass* GetPass(const String& passName) const;
 

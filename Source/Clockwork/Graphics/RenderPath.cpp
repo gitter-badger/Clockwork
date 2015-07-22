@@ -1,8 +1,11 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Graphics/Graphics.h"
-#include "../IO/Log.h"
 #include "../Graphics/Material.h"
 #include "../Graphics/RenderPath.h"
-#include "../Core/StringUtils.h"
+#include "../IO/Log.h"
 #include "../Resource/XMLFile.h"
 
 #include "../DebugNew.h"
@@ -28,6 +31,8 @@ static const char* sortModeNames[] =
     "backtofront",
     0
 };
+
+extern const char* blendModeNames[];
 
 TextureUnit ParseTextureUnitName(String name);
 
@@ -106,13 +111,14 @@ void RenderPathCommand::Load(const XMLElement& element)
         if (element.HasAttribute("stencil"))
         {
             clearFlags_ |= CLEAR_STENCIL;
-            clearStencil_ = element.GetInt("stencil");
+            clearStencil_ = (unsigned)element.GetInt("stencil");
         }
         break;
 
     case CMD_SCENEPASS:
         pass_ = element.GetAttribute("pass");
-        sortMode_ = (RenderCommandSortMode)GetStringListIndex(element.GetAttributeLower("sort").CString(), sortModeNames, SORT_FRONTTOBACK);
+        sortMode_ =
+            (RenderCommandSortMode)GetStringListIndex(element.GetAttributeLower("sort").CString(), sortModeNames, SORT_FRONTTOBACK);
         if (element.HasAttribute("marktostencil"))
             markToStencil_ = element.GetBool("marktostencil");
         if (element.HasAttribute("vertexlights"))
@@ -134,6 +140,12 @@ void RenderPathCommand::Load(const XMLElement& element)
 
         if (type_ == CMD_QUAD)
         {
+            if (element.HasAttribute("blend"))
+            {
+                String blend = element.GetAttributeLower("blend");
+                blendMode_ = ((BlendMode)GetStringListIndex(blend.CString(), blendModeNames, BLEND_REPLACE));
+            }
+
             XMLElement parameterElem = element.GetChild("parameter");
             while (parameterElem)
             {
@@ -161,7 +173,7 @@ void RenderPathCommand::Load(const XMLElement& element)
     XMLElement outputElem = element.GetChild("output");
     while (outputElem)
     {
-        unsigned index = outputElem.GetInt("index");
+        unsigned index = (unsigned)outputElem.GetInt("index");
         if (index < MAX_RENDERTARGETS)
         {
             if (index >= outputs_.Size())
@@ -206,7 +218,7 @@ void RenderPathCommand::RemoveShaderParameter(const String& name)
 
 void RenderPathCommand::SetNumOutputs(unsigned num)
 {
-    num = Clamp((int)num, 1, MAX_RENDERTARGETS);
+    num = (unsigned)Clamp((int)num, 1, MAX_RENDERTARGETS);
     outputs_.Resize(num);
 }
 

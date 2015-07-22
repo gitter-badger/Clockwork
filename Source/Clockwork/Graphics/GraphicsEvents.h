@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Object.h"
@@ -86,6 +88,5 @@ EVENT(E_DEVICELOST, DeviceLost)
 EVENT(E_DEVICERESET, DeviceReset)
 {
 }
-
 
 }

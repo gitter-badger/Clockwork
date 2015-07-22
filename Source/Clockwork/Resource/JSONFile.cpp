@@ -1,11 +1,15 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Container/ArrayPtr.h"
+#include "../Core/Profiler.h"
 #include "../Core/Context.h"
 #include "../IO/Deserializer.h"
-#include "../Resource/JSONFile.h"
 #include "../IO/Log.h"
-#include "../Core/Profiler.h"
+#include "../Resource/JSONFile.h"
 #include "../Resource/ResourceCache.h"
-#include "../IO/Serializer.h"
+
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/prettywriter.h>
@@ -68,7 +72,7 @@ bool JSONFile::Save(Serializer& dest, const String& indendation) const
 {
     StringBuffer buffer;
     PrettyWriter<StringBuffer> writer(buffer, &(document_->GetAllocator()));
-    writer.SetIndent(!indendation.Empty() ?  indendation.Front() : '\0', indendation.Length());
+    writer.SetIndent(!indendation.Empty() ? indendation.Front() : '\0', indendation.Length());
 
     document_->Accept(writer);
     unsigned size = (unsigned)buffer.GetSize();

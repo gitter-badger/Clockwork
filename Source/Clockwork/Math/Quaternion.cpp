@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Math/Quaternion.h"
 
 #include <cstdio>

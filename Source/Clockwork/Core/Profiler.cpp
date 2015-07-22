@@ -1,8 +1,11 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/CoreEvents.h"
 #include "../Core/Profiler.h"
 
 #include <cstdio>
-#include <cstring>
 
 #include "../DebugNew.h"
 
@@ -62,11 +65,11 @@ String Profiler::GetData(bool showUnused, bool showTotal, unsigned maxDepth) con
     String output;
 
     if (!showTotal)
-        output += String("Block                            Cnt     Avg      Max     Frame     Total\n\n");
+        output += "Block                            Cnt     Avg      Max     Frame     Total\n\n";
     else
     {
-        output += String("Block                                       Last frame                       Whole execution time\n\n");
-        output += String("                                 Cnt     Avg      Max      Total      Cnt      Avg       Max        Total\n\n");
+        output += "Block                                       Last frame                       Whole execution time\n\n";
+        output += "                                 Cnt     Avg      Max      Total      Cnt      Avg       Max        Total\n\n";
     }
 
     if (!maxDepth)
@@ -77,12 +80,13 @@ String Profiler::GetData(bool showUnused, bool showTotal, unsigned maxDepth) con
     return output;
 }
 
-void Profiler::GetData(ProfilerBlock* block, String& output, unsigned depth, unsigned maxDepth, bool showUnused, bool showTotal) const
+void Profiler::GetData(ProfilerBlock* block, String& output, unsigned depth, unsigned maxDepth, bool showUnused,
+    bool showTotal) const
 {
     char line[LINE_MAX_LENGTH];
     char indentedName[LINE_MAX_LENGTH];
 
-    unsigned intervalFrames = Max(intervalFrames_, 1);
+    unsigned intervalFrames = (unsigned)Max(intervalFrames_, 1);
 
     if (depth >= maxDepth)
         return;

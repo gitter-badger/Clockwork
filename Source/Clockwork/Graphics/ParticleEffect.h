@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Resource/Resource.h"
@@ -191,72 +193,106 @@ public:
 
     /// Return material.
     Material* GetMaterial() const { return material_; }
+
     /// Return maximum number of particles.
     unsigned GetNumParticles() const { return numParticles_; }
+
     /// Return whether to update when particles are not visible.
     bool GetUpdateInvisible() const { return updateInvisible_; }
+
     /// Return whether billboards are relative to the scene node.
     bool IsRelative() const { return relative_; }
+
     /// Return whether scene node scale affects billboards' size.
     bool IsScaled() const { return scaled_; }
+
     /// Return whether billboards are sorted.
     bool IsSorted() const { return sorted_; }
+
     /// Return animation Lod bias.
     float GetAnimationLodBias() const { return animationLodBias_; }
+
     /// Return emitter type.
     EmitterType GetEmitterType() const { return emitterType_; }
+
     /// Return emitter size.
     const Vector3& GetEmitterSize() const { return emitterSize_; }
+
     /// Return negative direction limit.
     const Vector3& GetMinDirection() const { return directionMin_; }
+
     /// Return positive direction limit.
     const Vector3& GetMaxDirection() const { return directionMax_; }
+
     /// Return constant force acting on particles.
     const Vector3& GetConstantForce() const { return constantForce_; }
+
     /// Return particle velocity damping force.
     float GetDampingForce() const { return dampingForce_; }
+
     /// Return emission active period length (0 = infinite.)
     float GetActiveTime() const { return activeTime_; }
+
     /// Return emission inactive period length (0 = infinite.)
     float GetInactiveTime() const { return inactiveTime_; }
+
     /// Return minimum emission rate.
     float GetMinEmissionRate() const { return emissionRateMin_; }
+
     /// Return maximum emission rate.
     float GetMaxEmissionRate() const { return emissionRateMax_; }
+
     /// Return particle minimum size.
     const Vector2& GetMinParticleSize() const { return sizeMin_; }
+
     /// Return particle maximum size.
     const Vector2& GetMaxParticleSize() const { return sizeMax_; }
+
     /// Return particle minimum time to live.
     float GetMinTimeToLive() const { return timeToLiveMin_; }
+
     /// Return particle maximum time to live.
     float GetMaxTimeToLive() const { return timeToLiveMax_; }
+
     /// Return particle minimum velocity.
     float GetMinVelocity() const { return velocityMin_; }
+
     /// Return particle maximum velocity.
     float GetMaxVelocity() const { return velocityMax_; }
+
     /// Return particle minimum rotation.
     float GetMinRotation() const { return rotationMin_; }
+
     /// Return particle maximum rotation.
     float GetMaxRotation() const { return rotationMax_; }
+
     /// Return particle minimum rotation speed.
     float GetMinRotationSpeed() const { return rotationSpeedMin_; }
+
     /// Return particle maximum rotation speed.
     float GetMaxRotationSpeed() const { return rotationSpeedMax_; }
+
     /// Return particle size additive modifier.
     float GetSizeAdd() const { return sizeAdd_; }
+
     /// Return particle size multiplicative modifier.
     float GetSizeMul() const { return sizeMul_; }
+
     /// Return all color animation frames.
     const Vector<ColorFrame>& GetColorFrames() const { return colorFrames_; }
+
     /// Return number of color animation frames.
     unsigned GetNumColorFrames() const { return colorFrames_.Size(); }
+
     /// Return a color animation frame, or null if outside range.
     const ColorFrame* GetColorFrame(unsigned index) const;
+
     /// Return all texture animation frames.
     const Vector<TextureFrame>& GetTextureFrames() const { return textureFrames_; }
+
     /// Return number of texture animation frames.
     unsigned GetNumTextureFrames() const { return textureFrames_.Size(); }
+
     /// Return a texture animation frame, or null if outside range.
     const TextureFrame* GetTextureFrame(unsigned index) const;
 

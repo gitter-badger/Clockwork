@@ -1,4 +1,12 @@
+
+
 #pragma once
+
+#ifdef CLOCKWORK_IS_BUILDING
+#include "Clockwork.h"
+#else
+#include <Clockwork/Clockwork.h>
+#endif
 
 #include "../Container/Swap.h"
 
@@ -21,39 +29,81 @@ template <class T> struct RandomAccessIterator
     }
 
     /// Point to the object.
-    T* operator -> () const { return ptr_; }
+    T* operator ->() const { return ptr_; }
+
     /// Dereference the object.
-    T& operator * () const { return *ptr_; }
+    T& operator *() const { return *ptr_; }
+
     /// Preincrement the pointer.
-    RandomAccessIterator<T>& operator ++ () { ++ptr_; return *this; }
+    RandomAccessIterator<T>& operator ++()
+    {
+        ++ptr_;
+        return *this;
+    }
+
     /// Postincrement the pointer.
-    RandomAccessIterator<T> operator ++ (int) { RandomAccessIterator<T> it = *this; ++ptr_; return it; }
+    RandomAccessIterator<T> operator ++(int)
+    {
+        RandomAccessIterator<T> it = *this;
+        ++ptr_;
+        return it;
+    }
+
     /// Predecrement the pointer.
-    RandomAccessIterator<T>& operator -- () { --ptr_; return *this; }
+    RandomAccessIterator<T>& operator --()
+    {
+        --ptr_;
+        return *this;
+    }
+
     /// Postdecrement the pointer.
-    RandomAccessIterator<T> operator -- (int) { RandomAccessIterator<T> it = *this; --ptr_; return it; }
+    RandomAccessIterator<T> operator --(int)
+    {
+        RandomAccessIterator<T> it = *this;
+        --ptr_;
+        return it;
+    }
+
     /// Add an offset to the pointer.
-    RandomAccessIterator<T>& operator += (int value) { ptr_ += value; return *this; }
+    RandomAccessIterator<T>& operator +=(int value)
+    {
+        ptr_ += value;
+        return *this;
+    }
+
     /// Subtract an offset from the pointer.
-    RandomAccessIterator<T>& operator -= (int value) { ptr_ -= value; return *this; }
+    RandomAccessIterator<T>& operator -=(int value)
+    {
+        ptr_ -= value;
+        return *this;
+    }
+
     /// Add an offset to the pointer.
-    RandomAccessIterator<T> operator + (int value) const { return RandomAccessIterator<T>(ptr_ + value); }
+    RandomAccessIterator<T> operator +(int value) const { return RandomAccessIterator<T>(ptr_ + value); }
+
     /// Subtract an offset from the pointer.
-    RandomAccessIterator<T> operator - (int value) const { return RandomAccessIterator<T>(ptr_ - value); }
+    RandomAccessIterator<T> operator -(int value) const { return RandomAccessIterator<T>(ptr_ - value); }
+
     /// Calculate offset to another iterator.
-    int operator - (const RandomAccessIterator& rhs) const { return (int)(ptr_ - rhs.ptr_); }
+    int operator -(const RandomAccessIterator& rhs) const { return (int)(ptr_ - rhs.ptr_); }
+
     /// Test for equality with another iterator.
-    bool operator == (const RandomAccessIterator& rhs) const { return ptr_ == rhs.ptr_; }
+    bool operator ==(const RandomAccessIterator& rhs) const { return ptr_ == rhs.ptr_; }
+
     /// Test for inequality with another iterator.
-    bool operator != (const RandomAccessIterator& rhs) const { return ptr_ != rhs.ptr_; }
+    bool operator !=(const RandomAccessIterator& rhs) const { return ptr_ != rhs.ptr_; }
+
     /// Test for less than with another iterator.
-    bool operator < (const RandomAccessIterator& rhs) const { return ptr_ < rhs.ptr_; }
+    bool operator <(const RandomAccessIterator& rhs) const { return ptr_ < rhs.ptr_; }
+
     /// Test for greater than with another iterator.
-    bool operator > (const RandomAccessIterator& rhs) const { return ptr_ > rhs.ptr_; }
+    bool operator >(const RandomAccessIterator& rhs) const { return ptr_ > rhs.ptr_; }
+
     /// Test for less than or equal with another iterator.
-    bool operator <= (const RandomAccessIterator& rhs) const { return ptr_ <= rhs.ptr_; }
+    bool operator <=(const RandomAccessIterator& rhs) const { return ptr_ <= rhs.ptr_; }
+
     /// Test for greater than or equal with another iterator.
-    bool operator >= (const RandomAccessIterator& rhs) const { return ptr_ >= rhs.ptr_; }
+    bool operator >=(const RandomAccessIterator& rhs) const { return ptr_ >= rhs.ptr_; }
 
     /// Pointer.
     T* ptr_;
@@ -81,41 +131,88 @@ template <class T> struct RandomAccessConstIterator
     }
 
     /// Assign from a non-const iterator.
-    RandomAccessConstIterator<T>& operator = (const RandomAccessIterator<T>& rhs) { ptr_ = rhs.ptr_; return *this; }
+    RandomAccessConstIterator<T>& operator =(const RandomAccessIterator<T>& rhs)
+    {
+        ptr_ = rhs.ptr_;
+        return *this;
+    }
+
     /// Point to the object.
-    const T* operator -> () const { return ptr_; }
+    const T* operator ->() const { return ptr_; }
+
     /// Dereference the object.
-    const T& operator * () const { return *ptr_; }
+    const T& operator *() const { return *ptr_; }
+
     /// Preincrement the pointer.
-    RandomAccessConstIterator<T>& operator ++ () { ++ptr_; return *this; }
+    RandomAccessConstIterator<T>& operator ++()
+    {
+        ++ptr_;
+        return *this;
+    }
+
     /// Postincrement the pointer.
-    RandomAccessConstIterator<T> operator ++ (int) { RandomAccessConstIterator<T> it = *this; ++ptr_; return it; }
+    RandomAccessConstIterator<T> operator ++(int)
+    {
+        RandomAccessConstIterator<T> it = *this;
+        ++ptr_;
+        return it;
+    }
+
     /// Predecrement the pointer.
-    RandomAccessConstIterator<T>& operator -- () { --ptr_; return *this; }
+    RandomAccessConstIterator<T>& operator --()
+    {
+        --ptr_;
+        return *this;
+    }
+
     /// Postdecrement the pointer.
-    RandomAccessConstIterator<T> operator -- (int) { RandomAccessConstIterator<T> it = *this; --ptr_; return it; }
+    RandomAccessConstIterator<T> operator --(int)
+    {
+        RandomAccessConstIterator<T> it = *this;
+        --ptr_;
+        return it;
+    }
+
     /// Add an offset to the pointer.
-    RandomAccessConstIterator<T>& operator += (int value) { ptr_ += value; return *this; }
+    RandomAccessConstIterator<T>& operator +=(int value)
+    {
+        ptr_ += value;
+        return *this;
+    }
+
     /// Subtract an offset from the pointer.
-    RandomAccessConstIterator<T>& operator -= (int value) { ptr_ -= value; return *this; }
+    RandomAccessConstIterator<T>& operator -=(int value)
+    {
+        ptr_ -= value;
+        return *this;
+    }
+
     /// Add an offset to the pointer.
-    RandomAccessConstIterator<T> operator + (int value) const { return RandomAccessConstIterator<T>(ptr_ + value); }
+    RandomAccessConstIterator<T> operator +(int value) const { return RandomAccessConstIterator<T>(ptr_ + value); }
+
     /// Subtract an offset from the pointer.
-    RandomAccessConstIterator<T> operator - (int value) const { return RandomAccessConstIterator<T>(ptr_ - value); }
+    RandomAccessConstIterator<T> operator -(int value) const { return RandomAccessConstIterator<T>(ptr_ - value); }
+
     /// Calculate offset to another iterator.
-    int operator - (const RandomAccessConstIterator& rhs) const { return (int)(ptr_ - rhs.ptr_); }
+    int operator -(const RandomAccessConstIterator& rhs) const { return (int)(ptr_ - rhs.ptr_); }
+
     /// Test for equality with another iterator.
-    bool operator == (const RandomAccessConstIterator& rhs) const { return ptr_ == rhs.ptr_; }
+    bool operator ==(const RandomAccessConstIterator& rhs) const { return ptr_ == rhs.ptr_; }
+
     /// Test for inequality with another iterator.
-    bool operator != (const RandomAccessConstIterator& rhs) const { return ptr_ != rhs.ptr_; }
+    bool operator !=(const RandomAccessConstIterator& rhs) const { return ptr_ != rhs.ptr_; }
+
     /// Test for less than with another iterator.
-    bool operator < (const RandomAccessConstIterator& rhs) const { return ptr_ < rhs.ptr_; }
+    bool operator <(const RandomAccessConstIterator& rhs) const { return ptr_ < rhs.ptr_; }
+
     /// Test for greater than with another iterator.
-    bool operator > (const RandomAccessConstIterator& rhs) const { return ptr_ > rhs.ptr_; }
+    bool operator >(const RandomAccessConstIterator& rhs) const { return ptr_ > rhs.ptr_; }
+
     /// Test for less than or equal with another iterator.
-    bool operator <= (const RandomAccessConstIterator& rhs) const { return ptr_ <= rhs.ptr_; }
+    bool operator <=(const RandomAccessConstIterator& rhs) const { return ptr_ <= rhs.ptr_; }
+
     /// Test for greater than or equal with another iterator.
-    bool operator >= (const RandomAccessConstIterator& rhs) const { return ptr_ >= rhs.ptr_; }
+    bool operator >=(const RandomAccessConstIterator& rhs) const { return ptr_ >= rhs.ptr_; }
 
     /// Pointer.
     T* ptr_;

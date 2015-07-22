@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Container/VectorBase.h"
 
 #include "../DebugNew.h"

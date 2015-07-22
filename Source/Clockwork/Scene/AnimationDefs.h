@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 namespace Clockwork
@@ -15,3 +17,4 @@ enum WrapMode
 };
 
 }
+

@@ -1,9 +1,11 @@
+
+
 #pragma once
 
-#include "../Math/Color.h"
-#include "../Graphics/GraphicsDefs.h"
 #include "../Container/Ptr.h"
 #include "../Container/RefCounted.h"
+#include "../Graphics/GraphicsDefs.h"
+#include "../Math/Color.h"
 #include "../Math/Vector4.h"
 
 namespace Clockwork
@@ -85,6 +87,7 @@ struct RenderPathCommand
     /// Construct.
     RenderPathCommand() :
         clearFlags_(0),
+        blendMode_(BLEND_REPLACE),
         enabled_(true),
         useFogColor_(false),
         markToStencil_(false),
@@ -116,12 +119,15 @@ struct RenderPathCommand
     const String& GetTextureName(TextureUnit unit) const;
     /// Return shader parameter.
     const Variant& GetShaderParameter(const String& name) const;
+
     /// Return number of output rendertargets.
     unsigned GetNumOutputs() const { return outputs_.Size(); }
+
     /// Return output rendertarget name.
     const String& GetOutputName(unsigned index) const;
     /// Return output rendertarget face index.
     CubeMapFace GetOutputFace(unsigned index) const;
+
     /// Return depth-stencil output name.
     const String& GetDepthStencilName() const { return depthStencilName_; }
 
@@ -153,14 +159,16 @@ struct RenderPathCommand
     Vector<Pair<String, CubeMapFace> > outputs_;
     /// Depth-stencil output name.
     String depthStencilName_;
-    /// Clear flags.
+    /// Clear flags. Affects clear command only.
     unsigned clearFlags_;
-    /// Clear color.
+    /// Clear color. Affects clear command only.
     Color clearColor_;
-    /// Clear depth.
+    /// Clear depth. Affects clear command only.
     float clearDepth_;
-    /// Clear stencil value.
+    /// Clear stencil value. Affects clear command only.
     unsigned clearStencil_;
+    /// Blend mode. Affects quad command only.
+    BlendMode blendMode_;
     /// Enabled flag.
     bool enabled_;
     /// Use fog color for clearing.
@@ -217,10 +225,13 @@ public:
 
     /// Return number of rendertargets.
     unsigned GetNumRenderTargets() const { return renderTargets_.Size(); }
+
     /// Return number of commands.
     unsigned GetNumCommands() const { return commands_.Size(); }
+
     /// Return command at index, or null if does not exist.
     RenderPathCommand* GetCommand(unsigned index) { return index < commands_.Size() ? &commands_[index] : (RenderPathCommand*)0; }
+
     /// Return a shader parameter (first appearance in any command.)
     const Variant& GetShaderParameter(const String& name) const;
 

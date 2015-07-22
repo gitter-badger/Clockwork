@@ -67,27 +67,9 @@ function post_output_hook(package)
 #endif
 #include "string.h"
 
-#include "tolua++.h"]], [[//
-// Copyright (c) 2008-2015 the Clockwork project.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-//
+#include "tolua++.h"]], [[
+
+#include "Precompiled.h"
 
 #include <toluapp/tolua++.h>
 #include "LuaScript/ToluaUtils.h"
@@ -113,12 +95,12 @@ _push_functions['Resource'] = "ToluaPushObject"
 _push_functions['UIElement'] = "ToluaPushObject"
 
 -- Is Clockwork Vector type.
-function clockwork3d_is_vector(t)
+function clockwork_is_vector(t)
     return t:find("Vector<") ~= nil
 end
 
 -- Is Clockwork PODVector type.
-function clockwork3d_is_podvector(t)
+function clockwork_is_podvector(t)
     return t:find("PODVector<") ~= nil
 end
 
@@ -127,11 +109,11 @@ local old_get_to_function = get_to_function
 local old_get_is_function = get_is_function
 
 function get_push_function(t)
-    if not clockwork3d_is_vector(t) then
+    if not clockwork_is_vector(t) then
         return old_get_push_function(t)
     end
     
-    if not clockwork3d_is_podvector(t) then
+    if not clockwork_is_podvector(t) then
         return "ToluaPushVector" .. t:match("<.*>")
     else
         return "ToluaPushPODVector" .. t:match("<.*>")
@@ -139,11 +121,11 @@ function get_push_function(t)
 end
 
 function get_to_function(t)
-    if not clockwork3d_is_vector(t) then
+    if not clockwork_is_vector(t) then
         return old_get_to_function(t)
     end
     
-    if not clockwork3d_is_podvector(t) then
+    if not clockwork_is_podvector(t) then
         return "ToluaToVector" .. t:match("<.*>")
     else
         return "ToluaToPODVector" .. t:match("<.*>")
@@ -151,11 +133,11 @@ function get_to_function(t)
 end
 
 function get_is_function(t)
-    if not clockwork3d_is_vector(t) then
+    if not clockwork_is_vector(t) then
         return old_get_is_function(t)
     end
     
-    if not clockwork3d_is_podvector(t) then
+    if not clockwork_is_podvector(t) then
         return "ToluaIsVector" .. t:match("<.*>")
     else
         return "ToluaIsPODVector" .. t:match("<.*>")

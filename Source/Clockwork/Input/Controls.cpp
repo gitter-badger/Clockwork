@@ -1,6 +1,8 @@
-#include "../Input/Controls.h"
 
-#include "../DebugNew.h"
+
+#include "../Precompiled.h"
+
+#include "../Input/Controls.h"
 
 namespace Clockwork
 {

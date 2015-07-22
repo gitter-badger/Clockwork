@@ -1,9 +1,13 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
 #include "../../Graphics/Shader.h"
 #include "../../Graphics/ShaderProgram.h"
 #include "../../Graphics/ShaderVariation.h"
+#include "../../IO/Log.h"
 
 #include "../../DebugNew.h"
 
@@ -89,7 +93,7 @@ bool ShaderVariation::Create()
             verEnd = verStart + 9;
             while (verEnd < originalShaderCode.Length())
             {
-                if (IsDigit(originalShaderCode[verEnd]))
+                if (IsDigit((unsigned)originalShaderCode[verEnd]))
                     ++verEnd;
                 else
                     break;
@@ -118,20 +122,20 @@ bool ShaderVariation::Create()
         shaderCode += defineString;
 
         // In debug mode, check that all defines are referenced by the shader code
-        #ifdef _DEBUG
+#ifdef _DEBUG
         String defineCheck = defineString.Substring(8, defineString.Find(' ', 8) - 8);
         if (originalShaderCode.Find(defineCheck) == String::NPOS)
             LOGWARNING("Shader " + GetFullName() + " does not use the define " + defineCheck);
-        #endif
+#endif
     }
 
-    #ifdef RPI
+#ifdef RPI
     if (type_ == VS)
         shaderCode += "#define RPI\n";
-    #endif
-    #ifdef EMSCRIPTEN
+#endif
+#ifdef EMSCRIPTEN
     shaderCode += "#define WEBGL\n";
-    #endif
+#endif
     if (Graphics::GetGL3Support())
         shaderCode += "#define GL3\n";
 
@@ -150,7 +154,7 @@ bool ShaderVariation::Create()
     if (!compiled)
     {
         glGetShaderiv(object_, GL_INFO_LOG_LENGTH, &length);
-        compilerOutput_.Resize(length);
+        compilerOutput_.Resize((unsigned)length);
         int outLength;
         glGetShaderInfoLog(object_, length, &outLength, &compilerOutput_[0]);
         glDeleteShader(object_);

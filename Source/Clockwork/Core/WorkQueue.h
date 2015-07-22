@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/List.h"
@@ -31,7 +33,7 @@ public:
     }
 
     /// Work function. Called with the work item and thread index (0 = main thread) as parameters.
-    void (*workFunction_)(const WorkItem*, unsigned);
+    void (* workFunction_)(const WorkItem*, unsigned);
     /// Data start pointer.
     void* start_;
     /// Data end pointer.
@@ -78,17 +80,22 @@ public:
     void Resume();
     /// Finish all queued work which has at least the specified priority. Main thread will also execute priority work. Pause worker threads if no more work remains.
     void Complete(unsigned priority);
+
     /// Set the pool telerance before it starts deleting pool items.
     void SetTolerance(int tolerance) { tolerance_ = tolerance; }
+
     /// Set how many milliseconds maximum per frame to spend on low-priority work, when there are no worker threads.
     void SetNonThreadedWorkMs(int ms) { maxNonThreadedWorkMs_ = Max(ms, 1); }
 
     /// Return number of worker threads.
     unsigned GetNumThreads() const { return threads_.Size(); }
+
     /// Return whether all work with at least the specified priority is finished.
     bool IsCompleted(unsigned priority) const;
+
     /// Return the pool tolerance.
     int GetTolerance() const { return tolerance_; }
+
     /// Return how many milliseconds maximum to spend on non-threaded low-priority work.
     int GetNonThreadedWorkMs() const { return maxNonThreadedWorkMs_; }
 

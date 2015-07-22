@@ -1,7 +1,9 @@
+
+
 #pragma once
 
-#include "../Scene/AnimationDefs.h"
 #include "../Container/RefCounted.h"
+#include "../Scene/AnimationDefs.h"
 
 namespace Clockwork
 {
@@ -25,17 +27,22 @@ public:
 
     /// Update. Return true when the animation is finished. No-op when the target object is not defined.
     bool Update(float timeStep);
+
     /// Set wrap mode.
     void SetWrapMode(WrapMode wrapMode) { wrapMode_ = wrapMode; }
+
     /// Set speed.
     void SetSpeed(float speed) { speed_ = speed; }
 
     /// Return target object.
     Object* GetTarget() const;
+
     /// Return animation.
     ValueAnimation* GetAnimation() const { return animation_; }
+
     /// Return wrap mode.
     WrapMode GetWrapMode() const { return wrapMode_; }
+
     /// Return speed.
     float GetSpeed() const { return speed_; }
 

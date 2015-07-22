@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/HashMap.h"
@@ -5,8 +7,8 @@
 #include "../Core/Mutex.h"
 #include "../Container/Ptr.h"
 #include "../Container/RefCounted.h"
-#include "../Math/StringHash.h"
 #include "../Core/Thread.h"
+#include "../Math/StringHash.h"
 
 namespace Clockwork
 {

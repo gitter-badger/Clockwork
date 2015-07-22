@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../IO/File.h"
 #include "../IO/Log.h"
 #include "../IO/PackageFile.h"
@@ -28,13 +32,13 @@ PackageFile::~PackageFile()
 
 bool PackageFile::Open(const String& fileName, unsigned startOffset)
 {
-    #ifdef ANDROID
+#ifdef ANDROID
     if (fileName.StartsWith("/apk/"))
     {
         LOGERROR("Package files within the apk are not supported on Android");
         return false;
     }
-    #endif
+#endif
 
     SharedPtr<File> file(new File(context_, fileName));
     if (!file->IsOpen())
@@ -50,7 +54,7 @@ bool PackageFile::Open(const String& fileName, unsigned startOffset)
         if (!startOffset)
         {
             unsigned fileSize = file->GetSize();
-            file->Seek(fileSize - sizeof(unsigned));
+            file->Seek((unsigned)(fileSize - sizeof(unsigned)));
             unsigned newStartOffset = fileSize - file->ReadUInt();
             if (newStartOffset < fileSize)
             {

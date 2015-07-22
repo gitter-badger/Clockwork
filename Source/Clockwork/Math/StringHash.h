@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/Str.h"
@@ -33,14 +35,14 @@ public:
     StringHash(const String& str);
 
     /// Assign from another hash.
-    StringHash& operator = (const StringHash& rhs)
+    StringHash& operator =(const StringHash& rhs)
     {
         value_ = rhs.value_;
         return *this;
     }
 
     /// Add a hash.
-    StringHash operator + (const StringHash& rhs) const
+    StringHash operator +(const StringHash& rhs) const
     {
         StringHash ret;
         ret.value_ = value_ + rhs.value_;
@@ -48,26 +50,33 @@ public:
     }
 
     /// Add-assign a hash.
-    StringHash& operator += (const StringHash& rhs)
+    StringHash& operator +=(const StringHash& rhs)
     {
         value_ += rhs.value_;
         return *this;
     }
 
     // Test for equality with another hash.
-    bool operator == (const StringHash& rhs) const { return value_ == rhs.value_; }
+    bool operator ==(const StringHash& rhs) const { return value_ == rhs.value_; }
+
     /// Test for inequality with another hash.
-    bool operator != (const StringHash& rhs) const { return value_ != rhs.value_; }
+    bool operator !=(const StringHash& rhs) const { return value_ != rhs.value_; }
+
     /// Test if less than another hash.
-    bool operator < (const StringHash& rhs) const { return value_ < rhs.value_; }
+    bool operator <(const StringHash& rhs) const { return value_ < rhs.value_; }
+
     /// Test if greater than another hash.
-    bool operator > (const StringHash& rhs) const { return value_ > rhs.value_; }
+    bool operator >(const StringHash& rhs) const { return value_ > rhs.value_; }
+
     /// Return true if nonzero hash value.
-    operator bool () const { return value_ != 0; }
+    operator bool() const { return value_ != 0; }
+
     /// Return hash value.
     unsigned Value() const { return value_; }
+
     /// Return as string.
     String ToString() const;
+
     /// Return hash value for HashSet & HashMap.
     unsigned ToHash() const { return value_; }
 

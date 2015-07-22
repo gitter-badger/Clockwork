@@ -1,7 +1,10 @@
-#include "../Scene/Component.h"
-#include "../Container/HashSet.h"
-#include "../Scene/SceneResolver.h"
+
+
+#include "../Precompiled.h"
+
 #include "../IO/Log.h"
+#include "../Scene/Component.h"
+#include "../Scene/SceneResolver.h"
 #include "../Scene/Node.h"
 
 #include "../DebugNew.h"

@@ -1,6 +1,8 @@
-#include "../Audio/SoundStream.h"
 
-#include "../DebugNew.h"
+
+#include "../Precompiled.h"
+
+#include "../Audio/SoundStream.h"
 
 namespace Clockwork
 {

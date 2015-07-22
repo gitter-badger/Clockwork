@@ -628,7 +628,7 @@ macroScript showOgreExportTools
 	rollout OgreExportAbout "About" rolledUp:true
 	(
 		label label11 "For use with the Clockwork graphics engine." align:#center;
-		label label12 "See website for details: http://code.google.com/p/clockwork3d/" align:#center;
+		label label12 "See website for details: http://code.google.com/p/clockwork/" align:#center;
 		label label13 "This software is distributed under the terms of the LGPL." align:#center ;
 		label label16 "Based on the exporter realised by" align:#center ;
 		label label14 "EarthquakeProof - mallard@iie.cnam.fr 2003 and Banania - 2004" align:#center ;

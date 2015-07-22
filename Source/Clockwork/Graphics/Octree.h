@@ -1,8 +1,10 @@
+
+
 #pragma once
 
-#include "../Graphics/Drawable.h"
 #include "../Container/List.h"
 #include "../Core/Mutex.h"
+#include "../Graphics/Drawable.h"
 #include "../Graphics/OctreeQuery.h"
 
 namespace Clockwork
@@ -52,16 +54,22 @@ public:
 
     /// Return world-space bounding box.
     const BoundingBox& GetWorldBoundingBox() const { return worldBoundingBox_; }
+
     /// Return bounding box used for fitting drawable objects.
     const BoundingBox& GetCullingBox() const { return cullingBox_; }
+
     /// Return subdivision level.
     unsigned GetLevel() const { return level_; }
+
     /// Return parent octant.
     Octant* GetParent() const { return parent_; }
+
     /// Return octree root.
     Octree* GetRoot() const { return root_; }
+
     /// Return number of drawables.
     unsigned GetNumDrawables() const { return numDrawables_; }
+
     /// Return true if there are no drawable objects in this octant and child octants.
     bool IsEmpty() { return numDrawables_ == 0; }
 
@@ -163,6 +171,7 @@ public:
     void Raycast(RayOctreeQuery& query) const;
     /// Return the closest drawable object by a ray query.
     void RaycastSingle(RayOctreeQuery& query) const;
+
     /// Return subdivision levels.
     unsigned GetNumLevels() const { return numLevels_; }
 

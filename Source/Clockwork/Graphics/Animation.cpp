@@ -1,11 +1,15 @@
-#include "../Graphics/Animation.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
+#include "../Core/Profiler.h"
+#include "../Graphics/Animation.h"
 #include "../IO/Deserializer.h"
 #include "../IO/FileSystem.h"
 #include "../IO/Log.h"
-#include "../Core/Profiler.h"
-#include "../Resource/ResourceCache.h"
 #include "../IO/Serializer.h"
+#include "../Resource/ResourceCache.h"
 #include "../Resource/XMLFile.h"
 
 #include "../DebugNew.h"

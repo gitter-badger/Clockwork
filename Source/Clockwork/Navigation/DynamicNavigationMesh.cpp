@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Navigation/DynamicNavigationMesh.h"
 
 #include "../Math/BoundingBox.h"
@@ -859,11 +863,13 @@ void DynamicNavigationMesh::ReleaseTileCache()
     tileCache_ = 0;
 }
 
-void DynamicNavigationMesh::OnNodeSet(Node* node)
+void DynamicNavigationMesh::OnSceneSet(Scene* scene)
 {
     // Subscribe to the scene subsystem update, which will trigger the tile cache to update the nav mesh
-    if (node)
-        SubscribeToEvent(node, E_SCENESUBSYSTEMUPDATE, HANDLER(DynamicNavigationMesh, HandleSceneSubsystemUpdate));
+    if (scene)
+        SubscribeToEvent(scene, E_SCENESUBSYSTEMUPDATE, HANDLER(DynamicNavigationMesh, HandleSceneSubsystemUpdate));
+    else
+        UnsubscribeFromEvent(E_SCENESUBSYSTEMUPDATE);
 }
 
 void DynamicNavigationMesh::AddObstacle(Obstacle* obstacle, bool silent)
@@ -875,7 +881,7 @@ void DynamicNavigationMesh::AddObstacle(Obstacle* obstacle, bool silent)
         rcVcopy(pos, &obsPos.x_);
         dtObstacleRef refHolder;
 
-        // Because dtTileCache doesn't process obstacle requests while updating tiles
+        // Because dtTileCache doesn't process obstacle requests while updating tiles 
         // it's necessary update until sufficient request space is available
         while (tileCache_->isObstacleQueueFull())
             tileCache_->update(1, navMesh_);
@@ -915,7 +921,7 @@ void DynamicNavigationMesh::RemoveObstacle(Obstacle* obstacle, bool silent)
 {
     if (tileCache_ && obstacle->obstacleId_ > 0)
     {
-        // Because dtTileCache doesn't process obstacle requests while updating tiles
+        // Because dtTileCache doesn't process obstacle requests while updating tiles 
         // it's necessary update until sufficient request space is available
         while (tileCache_->isObstacleQueueFull())
             tileCache_->update(1, navMesh_);

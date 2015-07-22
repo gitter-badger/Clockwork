@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Scene/Component.h"
@@ -21,7 +23,7 @@ enum NavigationQuality
 
 enum NavigationPushiness
 {
-    PUSHINESS_LOW,
+    PUSHINESS_LOW = 0,
     PUSHINESS_MEDIUM,
     PUSHINESS_HIGH
 };
@@ -47,9 +49,15 @@ public:
     void SetAreaCost(unsigned filterTypeID, unsigned areaID, float weight);
     /// Set the maximum number of agents.
     void SetMaxAgents(unsigned agentCt);
+    /// Set the crowd move target. The move target is applied to all crowd agents within the id range, excluding crowd agent which does not have acceleration.
+    void SetCrowdTarget(const Vector3& position, int startId = 0, int endId = M_MAX_INT);
+    /// Reset the crowd move target to all crowd agents within the id range, excluding crowd agent which does not have acceleration.
+    void ResetCrowdTarget(int startId = 0, int endId = M_MAX_INT);
+    /// Set the crowd move velocity. The move velocity is applied to all crowd agents within the id range, excluding crowd agent which does not have acceleration.
+    void SetCrowdVelocity(const Vector3& velocity, int startId = 0, int endId = M_MAX_INT);
 
     /// Get the Navigation mesh assigned to the crowd.
-    NavigationMesh* GetNavigationMesh();
+    NavigationMesh* GetNavigationMesh() const { return navigationMesh_; }
     /// Get the cost of an area-type for the specified navigation filter type.
     float GetAreaCost(unsigned filterTypeID, unsigned areaID) const;
     /// Get the maximum number of agents.
@@ -62,7 +70,7 @@ public:
     /// Add debug geometry to the debug renderer.
     void DrawDebugGeometry(bool depthTest);
     /// Get the currently included agents.
-    PODVector<CrowdAgent*> GetActiveAgents() const { return agents_; }
+    const PODVector<CrowdAgent*>& GetActiveAgents() const { return agents_; }
     /// Create detour crowd component for the specified navigation mesh.
     bool CreateCrowd();
 
@@ -80,7 +88,7 @@ protected:
     /// Set the move target for the specified agent.
     bool SetAgentTarget(CrowdAgent* agent, Vector3 target);
     /// Set the move target for the specified agent.
-    bool SetAgentTarget(CrowdAgent* agent, Vector3 target, unsigned int& targetRef);
+    bool SetAgentTarget(CrowdAgent* agent, Vector3 target, unsigned& targetRef);
 
     /// Get the closest walkable position.
     Vector3 GetClosestWalkablePosition(Vector3 pos) const;
@@ -88,12 +96,12 @@ protected:
 protected:
     /// Update the crowd simulation.
     void Update(float delta);
-    /// Handle node being assigned.
-    virtual void OnNodeSet(Node* node);
+    /// Handle scene being assigned.
+    virtual void OnSceneSet(Scene* scene);
     /// Get the detour crowd agent.
     const dtCrowdAgent* GetCrowdAgent(int agent);
     /// Get the internal detour crowd component.
-    dtCrowd* GetCrowd();
+    dtCrowd* GetCrowd() const { return crowd_; }
 
 private:
     /// Handle the scene subsystem update event.

@@ -1,12 +1,17 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/CoreEvents.h"
 #include "../Core/Context.h"
+#include "../Core/ProcessUtils.h"
 #include "../IO/Log.h"
+#include "../IO/MemoryBuffer.h"
 #include "../LuaScript/LuaFile.h"
 #include "../LuaScript/LuaFunction.h"
 #include "../LuaScript/LuaScript.h"
 #include "../LuaScript/LuaScriptEventInvoker.h"
 #include "../LuaScript/LuaScriptInstance.h"
-#include "../IO/MemoryBuffer.h"
 #ifdef CLOCKWORK_PHYSICS
 #include "../Physics/PhysicsEvents.h"
 #include "../Physics/PhysicsWorld.h"
@@ -14,8 +19,6 @@
 #include "../Resource/ResourceCache.h"
 #include "../Scene/Scene.h"
 #include "../Scene/SceneEvents.h"
-#include "../Core/ProcessUtils.h"
-#include "../IO/VectorBuffer.h"
 
 #include <toluapp/tolua++.h>
 #include "../LuaScript/ToluaUtils.h"
@@ -48,7 +51,7 @@ LuaScriptInstance::LuaScriptInstance(Context* context) :
     luaState_ = luaScript_->GetState();
     attributeInfos_ = *context_->GetAttributes(GetTypeStatic());
 
-    eventInvoker_ =  new LuaScriptEventInvoker(this);
+    eventInvoker_ = new LuaScriptEventInvoker(this);
 
     for (int i = 0; i < MAX_LUA_SCRIPT_OBJECT_METHODS; ++i)
         scriptObjectMethods_[i] = 0;
@@ -64,10 +67,13 @@ void LuaScriptInstance::RegisterObject(Context* context)
     context->RegisterFactory<LuaScriptInstance>(LOGIC_CATEGORY);
 
     ACCESSOR_ATTRIBUTE("Is Enabled", IsEnabled, SetEnabled, bool, true, AM_DEFAULT);
-    MIXED_ACCESSOR_ATTRIBUTE("Script File", GetScriptFileAttr, SetScriptFileAttr, ResourceRef, ResourceRef(LuaFile::GetTypeStatic()), AM_DEFAULT);
+    MIXED_ACCESSOR_ATTRIBUTE("Script File", GetScriptFileAttr, SetScriptFileAttr, ResourceRef,
+        ResourceRef(LuaFile::GetTypeStatic()), AM_DEFAULT);
     ACCESSOR_ATTRIBUTE("Script Object Type", GetScriptObjectType, SetScriptObjectType, String, String::EMPTY, AM_DEFAULT);
-    MIXED_ACCESSOR_ATTRIBUTE("Script Data", GetScriptDataAttr, SetScriptDataAttr, PODVector<unsigned char>, Variant::emptyBuffer, AM_FILE | AM_NOEDIT);
-    MIXED_ACCESSOR_ATTRIBUTE("Script Network Data", GetScriptNetworkDataAttr, SetScriptNetworkDataAttr, PODVector<unsigned char>, Variant::emptyBuffer, AM_NET | AM_NOEDIT);
+    MIXED_ACCESSOR_ATTRIBUTE("Script Data", GetScriptDataAttr, SetScriptDataAttr, PODVector<unsigned char>, Variant::emptyBuffer,
+        AM_FILE | AM_NOEDIT);
+    MIXED_ACCESSOR_ATTRIBUTE("Script Network Data", GetScriptNetworkDataAttr, SetScriptNetworkDataAttr, PODVector<unsigned char>,
+        Variant::emptyBuffer, AM_NET | AM_NOEDIT);
 }
 
 void LuaScriptInstance::OnSetAttribute(const AttributeInfo& attr, const Variant& src)
@@ -109,11 +115,11 @@ void LuaScriptInstance::OnSetAttribute(const AttributeInfo& attr, const Variant&
         case VAR_BOOL:
             lua_pushboolean(luaState_, src.GetBool());
             break;
-        case VAR_FLOAT:
-            lua_pushnumber(luaState_, src.GetFloat());
+        case VAR_DOUBLE:
+            lua_pushnumber(luaState_, src.GetDouble());
             break;
         case VAR_STRING:
-            tolua_pushclockwork3dstring(luaState_, src.GetString());
+            tolua_pushclockworkstring(luaState_, src.GetString());
             break;
         case VAR_VECTOR2:
             {
@@ -142,7 +148,6 @@ void LuaScriptInstance::OnSetAttribute(const AttributeInfo& attr, const Variant&
                 tolua_pushusertype(luaState_, value, "Quaternion");
                 tolua_register_gc(luaState_, lua_gettop(luaState_));
             }
-
             break;
         case VAR_COLOR:
             {
@@ -215,11 +220,11 @@ void LuaScriptInstance::OnGetAttribute(const AttributeInfo& attr, Variant& dest)
     case VAR_BOOL:
         dest = lua_toboolean(luaState_, -1) != 0;
         break;
-    case VAR_FLOAT:
-        dest = (float)lua_tonumber(luaState_, -1);
+    case VAR_DOUBLE:
+        dest = lua_tonumber(luaState_, -1);
         break;
     case VAR_STRING:
-        dest = tolua_toclockwork3dstring(luaState_, -1, "");
+        dest = tolua_toclockworkstring(luaState_, -1, "");
         break;
     case VAR_VECTOR2:
         dest = *((Vector2*)tolua_tousertype(luaState_, -1, 0));
@@ -254,9 +259,7 @@ void LuaScriptInstance::ApplyAttributes()
 {
     LuaFunction* function = scriptObjectMethods_[LSOM_APPLYATTRIBUTES];
     if (function && function->BeginCall(this))
-    {
         function->EndCall();
-    }
 }
 
 void LuaScriptInstance::OnSetEnabled()
@@ -459,6 +462,14 @@ PODVector<unsigned char> LuaScriptInstance::GetScriptNetworkDataAttr() const
     return buf.GetBuffer();
 }
 
+void LuaScriptInstance::OnSceneSet(Scene* scene)
+{
+    if (scene)
+        SubscribeToScriptMethodEvents();
+    else
+        UnsubscribeFromScriptMethodEvents();
+}
+
 void LuaScriptInstance::OnMarkedDirty(Node* node)
 {
     // Script functions are not safe from worker threads
@@ -471,9 +482,7 @@ void LuaScriptInstance::OnMarkedDirty(Node* node)
 
     LuaFunction* function = scriptObjectMethods_[LSOM_TRANSFORMCHANGED];
     if (function && function->BeginCall(this))
-    {
         function->EndCall();
-    }
 }
 
 void LuaScriptInstance::GetScriptAttributes()
@@ -483,9 +492,9 @@ void LuaScriptInstance::GetScriptAttributes()
     if (lua_istable(luaState_, -1))
     {
         size_t length = lua_objlen(luaState_, -1);
-        for (int i = 1; i <= length; ++i)
+        for (size_t i = 1; i <= length; ++i)
         {
-            lua_pushinteger(luaState_, i);
+            lua_pushinteger(luaState_, (int)i);
             lua_gettable(luaState_, -2);
 
             if (!lua_isstring(luaState_, -1))
@@ -523,7 +532,7 @@ void LuaScriptInstance::GetScriptAttributes()
             info.type_ = VAR_BOOL;
             break;
         case LUA_TNUMBER:
-            info.type_ = VAR_FLOAT;
+            info.type_ = VAR_DOUBLE;
             break;
         case LUA_TSTRING:
             info.type_ = VAR_STRING;
@@ -594,21 +603,12 @@ void LuaScriptInstance::SubscribeToScriptMethodEvents()
 
 void LuaScriptInstance::UnsubscribeFromScriptMethodEvents()
 {
-    Scene* scene = GetScene();
-    if (scene && scriptObjectMethods_[LSOM_UPDATE])
-        UnsubscribeFromEvent(scene, E_SCENEUPDATE);
-
-    if (scene && scriptObjectMethods_[LSOM_POSTUPDATE])
-        UnsubscribeFromEvent(scene, E_SCENEPOSTUPDATE);
+    UnsubscribeFromEvent(E_SCENEUPDATE);
+    UnsubscribeFromEvent(E_SCENEPOSTUPDATE);
 
 #ifdef CLOCKWORK_PHYSICS
-    PhysicsWorld* physicsWorld = scene ? scene->GetComponent<PhysicsWorld>() : 0;
-
-    if (physicsWorld && scriptObjectMethods_[LSOM_FIXEDUPDATE])
-        UnsubscribeFromEvent(physicsWorld, E_PHYSICSPRESTEP);
-
-    if (physicsWorld && scriptObjectMethods_[LSOM_FIXEDPOSTUPDATE])
-        UnsubscribeFromEvent(physicsWorld, E_PHYSICSPOSTSTEP);
+    UnsubscribeFromEvent(E_PHYSICSPRESTEP);
+    UnsubscribeFromEvent(E_PHYSICSPOSTSTEP);
 #endif
 
     if (node_ && scriptObjectMethods_[LSOM_TRANSFORMCHANGED])
@@ -642,6 +642,7 @@ void LuaScriptInstance::HandlePostUpdate(StringHash eventType, VariantMap& event
 }
 
 #ifdef CLOCKWORK_PHYSICS
+
 void LuaScriptInstance::HandleFixedUpdate(StringHash eventType, VariantMap& eventData)
 {
     using namespace PhysicsPreStep;
@@ -667,6 +668,7 @@ void LuaScriptInstance::HandlePostFixedUpdate(StringHash eventType, VariantMap& 
         function->EndCall();
     }
 }
+
 #endif
 
 void LuaScriptInstance::ReleaseObject()
@@ -689,6 +691,9 @@ void LuaScriptInstance::ReleaseObject()
         function->PushUserType((void*)this, "LuaScriptInstance");
         function->EndCall();
     }
+
+    for (int i = 0; i < MAX_LUA_SCRIPT_OBJECT_METHODS; ++i)
+        scriptObjectMethods_[i] = 0;
 }
 
 LuaFunction* LuaScriptInstance::GetScriptObjectFunction(const String& functionName) const

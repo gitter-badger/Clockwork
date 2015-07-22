@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../IO/Deserializer.h"
 
 #include "../DebugNew.h"
@@ -77,15 +81,19 @@ unsigned char Deserializer::ReadUByte()
 
 bool Deserializer::ReadBool()
 {
-    if (ReadUByte())
-        return true;
-    else
-        return false;
+    return ReadUByte() != 0;
 }
 
 float Deserializer::ReadFloat()
 {
     float ret;
+    Read(&ret, sizeof ret);
+    return ret;
+}
+
+double Deserializer::ReadDouble()
+{
+    double ret;
     Read(&ret, sizeof ret);
     return ret;
 }
@@ -319,6 +327,9 @@ Variant Deserializer::ReadVariant(VariantType type)
 
     case VAR_MATRIX4:
         return Variant(ReadMatrix4());
+        
+    case VAR_DOUBLE:
+        return Variant(ReadDouble());
 
     default:
         return Variant();
@@ -353,7 +364,7 @@ unsigned Deserializer::ReadVLE()
     unsigned char byte;
 
     byte = ReadUByte();
-    ret = byte & 0x7f;
+    ret = (unsigned)(byte & 0x7f);
     if (byte < 0x80)
         return ret;
 

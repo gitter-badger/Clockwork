@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 namespace Clockwork
@@ -9,3 +11,4 @@ CLOCKWORK_API int WriteMiniDump(const char* applicationName, void* exceptionPoin
 #endif
 
 }
+

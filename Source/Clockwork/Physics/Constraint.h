@@ -1,7 +1,9 @@
+
+
 #pragma once
 
-#include "../Scene/Component.h"
 #include "../Math/Vector3.h"
+#include "../Scene/Component.h"
 
 class btTypedConstraint;
 
@@ -77,32 +79,46 @@ public:
 
     /// Return physics world.
     PhysicsWorld* GetPhysicsWorld() const { return physicsWorld_; }
+
     /// Return Bullet constraint.
     btTypedConstraint* GetConstraint() const { return constraint_; }
+
     /// Return constraint type.
     ConstraintType GetConstraintType() const { return constraintType_; }
+
     /// Return rigid body in own scene node.
     RigidBody* GetOwnBody() const { return ownBody_; }
+
     /// Return the other rigid body. May be null if connected to the static world.
     RigidBody* GetOtherBody() const { return otherBody_; }
+
     /// Return constraint position relative to own body.
     const Vector3& GetPosition() const { return position_; }
+
     /// Return constraint rotation relative to own body.
     const Quaternion& GetRotation() const { return rotation_; }
+
     /// Return constraint position relative to other body.
     const Vector3& GetOtherPosition() const { return otherPosition_; }
+
     /// Return constraint rotation relative to other body.
     const Quaternion& GetOtherRotation() const { return otherRotation_; }
+
     /// Return constraint world position, calculated from own body.
     Vector3 GetWorldPosition() const;
+
     /// Return high limit.
     const Vector2& GetHighLimit() const { return highLimit_; }
+
     /// Return low limit.
     const Vector2& GetLowLimit() const { return lowLimit_; }
+
     /// Return constraint error reduction parameter.
     float GetERP() const { return erp_; }
+
     /// Return constraint force mixing parameter.
     float GetCFM() const { return cfm_; }
+
     /// Return whether collisions between connected bodies are disabled.
     bool GetDisableCollision() const { return disableCollision_; }
 
@@ -114,6 +130,8 @@ public:
 protected:
     /// Handle node being assigned.
     virtual void OnNodeSet(Node* node);
+    /// Handle scene being assigned.
+    virtual void OnSceneSet(Scene* scene);
     /// Handle node transform being dirtied.
     virtual void OnMarkedDirty(Node* node);
 
@@ -152,13 +170,15 @@ private:
     /// Constraint force mixing parameter.
     float cfm_;
     /// Other body node ID for pending constraint recreation.
-    int otherBodyNodeID_;
+    unsigned otherBodyNodeID_;
     /// Disable collision between connected bodies flag.
     bool disableCollision_;
     /// Recreate constraint flag.
     bool recreateConstraint_;
     /// Coordinate frames dirty flag.
     bool framesDirty_;
+    /// Constraint creation retry flag if attributes initially set without scene.
+    bool retryCreation_;
 };
 
 }

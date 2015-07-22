@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../IO/Deserializer.h"
@@ -39,8 +41,10 @@ public:
 
     /// Return data.
     const unsigned char* GetData() const { return size_ ? &buffer_[0] : 0; }
+
     /// Return non-const data.
     unsigned char* GetModifiableData() { return size_ ? &buffer_[0] : 0; }
+
     /// Return the buffer.
     const PODVector<unsigned char>& GetBuffer() const { return buffer_; }
 

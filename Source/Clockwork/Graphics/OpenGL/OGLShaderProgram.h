@@ -1,9 +1,11 @@
+
+
 #pragma once
 
-#include "../../Graphics/GPUObject.h"
-#include "../../Graphics/GraphicsDefs.h"
 #include "../../Container/HashMap.h"
 #include "../../Container/RefCounted.h"
+#include "../../Graphics/GPUObject.h"
+#include "../../Graphics/GraphicsDefs.h"
 
 namespace Clockwork
 {
@@ -52,12 +54,16 @@ public:
     ShaderVariation* GetPixelShader() const;
     /// Return whether uses a shader parameter.
     bool HasParameter(StringHash param) const;
+
     /// Return whether uses a texture unit.
     bool HasTextureUnit(TextureUnit unit) const { return useTextureUnit_[unit]; }
+
     /// Return the info for a shader parameter, or null if does not exist.
     const ShaderParameter* GetParameter(StringHash param) const;
+
     /// Return linker output.
     const String& GetLinkerOutput() const { return linkerOutput_; }
+
     /// Return all constant buffers.
     const SharedPtr<ConstantBuffer>* GetConstantBuffers() const { return &constantBuffers_[0]; }
 

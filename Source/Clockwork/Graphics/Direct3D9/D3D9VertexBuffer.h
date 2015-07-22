@@ -1,8 +1,10 @@
+
+
 #pragma once
 
+#include "../../Container/ArrayPtr.h"
 #include "../../Graphics/GPUObject.h"
 #include "../../Graphics/GraphicsDefs.h"
-#include "../../Container/ArrayPtr.h"
 
 namespace Clockwork
 {
@@ -40,22 +42,31 @@ public:
 
     /// Return whether CPU memory shadowing is enabled.
     bool IsShadowed() const { return shadowed_; }
+
     /// Return whether is dynamic.
     bool IsDynamic() const;
+
     /// Return whether is currently locked.
     bool IsLocked() const { return lockState_ != LOCK_NONE; }
+
     /// Return number of vertices.
-    unsigned GetVertexCount() const {return vertexCount_; }
+    unsigned GetVertexCount() const { return vertexCount_; }
+
     /// Return vertex size.
     unsigned GetVertexSize() const { return vertexSize_; }
+
     /// Return bitmask of vertex elements.
     unsigned GetElementMask() const { return elementMask_; }
+
     /// Return offset of a specified element within a vertex.
     unsigned GetElementOffset(VertexElement element) const { return elementOffset_[element]; }
+
     /// Return buffer hash for building vertex declarations.
     unsigned long long GetBufferHash(unsigned streamIndex, unsigned useMask);
+
     /// Return CPU memory shadow data.
     unsigned char* GetShadowData() const { return shadowData_.Get(); }
+
     /// Return shared array pointer to the CPU memory shadow data.
     SharedArrayPtr<unsigned char> GetShadowDataShared() const { return shadowData_; }
 
@@ -87,7 +98,7 @@ private:
     unsigned vertexSize_;
     /// Vertex element bitmask.
     unsigned elementMask_;
-   /// Vertex element offsets.
+    /// Vertex element offsets.
     unsigned elementOffset_[MAX_VERTEX_ELEMENTS];
     /// Memory pool.
     unsigned pool_;

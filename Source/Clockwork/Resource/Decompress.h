@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Resource/Image.h"
@@ -6,7 +8,8 @@ namespace Clockwork
 {
 
 /// Decompress a DXT compressed image to RGBA.
-CLOCKWORK_API void DecompressImageDXT(unsigned char* dest, const void* blocks, int width, int height, int depth, CompressedFormat format);
+CLOCKWORK_API void
+    DecompressImageDXT(unsigned char* dest, const void* blocks, int width, int height, int depth, CompressedFormat format);
 /// Decompress an ETC1 compressed image to RGBA.
 CLOCKWORK_API void DecompressImageETC(unsigned char* dest, const void* blocks, int width, int height);
 /// Decompress a PVRTC compressed image to RGBA.

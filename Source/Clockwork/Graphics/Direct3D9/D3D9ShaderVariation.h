@@ -1,10 +1,12 @@
+
+
 #pragma once
 
-#include "../../Graphics/GPUObject.h"
-#include "../../Graphics/GraphicsDefs.h"
 #include "../../Container/HashSet.h"
 #include "../../Container/RefCounted.h"
 #include "../../Container/ArrayPtr.h"
+#include "../../Graphics/GPUObject.h"
+#include "../../Graphics/GraphicsDefs.h"
 
 namespace Clockwork
 {
@@ -62,20 +64,28 @@ public:
 
     /// Return the owner resource.
     Shader* GetOwner() const;
+
     /// Return shader type.
     ShaderType GetShaderType() const { return type_; }
+
     /// Return shader name.
     const String& GetName() const { return name_; }
+
     /// Return defines.
     const String& GetDefines() const { return defines_; }
+
     /// Return full shader name.
     String GetFullName() const { return name_ + "(" + defines_ + ")"; }
+
     /// Return compile error/warning string.
     const String& GetCompilerOutput() const { return compilerOutput_; }
+
     /// Return whether uses a parameter.
     bool HasParameter(StringHash param) const { return parameters_.Contains(param); }
+
     /// Return whether uses a texture unit (only for pixel shaders.)
     bool HasTextureUnit(TextureUnit unit) const { return useTextureUnit_[unit]; }
+
     /// Return all parameter definitions.
     const HashMap<StringHash, ShaderParameter>& GetParameters() const { return parameters_; }
 

@@ -1,7 +1,10 @@
-#include "../Network/HttpRequest.h"
-#include "../IO/Log.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Profiler.h"
-#include "../Core/Timer.h"
+#include "../IO/Log.h"
+#include "../Network/HttpRequest.h"
 
 #include <Civetweb/civetweb.h>
 
@@ -144,7 +147,7 @@ void HttpRequest::ThreadFunction()
         }
 
         if (writePosition_ + bytesRead <= READ_BUFFER_SIZE)
-            memcpy(readBuffer_.Get() + writePosition_, httpReadBuffer_.Get(), bytesRead);
+            memcpy(readBuffer_.Get() + writePosition_, httpReadBuffer_.Get(), (size_t)bytesRead);
         else
         {
             // Handle ring buffer wrap

@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/List.h"
@@ -38,8 +40,9 @@ public:
 
     /// Return the path being watched, or empty if not watching.
     const String& GetPath() const { return path_; }
+
     /// Return the delay in seconds for notifying file changes.
-    float GetDelay() const { return delay_;}
+    float GetDelay() const { return delay_; }
 
 private:
     /// Filesystem.
@@ -68,7 +71,7 @@ private:
     int watchHandle_;
 
 #elif defined(__APPLE__) && !defined(IOS)
-
+    
     /// Flag indicating whether the running OS supports individual file watching.
     bool supported_;
     /// Pointer to internal MacFileWatcher delegate.

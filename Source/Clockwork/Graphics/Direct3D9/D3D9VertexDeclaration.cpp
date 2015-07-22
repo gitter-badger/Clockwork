@@ -1,3 +1,7 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsImpl.h"
 #include "../../Graphics/VertexBuffer.h"
@@ -84,7 +88,8 @@ VertexDeclaration::VertexDeclaration(Graphics* graphics, unsigned elementMask) :
     Create(graphics, elements);
 }
 
-VertexDeclaration::VertexDeclaration(Graphics* graphics, const PODVector<VertexBuffer*>& buffers, const PODVector<unsigned>& elementMasks) :
+VertexDeclaration::VertexDeclaration(Graphics* graphics, const PODVector<VertexBuffer*>& buffers,
+    const PODVector<unsigned>& elementMasks) :
     declaration_(0)
 {
     unsigned usedElementMask = 0;
@@ -125,7 +130,8 @@ VertexDeclaration::VertexDeclaration(Graphics* graphics, const PODVector<VertexB
     Create(graphics, elements);
 }
 
-VertexDeclaration::VertexDeclaration(Graphics* graphics, const Vector<SharedPtr<VertexBuffer> >& buffers, const PODVector<unsigned>& elementMasks) :
+VertexDeclaration::VertexDeclaration(Graphics* graphics, const Vector<SharedPtr<VertexBuffer> >& buffers,
+    const PODVector<unsigned>& elementMasks) :
     declaration_(0)
 {
     unsigned usedElementMask = 0;
@@ -178,8 +184,8 @@ void VertexDeclaration::Create(Graphics* graphics, const PODVector<VertexDeclara
     D3DVERTEXELEMENT9* dest = elementArray;
     for (Vector<VertexDeclarationElement>::ConstIterator i = elements.Begin(); i != elements.End(); ++i)
     {
-        dest->Stream = i->stream_;
-        dest->Offset = i->offset_;
+        dest->Stream = (WORD)i->stream_;
+        dest->Offset = (WORD)i->offset_;
         dest->Type = d3dElementType[i->element_];
         dest->Method = D3DDECLMETHOD_DEFAULT;
         dest->Usage = d3dElementUsage[i->element_];

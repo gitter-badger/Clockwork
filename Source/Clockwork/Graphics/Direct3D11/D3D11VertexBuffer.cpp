@@ -1,7 +1,11 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
 #include "../../Graphics/VertexBuffer.h"
+#include "../../IO/Log.h"
 
 #include "../../DebugNew.h"
 
@@ -325,6 +329,8 @@ void VertexBuffer::Unlock()
         lockScratchData_ = 0;
         lockState_ = LOCK_NONE;
         break;
+
+    default: break;
     }
 }
 
@@ -402,7 +408,7 @@ bool VertexBuffer::Create()
         bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
         bufferDesc.CPUAccessFlags = dynamic_ ? D3D11_CPU_ACCESS_WRITE : 0;
         bufferDesc.Usage = dynamic_ ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT;
-        bufferDesc.ByteWidth = (unsigned)(vertexCount_ * vertexSize_);
+        bufferDesc.ByteWidth = (UINT)(vertexCount_ * vertexSize_);
 
         graphics_->GetImpl()->GetDevice()->CreateBuffer(&bufferDesc, 0, (ID3D11Buffer**)&object_);
 

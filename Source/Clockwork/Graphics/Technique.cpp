@@ -1,11 +1,15 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
-#include "../Graphics/Graphics.h"
-#include "../IO/Log.h"
-#include "../Graphics/Technique.h"
 #include "../Core/ProcessUtils.h"
 #include "../Core/Profiler.h"
-#include "../Resource/ResourceCache.h"
+#include "../Graphics/Graphics.h"
+#include "../Graphics/Technique.h"
 #include "../Graphics/ShaderVariation.h"
+#include "../IO/Log.h"
+#include "../Resource/ResourceCache.h"
 #include "../Resource/XMLFile.h"
 
 #include "../DebugNew.h"
@@ -150,11 +154,11 @@ Technique::Technique(Context* context) :
     Resource(context),
     isDesktop_(false)
 {
-    #ifdef DESKTOP_GRAPHICS
+#ifdef DESKTOP_GRAPHICS
     desktopSupport_ = true;
-    #else
+#else
     desktopSupport_ = false;
-    #endif
+#endif
 }
 
 Technique::~Technique()
@@ -292,7 +296,7 @@ Pass* Technique::CreatePass(const String& name)
     passes_[passIndex] = newPass;
 
     // Calculate memory use now
-    SetMemoryUse(sizeof(Technique) + GetNumPasses() * sizeof(Pass));
+    SetMemoryUse((unsigned)(sizeof(Technique) + GetNumPasses() * sizeof(Pass)));
 
     return newPass;
 }
@@ -305,7 +309,7 @@ void Technique::RemovePass(const String& name)
     else if (i->second_ < passes_.Size() && passes_[i->second_].Get())
     {
         passes_[i->second_].Reset();
-        SetMemoryUse(sizeof(Technique) + GetNumPasses() * sizeof(Pass));
+        SetMemoryUse((unsigned)(sizeof(Technique) + GetNumPasses() * sizeof(Pass)));
     }
 }
 

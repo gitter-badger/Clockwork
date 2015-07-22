@@ -1,9 +1,11 @@
+
+
 #pragma once
 
+#include "../Container/Ptr.h"
 #include "../Graphics/Drawable.h"
 #include "../Math/MathDefs.h"
 #include "../Math/Matrix3x4.h"
-#include "../Container/Ptr.h"
 #include "../Math/Rect.h"
 
 namespace Clockwork
@@ -181,9 +183,18 @@ struct BatchGroupKey
     Geometry* geometry_;
 
     /// Test for equality with another batch group key.
-    bool operator == (const BatchGroupKey& rhs) const { return zone_ == rhs.zone_ && lightQueue_ == rhs.lightQueue_ && pass_ == rhs.pass_ && material_ == rhs.material_ && geometry_ == rhs.geometry_; }
+    bool operator ==(const BatchGroupKey& rhs) const
+    {
+        return zone_ == rhs.zone_ && lightQueue_ == rhs.lightQueue_ && pass_ == rhs.pass_ && material_ == rhs.material_ &&
+               geometry_ == rhs.geometry_;
+    }
+
     /// Test for inequality with another batch group key.
-    bool operator != (const BatchGroupKey& rhs) const { return zone_ != rhs.zone_ || lightQueue_ != rhs.lightQueue_ || pass_ != rhs.pass_ || material_ != rhs.material_ || geometry_ != rhs.geometry_; }
+    bool operator !=(const BatchGroupKey& rhs) const
+    {
+        return zone_ != rhs.zone_ || lightQueue_ != rhs.lightQueue_ || pass_ != rhs.pass_ || material_ != rhs.material_ ||
+               geometry_ != rhs.geometry_;
+    }
 
     /// Return hash value.
     unsigned ToHash() const;
@@ -207,6 +218,7 @@ public:
     void Draw(View* view, bool markToStencil, bool usingLightOptimization, bool allowDepthWrite) const;
     /// Return the combined amount of instances.
     unsigned GetNumInstances() const;
+
     /// Return whether the batch group is empty.
     bool IsEmpty() const { return batches_.Empty() && batchGroups_.Empty(); }
 

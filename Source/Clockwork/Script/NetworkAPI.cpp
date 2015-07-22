@@ -1,9 +1,13 @@
+
+
 #ifdef CLOCKWORK_NETWORK
-#include "../Script/APITemplates.h"
+
+#include "../Precompiled.h"
+
 #include "../Network/HttpRequest.h"
 #include "../Network/Network.h"
 #include "../Network/NetworkPriority.h"
-#include "../Network/Protocol.h"
+#include "../Script/APITemplates.h"
 
 namespace Clockwork
 {

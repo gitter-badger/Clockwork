@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Attribute.h"
@@ -46,7 +48,7 @@ struct CLOCKWORK_API DirtyBits
         if (index < MAX_NETWORK_ATTRIBUTES)
         {
             unsigned byteIndex = index >> 3;
-            unsigned bit = 1 << (index & 7);
+            unsigned bit = (unsigned)(1 << (index & 7));
             if ((data_[byteIndex] & bit) == 0)
             {
                 data_[byteIndex] |= bit;
@@ -61,7 +63,7 @@ struct CLOCKWORK_API DirtyBits
         if (index < MAX_NETWORK_ATTRIBUTES)
         {
             unsigned byteIndex = index >> 3;
-            unsigned bit = 1 << (index & 7);
+            unsigned bit = (unsigned)(1 << (index & 7));
             if ((data_[byteIndex] & bit) != 0)
             {
                 data_[byteIndex] &= ~bit;
@@ -83,7 +85,7 @@ struct CLOCKWORK_API DirtyBits
         if (index < MAX_NETWORK_ATTRIBUTES)
         {
             unsigned byteIndex = index >> 3;
-            unsigned bit = 1 << (index & 7);
+            unsigned bit = (unsigned)(1 << (index & 7));
             return (data_[byteIndex] & bit) != 0;
         }
         else

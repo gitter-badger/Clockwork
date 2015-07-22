@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Object.h"
@@ -17,7 +19,8 @@ class CLOCKWORK_API MessageBox : public Object
 
 public:
     /// Construct. If layout file is not given, use the default message box layout. If style file is not given, use the default style file from root UI element.
-    MessageBox(Context* context, const String& messageString = String::EMPTY, const String& titleString = String::EMPTY, XMLFile* layoutFile = 0, XMLFile* styleFile = 0);
+    MessageBox(Context* context, const String& messageString = String::EMPTY, const String& titleString = String::EMPTY,
+        XMLFile* layoutFile = 0, XMLFile* styleFile = 0);
     /// Destruct.
     virtual ~MessageBox();
     /// Register object factory.
@@ -32,6 +35,7 @@ public:
     const String& GetTitle() const;
     /// Return message text. Return empty string if there is no message text element.
     const String& GetMessage() const;
+
     /// Return dialog window.
     UIElement* GetWindow() const { return window_; }
 

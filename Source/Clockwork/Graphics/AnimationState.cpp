@@ -1,10 +1,12 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Graphics/AnimatedModel.h"
 #include "../Graphics/Animation.h"
 #include "../Graphics/AnimationState.h"
-#include "../IO/Deserializer.h"
 #include "../Graphics/DrawableEvents.h"
 #include "../IO/Log.h"
-#include "../IO/Serializer.h"
 
 #include "../DebugNew.h"
 

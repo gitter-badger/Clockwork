@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Quaternion.h"
@@ -121,7 +123,7 @@ public:
     }
 
     /// Assign from another matrix.
-    Matrix4& operator = (const Matrix4& rhs)
+    Matrix4& operator =(const Matrix4& rhs)
     {
         m00_ = rhs.m00_;
         m01_ = rhs.m01_;
@@ -143,7 +145,7 @@ public:
     }
 
     /// Assign from a 3x3 matrix. Set the extra elements to identity.
-    Matrix4& operator = (const Matrix3& rhs)
+    Matrix4& operator =(const Matrix3& rhs)
     {
         m00_ = rhs.m00_;
         m01_ = rhs.m01_;
@@ -165,7 +167,7 @@ public:
     }
 
     /// Test for equality with another matrix without epsilon.
-    bool operator == (const Matrix4& rhs) const
+    bool operator ==(const Matrix4& rhs) const
     {
         const float* leftData = Data();
         const float* rightData = rhs.Data();
@@ -180,10 +182,10 @@ public:
     }
 
     /// Test for inequality with another matrix without epsilon.
-    bool operator != (const Matrix4& rhs) const { return !(*this == rhs); }
+    bool operator !=(const Matrix4& rhs) const { return !(*this == rhs); }
 
     /// Multiply a Vector3 which is assumed to represent position.
-    Vector3 operator * (const Vector3& rhs) const
+    Vector3 operator *(const Vector3& rhs) const
     {
         float invW = 1.0f / (m30_ * rhs.x_ + m31_ * rhs.y_ + m32_ * rhs.z_ + m33_);
 
@@ -195,7 +197,7 @@ public:
     }
 
     /// Multiply a Vector4.
-    Vector4 operator * (const Vector4& rhs) const
+    Vector4 operator *(const Vector4& rhs) const
     {
         return Vector4(
             m00_ * rhs.x_ + m01_ * rhs.y_ + m02_ * rhs.z_ + m03_ * rhs.w_,
@@ -206,7 +208,7 @@ public:
     }
 
     /// Add a matrix.
-    Matrix4 operator + (const Matrix4& rhs) const
+    Matrix4 operator +(const Matrix4& rhs) const
     {
         return Matrix4(
             m00_ + rhs.m00_,
@@ -229,7 +231,7 @@ public:
     }
 
     /// Subtract a matrix.
-    Matrix4 operator - (const Matrix4& rhs) const
+    Matrix4 operator -(const Matrix4& rhs) const
     {
         return Matrix4(
             m00_ - rhs.m00_,
@@ -252,7 +254,7 @@ public:
     }
 
     /// Multiply with a scalar.
-    Matrix4 operator * (float rhs) const
+    Matrix4 operator *(float rhs) const
     {
         return Matrix4(
             m00_ * rhs,
@@ -275,7 +277,7 @@ public:
     }
 
     /// Multiply a matrix.
-    Matrix4 operator * (const Matrix4& rhs) const
+    Matrix4 operator *(const Matrix4& rhs) const
     {
         return Matrix4(
             m00_ * rhs.m00_ + m01_ * rhs.m10_ + m02_ * rhs.m20_ + m03_ * rhs.m30_,
@@ -298,7 +300,7 @@ public:
     }
 
     /// Multiply with a 3x4 matrix.
-    Matrix4 operator * (const Matrix3x4& rhs) const;
+    Matrix4 operator *(const Matrix3x4& rhs) const;
 
     /// Set translation elements.
     void SetTranslation(const Vector3& translation)
@@ -434,6 +436,7 @@ public:
 
     /// Return float data
     const float* Data() const { return &m00_; }
+
     /// Return as string.
     String ToString() const;
 
@@ -488,6 +491,6 @@ public:
 };
 
 /// Multiply a 4x4 matrix with a scalar
-inline Matrix4 operator * (float lhs, const Matrix4& rhs) { return rhs * lhs; }
+inline Matrix4 operator *(float lhs, const Matrix4& rhs) { return rhs * lhs; }
 
 }

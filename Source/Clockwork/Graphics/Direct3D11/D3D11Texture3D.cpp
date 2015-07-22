@@ -1,13 +1,17 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Core/Context.h"
-#include "../../IO/FileSystem.h"
+#include "../../Core/Profiler.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsEvents.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
 #include "../../Graphics/Renderer.h"
-#include "../../Core/Profiler.h"
-#include "../../Resource/ResourceCache.h"
 #include "../../Graphics/Texture3D.h"
+#include "../../IO/FileSystem.h"
+#include "../../IO/Log.h"
+#include "../../Resource/ResourceCache.h"
 #include "../../Resource/XMLFile.h"
 
 #include "../../DebugNew.h"
@@ -211,7 +215,8 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
     int levelWidth = GetLevelWidth(level);
     int levelHeight = GetLevelHeight(level);
     int levelDepth = GetLevelDepth(level);
-    if (x < 0 || x + width > levelWidth || y < 0 || y + height > levelHeight || z < 0 || z + depth > levelDepth || width <= 0 || height <= 0 || depth <= 0)
+    if (x < 0 || x + width > levelWidth || y < 0 || y + height > levelHeight || z < 0 || z + depth > levelDepth || width <= 0 ||
+        height <= 0 || depth <= 0)
     {
         LOGERROR("Illegal dimensions for setting data");
         return false;
@@ -252,8 +257,8 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
             {
                 for (int row = 0; row < height; ++row)
                 {
-                    memcpy((unsigned char*)mappedData.pData + (page + z) * mappedData.DepthPitch + (row + y) * mappedData.RowPitch
-                        + rowStart, src + row * rowSize, rowSize);
+                    memcpy((unsigned char*)mappedData.pData + (page + z) * mappedData.DepthPitch + (row + y) * mappedData.RowPitch +
+                           rowStart, src + row * rowSize, rowSize);
                 }
             }
 
@@ -271,12 +276,12 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
             levelHeight = (levelHeight + 3) >> 2;
 
         D3D11_BOX destBox;
-        destBox.left = x;
-        destBox.right = x + width;
-        destBox.top = y;
-        destBox.bottom = y + height;
-        destBox.front = z;
-        destBox.back = z + depth;
+        destBox.left = (UINT)x;
+        destBox.right = (UINT)(x + width);
+        destBox.top = (UINT)y;
+        destBox.bottom = (UINT)(y + height);
+        destBox.front = (UINT)z;
+        destBox.back = (UINT)(z + depth);
 
         graphics_->GetImpl()->GetDeviceContext()->UpdateSubresource((ID3D11Resource*)object_, subResource, &destBox, data,
             rowSize, levelHeight * rowSize);
@@ -337,6 +342,8 @@ bool Texture3D::SetData(SharedPtr<Image> image, bool useAlpha)
         case 4:
             format = Graphics::GetRGBAFormat();
             break;
+
+        default: break;
         }
 
         // If image was previously compressed, reset number of requested levels to avoid error if level count is too high for new size
@@ -383,7 +390,7 @@ bool Texture3D::SetData(SharedPtr<Image> image, bool useAlpha)
         height /= (1 << mipsToSkip);
         depth /= (1 << mipsToSkip);
 
-        SetNumLevels(Max((int)(levels - mipsToSkip), 1));
+        SetNumLevels((unsigned)Max((int)(levels - mipsToSkip), 1));
         SetSize(width, height, depth, format);
 
         for (unsigned i = 0; i < levels_ && i < levels - mipsToSkip; ++i)
@@ -435,9 +442,9 @@ bool Texture3D::GetData(unsigned level, void* dest) const
 
     D3D11_TEXTURE3D_DESC textureDesc;
     memset(&textureDesc, 0, sizeof textureDesc);
-    textureDesc.Width = levelWidth;
-    textureDesc.Height = levelHeight;
-    textureDesc.Depth = levelDepth;
+    textureDesc.Width = (UINT)levelWidth;
+    textureDesc.Height = (UINT)levelHeight;
+    textureDesc.Depth = (UINT)levelDepth;
     textureDesc.MipLevels = 1;
     textureDesc.Format = (DXGI_FORMAT)format_;
     textureDesc.Usage = D3D11_USAGE_STAGING;
@@ -454,18 +461,18 @@ bool Texture3D::GetData(unsigned level, void* dest) const
     unsigned srcSubResource = D3D11CalcSubresource(level, 0, levels_);
     D3D11_BOX srcBox;
     srcBox.left = 0;
-    srcBox.right = levelWidth;
+    srcBox.right = (UINT)levelWidth;
     srcBox.top = 0;
-    srcBox.bottom = levelHeight;
+    srcBox.bottom = (UINT)levelHeight;
     srcBox.front = 0;
-    srcBox.back = levelDepth;
+    srcBox.back = (UINT)levelDepth;
     graphics_->GetImpl()->GetDeviceContext()->CopySubresourceRegion(stagingTexture, 0, 0, 0, 0, (ID3D11Resource*)object_,
         srcSubResource, &srcBox);
 
     D3D11_MAPPED_SUBRESOURCE mappedData;
     mappedData.pData = 0;
     unsigned rowSize = GetRowDataSize(levelWidth);
-    unsigned numRows = IsCompressed() ? (levelHeight + 3) >> 2 : levelHeight;
+    unsigned numRows = (unsigned)(IsCompressed() ? (levelHeight + 3) >> 2 : levelHeight);
 
     graphics_->GetImpl()->GetDeviceContext()->Map((ID3D11Resource*)stagingTexture, 0, D3D11_MAP_READ, 0, &mappedData);
     if (mappedData.pData)
@@ -474,8 +481,8 @@ bool Texture3D::GetData(unsigned level, void* dest) const
         {
             for (unsigned row = 0; row < numRows; ++row)
             {
-                memcpy((unsigned char*)dest + (page * numRows + row) * rowSize, (unsigned char*)mappedData.pData + page *
-                    mappedData.DepthPitch + row * mappedData.RowPitch, rowSize);
+                memcpy((unsigned char*)dest + (page * numRows + row) * rowSize,
+                    (unsigned char*)mappedData.pData + page * mappedData.DepthPitch + row * mappedData.RowPitch, rowSize);
             }
         }
         graphics_->GetImpl()->GetDeviceContext()->Unmap((ID3D11Resource*)stagingTexture, 0);
@@ -501,9 +508,9 @@ bool Texture3D::Create()
 
     D3D11_TEXTURE3D_DESC textureDesc;
     memset(&textureDesc, 0, sizeof textureDesc);
-    textureDesc.Width = width_;
-    textureDesc.Height = height_;
-    textureDesc.Depth = depth_;
+    textureDesc.Width = (UINT)width_;
+    textureDesc.Height = (UINT)height_;
+    textureDesc.Depth = (UINT)depth_;
     textureDesc.MipLevels = levels_;
     textureDesc.Format = (DXGI_FORMAT)(sRGB_ ? GetSRGBFormat(format_) : format_);
     textureDesc.Usage = usage_ == TEXTURE_DYNAMIC ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT;
@@ -521,7 +528,7 @@ bool Texture3D::Create()
     memset(&resourceViewDesc, 0, sizeof resourceViewDesc);
     resourceViewDesc.Format = (DXGI_FORMAT)GetSRVFormat(textureDesc.Format);
     resourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE3D;
-    resourceViewDesc.Texture3D.MipLevels = (unsigned)levels_;
+    resourceViewDesc.Texture3D.MipLevels = (UINT)levels_;
 
     graphics_->GetImpl()->GetDevice()->CreateShaderResourceView((ID3D11Resource*)object_, &resourceViewDesc,
         (ID3D11ShaderResourceView**)&shaderResourceView_);

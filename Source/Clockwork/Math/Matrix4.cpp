@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Math/Matrix3x4.h"
 #include "../Math/Matrix4.h"
 
@@ -16,7 +20,7 @@ const Matrix4 Matrix4::ZERO(
 
 const Matrix4 Matrix4::IDENTITY;
 
-Matrix4 Matrix4::operator * (const Matrix3x4& rhs) const
+Matrix4 Matrix4::operator *(const Matrix3x4& rhs) const
 {
     return Matrix4(
         m00_ * rhs.m00_ + m01_ * rhs.m10_ + m02_ * rhs.m20_,

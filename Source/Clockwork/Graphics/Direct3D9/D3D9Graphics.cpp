@@ -1,28 +1,28 @@
+
+
+#include "../../Precompiled.h"
+
+#include "../../Core/Context.h"
+#include "../../Core/ProcessUtils.h"
+#include "../../Core/Profiler.h"
 #include "../../Graphics/AnimatedModel.h"
 #include "../../Graphics/Animation.h"
 #include "../../Graphics/AnimationController.h"
 #include "../../Graphics/Camera.h"
-#include "../../Core/Context.h"
 #include "../../Graphics/CustomGeometry.h"
 #include "../../Graphics/DebugRenderer.h"
 #include "../../Graphics/DecalSet.h"
-#include "../../IO/File.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsEvents.h"
 #include "../../Graphics/GraphicsImpl.h"
 #include "../../Graphics/IndexBuffer.h"
-#include "../../IO/Log.h"
 #include "../../Graphics/Material.h"
 #include "../../Graphics/Octree.h"
 #include "../../Graphics/ParticleEffect.h"
 #include "../../Graphics/ParticleEmitter.h"
-#include "../../Core/ProcessUtils.h"
-#include "../../Core/Profiler.h"
-#include "../../Resource/ResourceCache.h"
 #include "../../Graphics/Shader.h"
 #include "../../Graphics/ShaderPrecache.h"
 #include "../../Graphics/ShaderProgram.h"
-#include "../../Graphics/ShaderVariation.h"
 #include "../../Graphics/Skybox.h"
 #include "../../Graphics/StaticModelGroup.h"
 #include "../../Graphics/Technique.h"
@@ -31,10 +31,12 @@
 #include "../../Graphics/Texture2D.h"
 #include "../../Graphics/Texture3D.h"
 #include "../../Graphics/TextureCube.h"
-#include "../../Core/Timer.h"
 #include "../../Graphics/VertexBuffer.h"
 #include "../../Graphics/VertexDeclaration.h"
 #include "../../Graphics/Zone.h"
+#include "../../IO/File.h"
+#include "../../IO/Log.h"
+#include "../../Resource/ResourceCache.h"
 
 #include <SDL/SDL_syswm.h>
 
@@ -45,9 +47,10 @@
 #endif
 
 // Prefer the high-performance GPU on switchable GPU systems
-extern "C" {
-    __declspec(dllexport) DWORD NvOptimusEnablement = 1;
-    __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+extern "C"
+{
+__declspec(dllexport) DWORD NvOptimusEnablement = 1;
+__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
 }
 
 // Fix missing define in MinGW headers
@@ -176,7 +179,8 @@ static unsigned GetD3DColor(const Color& color)
     return (((a) & 0xff) << 24) | (((r) & 0xff) << 16) | (((g) & 0xff) << 8) | ((b) & 0xff);
 }
 
-static void GetD3DPrimitiveType(unsigned elementCount, PrimitiveType type, unsigned& primitiveCount, D3DPRIMITIVETYPE& d3dPrimitiveType)
+static void GetD3DPrimitiveType(unsigned elementCount, PrimitiveType type, unsigned& primitiveCount,
+    D3DPRIMITIVETYPE& d3dPrimitiveType)
 {
     switch (type)
     {
@@ -354,7 +358,8 @@ void Graphics::SetWindowPosition(int x, int y)
     SetWindowPosition(IntVector2(x, y));
 }
 
-bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, bool resizable, bool vsync, bool tripleBuffer, int multiSample)
+bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, bool resizable, bool vsync, bool tripleBuffer,
+    int multiSample)
 {
     PROFILE(SetScreenMode);
 
@@ -428,7 +433,7 @@ bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, 
 
             for (unsigned i = 0; i < resolutions.Size(); ++i)
             {
-                unsigned error = Abs(resolutions[i].x_ - width) + Abs(resolutions[i].y_ - height);
+                unsigned error = (unsigned)(Abs(resolutions[i].x_ - width) + Abs(resolutions[i].y_ - height));
                 if (error < bestError)
                 {
                     best = i;
@@ -460,24 +465,24 @@ bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, 
     if (fullscreen)
     {
         impl_->presentParams_.BackBufferFormat = fullscreenFormat;
-        impl_->presentParams_.Windowed         = false;
+        impl_->presentParams_.Windowed = false;
     }
     else
     {
         impl_->presentParams_.BackBufferFormat = D3DFMT_UNKNOWN;
-        impl_->presentParams_.Windowed         = true;
+        impl_->presentParams_.Windowed = true;
     }
 
-    impl_->presentParams_.BackBufferWidth            = width;
-    impl_->presentParams_.BackBufferHeight           = height;
-    impl_->presentParams_.BackBufferCount            = tripleBuffer ? 2 : 1;
-    impl_->presentParams_.MultiSampleType            = multiSample > 1 ? (D3DMULTISAMPLE_TYPE)multiSample : D3DMULTISAMPLE_NONE;
-    impl_->presentParams_.MultiSampleQuality         = 0;
-    impl_->presentParams_.SwapEffect                 = D3DSWAPEFFECT_DISCARD;
-    impl_->presentParams_.hDeviceWindow              = GetWindowHandle(impl_->window_);
-    impl_->presentParams_.EnableAutoDepthStencil     = TRUE;
-    impl_->presentParams_.AutoDepthStencilFormat     = D3DFMT_D24S8;
-    impl_->presentParams_.Flags                      = D3DPRESENT_LINEAR_CONTENT;
+    impl_->presentParams_.BackBufferWidth = (UINT)width;
+    impl_->presentParams_.BackBufferHeight = (UINT)height;
+    impl_->presentParams_.BackBufferCount = tripleBuffer ? 2 : 1;
+    impl_->presentParams_.MultiSampleType = multiSample > 1 ? (D3DMULTISAMPLE_TYPE)multiSample : D3DMULTISAMPLE_NONE;
+    impl_->presentParams_.MultiSampleQuality = 0;
+    impl_->presentParams_.SwapEffect = D3DSWAPEFFECT_DISCARD;
+    impl_->presentParams_.hDeviceWindow = GetWindowHandle(impl_->window_);
+    impl_->presentParams_.EnableAutoDepthStencil = TRUE;
+    impl_->presentParams_.AutoDepthStencilFormat = D3DFMT_D24S8;
+    impl_->presentParams_.Flags = D3DPRESENT_LINEAR_CONTENT;
     impl_->presentParams_.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
     if (vsync)
@@ -499,7 +504,7 @@ bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, 
         unsigned deviceType = D3DDEVTYPE_HAL;
 
         // Check for PerfHUD adapter
-        for (unsigned i=0; i < impl_->interface_->GetAdapterCount(); ++i)
+        for (unsigned i = 0; i < impl_->interface_->GetAdapterCount(); ++i)
         {
             D3DADAPTER_IDENTIFIER9 identifier;
             impl_->interface_->GetAdapterIdentifier(i, 0, &identifier);
@@ -524,7 +529,7 @@ bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, 
     impl_->device_->EndScene();
     impl_->device_->Present(0, 0, 0, 0);
 
-    #ifdef CLOCKWORK_LOGGING
+#ifdef CLOCKWORK_LOGGING
     String msg;
     msg.AppendWithFormat("Set screen mode %dx%d %s", width_, height_, (fullscreen_ ? "fullscreen" : "windowed"));
     if (borderless_)
@@ -534,7 +539,7 @@ bool Graphics::SetMode(int width, int height, bool fullscreen, bool borderless, 
     if (multiSample > 1)
         msg.AppendWithFormat(" multisample %d", multiSample);
     LOGINFO(msg);
-    #endif
+#endif
 
     using namespace ScreenMode;
 
@@ -598,8 +603,8 @@ bool Graphics::TakeScreenShot(Image& destImage)
     // If possible, get the backbuffer data, because it is a lot faster.
     // However, if we are multisampled, need to use the front buffer
     bool useBackBuffer = true;
-    unsigned surfaceWidth = width_;
-    unsigned surfaceHeight = height_;
+    unsigned surfaceWidth = (unsigned)width_;
+    unsigned surfaceHeight = (unsigned)height_;
 
     if (impl_->presentParams_.MultiSampleType)
     {
@@ -607,8 +612,8 @@ bool Graphics::TakeScreenShot(Image& destImage)
         if (!fullscreen_)
         {
             IntVector2 desktopSize = GetDesktopResolution();
-            surfaceWidth = desktopSize.x_;
-            surfaceHeight = desktopSize.y_;
+            surfaceWidth = (unsigned)desktopSize.x_;
+            surfaceHeight = (unsigned)desktopSize.y_;
         }
         useBackBuffer = false;
         surfaceDesc.Format = D3DFMT_A8R8G8B8;
@@ -670,9 +675,9 @@ bool Graphics::TakeScreenShot(Image& destImage)
                 int g = (rgb >> 5) & 63;
                 int r = (rgb >> 11);
 
-                dest[0] = (int)(r * 255.0f / 31.0f);
-                dest[1] = (int)(g * 255.0f / 63.0f);
-                dest[2] = (int)(b * 255.0f / 31.0f);
+                dest[0] = (unsigned char)(r * 255.0f / 31.0f);
+                dest[1] = (unsigned char)(g * 255.0f / 63.0f);
+                dest[2] = (unsigned char)(b * 255.0f / 31.0f);
                 dest += 3;
             }
         }
@@ -890,7 +895,7 @@ void Graphics::DrawInstanced(PrimitiveType type, unsigned indexStart, unsigned i
         if (buffer)
         {
             if (buffer->GetElementMask() & MASK_INSTANCEMATRIX1)
-                SetStreamFrequency(i, D3DSTREAMSOURCE_INSTANCEDATA | 1);
+                SetStreamFrequency(i, D3DSTREAMSOURCE_INSTANCEDATA | 1u);
             else
                 SetStreamFrequency(i, D3DSTREAMSOURCE_INDEXEDDATA | instanceCount);
         }
@@ -916,8 +921,8 @@ void Graphics::SetVertexBuffer(VertexBuffer* buffer)
     SetVertexBuffers(vertexBuffers, elementMasks);
 }
 
-bool Graphics::SetVertexBuffers(const PODVector<VertexBuffer*>& buffers, const PODVector<unsigned>&
-    elementMasks, unsigned instanceOffset)
+bool Graphics::SetVertexBuffers(const PODVector<VertexBuffer*>& buffers, const PODVector<unsigned>& elementMasks,
+    unsigned instanceOffset)
 {
     if (buffers.Size() > MAX_VERTEX_STREAMS)
     {
@@ -978,7 +983,8 @@ bool Graphics::SetVertexBuffers(const PODVector<VertexBuffer*>& buffers, const P
         if (buffer != vertexBuffers_[i] || offset != streamOffsets_[i])
         {
             if (buffer)
-                impl_->device_->SetStreamSource(i, (IDirect3DVertexBuffer9*)buffer->GetGPUObject(), offset, buffer->GetVertexSize());
+                impl_->device_->SetStreamSource(i, (IDirect3DVertexBuffer9*)buffer->GetGPUObject(), offset,
+                    buffer->GetVertexSize());
             else
                 impl_->device_->SetStreamSource(i, 0, 0, 0);
 
@@ -990,8 +996,8 @@ bool Graphics::SetVertexBuffers(const PODVector<VertexBuffer*>& buffers, const P
     return true;
 }
 
-bool Graphics::SetVertexBuffers(const Vector<SharedPtr<VertexBuffer> >& buffers, const PODVector<unsigned>&
-    elementMasks, unsigned instanceOffset)
+bool Graphics::SetVertexBuffers(const Vector<SharedPtr<VertexBuffer> >& buffers, const PODVector<unsigned>& elementMasks,
+    unsigned instanceOffset)
 {
     return SetVertexBuffers(reinterpret_cast<const PODVector<VertexBuffer*>&>(buffers), elementMasks, instanceOffset);
 }
@@ -1549,10 +1555,10 @@ void Graphics::SetViewport(const IntRect& rect)
     D3DVIEWPORT9 vp;
     vp.MinZ = 0.0f;
     vp.MaxZ = 1.0f;
-    vp.X = rectCopy.left_;
-    vp.Y = rectCopy.top_;
-    vp.Width = rectCopy.Width();
-    vp.Height = rectCopy.Height();
+    vp.X = (DWORD)rectCopy.left_;
+    vp.Y = (DWORD)rectCopy.top_;
+    vp.Width = (DWORD)rectCopy.Width();
+    vp.Height = (DWORD)rectCopy.Height();
 
     impl_->device_->SetViewport(&vp);
     viewport_ = rectCopy;
@@ -1612,8 +1618,9 @@ void Graphics::SetColorWrite(bool enable)
 {
     if (enable != colorWrite_)
     {
-        impl_->device_->SetRenderState(D3DRS_COLORWRITEENABLE, enable ? D3DCOLORWRITEENABLE_RED |
-            D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA : 0);
+        impl_->device_->SetRenderState(D3DRS_COLORWRITEENABLE,
+            enable ? D3DCOLORWRITEENABLE_RED | D3DCOLORWRITEENABLE_GREEN | D3DCOLORWRITEENABLE_BLUE | D3DCOLORWRITEENABLE_ALPHA :
+                0);
         colorWrite_ = enable;
     }
 }
@@ -1721,7 +1728,6 @@ void Graphics::SetScissorTest(bool enable, const Rect& rect, bool borderInclusiv
 void Graphics::SetScissorTest(bool enable, const IntRect& rect)
 {
     IntVector2 rtSize(GetRenderTargetDimensions());
-    IntVector2 viewSize(viewport_.Size());
     IntVector2 viewPos(viewport_.left_, viewport_.top_);
 
     if (enable)
@@ -1762,7 +1768,8 @@ void Graphics::SetScissorTest(bool enable, const IntRect& rect)
     }
 }
 
-void Graphics::SetStencilTest(bool enable, CompareMode mode, StencilOp pass, StencilOp fail, StencilOp zFail, unsigned stencilRef, unsigned compareMask, unsigned writeMask)
+void Graphics::SetStencilTest(bool enable, CompareMode mode, StencilOp pass, StencilOp fail, StencilOp zFail, unsigned stencilRef,
+    unsigned compareMask, unsigned writeMask)
 {
     if (enable != stencilTest_)
     {
@@ -1857,14 +1864,14 @@ IntVector2 Graphics::GetWindowPosition() const
 PODVector<IntVector2> Graphics::GetResolutions() const
 {
     PODVector<IntVector2> ret;
-    unsigned numModes = SDL_GetNumDisplayModes(0);
+    unsigned numModes = (unsigned)SDL_GetNumDisplayModes(0);
 
     for (unsigned i = 0; i < numModes; ++i)
     {
         SDL_DisplayMode mode;
         SDL_GetDisplayMode(0, i, &mode);
         int width = mode.w;
-        int height  = mode.h;
+        int height = mode.h;
 
         // Store mode if unique
         bool unique = true;
@@ -1929,9 +1936,10 @@ unsigned Graphics::GetFormat(CompressedFormat format) const
 
     case CF_DXT5:
         return D3DFMT_DXT5;
-    }
 
-    return 0;
+    default:
+        return 0;
+    }
 }
 
 ShaderVariation* Graphics::GetShader(ShaderType type, const String& name, const String& defines) const
@@ -2023,8 +2031,8 @@ void Graphics::WindowResized()
     width_ = newWidth;
     height_ = newHeight;
 
-    impl_->presentParams_.BackBufferWidth            = width_;
-    impl_->presentParams_.BackBufferHeight           = height_;
+    impl_->presentParams_.BackBufferWidth = (UINT)width_;
+    impl_->presentParams_.BackBufferHeight = (UINT)height_;
     ResetDevice();
 
     // Reset rendertargets and viewport for the new screen size
@@ -2499,7 +2507,7 @@ void Graphics::CheckFeatureSupport()
         }
     }
 
-   // Check for Intel 4 Series with an old driver, enable manual shadow map compare in that case
+    // Check for Intel 4 Series with an old driver, enable manual shadow map compare in that case
     if (shadowMapFormat_ == D3DFMT_D16)
     {
         if (impl_->adapterIdentifier_.VendorId == 0x8086 && impl_->adapterIdentifier_.DeviceId == 0x2a42 &&
@@ -2675,7 +2683,6 @@ void Graphics::SetTextureUnitMappings()
 {
     textureUnits_["DiffMap"] = TU_DIFFUSE;
     textureUnits_["DiffCubeMap"] = TU_DIFFUSE;
-    textureUnits_["PropitiesMap"] = TU_PROPERTIES;
     textureUnits_["NormalMap"] = TU_NORMAL;
     textureUnits_["SpecMap"] = TU_SPECULAR;
     textureUnits_["EmissiveMap"] = TU_EMISSIVE;
@@ -2683,7 +2690,7 @@ void Graphics::SetTextureUnitMappings()
     textureUnits_["EnvCubeMap"] = TU_ENVIRONMENT;
     textureUnits_["LightRampMap"] = TU_LIGHTRAMP;
     textureUnits_["LightSpotMap"] = TU_LIGHTSHAPE;
-    textureUnits_["LightCubeMap"]  = TU_LIGHTSHAPE;
+    textureUnits_["LightCubeMap"] = TU_LIGHTSHAPE;
     textureUnits_["ShadowMap"] = TU_SHADOWMAP;
     textureUnits_["FaceSelectCubeMap"] = TU_FACESELECT;
     textureUnits_["IndirectionCubeMap"] = TU_INDIRECTION;

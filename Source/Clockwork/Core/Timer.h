@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Object.h"
@@ -38,6 +40,7 @@ public:
 
     /// Return if high-resolution timer is supported.
     static bool IsSupported() { return supported; }
+
     /// Return high-resolution timer frequency if supported.
     static long long GetFrequency() { return frequency; }
 
@@ -45,7 +48,7 @@ private:
     /// Starting clock value in CPU ticks.
     long long startTime_;
 
-     /// High-resolution timer support flag.
+    /// High-resolution timer support flag.
     static bool supported;
     /// High-resolution timer frequency.
     static long long frequency;
@@ -71,10 +74,13 @@ public:
 
     /// Return frame number, starting from 1 once BeginFrame() is called for the first time.
     unsigned GetFrameNumber() const { return frameNumber_; }
+
     /// Return current frame timestep as seconds.
     float GetTimeStep() const { return timeStep_; }
+
     /// Return current low-resolution timer period in milliseconds.
     unsigned GetTimerPeriod() const { return timerPeriod_; }
+
     /// Return elapsed time from program start as seconds.
     float GetElapsedTime();
 

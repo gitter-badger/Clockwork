@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Resource/Resource.h"
@@ -22,13 +24,9 @@ enum PListValueType
 class PListValue;
 
 /// PList value map.
-class PListValueMap : public HashMap<String, PListValue>
-{
-public:
-    PListValue& operator [](const String& key);
-    const PListValue& operator [](const String& key) const;
-};
+typedef HashMap<String, PListValue> PListValueMap;
 
+/// Vector of PList value.
 typedef Vector<PListValue> PListValueVector;
 
 /// PList value.
@@ -55,9 +53,10 @@ public:
     ~PListValue();
 
     /// Assign operator.
-    PListValue& operator = (const PListValue& rhs);
+    PListValue& operator =(const PListValue& rhs);
+
     /// Return true if is valid.
-    operator bool () const { return type_ != PLVT_NONE; }
+    operator bool() const { return type_ != PLVT_NONE; }
 
     /// Set int.
     void SetInt(int value);
@@ -74,6 +73,7 @@ public:
 
     /// Return type.
     PListValueType GetType() const { return type_; }
+
     /// Return int.
     int GetInt() const;
     /// Return boolean.
@@ -139,7 +139,7 @@ private:
     /// Load array.
     bool LoadArray(PListValueVector& array, const XMLElement& arrayElem);
     /// Load value.
-    bool LoadValue(PListValue& value, XMLElement valueElem);
+    bool LoadValue(PListValue& value, const XMLElement& valueElem);
 
     /// Root dictionary.
     PListValueMap root_;

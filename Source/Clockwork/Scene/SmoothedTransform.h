@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Scene/Component.h"
@@ -38,12 +40,15 @@ public:
 
     /// Return target position in parent space.
     const Vector3& GetTargetPosition() const { return targetPosition_; }
+
     /// Return target rotation in parent space.
     const Quaternion& GetTargetRotation() const { return targetRotation_; }
+
     /// Return target position in world space.
     Vector3 GetTargetWorldPosition() const;
     /// Return target rotation in world space.
     Quaternion GetTargetWorldRotation() const;
+
     /// Return whether smoothing is in progress.
     bool IsInProgress() const { return smoothingMask_ != 0; }
 

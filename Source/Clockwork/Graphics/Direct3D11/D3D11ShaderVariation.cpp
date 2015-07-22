@@ -1,14 +1,16 @@
-#include "../../IO/File.h"
-#include "../../IO/FileSystem.h"
+
+
+#include "../../Precompiled.h"
+
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsImpl.h"
+#include "../../Graphics/Shader.h"
+#include "../../Graphics/VertexBuffer.h"
+#include "../../IO/File.h"
+#include "../../IO/FileSystem.h"
 #include "../../IO/Log.h"
 #include "../../Resource/ResourceCache.h"
-#include "../../Graphics/Shader.h"
-#include "../../Graphics/ShaderVariation.h"
-#include "../../Graphics/VertexBuffer.h"
 
-#include <windows.h>
 #include <d3dcompiler.h>
 
 #include "../../DebugNew.h"
@@ -146,8 +148,7 @@ bool ShaderVariation::LoadByteCode(const String& binaryShaderName)
     unsigned sourceTimeStamp = owner_->GetTimeStamp();
     // If source code is loaded from a package, its timestamp will be zero. Else check that binary is not older
     // than source
-    if (sourceTimeStamp && fileSystem->GetLastModifiedTime(cache->GetResourceFileName(binaryShaderName)) <
-        sourceTimeStamp)
+    if (sourceTimeStamp && fileSystem->GetLastModifiedTime(cache->GetResourceFileName(binaryShaderName)) < sourceTimeStamp)
         return false;
 
     SharedPtr<File> file = cache->GetFile(binaryShaderName);
@@ -158,8 +159,8 @@ bool ShaderVariation::LoadByteCode(const String& binaryShaderName)
     }
 
     /// \todo Check that shader type and model match
-    unsigned short shaderType = file->ReadUShort();
-    unsigned short shaderModel = file->ReadUShort();
+    /*unsigned short shaderType = */file->ReadUShort();
+    /*unsigned short shaderModel = */file->ReadUShort();
     elementMask_ = file->ReadUInt();
 
     unsigned numParameters = file->ReadUInt();
@@ -177,7 +178,7 @@ bool ShaderVariation::LoadByteCode(const String& binaryShaderName)
     unsigned numTextureUnits = file->ReadUInt();
     for (unsigned i = 0; i < numTextureUnits; ++i)
     {
-        String unitName = file->ReadString();
+        /*String unitName = */file->ReadString();
         unsigned reg = file->ReadUByte();
 
         if (reg < MAX_TEXTURE_UNITS)
@@ -256,10 +257,10 @@ bool ShaderVariation::Compile()
         macros.Push(macro);
 
         // In debug mode, check that all defines are referenced by the shader code
-        #ifdef _DEBUG
+#ifdef _DEBUG
         if (sourceCode.Find(defines[i]) == String::NPOS)
             LOGWARNING("Shader " + GetFullName() + " does not use the define " + defines[i]);
-        #endif
+#endif
     }
 
     D3D_SHADER_MACRO endMacro;
@@ -273,7 +274,7 @@ bool ShaderVariation::Compile()
 
     if (FAILED(D3DCompile(sourceCode.CString(), sourceCode.Length(), owner_->GetName().CString(), &macros.Front(), 0,
         entryPoint, profile, flags, 0, &shaderCode, &errorMsgs)))
-        compilerOutput_ = String((const char*)errorMsgs->GetBufferPointer(), errorMsgs->GetBufferSize());
+        compilerOutput_ = String((const char*)errorMsgs->GetBufferPointer(), (unsigned)errorMsgs->GetBufferSize());
     else
     {
         if (type_ == VS)
@@ -282,16 +283,16 @@ bool ShaderVariation::Compile()
             LOGDEBUG("Compiled pixel shader " + GetFullName());
 
         unsigned char* bufData = (unsigned char*)shaderCode->GetBufferPointer();
-        unsigned bufSize = shaderCode->GetBufferSize();
+        unsigned bufSize = (unsigned)shaderCode->GetBufferSize();
         // Use the original bytecode to reflect the parameters
         ParseParameters(bufData, bufSize);
         CalculateConstantBufferSizes();
 
         // Then strip everything not necessary to use the shader
         ID3DBlob* strippedCode = 0;
-        D3DStripShader(bufData, bufSize, D3DCOMPILER_STRIP_REFLECTION_DATA | D3DCOMPILER_STRIP_DEBUG_INFO |
-            D3DCOMPILER_STRIP_TEST_BLOBS, &strippedCode);
-        byteCode_.Resize(strippedCode->GetBufferSize());
+        D3DStripShader(bufData, bufSize,
+            D3DCOMPILER_STRIP_REFLECTION_DATA | D3DCOMPILER_STRIP_DEBUG_INFO | D3DCOMPILER_STRIP_TEST_BLOBS, &strippedCode);
+        byteCode_.Resize((unsigned)strippedCode->GetBufferSize());
         memcpy(&byteCode_[0], strippedCode->GetBufferPointer(), byteCode_.Size());
         strippedCode->Release();
     }
@@ -323,11 +324,11 @@ void ShaderVariation::ParseParameters(unsigned char* bufData, unsigned bufSize)
         for (unsigned i = 0; i < shaderDesc.InputParameters; ++i)
         {
             D3D11_SIGNATURE_PARAMETER_DESC paramDesc;
-            reflection->GetInputParameterDesc((unsigned)i, &paramDesc);
+            reflection->GetInputParameterDesc((UINT)i, &paramDesc);
             for (unsigned j = 0; j < MAX_VERTEX_ELEMENTS; ++j)
             {
-                if (!String::Compare(paramDesc.SemanticName, VertexBuffer::elementSemantics[j], true) && paramDesc.SemanticIndex ==
-                    VertexBuffer::elementSemanticIndices[j])
+                if (!String::Compare(paramDesc.SemanticName, VertexBuffer::elementSemantics[j], true) &&
+                    paramDesc.SemanticIndex == VertexBuffer::elementSemanticIndices[j])
                 {
                     elementMask_ |= (1 << j);
                     break;
@@ -413,7 +414,7 @@ void ShaderVariation::SaveByteCode(const String& binaryShaderName)
         if (useTextureUnit_[i])
         {
             file->WriteString(graphics_->GetTextureUnitName((TextureUnit)i));
-            file->WriteUByte(i);
+            file->WriteUByte((unsigned char)i);
         }
     }
 

@@ -1,3 +1,7 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Core/Context.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsImpl.h"
@@ -71,7 +75,7 @@ bool IndexBuffer::SetSize(unsigned indexCount, bool largeIndices, bool dynamic)
 
     dynamic_ = dynamic;
     indexCount_ = indexCount;
-    indexSize_ = largeIndices ? sizeof(unsigned) : sizeof(unsigned short);
+    indexSize_ = (unsigned)(largeIndices ? sizeof(unsigned) : sizeof(unsigned short));
 
     if (shadowed_ && indexCount_ && indexSize_)
         shadowData_ = new unsigned char[indexCount_ * indexSize_];
@@ -251,6 +255,8 @@ void IndexBuffer::Unlock()
         lockScratchData_ = 0;
         lockState_ = LOCK_NONE;
         break;
+
+    default: break;
     }
 }
 
@@ -314,7 +320,7 @@ bool IndexBuffer::Create()
         bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
         bufferDesc.CPUAccessFlags = dynamic_ ? D3D11_CPU_ACCESS_WRITE : 0;
         bufferDesc.Usage = dynamic_ ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT;
-        bufferDesc.ByteWidth = (unsigned)(indexCount_ * indexSize_);
+        bufferDesc.ByteWidth = (UINT)(indexCount_ * indexSize_);
 
         graphics_->GetImpl()->GetDevice()->CreateBuffer(&bufferDesc, 0, (ID3D11Buffer**)&object_);
 

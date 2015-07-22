@@ -1,13 +1,17 @@
+
+
 #ifdef CLOCKWORK_NAVIGATION
-#include "../Script/APITemplates.h"
+
+#include "../Precompiled.h"
+
 #include "../Navigation/Navigable.h"
 #include "../Navigation/CrowdAgent.h"
 #include "../Navigation/NavigationMesh.h"
-#include "../Navigation/DetourCrowdManager.h"
 #include "../Navigation/DynamicNavigationMesh.h"
 #include "../Navigation/OffMeshConnection.h"
 #include "../Navigation/NavArea.h"
 #include "../Navigation/Obstacle.h"
+#include "../Script/APITemplates.h"
 
 namespace Clockwork
 {
@@ -35,7 +39,7 @@ static CScriptArray* DynamicNavigationMeshFindPath(const Vector3& start, const V
 
 static CScriptArray* DetourCrowdManagerGetActiveAgents(DetourCrowdManager* crowd)
 {
-    PODVector<CrowdAgent*> agents = crowd->GetActiveAgents();
+    const PODVector<CrowdAgent*>& agents = crowd->GetActiveAgents();
     return VectorToHandleArray<CrowdAgent>(agents, "Array<CrowdAgent@>");
 }
 
@@ -163,6 +167,9 @@ void RegisterDetourCrowdManager(asIScriptEngine* engine)
     engine->RegisterObjectMethod("DetourCrowdManager", "Array<CrowdAgent@>@ GetActiveAgents()", asFUNCTION(DetourCrowdManagerGetActiveAgents), asCALL_CDECL_OBJLAST);
     engine->RegisterObjectMethod("DetourCrowdManager", "void SetAreaCost(uint, uint, float)", asMETHOD(DetourCrowdManager, SetAreaCost), asCALL_THISCALL);
     engine->RegisterObjectMethod("DetourCrowdManager", "float GetAreaCost(uint, uint)", asMETHOD(DetourCrowdManager, GetAreaCost), asCALL_THISCALL);
+    engine->RegisterObjectMethod("DetourCrowdManager", "void SetCrowdTarget(const Vector3&in, int startId = 0, int endId = M_MAX_INT)", asMETHOD(DetourCrowdManager, SetCrowdTarget), asCALL_THISCALL);
+    engine->RegisterObjectMethod("DetourCrowdManager", "void ResetCrowdTarget(int startId = 0, int endId = M_MAX_INT)", asMETHOD(DetourCrowdManager, ResetCrowdTarget), asCALL_THISCALL);
+    engine->RegisterObjectMethod("DetourCrowdManager", "void SetCrowdVelocity(const Vector3&in, int startId = 0, int endId = M_MAX_INT)", asMETHOD(DetourCrowdManager, SetCrowdVelocity), asCALL_THISCALL);
 }
 
 void RegisterCrowdAgent(asIScriptEngine* engine)
@@ -172,10 +179,9 @@ void RegisterCrowdAgent(asIScriptEngine* engine)
     engine->RegisterEnumValue("CrowdTargetState", "CROWD_AGENT_TARGET_FAILED", CROWD_AGENT_TARGET_FAILED);
     engine->RegisterEnumValue("CrowdTargetState", "CROWD_AGENT_TARGET_VALID", CROWD_AGENT_TARGET_VALID);
     engine->RegisterEnumValue("CrowdTargetState", "CROWD_AGENT_TARGET_REQUESTING", CROWD_AGENT_TARGET_REQUESTING);
-    engine->RegisterEnumValue("CrowdTargetState", "CROWD_AGENT_TARGET_WAITINGFORPATH", CROWD_AGENT_TARGET_WAITINGFORPATH);
     engine->RegisterEnumValue("CrowdTargetState", "CROWD_AGENT_TARGET_WAITINGFORQUEUE", CROWD_AGENT_TARGET_WAITINGFORQUEUE);
+    engine->RegisterEnumValue("CrowdTargetState", "CROWD_AGENT_TARGET_WAITINGFORPATH", CROWD_AGENT_TARGET_WAITINGFORPATH);
     engine->RegisterEnumValue("CrowdTargetState", "CROWD_AGENT_TARGET_VELOCITY", CROWD_AGENT_TARGET_VELOCITY);
-    engine->RegisterEnumValue("CrowdTargetState", "CROWD_AGENT_TARGET_ARRIVED", CROWD_AGENT_TARGET_ARRIVED);
 
     engine->RegisterEnum("CrowdAgentState");
     engine->RegisterEnumValue("CrowdAgentState", "CROWD_AGENT_INVALID", CROWD_AGENT_INVALID);
@@ -196,8 +202,8 @@ void RegisterCrowdAgent(asIScriptEngine* engine)
     engine->RegisterObjectMethod("CrowdAgent", "void DrawDebugGeometry(bool)", asMETHODPR(CrowdAgent, DrawDebugGeometry, (bool), void), asCALL_THISCALL);
     engine->RegisterObjectMethod("CrowdAgent", "uint get_navigationFilterType()", asMETHOD(CrowdAgent, GetNavigationFilterType), asCALL_THISCALL);
     engine->RegisterObjectMethod("CrowdAgent", "void set_navigationFilterType(uint)", asMETHOD(CrowdAgent, SetNavigationFilterType), asCALL_THISCALL);
-    engine->RegisterObjectMethod("CrowdAgent", "bool SetMoveTarget(const Vector3&in)", asMETHOD(CrowdAgent, SetMoveTarget), asCALL_THISCALL);
-    engine->RegisterObjectMethod("CrowdAgent", "bool SetMoveVelocity(const Vector3&in)", asMETHOD(CrowdAgent, SetMoveVelocity), asCALL_THISCALL);
+    engine->RegisterObjectMethod("CrowdAgent", "void SetMoveTarget(const Vector3&in)", asMETHOD(CrowdAgent, SetMoveTarget), asCALL_THISCALL);
+    engine->RegisterObjectMethod("CrowdAgent", "void SetMoveVelocity(const Vector3&in)", asMETHOD(CrowdAgent, SetMoveVelocity), asCALL_THISCALL);
     engine->RegisterObjectMethod("CrowdAgent", "void set_updateNodePosition(bool)", asMETHOD(CrowdAgent, SetUpdateNodePosition), asCALL_THISCALL);
     engine->RegisterObjectMethod("CrowdAgent", "bool get_updateNodePosition() const", asMETHOD(CrowdAgent, GetUpdateNodePosition), asCALL_THISCALL);
     engine->RegisterObjectMethod("CrowdAgent", "void set_maxAccel(float)", asMETHOD(CrowdAgent, SetMaxAccel), asCALL_THISCALL);
@@ -208,6 +214,7 @@ void RegisterCrowdAgent(asIScriptEngine* engine)
     engine->RegisterObjectMethod("CrowdAgent", "NavigationAvoidanceQuality get_navigationQuality()", asMETHOD(CrowdAgent, GetNavigationQuality), asCALL_THISCALL);
     engine->RegisterObjectMethod("CrowdAgent", "void set_navigationPushiness(NavigationPushiness)", asMETHOD(CrowdAgent, SetNavigationPushiness), asCALL_THISCALL);
     engine->RegisterObjectMethod("CrowdAgent", "NavigationPushiness get_navigationPushiness()", asMETHOD(CrowdAgent, GetNavigationPushiness), asCALL_THISCALL);
+    engine->RegisterObjectMethod("CrowdAgent", "bool get_arrived() const", asMETHOD(CrowdAgent, HasArrived), asCALL_THISCALL);
     engine->RegisterObjectMethod("CrowdAgent", "Vector3 get_desiredVelocity() const", asMETHOD(CrowdAgent, GetDesiredVelocity), asCALL_THISCALL);
     engine->RegisterObjectMethod("CrowdAgent", "Vector3 get_actualVelocity() const", asMETHOD(CrowdAgent, GetActualVelocity), asCALL_THISCALL);
     engine->RegisterObjectMethod("CrowdAgent", "Vector3 get_targetPosition() const", asMETHOD(CrowdAgent, GetTargetPosition), asCALL_THISCALL);
@@ -233,4 +240,5 @@ void RegisterNavigationAPI(asIScriptEngine* engine)
 }
 
 }
+
 #endif

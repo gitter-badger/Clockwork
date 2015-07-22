@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Mutex.h"
 
 #ifdef WIN32
@@ -12,6 +16,7 @@ namespace Clockwork
 {
 
 #ifdef WIN32
+
 Mutex::Mutex() :
     handle_(new CRITICAL_SECTION)
 {
@@ -35,7 +40,9 @@ void Mutex::Release()
 {
     LeaveCriticalSection((CRITICAL_SECTION*)handle_);
 }
+
 #else
+
 Mutex::Mutex() :
     handle_(new pthread_mutex_t)
 {
@@ -63,6 +70,7 @@ void Mutex::Release()
 {
     pthread_mutex_unlock((pthread_mutex_t*)handle_);
 }
+
 #endif
 
 MutexLock::MutexLock(Mutex& mutex) :

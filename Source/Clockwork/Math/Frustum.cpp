@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Math/Frustum.h"
 
 namespace Clockwork
@@ -41,7 +45,7 @@ Frustum::Frustum(const Frustum& frustum)
     *this = frustum;
 }
 
-Frustum& Frustum::operator = (const Frustum& rhs)
+Frustum& Frustum::operator =(const Frustum& rhs)
 {
     for (unsigned i = 0; i < NUM_FRUSTUM_PLANES; ++i)
         planes_[i] = rhs.planes_[i];

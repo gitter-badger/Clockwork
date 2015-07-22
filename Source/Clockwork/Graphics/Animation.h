@@ -1,9 +1,11 @@
+
+
 #pragma once
 
-#include "../Math/Quaternion.h"
-#include "../Resource/Resource.h"
 #include "../Container/Ptr.h"
+#include "../Math/Quaternion.h"
 #include "../Math/Vector3.h"
+#include "../Resource/Resource.h"
 
 namespace Clockwork
 {
@@ -91,24 +93,31 @@ public:
 
     /// Return animation name.
     const String& GetAnimationName() const { return animationName_; }
+
     /// Return animation name hash.
     StringHash GetAnimationNameHash() const { return animationNameHash_; }
+
     /// Return animation length.
     float GetLength() const { return length_; }
+
     /// Return all animation tracks.
     const Vector<AnimationTrack>& GetTracks() const { return tracks_; }
+
     /// Return number of animation tracks.
     unsigned GetNumTracks() const { return tracks_.Size(); }
+
     /// Return animation track by index.
     const AnimationTrack* GetTrack(unsigned index) const;
     /// Return animation track by bone name.
     const AnimationTrack* GetTrack(const String& name) const;
     /// Return animation track by bone name hash.
     const AnimationTrack* GetTrack(StringHash nameHash) const;
+
     /// Return animation trigger points.
     const Vector<AnimationTriggerPoint>& GetTriggers() const { return triggers_; }
+
     /// Return number of animation trigger points.
-    unsigned GetNumTriggers() const {return triggers_.Size(); }
+    unsigned GetNumTriggers() const { return triggers_.Size(); }
 
 private:
     /// Animation name.

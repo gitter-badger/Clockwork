@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Math/MathDefs.h"
 #include "../Math/StringHash.h"
 
@@ -31,7 +35,7 @@ unsigned StringHash::Calculate(const char* str)
     {
         // Perform the actual hashing as case-insensitive
         char c = *str;
-        hash = SDBMHash(hash, tolower(c));
+        hash = SDBMHash(hash, (unsigned char)tolower(c));
         ++str;
     }
 

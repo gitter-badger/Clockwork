@@ -1,7 +1,11 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
 #include "../../Graphics/ConstantBuffer.h"
+#include "../../IO/Log.h"
 
 #include "../../DebugNew.h"
 
@@ -27,10 +31,10 @@ void ConstantBuffer::Release()
         if (!graphics_)
             return;
 
-        #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
         graphics_->SetUBO(0);
         glDeleteBuffers(1, &object_);
-        #endif
+#endif
         object_ = 0;
     }
 
@@ -63,12 +67,12 @@ bool ConstantBuffer::SetSize(unsigned size)
 
     if (graphics_)
     {
-        #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
         if (!object_)
             glGenBuffers(1, &object_);
         graphics_->SetUBO(object_);
         glBufferData(GL_UNIFORM_BUFFER, size_, shadowData_.Get(), GL_DYNAMIC_DRAW);
-        #endif
+#endif
     }
 
     return true;
@@ -106,10 +110,10 @@ void ConstantBuffer::Apply()
 {
     if (dirty_ && object_)
     {
-        #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
         graphics_->SetUBO(object_);
         glBufferData(GL_UNIFORM_BUFFER, size_, shadowData_.Get(), GL_DYNAMIC_DRAW);
-        #endif
+#endif
         dirty_ = false;
     }
 }

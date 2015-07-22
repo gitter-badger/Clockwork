@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Clockwork2D/CollisionShape2D.h"
@@ -12,7 +14,7 @@ class CLOCKWORK_API CollisionCircle2D : public CollisionShape2D
 
 public:
     /// Construct.
-    CollisionCircle2D(Context* scontext);
+    CollisionCircle2D(Context* context);
     /// Destruct.
     virtual ~CollisionCircle2D();
     /// Register object factory.
@@ -27,6 +29,7 @@ public:
 
     /// Return radius.
     float GetRadius() const { return radius_; }
+
     /// Return center.
     const Vector2& GetCenter() const { return center_; }
 

@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Object.h"
@@ -54,12 +56,16 @@ public:
 
     /// Return name.
     const String& GetName() const { return name_; }
+
     /// Return name hash.
     StringHash GetNameHash() const { return nameHash_; }
+
     /// Return memory use in bytes, possibly approximate.
     unsigned GetMemoryUse() const { return memoryUse_; }
+
     /// Return time since last use in milliseconds. If referred to elsewhere than in the resource cache, returns always zero.
     unsigned GetUseTimer();
+
     /// Return the asynchronous loading state.
     AsyncLoadState GetAsyncLoadState() const { return asyncLoadState_; }
 

@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Object.h"
@@ -35,20 +37,28 @@ public:
     bool Exists(const String& fileName) const;
     /// Return the file entry corresponding to the name, or null if not found.
     const PackageEntry* GetEntry(const String& fileName) const;
+
     /// Return all file entries.
     const HashMap<String, PackageEntry>& GetEntries() const { return entries_; }
+
     /// Return the package file name.
     const String& GetName() const { return fileName_; }
+
     /// Return hash of the package file name.
     StringHash GetNameHash() const { return nameHash_; }
+
     /// Return number of files.
     unsigned GetNumFiles() const { return entries_.Size(); }
+
     /// Return total size of the package file.
     unsigned GetTotalSize() const { return totalSize_; }
+
     /// Return checksum of the package file contents.
     unsigned GetChecksum() const { return checksum_; }
+
     /// Return whether the files are compressed.
     bool IsCompressed() const { return compressed_; }
+
     /// Return list of entry names
     const Vector<String> GetEntryNames() const { return entries_.Keys(); }
 

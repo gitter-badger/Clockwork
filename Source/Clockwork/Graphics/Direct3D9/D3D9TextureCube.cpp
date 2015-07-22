@@ -1,13 +1,17 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Core/Context.h"
-#include "../../IO/FileSystem.h"
+#include "../../Core/Profiler.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsEvents.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
-#include "../../Core/Profiler.h"
 #include "../../Graphics/Renderer.h"
-#include "../../Resource/ResourceCache.h"
 #include "../../Graphics/TextureCube.h"
+#include "../../IO/FileSystem.h"
+#include "../../IO/Log.h"
+#include "../../Resource/ResourceCache.h"
 #include "../../Resource/XMLFile.h"
 
 #include "../../DebugNew.h"
@@ -30,7 +34,8 @@ static const char* cubeMapLayoutNames[] = {
 
 static SharedPtr<Image> GetTileImage(Image* src, int tileX, int tileY, int tileWidth, int tileHeight)
 {
-    return SharedPtr<Image>(src->GetSubimage(IntRect(tileX * tileWidth, tileY * tileHeight, (tileX + 1) * tileWidth, (tileY + 1) * tileHeight)));
+    return SharedPtr<Image>(
+        src->GetSubimage(IntRect(tileX * tileWidth, tileY * tileHeight, (tileX + 1) * tileWidth, (tileY + 1) * tileHeight)));
 }
 
 TextureCube::TextureCube(Context* context) :
@@ -96,7 +101,8 @@ bool TextureCube::BeginLoad(Deserializer& source)
         if (GetPath(name).Empty())
             name = texPath + name;
 
-        CubeMapLayout layout = (CubeMapLayout)GetStringListIndex(imageElem.GetAttribute("layout").CString(), cubeMapLayoutNames, CML_HORIZONTAL);
+        CubeMapLayout layout =
+            (CubeMapLayout)GetStringListIndex(imageElem.GetAttribute("layout").CString(), cubeMapLayoutNames, CML_HORIZONTAL);
         SharedPtr<Image> image = cache->GetTempResource<Image>(name);
         if (!image)
             return false;
@@ -371,8 +377,8 @@ bool TextureCube::SetData(CubeMapFace face, unsigned level, int x, int y, int wi
     if (level == 0 && x == 0 && y == 0 && width == levelWidth && height == levelHeight && pool_ == D3DPOOL_DEFAULT)
         flags |= D3DLOCK_DISCARD;
 
-    if (FAILED(((IDirect3DCubeTexture9*)object_)->LockRect((D3DCUBEMAP_FACES)face, level, &d3dLockedRect, (flags &
-        D3DLOCK_DISCARD) ? 0 : &d3dRect, flags)))
+    if (FAILED(((IDirect3DCubeTexture9*)object_)->LockRect((D3DCUBEMAP_FACES)face, level, &d3dLockedRect,
+        (flags & D3DLOCK_DISCARD) ? 0 : &d3dRect, flags)))
     {
         LOGERROR("Could not lock texture");
         return false;
@@ -409,9 +415,12 @@ bool TextureCube::SetData(CubeMapFace face, unsigned level, int x, int y, int wi
             unsigned char* dest = (unsigned char*)d3dLockedRect.pBits + i * d3dLockedRect.Pitch;
             for (int j = 0; j < width; ++j)
             {
-                *dest++  = src[2]; *dest++ = src[1]; *dest++ = src[0]; *dest++ = 255;
+                *dest++ = src[2];
+                *dest++ = src[1];
+                *dest++ = src[0];
+                *dest++ = 255;
                 src += 3;
-           }
+            }
         }
         break;
 
@@ -421,9 +430,12 @@ bool TextureCube::SetData(CubeMapFace face, unsigned level, int x, int y, int wi
             unsigned char* dest = (unsigned char*)d3dLockedRect.pBits + i * d3dLockedRect.Pitch;
             for (int j = 0; j < width; ++j)
             {
-                *dest++  = src[2]; *dest++ = src[1]; *dest++ = src[0]; *dest++ = src[3];
+                *dest++ = src[2];
+                *dest++ = src[1];
+                *dest++ = src[0];
+                *dest++ = src[3];
                 src += 4;
-           }
+            }
         }
         break;
     }
@@ -496,6 +508,10 @@ bool TextureCube::SetData(CubeMapFace face, SharedPtr<Image> image, bool useAlph
         case 4:
             format = Graphics::GetRGBAFormat();
             break;
+
+        default:
+            assert(false);  // Should never reach here
+            break;
         }
 
         // Create the texture when face 0 is being loaded, check that rest of the faces are same size & format
@@ -565,7 +581,7 @@ bool TextureCube::SetData(CubeMapFace face, SharedPtr<Image> image, bool useAlph
         // Create the texture when face 0 is being loaded, assume rest of the faces are same size & format
         if (!face)
         {
-            SetNumLevels(Max((int)(levels - mipsToSkip), 1));
+            SetNumLevels((unsigned)Max((int)(levels - mipsToSkip), 1));
             SetSize(width, format);
         }
         else
@@ -646,10 +662,39 @@ bool TextureCube::GetData(CubeMapFace face, unsigned level, void* dest) const
     d3dRect.right = levelWidth;
     d3dRect.bottom = levelHeight;
 
-    if (FAILED(((IDirect3DCubeTexture9*)object_)->LockRect((D3DCUBEMAP_FACES)face, level, &d3dLockedRect, &d3dRect, D3DLOCK_READONLY)))
+    IDirect3DSurface9* offscreenSurface = 0;
+    // Need to use a offscreen surface & GetRenderTargetData() for rendertargets
+    if (renderSurfaces_[face])
     {
-        LOGERROR("Could not lock texture");
-        return false;
+        if (level != 0)
+        {
+            LOGERROR("Can only get mip level 0 data from a rendertarget");
+            return false;
+        }
+
+        IDirect3DDevice9* device = graphics_->GetImpl()->GetDevice();
+        device->CreateOffscreenPlainSurface((UINT)width_, (UINT)height_, (D3DFORMAT)format_, D3DPOOL_SYSTEMMEM, &offscreenSurface, 0);
+        if (!offscreenSurface)
+        {
+            LOGERROR("Could not create surface for getting rendertarget data");
+            return false;
+        }
+        device->GetRenderTargetData((IDirect3DSurface9*)renderSurfaces_[face]->GetSurface(), offscreenSurface);
+        if (FAILED(offscreenSurface->LockRect(&d3dLockedRect, &d3dRect, D3DLOCK_READONLY)))
+        {
+            LOGERROR("Could not lock surface for getting rendertarget data");
+            offscreenSurface->Release();
+            return false;
+        }
+    }
+    else
+    {
+        if (FAILED(
+            ((IDirect3DCubeTexture9*)object_)->LockRect((D3DCUBEMAP_FACES)face, level, &d3dLockedRect, &d3dRect, D3DLOCK_READONLY)))
+        {
+            LOGERROR("Could not lock texture");
+            return false;
+        }
     }
 
     int height = levelHeight;
@@ -680,9 +725,12 @@ bool TextureCube::GetData(CubeMapFace face, unsigned level, void* dest) const
             unsigned char* src = (unsigned char*)d3dLockedRect.pBits + i * d3dLockedRect.Pitch;
             for (int j = 0; j < levelWidth; ++j)
             {
-                destPtr[2] = *src++; destPtr[1] = *src++; destPtr[0] = *src++; ++src;
+                destPtr[2] = *src++;
+                destPtr[1] = *src++;
+                destPtr[0] = *src++;
+                ++src;
                 destPtr += 3;
-           }
+            }
         }
         break;
 
@@ -692,14 +740,24 @@ bool TextureCube::GetData(CubeMapFace face, unsigned level, void* dest) const
             unsigned char* src = (unsigned char*)d3dLockedRect.pBits + i * d3dLockedRect.Pitch;
             for (int j = 0; j < levelWidth; ++j)
             {
-                destPtr[2] = *src++; destPtr[1] = *src++; destPtr[0] = *src++; destPtr[3] = *src++;
+                destPtr[2] = *src++;
+                destPtr[1] = *src++;
+                destPtr[0] = *src++;
+                destPtr[3] = *src++;
                 destPtr += 4;
-           }
+            }
         }
         break;
     }
 
-    ((IDirect3DCubeTexture9*)object_)->UnlockRect((D3DCUBEMAP_FACES)face, level);
+    if (offscreenSurface)
+    {
+        offscreenSurface->UnlockRect();
+        offscreenSurface->Release();
+    }
+    else
+        ((IDirect3DCubeTexture9*)object_)->UnlockRect((D3DCUBEMAP_FACES)face, level);
+
     return true;
 }
 
@@ -718,7 +776,7 @@ bool TextureCube::Create()
 
     IDirect3DDevice9* device = graphics_->GetImpl()->GetDevice();
     if (!device || FAILED(device->CreateCubeTexture(
-        width_,
+        (UINT)width_,
         requestedLevels_,
         usage_,
         (D3DFORMAT)format_,

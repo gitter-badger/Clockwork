@@ -1,7 +1,11 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
-#include "../IO/Log.h"
 #include "../Graphics/Material.h"
 #include "../Graphics/ParticleEffect.h"
+#include "../IO/Log.h"
 #include "../Resource/ResourceCache.h"
 #include "../Resource/XMLFile.h"
 
@@ -127,7 +131,7 @@ bool ParticleEffect::BeginLoad(Deserializer& source)
     }
 
     if (rootElem.HasChild("numparticles"))
-        SetNumParticles(rootElem.GetChild("numparticles").GetInt("value"));
+        SetNumParticles((unsigned)rootElem.GetChild("numparticles").GetInt("value"));
 
     if (rootElem.HasChild("updateinvisible"))
         updateInvisible_ = rootElem.GetChild("updateinvisible").GetBool("enable");
@@ -231,7 +235,8 @@ bool ParticleEffect::BeginLoad(Deserializer& source)
     if (rootElem.HasChild("colorfade"))
     {
         Vector<ColorFrame> fades;
-        for (XMLElement colorFadeElem = rootElem.GetChild("colorfade"); colorFadeElem; colorFadeElem = colorFadeElem.GetNext("colorfade"))
+        for (XMLElement colorFadeElem = rootElem.GetChild("colorfade"); colorFadeElem;
+             colorFadeElem = colorFadeElem.GetNext("colorfade"))
             fades.Push(ColorFrame(colorFadeElem.GetColor("color"), colorFadeElem.GetFloat("time")));
 
         SetColorFrames(fades);
@@ -316,7 +321,7 @@ bool ParticleEffect::Load(const XMLElement& source)
     }
 
     if (source.HasChild("numparticles"))
-        SetNumParticles(source.GetChild("numparticles").GetInt("value"));
+        SetNumParticles((unsigned)source.GetChild("numparticles").GetInt("value"));
 
     if (source.HasChild("updateinvisible"))
         updateInvisible_ = source.GetChild("updateinvisible").GetBool("enable");
@@ -420,7 +425,8 @@ bool ParticleEffect::Load(const XMLElement& source)
     if (source.HasChild("colorfade"))
     {
         Vector<ColorFrame> fades;
-        for (XMLElement colorFadeElem = source.GetChild("colorfade"); colorFadeElem; colorFadeElem = colorFadeElem.GetNext("colorfade"))
+        for (XMLElement colorFadeElem = source.GetChild("colorfade"); colorFadeElem;
+             colorFadeElem = colorFadeElem.GetNext("colorfade"))
             fades.Push(ColorFrame(colorFadeElem.GetColor("color"), colorFadeElem.GetFloat("time")));
 
         SetColorFrames(fades);
@@ -567,7 +573,7 @@ void ParticleEffect::SetMaterial(Material* material)
 
 void ParticleEffect::SetNumParticles(unsigned num)
 {
-    numParticles_ = Max(0, num);
+    numParticles_ = (unsigned)Max(0, num);
 }
 
 void ParticleEffect::SetUpdateInvisible(bool enable)
@@ -740,7 +746,7 @@ void ParticleEffect::RemoveColorFrame(unsigned index)
 {
     unsigned s = colorFrames_.Size();
 
-    for (unsigned i = index; i < s - 1 ; i++)
+    for (unsigned i = index; i < s - 1; i++)
     {
         colorFrames_[i].color_ = colorFrames_[i + 1].color_;
         colorFrames_[i].time_ = colorFrames_[i + 1].time_;
@@ -757,7 +763,7 @@ void ParticleEffect::SetColorFrames(const Vector<ColorFrame>& colorFrames)
 void ParticleEffect::SetColorFrame(unsigned index, const ColorFrame& colorFrame)
 {
     if (colorFrames_.Size() < index + 1)
-         colorFrames_.Resize(index + 1);
+        colorFrames_.Resize(index + 1);
     colorFrames_[index] = colorFrame;
 }
 
@@ -765,7 +771,7 @@ void ParticleEffect::SetNumColorFrames(unsigned number)
 {
     unsigned s = colorFrames_.Size();
     if (s != number)
-         colorFrames_.Resize(number);
+        colorFrames_.Resize(number);
 }
 
 void ParticleEffect::SortColorFrames()
@@ -810,7 +816,7 @@ void ParticleEffect::RemoveTextureFrame(unsigned index)
 {
     unsigned s = textureFrames_.Size();
 
-    for (unsigned i = index; i < s - 1 ; i++)
+    for (unsigned i = index; i < s - 1; i++)
     {
         textureFrames_[i].uv_ = textureFrames_[i + 1].uv_;
         textureFrames_[i].time_ = textureFrames_[i + 1].time_;
@@ -835,7 +841,7 @@ void ParticleEffect::SetNumTextureFrames(unsigned number)
 {
     unsigned s = textureFrames_.Size();
     if (s != number)
-         textureFrames_.Resize(number);
+        textureFrames_.Resize(number);
 }
 
 void ParticleEffect::SortTextureFrames()
@@ -858,11 +864,8 @@ const TextureFrame* ParticleEffect::GetTextureFrame(unsigned index) const
 
 Vector3 ParticleEffect::GetRandomDirection() const
 {
-    return Vector3(
-        Lerp(directionMin_.x_, directionMax_.x_, Random(1.0f)),
-        Lerp(directionMin_.y_, directionMax_.y_, Random(1.0f)),
-        Lerp(directionMin_.z_, directionMax_.z_, Random(1.0f))
-        );
+    return Vector3(Lerp(directionMin_.x_, directionMax_.x_, Random(1.0f)), Lerp(directionMin_.y_, directionMax_.y_, Random(1.0f)),
+        Lerp(directionMin_.z_, directionMax_.z_, Random(1.0f)));
 }
 
 Vector2 ParticleEffect::GetRandomSize() const

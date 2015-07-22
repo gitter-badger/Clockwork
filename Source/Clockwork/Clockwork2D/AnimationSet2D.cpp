@@ -1,9 +1,13 @@
-#include "../Clockwork2D/Animation2D.h"
-#include "../Clockwork2D/AnimationSet2D.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../IO/FileSystem.h"
 #include "../IO/Log.h"
 #include "../Resource/ResourceCache.h"
+#include "../Clockwork2D/Animation2D.h"
+#include "../Clockwork2D/AnimationSet2D.h"
 #include "../Clockwork2D/Sprite2D.h"
 #include "../Clockwork2D/SpriteSheet2D.h"
 #include "../Resource/XMLFile.h"
@@ -79,7 +83,7 @@ Sprite2D* AnimationSet2D::GetSprite(const StringHash& hash) const
     return 0;
 }
 
-bool AnimationSet2D::BeginLoadSpriter(Deserializer &source)
+bool AnimationSet2D::BeginLoadSpriter(Deserializer& source)
 {
     spriterFile_ = new XMLFile(context_);
     if (!spriterFile_->Load(source))
@@ -127,7 +131,8 @@ bool AnimationSet2D::EndLoadSpriter()
         return false;
     }
 
-    for (XMLElement animationElem = entityElem.GetChild("animation"); animationElem; animationElem = animationElem.GetNext("animation"))
+    for (XMLElement animationElem = entityElem.GetChild("animation"); animationElem;
+         animationElem = animationElem.GetNext("animation"))
     {
         if (!LoadSpriterAnimation(animationElem))
         {
@@ -308,9 +313,12 @@ bool AnimationSet2D::LoadSpriterAnimation(const XMLElement& animationElem)
     if (animationElem.HasAttribute("looping"))
         looped = animationElem.GetBool("looping");
 
+    float highestKeyTime = 0.0f;
+
     // Load timelines
     Vector<SpriterTimeline2D> timelines;
-    for (XMLElement timelineElem = animationElem.GetChild("timeline"); timelineElem; timelineElem = timelineElem.GetNext("timeline"))
+    for (XMLElement timelineElem = animationElem.GetChild("timeline"); timelineElem;
+         timelineElem = timelineElem.GetNext("timeline"))
     {
         SpriterTimeline2D timeline;
         timeline.name_ = timelineElem.GetAttribute("name");
@@ -333,7 +341,6 @@ bool AnimationSet2D::LoadSpriterAnimation(const XMLElement& animationElem)
 
             key.angle_ = childElem.GetFloat("angle");
 
-            Vector2 scale(Vector2::ONE);
             if (childElem.HasAttribute("scale_x"))
                 key.scale_.x_ = childElem.GetFloat("scale_x");
 
@@ -344,7 +351,7 @@ bool AnimationSet2D::LoadSpriterAnimation(const XMLElement& animationElem)
             {
                 int folder = childElem.GetUInt("folder");
                 int file = childElem.GetUInt("file");
-                key.sprite_ = GetSprite(StringHash((folder << 16) + file));
+                key.sprite_ = GetSprite(StringHash((unsigned)((folder << 16) + file)));
                 if (!key.sprite_)
                 {
                     LOGERROR("Could not find sprite");
@@ -438,8 +445,9 @@ bool AnimationSet2D::LoadSpriterAnimation(const XMLElement& animationElem)
             AnimationKeyFrame2D& keyFrame = track.keyFrames_[j];
 
             keyFrame.time_ = timelineKey.time_;
+            highestKeyTime = Max(highestKeyTime, keyFrame.time_);
 
-            // Set diabled
+            // Set disabled
             keyFrame.enabled_ = false;
             keyFrame.parent_ = timeline.parent_;
             keyFrame.transform_ = Transform2D(timelineKey.position_, timelineKey.angle_, timelineKey.scale_);
@@ -487,6 +495,12 @@ bool AnimationSet2D::LoadSpriterAnimation(const XMLElement& animationElem)
                 keyFrames.Push(keyFrame);
             }
         }
+    }
+    else
+    {
+        // Crop non-looped animation length if longer than the last keyframe
+        if (length > highestKeyTime)
+            animation->SetLength(highestKeyTime);
     }
 
     animations_.Push(animation);

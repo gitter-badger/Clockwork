@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Condition.h"
 
 #ifdef WIN32
@@ -10,6 +14,7 @@ namespace Clockwork
 {
 
 #ifdef WIN32
+
 Condition::Condition() :
     event_(0)
 {
@@ -31,7 +36,9 @@ void Condition::Wait()
 {
     WaitForSingleObject((HANDLE)event_, INFINITE);
 }
+
 #else
+
 Condition::Condition() :
     mutex_(new pthread_mutex_t),
     event_(new pthread_cond_t)
@@ -67,6 +74,7 @@ void Condition::Wait()
     pthread_cond_wait(cond, mutex);
     pthread_mutex_unlock(mutex);
 }
+
 #endif
 
 }

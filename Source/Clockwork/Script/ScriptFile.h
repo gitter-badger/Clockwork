@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/ArrayPtr.h"
@@ -58,11 +60,14 @@ public:
     /// Execute a function.
     bool Execute(asIScriptFunction* function, const VariantVector& parameters = Variant::emptyVariantVector, bool unprepare = true);
     /// Query for an object method by declaration and execute if found.
-    bool Execute(asIScriptObject* object, const String& declaration, const VariantVector& parameters = Variant::emptyVariantVector, bool unprepare = true);
+    bool Execute(asIScriptObject* object, const String& declaration, const VariantVector& parameters = Variant::emptyVariantVector,
+        bool unprepare = true);
     /// Execute an object method.
-    bool Execute(asIScriptObject* object, asIScriptFunction* method, const VariantVector& parameters = Variant::emptyVariantVector, bool unprepare = true);
+    bool Execute(asIScriptObject* object, asIScriptFunction* method, const VariantVector& parameters = Variant::emptyVariantVector,
+        bool unprepare = true);
     /// Add a delay-executed function call, optionally repeating.
-    void DelayedExecute(float delay, bool repeat, const String& declaration, const VariantVector& parameters = Variant::emptyVariantVector);
+    void DelayedExecute
+        (float delay, bool repeat, const String& declaration, const VariantVector& parameters = Variant::emptyVariantVector);
     /// Clear pending delay-executed function calls. If empty declaration given, clears all.
     void ClearDelayedExecute(const String& declaration = String::EMPTY);
     /// Create a script object. Optionally search for the first class in the module that implements the specified interface.
@@ -72,12 +77,15 @@ public:
 
     /// Return script module.
     asIScriptModule* GetScriptModule() const { return scriptModule_; }
+
     /// Return a function by declaration. Will be stored to a search cache so that further searches should be faster.
     asIScriptFunction* GetFunction(const String& declaration);
     /// Return an object method by declaration.
     asIScriptFunction* GetMethod(asIScriptObject* object, const String& declaration);
+
     /// Return whether script compiled successfully.
     bool IsCompiled() const { return compiled_; }
+
     /// Clean up an event invoker object when its associated script object no longer exists
     void CleanupEventInvoker(asIScriptObject* object);
 
@@ -132,6 +140,7 @@ public:
 
     /// Get the asIScriptObject to call the method on, can be null.
     asIScriptObject* GetObject() const { return object_; }
+
     /// Returns whether the ScriptObject is still alive. Will return true if there is no reference and object.
     bool IsObjectAlive() const;
     /// Handle an event in script.

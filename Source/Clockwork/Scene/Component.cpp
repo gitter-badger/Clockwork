@@ -1,5 +1,9 @@
-#include "../Scene/Component.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
+#include "../Scene/Component.h"
 #include "../Scene/ReplicationState.h"
 #include "../Scene/Scene.h"
 #include "../Scene/SceneEvents.h"
@@ -146,8 +150,8 @@ void Component::PrepareNetworkUpdate()
             networkState_->previousValues_[i] = networkState_->currentValues_[i];
 
             // Mark the attribute dirty in all replication states that are tracking this component
-            for (PODVector<ReplicationState*>::Iterator j = networkState_->replicationStates_.Begin(); j !=
-                networkState_->replicationStates_.End(); ++j)
+            for (PODVector<ReplicationState*>::Iterator j = networkState_->replicationStates_.Begin();
+                 j != networkState_->replicationStates_.End(); ++j)
             {
                 ComponentReplicationState* compState = static_cast<ComponentReplicationState*>(*j);
                 compState->dirtyAttributes_.Set(i);
@@ -191,6 +195,10 @@ void Component::OnAttributeAnimationRemoved()
 }
 
 void Component::OnNodeSet(Node* node)
+{
+}
+
+void Component::OnSceneSet(Scene* scene)
 {
 }
 

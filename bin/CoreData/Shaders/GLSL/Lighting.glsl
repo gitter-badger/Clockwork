@@ -60,7 +60,7 @@ float GetVertexLightVolumetric(int index, vec3 worldPos)
 
 #ifdef SHADOW
 
-#if defined(DIRLIGHT) && (!defined(GL_ES) || defined(WEBGL))
+#if defined(DIRLIGHT) && !defined(GL_ES)
     #define NUMCASCADES 4
 #else
     #define NUMCASCADES 1
@@ -69,9 +69,9 @@ float GetVertexLightVolumetric(int index, vec3 worldPos)
 vec4 GetShadowPos(int index, vec4 projWorldPos)
 {
     #if defined(DIRLIGHT)
-        return projWorldPos * cLightMatrices[index];
+        return cLightMatrices[index] * projWorldPos;
     #elif defined(SPOTLIGHT)
-        return projWorldPos * cLightMatrices[1];
+        return cLightMatrices[1] * projWorldPos;
     #else
         return vec4(projWorldPos.xyz - cLightPos.xyz, 1.0);
     #endif
@@ -94,51 +94,6 @@ float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir)
     #endif
 }
 
-// [Burley 2012, "Physically-Based Shading at Disney"]
-// [Lagrade et al. 2014, "Moving Frostbite to Physically Based Rendering"]
-vec3 GetBurleyDiffuse(vec3 diffColor, float roughness, float NdotV, float NdotL, float VdotH)
-{
-  /*float FD90 = ( 0.5 + 2 * VdotH * VdotH ) * roughness;
-
-  float InvNdotV = 1 - NdotV;
-  float NdotVPow5 = InvNdotV * InvNdotV;
-  NdotVPow5 = NdotVPow5 * NdotVPow5 * InvNdotV;
-
-  float InvNdotL = 1 - NdotL;
-  float NdotLPow5 = InvNdotL * InvNdotL;
-  NdotLPow5 = NdotLPow5 * NdotLPow5 * InvNdotL;
-
-  float FdV = NdotVPow5;
-	float FdL =  NdotLPow5;
-*/
-//  return diffColor * ( 1 / 3.14159 * FdV * FdL ) * ( 1 - 0.3333 * roughness );
-  return diffColor *  3.14159265359;
-}
-
-//GGX
-// [Walter et al. 2007, "Microfacet models for refraction through rough surfaces"]
-float GetSpecularDist(float roughness, float NdotH)
-{
-  float m = roughness * roughness;
-	float m2 = m * m;
-	float d = ( NdotH * m2 - NdotH ) * NdotH + 1;	// 2 mad
-	return m2 / ( 3.141597*d*d );
-}
-
-vec3 GetSpecularFresnel(vec3 color, float VdotH)
-{
-  float fc = exp2( (-5.55473 * VdotH - 6.98316) * VdotH );
-	return vec3(fc) + (1 - fc) * color;
-}
-
-float GetSpecularGeoShadow(float roughness, float NdotV, float NdotL)
-{
-  float k = pow( roughness, roughness ) * 0.5;
-	float Vis_SchlickV = NdotV * (1 - k) + k;
-	float Vis_SchlickL = NdotL * (1 - k) + k;
-	return 0.25 / ( Vis_SchlickV * Vis_SchlickL );
-}
-
 float GetDiffuseVolumetric(vec3 worldPos)
 {
     #ifdef DIRLIGHT
@@ -158,12 +113,12 @@ float GetSpecular(vec3 normal, vec3 eyeVec, vec3 lightDir, float specularPower)
 
 float GetIntensity(vec3 color)
 {
-    return dot(color, vec3(0.299, 0.587, 0.114));
+    return dot(color, vec3(0.333));
 }
 
 #ifdef SHADOW
 
-#if defined(DIRLIGHT) && (!defined(GL_ES) || defined(WEBGL))
+#if defined(DIRLIGHT) && !defined(GL_ES)
     #define NUMCASCADES 4
 #else
     #define NUMCASCADES 1
@@ -180,24 +135,16 @@ float GetShadow(vec4 shadowPos)
             #else
                 vec2 offsets = cShadowMapInvSize;
             #endif
-            #ifndef GL3
-                return cShadowIntensity.y + cShadowIntensity.x * (shadow2DProj(sShadowMap, shadowPos).r +
-                    shadow2DProj(sShadowMap, vec4(shadowPos.x + offsets.x, shadowPos.yzw)).r +
-                    shadow2DProj(sShadowMap, vec4(shadowPos.x, shadowPos.y + offsets.y, shadowPos.zw)).r +
-                    shadow2DProj(sShadowMap, vec4(shadowPos.xy + offsets.xy, shadowPos.zw)).r);
-            #else
-                return cShadowIntensity.y + cShadowIntensity.x * (textureProj(sShadowMap, shadowPos) +
-                    textureProj(sShadowMap, vec4(shadowPos.x + offsets.x, shadowPos.yzw)) +
-                    textureProj(sShadowMap, vec4(shadowPos.x, shadowPos.y + offsets.y, shadowPos.zw)) +
-                    textureProj(sShadowMap, vec4(shadowPos.xy + offsets.xy, shadowPos.zw)));
-            #endif
+            vec4 inLight = vec4(
+                shadow2DProj(sShadowMap, shadowPos).r,
+                shadow2DProj(sShadowMap, vec4(shadowPos.x + offsets.x, shadowPos.yzw)).r,
+                shadow2DProj(sShadowMap, vec4(shadowPos.x, shadowPos.y + offsets.y, shadowPos.zw)).r,
+                shadow2DProj(sShadowMap, vec4(shadowPos.xy + offsets.xy, shadowPos.zw)).r
+            );
+            return cShadowIntensity.y + dot(inLight, vec4(cShadowIntensity.x));
         #else
             // Take one sample
-            #ifndef GL3
-                float inLight = shadow2DProj(sShadowMap, shadowPos).r;
-            #else
-                float inLight = textureProj(sShadowMap, shadowPos);
-            #endif
+            float inLight = shadow2DProj(sShadowMap, shadowPos).r;
             return cShadowIntensity.y + cShadowIntensity.x * inLight;
         #endif
     #else
@@ -246,7 +193,7 @@ float GetDirShadowFade(float inLight, float depth)
     return min(inLight + max((depth - cShadowDepthFade.z) * cShadowDepthFade.w, 0.0), 1.0);
 }
 
-#if !defined(GL_ES) || defined(WEBGL)
+#ifndef GL_ES
 float GetDirShadow(const vec4 iShadowPos[NUMCASCADES], float depth)
 {
     vec4 shadowPos;
@@ -259,6 +206,22 @@ float GetDirShadow(const vec4 iShadowPos[NUMCASCADES], float depth)
         shadowPos = iShadowPos[2];
     else
         shadowPos = iShadowPos[3];
+        
+    return GetDirShadowFade(GetShadow(shadowPos), depth);
+}
+
+float GetDirShadowDeferred(vec4 projWorldPos, float depth)
+{
+    vec4 shadowPos;
+
+    if (depth < cShadowSplits.x)
+        shadowPos = cLightMatricesPS[0] * projWorldPos;
+    else if (depth < cShadowSplits.y)
+        shadowPos = cLightMatricesPS[1] * projWorldPos;
+    else if (depth < cShadowSplits.z)
+        shadowPos = cLightMatricesPS[2] * projWorldPos;
+    else
+        shadowPos = cLightMatricesPS[3] * projWorldPos;
 
     return GetDirShadowFade(GetShadow(shadowPos), depth);
 }
@@ -266,24 +229,6 @@ float GetDirShadow(const vec4 iShadowPos[NUMCASCADES], float depth)
 float GetDirShadow(const vec4 iShadowPos[NUMCASCADES], float depth)
 {
     return GetDirShadowFade(GetShadow(iShadowPos[0]), depth);
-}
-#endif
-
-#ifndef GL_ES
-float GetDirShadowDeferred(vec4 projWorldPos, float depth)
-{
-    vec4 shadowPos;
-
-    if (depth < cShadowSplits.x)
-        shadowPos = projWorldPos * cLightMatricesPS[0];
-    else if (depth < cShadowSplits.y)
-        shadowPos = projWorldPos * cLightMatricesPS[1];
-    else if (depth < cShadowSplits.z)
-        shadowPos = projWorldPos * cLightMatricesPS[2];
-    else
-        shadowPos = projWorldPos * cLightMatricesPS[3];
-
-    return GetDirShadowFade(GetShadow(shadowPos), depth);
 }
 #endif
 #endif
@@ -305,7 +250,7 @@ float GetShadowDeferred(vec4 projWorldPos, float depth)
     #if defined(DIRLIGHT)
         return GetDirShadowDeferred(projWorldPos, depth);
     #elif defined(SPOTLIGHT)
-        vec4 shadowPos = projWorldPos * cLightMatricesPS[1];
+        vec4 shadowPos = cLightMatricesPS[1] * projWorldPos;
         return GetShadow(shadowPos);
     #else
         vec3 shadowPos = projWorldPos.xyz - cLightPosPS.xyz;

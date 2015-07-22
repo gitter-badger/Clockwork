@@ -1,8 +1,10 @@
+
+
 #pragma once
 
 #include "../Math/Color.h"
-#include "../Scene/Component.h"
 #include "../Math/Frustum.h"
+#include "../Scene/Component.h"
 
 namespace Clockwork
 {
@@ -109,16 +111,21 @@ public:
     /// Add a skeleton.
     void AddSkeleton(const Skeleton& skeleton, const Color& color, bool depthTest = true);
     /// Add a triangle mesh.
-    void AddTriangleMesh(const void* vertexData, unsigned vertexSize, const void* indexData, unsigned indexSize, unsigned indexStart, unsigned indexCount, const Matrix3x4& transform, const Color& color, bool depthTest = true);
+    void AddTriangleMesh
+        (const void* vertexData, unsigned vertexSize, const void* indexData, unsigned indexSize, unsigned indexStart,
+            unsigned indexCount, const Matrix3x4& transform, const Color& color, bool depthTest = true);
     /// Update vertex buffer and render all debug lines. The viewport and rendertarget should be set before.
     void Render();
 
     /// Return the view transform.
     const Matrix3x4& GetView() const { return view_; }
+
     /// Return the projection transform.
     const Matrix4& GetProjection() const { return projection_; }
+
     /// Return the view frustum.
     const Frustum& GetFrustum() const { return frustum_; }
+
     /// Check whether a bounding box is inside the view frustum.
     bool IsInside(const BoundingBox& box) const;
     /// Return whether has something to render.

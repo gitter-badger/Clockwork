@@ -1,10 +1,14 @@
-#include "../Clockwork2D/CollisionShape2D.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../IO/Log.h"
 #include "../Scene/Node.h"
+#include "../Scene/Scene.h"
+#include "../Clockwork2D/CollisionShape2D.h"
 #include "../Clockwork2D/PhysicsUtils2D.h"
 #include "../Clockwork2D/RigidBody2D.h"
-#include "../Scene/Scene.h"
 
 #include "../DebugNew.h"
 
@@ -74,7 +78,7 @@ void CollisionShape2D::SetCategoryBits(int categoryBits)
     if (fixtureDef_.filter.categoryBits == categoryBits)
         return;
 
-    fixtureDef_.filter.categoryBits = categoryBits;
+    fixtureDef_.filter.categoryBits = (uint16)categoryBits;
 
     if (fixture_)
         fixture_->SetFilterData(fixtureDef_.filter);
@@ -87,7 +91,7 @@ void CollisionShape2D::SetMaskBits(int maskBits)
     if (fixtureDef_.filter.maskBits == maskBits)
         return;
 
-    fixtureDef_.filter.maskBits = maskBits;
+    fixtureDef_.filter.maskBits = (uint16)maskBits;
 
     if (fixture_)
         fixture_->SetFilterData(fixtureDef_.filter);
@@ -100,7 +104,7 @@ void CollisionShape2D::SetGroupIndex(int groupIndex)
     if (fixtureDef_.filter.groupIndex == groupIndex)
         return;
 
-    fixtureDef_.filter.groupIndex = groupIndex;
+    fixtureDef_.filter.groupIndex = (int16)groupIndex;
 
     if (fixture_)
         fixture_->SetFilterData(fixtureDef_.filter);

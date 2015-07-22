@@ -1,4 +1,12 @@
+
+
 #pragma once
+
+#ifdef CLOCKWORK_IS_BUILDING
+#include "Clockwork.h"
+#else
+#include <Clockwork/Clockwork.h>
+#endif
 
 #include "../Container/Allocator.h"
 #include "../Container/Hash.h"
@@ -42,9 +50,10 @@ struct HashIteratorBase
     }
 
     /// Test for equality with another iterator.
-    bool operator == (const HashIteratorBase& rhs) const { return ptr_ == rhs.ptr_; }
+    bool operator ==(const HashIteratorBase& rhs) const { return ptr_ == rhs.ptr_; }
+
     /// Test for inequality with another iterator.
-    bool operator != (const HashIteratorBase& rhs) const { return ptr_ != rhs.ptr_; }
+    bool operator !=(const HashIteratorBase& rhs) const { return ptr_ != rhs.ptr_; }
 
     /// Go to the next node.
     void GotoNext()
@@ -94,18 +103,23 @@ public:
 
     /// Return number of elements.
     unsigned Size() const { return ptrs_ ? (reinterpret_cast<unsigned*>(ptrs_))[0] : 0; }
+
     /// Return number of buckets.
     unsigned NumBuckets() const { return ptrs_ ? (reinterpret_cast<unsigned*>(ptrs_))[1] : 0; }
+
     /// Return whether has no elements.
     bool Empty() const { return Size() == 0; }
 
 protected:
     /// Allocate bucket head pointers + room for size and bucket count variables.
     void AllocateBuckets(unsigned size, unsigned numBuckets);
+
     /// Reset bucket head pointers.
     void ResetPtrs();
+
     /// Set new size.
     void SetSize(unsigned size) { if (ptrs_) (reinterpret_cast<unsigned*>(ptrs_))[0] = size; }
+
     /// Return bucket head pointers.
     HashNodeBase** Ptrs() const { return ptrs_ ? ptrs_ + 2 : 0; }
 

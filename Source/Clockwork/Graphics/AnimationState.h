@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/HashMap.h"
@@ -68,6 +70,7 @@ public:
 
     /// Return animation.
     Animation* GetAnimation() const { return animation_; }
+
     /// Return animated model this state belongs to (model mode.)
     AnimatedModel* GetModel() const;
     /// Return root scene node this state controls (node hierarchy mode.)
@@ -86,16 +89,22 @@ public:
     unsigned GetTrackIndex(const String& name) const;
     /// Return track index by bone name hash, or M_MAX_UNSIGNED if not found.
     unsigned GetTrackIndex(StringHash nameHash) const;
+
     /// Return whether weight is nonzero.
     bool IsEnabled() const { return weight_ > 0.0f; }
+
     /// Return whether looped.
     bool IsLooped() const { return looped_; }
+
     /// Return blending weight.
     float GetWeight() const { return weight_; }
+
     /// Return time position.
     float GetTime() const { return time_; }
+
     /// Return animation length.
     float GetLength() const;
+
     /// Return blending layer.
     unsigned char GetLayer() const { return layer_; }
 

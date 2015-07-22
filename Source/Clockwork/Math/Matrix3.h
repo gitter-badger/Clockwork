@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Vector3.h"
@@ -68,7 +70,7 @@ public:
     }
 
     /// Assign from another matrix.
-    Matrix3& operator = (const Matrix3& rhs)
+    Matrix3& operator =(const Matrix3& rhs)
     {
         m00_ = rhs.m00_;
         m01_ = rhs.m01_;
@@ -83,7 +85,7 @@ public:
     }
 
     /// Test for equality with another matrix without epsilon.
-    bool operator == (const Matrix3& rhs) const
+    bool operator ==(const Matrix3& rhs) const
     {
         const float* leftData = Data();
         const float* rightData = rhs.Data();
@@ -98,10 +100,10 @@ public:
     }
 
     /// Test for inequality with another matrix without epsilon.
-    bool operator != (const Matrix3& rhs) const { return !(*this == rhs); }
+    bool operator !=(const Matrix3& rhs) const { return !(*this == rhs); }
 
     /// Multiply a Vector3.
-    Vector3 operator * (const Vector3& rhs) const
+    Vector3 operator *(const Vector3& rhs) const
     {
         return Vector3(
             m00_ * rhs.x_ + m01_ * rhs.y_ + m02_ * rhs.z_,
@@ -111,7 +113,7 @@ public:
     }
 
     /// Add a matrix.
-    Matrix3 operator + (const Matrix3& rhs) const
+    Matrix3 operator +(const Matrix3& rhs) const
     {
         return Matrix3(
             m00_ + rhs.m00_,
@@ -127,7 +129,7 @@ public:
     }
 
     /// Subtract a matrix.
-    Matrix3 operator - (const Matrix3& rhs) const
+    Matrix3 operator -(const Matrix3& rhs) const
     {
         return Matrix3(
             m00_ - rhs.m00_,
@@ -143,7 +145,7 @@ public:
     }
 
     /// Multiply with a scalar.
-    Matrix3 operator * (float rhs) const
+    Matrix3 operator *(float rhs) const
     {
         return Matrix3(
             m00_ * rhs,
@@ -159,7 +161,7 @@ public:
     }
 
     /// Multiply a matrix.
-    Matrix3 operator * (const Matrix3& rhs) const
+    Matrix3 operator *(const Matrix3& rhs) const
     {
         return Matrix3(
             m00_ * rhs.m00_ + m01_ * rhs.m10_ + m02_ * rhs.m20_,
@@ -252,6 +254,7 @@ public:
 
     /// Return float data.
     const float* Data() const { return &m00_; }
+
     /// Return as string.
     String ToString() const;
 
@@ -292,6 +295,6 @@ public:
 };
 
 /// Multiply a 3x3 matrix with a scalar.
-inline Matrix3 operator * (float lhs, const Matrix3& rhs) { return rhs * lhs; }
+inline Matrix3 operator *(float lhs, const Matrix3& rhs) { return rhs * lhs; }
 
 }

@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../UI/UIElement.h"
@@ -51,16 +53,22 @@ public:
     float GetRange() const;
     /// Return slider current value.
     float GetValue() const;
+
     /// Return button scroll step.
     float GetScrollStep() const { return scrollStep_; }
+
     /// Return button step factor.
     float GetStepFactor() const { return stepFactor_; }
+
     /// Return scroll step multiplied by factor.
     float GetEffectiveScrollStep() const;
+
     /// Return back button element.
     Button* GetBackButton() const { return backButton_; }
+
     /// Return forward button element.
     Button* GetForwardButton() const { return forwardButton_; }
+
     /// Return slider element.
     Slider* GetSlider() const { return slider_; }
 

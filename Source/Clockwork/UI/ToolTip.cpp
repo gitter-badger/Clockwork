@@ -1,6 +1,9 @@
-#include "../UI/ToolTip.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
-#include "../Core/Timer.h"
+#include "../UI/ToolTip.h"
 #include "../UI/UI.h"
 
 namespace Clockwork
@@ -54,7 +57,7 @@ void ToolTip::Update(float timeStep)
             parentHovered_ = true;
             displayAt_.Reset();
         }
-        else if(displayAt_.GetMSec(false) >= (unsigned)(effectiveDelay * 1000.0f) && parent_ == target_)
+        else if (displayAt_.GetMSec(false) >= (unsigned)(effectiveDelay * 1000.0f) && parent_ == target_)
         {
             originalPosition_ = GetPosition();
             IntVector2 screenPosition = GetScreenPosition();

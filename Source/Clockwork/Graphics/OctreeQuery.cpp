@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Graphics/OctreeQuery.h"
 
 #include "../DebugNew.h"

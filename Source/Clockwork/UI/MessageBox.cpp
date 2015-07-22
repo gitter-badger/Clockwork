@@ -1,19 +1,24 @@
-#include "../UI/Button.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../Graphics/Graphics.h"
 #include "../IO/Log.h"
-#include "../UI/MessageBox.h"
 #include "../Resource/ResourceCache.h"
+#include "../Resource/XMLFile.h"
+#include "../UI/Button.h"
+#include "../UI/MessageBox.h"
 #include "../UI/Text.h"
 #include "../UI/UI.h"
 #include "../UI/UIEvents.h"
 #include "../UI/Window.h"
-#include "../Resource/XMLFile.h"
 
 namespace Clockwork
 {
 
-MessageBox::MessageBox(Context* context, const String& messageString, const String& titleString, XMLFile* layoutFile, XMLFile* styleFile) :
+MessageBox::MessageBox(Context* context, const String& messageString, const String& titleString, XMLFile* layoutFile,
+    XMLFile* styleFile) :
     Object(context),
     titleText_(0),
     messageText_(0),

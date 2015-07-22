@@ -1,8 +1,10 @@
+
+
 #pragma once
 
+#include "../Core/Variant.h"
 #include "../Math/BoundingBox.h"
 #include "../Math/Rect.h"
-#include "../Core/Variant.h"
 
 namespace Clockwork
 {
@@ -26,10 +28,13 @@ public:
     virtual const String& GetName() const;
     /// Return a checksum if applicable.
     virtual unsigned GetChecksum();
+
     /// Return current position.
     unsigned GetPosition() const { return position_; }
+
     /// Return size.
     unsigned GetSize() const { return size_; }
+
     /// Return whether the end of stream has been reached.
     bool IsEof() const { return position_ >= size_; }
 
@@ -49,6 +54,8 @@ public:
     bool ReadBool();
     /// Read a float.
     float ReadFloat();
+    /// Read a double.
+    double ReadDouble();
     /// Read an IntRect.
     IntRect ReadIntRect();
     /// Read an IntVector2.

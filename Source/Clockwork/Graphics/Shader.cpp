@@ -1,14 +1,15 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
-#include "../IO/Deserializer.h"
-#include "../IO/FileSystem.h"
 #include "../Graphics/Graphics.h"
-#include "../IO/Log.h"
-#include "../Core/Profiler.h"
-#include "../Resource/ResourceCache.h"
 #include "../Graphics/Shader.h"
 #include "../Graphics/ShaderVariation.h"
-#include "../Container/Sort.h"
-#include "../Resource/XMLFile.h"
+#include "../IO/Deserializer.h"
+#include "../IO/FileSystem.h"
+#include "../IO/Log.h"
+#include "../Resource/ResourceCache.h"
 
 #include "../DebugNew.h"
 
@@ -78,11 +79,11 @@ bool Shader::BeginLoad(Deserializer& source)
     CommentOutFunction(psSourceCode_, "void VS(");
 
     // OpenGL: rename either VS() or PS() to main(), comment out vertex attributes in pixel shaders
-    #ifdef CLOCKWORK_OPENGL
+#ifdef CLOCKWORK_OPENGL
     vsSourceCode_.Replace("void VS(", "void main(");
     psSourceCode_.Replace("void PS(", "void main(");
     psSourceCode_.Replace("attribute ", "// attribute ");
-    #endif
+#endif
 
     RefreshMemoryUse();
     return true;
@@ -107,7 +108,7 @@ ShaderVariation* Shader::GetVariation(ShaderType type, const String& defines)
 ShaderVariation* Shader::GetVariation(ShaderType type, const char* defines)
 {
     StringHash definesHash(defines);
-    HashMap<StringHash, SharedPtr<ShaderVariation> > & variations(type == VS ? vsVariations_ : psVariations_);
+    HashMap<StringHash, SharedPtr<ShaderVariation> >& variations(type == VS ? vsVariations_ : psVariations_);
     HashMap<StringHash, SharedPtr<ShaderVariation> >::Iterator i = variations.Find(definesHash);
     if (i == variations.End())
     {
@@ -193,7 +194,8 @@ String Shader::NormalizeDefines(const String& defines)
 
 void Shader::RefreshMemoryUse()
 {
-    SetMemoryUse(sizeof(Shader) + vsSourceCode_.Length() + psSourceCode_.Length() + numVariations_ * sizeof(ShaderVariation));
+    SetMemoryUse(
+        (unsigned)(sizeof(Shader) + vsSourceCode_.Length() + psSourceCode_.Length() + numVariations_ * sizeof(ShaderVariation)));
 }
 
 }

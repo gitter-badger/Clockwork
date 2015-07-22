@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../UI/BorderImage.h"
@@ -5,7 +7,7 @@
 namespace Clockwork
 {
 
-/// Pushbutton %UI element.
+/// Push button %UI element.
 class CLOCKWORK_API Button : public BorderImage
 {
     OBJECT(Button);
@@ -23,11 +25,16 @@ public:
     /// Return UI rendering batches.
     virtual void GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor);
     /// React to mouse click begin.
-    virtual void OnClickBegin(const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers, Cursor* cursor);
+    virtual void OnClickBegin
+        (const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers, Cursor* cursor);
     /// React to mouse click end.
-    virtual void OnClickEnd(const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers, Cursor* cursor, UIElement* beginElement);
+    virtual void OnClickEnd
+        (const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers, Cursor* cursor,
+            UIElement* beginElement);
     /// React to mouse drag motion.
-    virtual void OnDragMove(const IntVector2& position, const IntVector2& screenPosition, const IntVector2& deltaPos, int buttons, int qualifiers, Cursor* cursor);
+    virtual void OnDragMove
+        (const IntVector2& position, const IntVector2& screenPosition, const IntVector2& deltaPos, int buttons, int qualifiers,
+            Cursor* cursor);
     /// React to a key press.
     virtual void OnKey(int key, int buttons, int qualifiers);
 
@@ -48,12 +55,16 @@ public:
 
     /// Return pressed image offset.
     const IntVector2& GetPressedOffset() const { return pressedOffset_; }
+
     /// Return offset of child elements when pressed.
     const IntVector2& GetPressedChildOffset() const { return pressedChildOffset_; }
+
     /// Return repeat delay.
     float GetRepeatDelay() const { return repeatDelay_; }
+
     /// Return repeat rate.
     float GetRepeatRate() const { return repeatRate_; }
+
     /// Return whether is currently pressed.
     bool IsPressed() const { return pressed_; }
 

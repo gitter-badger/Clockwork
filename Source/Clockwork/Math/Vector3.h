@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Vector2.h"
@@ -66,7 +68,7 @@ public:
     }
 
     /// Assign from another vector.
-    Vector3& operator = (const Vector3& rhs)
+    Vector3& operator =(const Vector3& rhs)
     {
         x_ = rhs.x_;
         y_ = rhs.y_;
@@ -75,26 +77,34 @@ public:
     }
 
     /// Test for equality with another vector without epsilon.
-    bool operator == (const Vector3& rhs) const { return x_ == rhs.x_ && y_ == rhs.y_ && z_ == rhs.z_; }
+    bool operator ==(const Vector3& rhs) const { return x_ == rhs.x_ && y_ == rhs.y_ && z_ == rhs.z_; }
+
     /// Test for inequality with another vector without epsilon.
-    bool operator != (const Vector3& rhs) const { return x_ != rhs.x_ || y_ != rhs.y_ || z_ != rhs.z_; }
+    bool operator !=(const Vector3& rhs) const { return x_ != rhs.x_ || y_ != rhs.y_ || z_ != rhs.z_; }
+
     /// Add a vector.
-    Vector3 operator + (const Vector3& rhs) const { return Vector3(x_ + rhs.x_, y_ + rhs.y_, z_ + rhs.z_); }
+    Vector3 operator +(const Vector3& rhs) const { return Vector3(x_ + rhs.x_, y_ + rhs.y_, z_ + rhs.z_); }
+
     /// Return negation.
-    Vector3 operator - () const { return Vector3(-x_, -y_, -z_); }
+    Vector3 operator -() const { return Vector3(-x_, -y_, -z_); }
+
     /// Subtract a vector.
-    Vector3 operator - (const Vector3& rhs) const { return Vector3(x_ - rhs.x_, y_ - rhs.y_, z_ - rhs.z_); }
+    Vector3 operator -(const Vector3& rhs) const { return Vector3(x_ - rhs.x_, y_ - rhs.y_, z_ - rhs.z_); }
+
     /// Multiply with a scalar.
-    Vector3 operator * (float rhs) const { return Vector3(x_ * rhs, y_ * rhs, z_ * rhs); }
+    Vector3 operator *(float rhs) const { return Vector3(x_ * rhs, y_ * rhs, z_ * rhs); }
+
     /// Multiply with a vector.
-    Vector3 operator * (const Vector3& rhs) const { return Vector3(x_ * rhs.x_, y_ * rhs.y_, z_ * rhs.z_); }
+    Vector3 operator *(const Vector3& rhs) const { return Vector3(x_ * rhs.x_, y_ * rhs.y_, z_ * rhs.z_); }
+
     /// Divide by a scalar.
-    Vector3 operator / (float rhs) const { return Vector3(x_ / rhs, y_ / rhs, z_ / rhs); }
+    Vector3 operator /(float rhs) const { return Vector3(x_ / rhs, y_ / rhs, z_ / rhs); }
+
     /// Divide by a vector.
-    Vector3 operator / (const Vector3& rhs) const { return Vector3(x_ / rhs.x_, y_ / rhs.y_, z_ / rhs.z_); }
+    Vector3 operator /(const Vector3& rhs) const { return Vector3(x_ / rhs.x_, y_ / rhs.y_, z_ / rhs.z_); }
 
     /// Add-assign a vector.
-    Vector3& operator += (const Vector3& rhs)
+    Vector3& operator +=(const Vector3& rhs)
     {
         x_ += rhs.x_;
         y_ += rhs.y_;
@@ -103,7 +113,7 @@ public:
     }
 
     /// Subtract-assign a vector.
-    Vector3& operator -= (const Vector3& rhs)
+    Vector3& operator -=(const Vector3& rhs)
     {
         x_ -= rhs.x_;
         y_ -= rhs.y_;
@@ -112,7 +122,7 @@ public:
     }
 
     /// Multiply-assign a scalar.
-    Vector3& operator *= (float rhs)
+    Vector3& operator *=(float rhs)
     {
         x_ *= rhs;
         y_ *= rhs;
@@ -121,7 +131,7 @@ public:
     }
 
     /// Multiply-assign a vector.
-    Vector3& operator *= (const Vector3& rhs)
+    Vector3& operator *=(const Vector3& rhs)
     {
         x_ *= rhs.x_;
         y_ *= rhs.y_;
@@ -130,7 +140,7 @@ public:
     }
 
     /// Divide-assign a scalar.
-    Vector3& operator /= (float rhs)
+    Vector3& operator /=(float rhs)
     {
         float invRhs = 1.0f / rhs;
         x_ *= invRhs;
@@ -140,7 +150,7 @@ public:
     }
 
     /// Divide-assign a vector.
-    Vector3& operator /= (const Vector3& rhs)
+    Vector3& operator /=(const Vector3& rhs)
     {
         x_ /= rhs.x_;
         y_ /= rhs.y_;
@@ -163,12 +173,18 @@ public:
 
     /// Return length.
     float Length() const { return sqrtf(x_ * x_ + y_ * y_ + z_ * z_); }
+
     /// Return squared length.
     float LengthSquared() const { return x_ * x_ + y_ * y_ + z_ * z_; }
+
     /// Calculate dot product.
     float DotProduct(const Vector3& rhs) const { return x_ * rhs.x_ + y_ * rhs.y_ + z_ * rhs.z_; }
+
     /// Calculate absolute dot product.
-    float AbsDotProduct(const Vector3& rhs) const { return Clockwork::Abs(x_ * rhs.x_) + Clockwork::Abs(y_ * rhs.y_) + Clockwork::Abs(z_ * rhs.z_); }
+    float AbsDotProduct(const Vector3& rhs) const
+    {
+        return Clockwork::Abs(x_ * rhs.x_) + Clockwork::Abs(y_ * rhs.y_) + Clockwork::Abs(z_ * rhs.z_);
+    }
 
     /// Calculate cross product.
     Vector3 CrossProduct(const Vector3& rhs) const
@@ -182,12 +198,19 @@ public:
 
     /// Return absolute vector.
     Vector3 Abs() const { return Vector3(Clockwork::Abs(x_), Clockwork::Abs(y_), Clockwork::Abs(z_)); }
+
     /// Linear interpolation with another vector.
     Vector3 Lerp(const Vector3& rhs, float t) const { return *this * (1.0f - t) + rhs * t; }
+
     /// Test for equality with another vector with epsilon.
-    bool Equals(const Vector3& rhs) const { return Clockwork::Equals(x_, rhs.x_) && Clockwork::Equals(y_, rhs.y_) && Clockwork::Equals(z_, rhs.z_); }
+    bool Equals(const Vector3& rhs) const
+    {
+        return Clockwork::Equals(x_, rhs.x_) && Clockwork::Equals(y_, rhs.y_) && Clockwork::Equals(z_, rhs.z_);
+    }
+
     /// Returns the angle between this vector and another vector in degrees.
-    float Angle(const Vector3& rhs) const { return Clockwork::Acos(DotProduct(rhs) / (Length() * rhs.Length() ) ); }
+    float Angle(const Vector3& rhs) const { return Clockwork::Acos(DotProduct(rhs) / (Length() * rhs.Length())); }
+
     /// Return whether is NaN.
     bool IsNaN() const { return Clockwork::IsNaN(x_) || Clockwork::IsNaN(y_) || Clockwork::IsNaN(z_); }
 
@@ -206,6 +229,7 @@ public:
 
     /// Return float data.
     const float* Data() const { return &x_; }
+
     /// Return as string.
     String ToString() const;
 
@@ -235,6 +259,6 @@ public:
 };
 
 /// Multiply Vector3 with a scalar.
-inline Vector3 operator * (float lhs, const Vector3& rhs) { return rhs * lhs; }
+inline Vector3 operator *(float lhs, const Vector3& rhs) { return rhs * lhs; }
 
 }

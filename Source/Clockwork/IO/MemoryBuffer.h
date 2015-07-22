@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../IO/Deserializer.h"
@@ -28,6 +30,7 @@ public:
 
     /// Return memory area.
     unsigned char* GetData() { return buffer_; }
+
     /// Return whether buffer is read-only.
     bool IsReadOnly() { return readOnly_; }
 

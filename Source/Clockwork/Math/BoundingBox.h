@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Rect.h"
@@ -86,7 +88,7 @@ public:
     }
 
     /// Assign from another bounding box.
-    BoundingBox& operator = (const BoundingBox& rhs)
+    BoundingBox& operator =(const BoundingBox& rhs)
     {
         min_ = rhs.min_;
         max_ = rhs.max_;
@@ -95,7 +97,7 @@ public:
     }
 
     /// Assign from a Rect, with the Z dimension left zero.
-    BoundingBox& operator = (const Rect& rhs)
+    BoundingBox& operator =(const Rect& rhs)
     {
         min_ = Vector3(rhs.min_, 0.0f);
         max_ = Vector3(rhs.max_, 0.0f);
@@ -104,10 +106,10 @@ public:
     }
 
     /// Test for equality with another bounding box.
-    bool operator == (const BoundingBox& rhs) const { return (min_ == rhs.min_ && max_ == rhs.max_); }
+    bool operator ==(const BoundingBox& rhs) const { return (min_ == rhs.min_ && max_ == rhs.max_); }
 
     /// Test for inequality with another bounding box.
-    bool operator != (const BoundingBox& rhs) const { return (min_ != rhs.min_ || max_ != rhs.max_); }
+    bool operator !=(const BoundingBox& rhs) const { return (min_ != rhs.min_ || max_ != rhs.max_); }
 
     /// Define from another bounding box.
     void Define(const BoundingBox& box)
@@ -226,8 +228,10 @@ public:
 
     /// Return center.
     Vector3 Center() const { return (max_ + min_) * 0.5f; }
+
     /// Return size.
     Vector3 Size() const { return max_ - min_; }
+
     /// Return half-size.
     Vector3 HalfSize() const { return (max_ - min_) * 0.5f; }
 
@@ -255,7 +259,7 @@ public:
             box.max_.z_ < min_.z_ || box.min_.z_ > max_.z_)
             return OUTSIDE;
         else if (box.min_.x_ < min_.x_ || box.max_.x_ > max_.x_ || box.min_.y_ < min_.y_ || box.max_.y_ > max_.y_ ||
-            box.min_.z_ < min_.z_ || box.max_.z_ > max_.z_)
+                 box.min_.z_ < min_.z_ || box.max_.z_ > max_.z_)
             return INTERSECTS;
         else
             return INSIDE;

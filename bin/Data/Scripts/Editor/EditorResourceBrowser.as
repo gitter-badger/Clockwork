@@ -124,6 +124,7 @@ void CreateResourceBrowser()
     CreateResourceBrowserUI();
     InitResourceBrowserPreview();
     RebuildResourceDatabase();
+    HideResourceBrowserWindow();
 }
 
 void RebuildResourceDatabase()

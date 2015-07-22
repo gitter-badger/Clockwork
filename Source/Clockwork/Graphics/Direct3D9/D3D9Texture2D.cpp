@@ -1,13 +1,17 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Core/Context.h"
-#include "../../IO/FileSystem.h"
+#include "../../Core/Profiler.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsEvents.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
 #include "../../Graphics/Renderer.h"
-#include "../../Core/Profiler.h"
-#include "../../Resource/ResourceCache.h"
 #include "../../Graphics/Texture2D.h"
+#include "../../IO/Log.h"
+#include "../../IO/FileSystem.h"
+#include "../../Resource/ResourceCache.h"
 #include "../../Resource/XMLFile.h"
 
 #include "../../DebugNew.h"
@@ -264,9 +268,12 @@ bool Texture2D::SetData(unsigned level, int x, int y, int width, int height, con
             unsigned char* dest = (unsigned char*)d3dLockedRect.pBits + i * d3dLockedRect.Pitch;
             for (int j = 0; j < width; ++j)
             {
-                *dest++  = src[2]; *dest++ = src[1]; *dest++ = src[0]; *dest++ = 255;
+                *dest++ = src[2];
+                *dest++ = src[1];
+                *dest++ = src[0];
+                *dest++ = 255;
                 src += 3;
-           }
+            }
         }
         break;
 
@@ -276,9 +283,12 @@ bool Texture2D::SetData(unsigned level, int x, int y, int width, int height, con
             unsigned char* dest = (unsigned char*)d3dLockedRect.pBits + i * d3dLockedRect.Pitch;
             for (int j = 0; j < width; ++j)
             {
-                *dest++  = src[2]; *dest++ = src[1]; *dest++ = src[0]; *dest++ = src[3];
+                *dest++ = src[2];
+                *dest++ = src[1];
+                *dest++ = src[0];
+                *dest++ = src[3];
                 src += 4;
-           }
+            }
         }
         break;
     }
@@ -336,6 +346,10 @@ bool Texture2D::SetData(SharedPtr<Image> image, bool useAlpha)
         case 4:
             format = Graphics::GetRGBAFormat();
             break;
+
+        default:
+            assert(false);  // Should never reach here
+            break;
         }
 
         // If image was previously compressed, reset number of requested levels to avoid error if level count is too high for new size
@@ -379,7 +393,7 @@ bool Texture2D::SetData(SharedPtr<Image> image, bool useAlpha)
         width /= (1 << mipsToSkip);
         height /= (1 << mipsToSkip);
 
-        SetNumLevels(Max((int)(levels - mipsToSkip), 1));
+        SetNumLevels((unsigned)Max((int)(levels - mipsToSkip), 1));
         SetSize(width, height, format);
 
         for (unsigned i = 0; i < levels_ && i < levels - mipsToSkip; ++i)
@@ -441,10 +455,39 @@ bool Texture2D::GetData(unsigned level, void* dest) const
     d3dRect.right = levelWidth;
     d3dRect.bottom = levelHeight;
 
-    if (FAILED(((IDirect3DTexture9*)object_)->LockRect(level, &d3dLockedRect, &d3dRect, D3DLOCK_READONLY)))
+    IDirect3DSurface9* offscreenSurface = 0;
+    // Need to use a offscreen surface & GetRenderTargetData() for rendertargets
+    if (renderSurface_)
     {
-        LOGERROR("Could not lock texture");
-        return false;
+        if (level != 0)
+        {
+            LOGERROR("Can only get mip level 0 data from a rendertarget");
+            return false;
+        }
+
+        IDirect3DDevice9* device = graphics_->GetImpl()->GetDevice();
+        device->CreateOffscreenPlainSurface((UINT)width_, (UINT)height_, (D3DFORMAT)format_,
+            D3DPOOL_SYSTEMMEM, &offscreenSurface, 0);
+        if (!offscreenSurface)
+        {
+            LOGERROR("Could not create surface for getting rendertarget data");
+            return false;
+        }
+        device->GetRenderTargetData((IDirect3DSurface9*)renderSurface_->GetSurface(), offscreenSurface);
+        if (FAILED(offscreenSurface->LockRect(&d3dLockedRect, &d3dRect, D3DLOCK_READONLY)))
+        {
+            LOGERROR("Could not lock surface for getting rendertarget data");
+            offscreenSurface->Release();
+            return false;
+        }
+    }
+    else
+    {
+        if (FAILED(((IDirect3DTexture9*)object_)->LockRect(level, &d3dLockedRect, &d3dRect, D3DLOCK_READONLY)))
+        {
+            LOGERROR("Could not lock texture");
+            return false;
+        }
     }
 
     int height = levelHeight;
@@ -475,9 +518,12 @@ bool Texture2D::GetData(unsigned level, void* dest) const
             unsigned char* src = (unsigned char*)d3dLockedRect.pBits + i * d3dLockedRect.Pitch;
             for (int j = 0; j < levelWidth; ++j)
             {
-                destPtr[2] = *src++; destPtr[1] = *src++; destPtr[0] = *src++; ++src;
+                destPtr[2] = *src++;
+                destPtr[1] = *src++;
+                destPtr[0] = *src++;
+                ++src;
                 destPtr += 3;
-           }
+            }
         }
         break;
 
@@ -487,14 +533,24 @@ bool Texture2D::GetData(unsigned level, void* dest) const
             unsigned char* src = (unsigned char*)d3dLockedRect.pBits + i * d3dLockedRect.Pitch;
             for (int j = 0; j < levelWidth; ++j)
             {
-                destPtr[2] = *src++; destPtr[1] = *src++; destPtr[0] = *src++; destPtr[3] = *src++;
+                destPtr[2] = *src++;
+                destPtr[1] = *src++;
+                destPtr[0] = *src++;
+                destPtr[3] = *src++;
                 destPtr += 4;
-           }
+            }
         }
         break;
     }
 
-    ((IDirect3DTexture9*)object_)->UnlockRect(level);
+    if (offscreenSurface)
+    {
+        offscreenSurface->UnlockRect();
+        offscreenSurface->Release();
+    }
+    else
+        ((IDirect3DTexture9*)object_)->UnlockRect(level);
+
     return true;
 }
 
@@ -516,8 +572,8 @@ bool Texture2D::Create()
     if (usage_ & D3DUSAGE_DEPTHSTENCIL && !graphics_->GetImpl()->CheckFormatSupport((D3DFORMAT)format_, usage_, D3DRTYPE_TEXTURE))
     {
         if (!device || FAILED(device->CreateDepthStencilSurface(
-            width_,
-            height_,
+            (UINT)width_,
+            (UINT)height_,
             (D3DFORMAT)format_,
             D3DMULTISAMPLE_NONE,
             0,
@@ -534,8 +590,8 @@ bool Texture2D::Create()
     else
     {
         if (!device || FAILED(graphics_->GetImpl()->GetDevice()->CreateTexture(
-            width_,
-            height_,
+            (UINT)width_,
+            (UINT)height_,
             requestedLevels_,
             usage_,
             (D3DFORMAT)format_,

@@ -1,7 +1,9 @@
+
+
 #pragma once
 
-#include "../Scene/Component.h"
 #include "../IO/VectorBuffer.h"
+#include "../Scene/Component.h"
 
 namespace Clockwork
 {
@@ -100,15 +102,17 @@ public:
     bool SetLooped(const String& name, bool enable);
     /// Set animation speed. Return true on success.
     bool SetSpeed(const String& name, float speed);
-    /// Set animation autofade on stop (non-looped animations only.) Zero time disables. Return true on success.
+    /// Set animation autofade at end (non-looped animations only.) Zero time disables. Return true on success.
     bool SetAutoFade(const String& name, float fadeOutTime);
 
-    /// Return whether an animation is active.
+    /// Return whether an animation is active. Note that non-looping animations that are being clamped at the end also return true.
     bool IsPlaying(const String& name) const;
     /// Return whether an animation is fading in.
     bool IsFadingIn(const String& name) const;
     /// Return whether an animation is fading out.
     bool IsFadingOut(const String& name) const;
+    /// Return whether an animation is at its end. Will return false if the animation is not active at all.
+    bool IsAtEnd(const String& name) const;
     /// Return animation blending layer.
     unsigned char GetLayer(const String& name) const;
     /// Return animation start bone, or null if no such animation.
@@ -150,8 +154,8 @@ public:
     VariantVector GetNodeAnimationStatesAttr() const;
 
 protected:
-    /// Handle node being assigned.
-    virtual void OnNodeSet(Node* node);
+    /// Handle scene being assigned.
+    virtual void OnSceneSet(Scene* scene);
 
 private:
     /// Add an animation state either to AnimatedModel or as a node animation.

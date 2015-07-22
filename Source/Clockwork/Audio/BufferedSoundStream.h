@@ -1,10 +1,12 @@
+
+
 #pragma once
 
+#include "../Audio/SoundStream.h"
 #include "../Container/ArrayPtr.h"
 #include "../Container/List.h"
 #include "../Core/Mutex.h"
 #include "../Container/Pair.h"
-#include "../Audio/SoundStream.h"
 
 namespace Clockwork
 {
@@ -38,7 +40,7 @@ public:
 private:
     /// Buffers and their sizes.
     List<Pair<SharedArrayPtr<signed char>, unsigned> > buffers_;
-    /// Byte position in the frontmost buffer.
+    /// Byte position in the front most buffer.
     unsigned position_;
     /// Mutex for buffer data.
     mutable Mutex bufferMutex_;

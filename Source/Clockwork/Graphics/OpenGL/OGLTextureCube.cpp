@@ -1,13 +1,17 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Core/Context.h"
-#include "../../IO/FileSystem.h"
+#include "../../Core/Profiler.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsEvents.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
-#include "../../Core/Profiler.h"
 #include "../../Graphics/Renderer.h"
-#include "../../Resource/ResourceCache.h"
 #include "../../Graphics/TextureCube.h"
+#include "../../IO/FileSystem.h"
+#include "../../IO/Log.h"
+#include "../../Resource/ResourceCache.h"
 #include "../../Resource/XMLFile.h"
 
 #include "../../DebugNew.h"
@@ -30,7 +34,8 @@ static const char* cubeMapLayoutNames[] = {
 
 static SharedPtr<Image> GetTileImage(Image* src, int tileX, int tileY, int tileWidth, int tileHeight)
 {
-    return SharedPtr<Image>(src->GetSubimage(IntRect(tileX * tileWidth, tileY * tileHeight, (tileX + 1) * tileWidth, (tileY + 1) * tileHeight)));
+    return SharedPtr<Image>(
+        src->GetSubimage(IntRect(tileX * tileWidth, tileY * tileHeight, (tileX + 1) * tileWidth, (tileY + 1) * tileHeight)));
 }
 
 TextureCube::TextureCube(Context* context) :
@@ -97,7 +102,8 @@ bool TextureCube::BeginLoad(Deserializer& source)
         if (GetPath(name).Empty())
             name = texPath + name;
 
-        CubeMapLayout layout = (CubeMapLayout)GetStringListIndex(imageElem.GetAttribute("layout").CString(), cubeMapLayoutNames, CML_HORIZONTAL);
+        CubeMapLayout layout =
+            (CubeMapLayout)GetStringListIndex(imageElem.GetAttribute("layout").CString(), cubeMapLayoutNames, CML_HORIZONTAL);
         SharedPtr<Image> image = cache->GetTempResource<Image>(name);
         if (!image)
             return false;
@@ -372,19 +378,19 @@ bool TextureCube::SetData(CubeMapFace face, unsigned level, int x, int y, int wi
     if (!IsCompressed())
     {
         if (wholeLevel)
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, level, format, width, height, 0, GetExternalFormat(format_),
+            glTexImage2D((GLenum)(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face), level, format, width, height, 0, GetExternalFormat(format_),
                 GetDataType(format_), data);
         else
-            glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, level, x, y, width, height, GetExternalFormat(format_),
+            glTexSubImage2D((GLenum)(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face), level, x, y, width, height, GetExternalFormat(format_),
                 GetDataType(format_), data);
     }
     else
     {
         if (wholeLevel)
-            glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, level, format, width, height, 0,
+            glCompressedTexImage2D((GLenum)(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face), level, format, width, height, 0,
                 GetDataSize(width, height), data);
         else
-            glCompressedTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, level, x, y, width, height, format,
+            glCompressedTexSubImage2D((GLenum)(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face), level, x, y, width, height, format,
                 GetDataSize(width, height), data);
     }
 
@@ -465,6 +471,10 @@ bool TextureCube::SetData(CubeMapFace face, SharedPtr<Image> image, bool useAlph
         case 4:
             format = Graphics::GetRGBAFormat();
             break;
+
+        default:
+            assert(false);  // Should not reach here
+            break;
         }
 
         // Create the texture when face 0 is being loaded, check that rest of the faces are same size & format
@@ -534,7 +544,7 @@ bool TextureCube::SetData(CubeMapFace face, SharedPtr<Image> image, bool useAlph
         // Create the texture when face 0 is being loaded, assume rest of the faces are same size & format
         if (!face)
         {
-            SetNumLevels(Max((int)(levels - mipsToSkip), 1));
+            SetNumLevels((unsigned)Max((int)(levels - mipsToSkip), 1));
             SetSize(width, format);
         }
         else
@@ -580,7 +590,7 @@ bool TextureCube::SetData(CubeMapFace face, SharedPtr<Image> image, bool useAlph
 
 bool TextureCube::GetData(CubeMapFace face, unsigned level, void* dest) const
 {
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     if (!object_ || !graphics_)
     {
         LOGERROR("No texture created, can not get data");
@@ -608,16 +618,16 @@ bool TextureCube::GetData(CubeMapFace face, unsigned level, void* dest) const
     graphics_->SetTextureForUpdate(const_cast<TextureCube*>(this));
 
     if (!IsCompressed())
-        glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, level, GetExternalFormat(format_), GetDataType(format_), dest);
+        glGetTexImage((GLenum)(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face), level, GetExternalFormat(format_), GetDataType(format_), dest);
     else
-        glGetCompressedTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, level, dest);
+        glGetCompressedTexImage((GLenum)(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face), level, dest);
 
     graphics_->SetTexture(0, 0);
     return true;
-    #else
+#else
     LOGERROR("Getting texture data not supported");
     return false;
-    #endif
+#endif
 }
 
 bool TextureCube::Create()
@@ -661,7 +671,7 @@ bool TextureCube::Create()
     levels_ = requestedLevels_;
     if (!levels_)
     {
-        unsigned maxSize = Max((int)width_, (int)height_);
+        unsigned maxSize = (unsigned)Max(width_, height_);
         while (maxSize)
         {
             maxSize >>= 1;
@@ -669,10 +679,10 @@ bool TextureCube::Create()
         }
     }
 
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     glTexParameteri(target_, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(target_, GL_TEXTURE_MAX_LEVEL, levels_ - 1);
-    #endif
+#endif
 
     // Set initial parameters, then unbind the texture
     UpdateParameters();

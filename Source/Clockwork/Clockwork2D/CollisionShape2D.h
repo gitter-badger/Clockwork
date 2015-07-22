@@ -1,6 +1,9 @@
+
+
 #pragma once
 
 #include "../Scene/Component.h"
+
 #include <Box2D/Box2D.h>
 
 namespace Clockwork
@@ -15,7 +18,7 @@ class CLOCKWORK_API CollisionShape2D : public Component
 
 public:
     /// Construct.
-    CollisionShape2D(Context* scontext);
+    CollisionShape2D(Context* context);
     /// Destruct.
     virtual ~CollisionShape2D();
     /// Register object factory.
@@ -46,18 +49,25 @@ public:
 
     /// Return trigger.
     bool IsTrigger() const { return fixtureDef_.isSensor; }
+
     /// Return filter category bits.
     int GetCategoryBits() const { return fixtureDef_.filter.categoryBits; }
+
     /// Return filter mask bits.
     int GetMaskBits() const { return fixtureDef_.filter.maskBits; }
+
     /// Return filter group index.
     int GetGroupIndex() const { return fixtureDef_.filter.groupIndex; }
+
     /// Return density.
     float GetDensity() const { return fixtureDef_.density; }
+
     /// Return friction.
     float GetFriction() const { return fixtureDef_.friction; }
+
     /// Return restitution.
     float GetRestitution() const { return fixtureDef_.restitution; }
+
     /// Return mass.
     float GetMass() const;
     /// Return inertia.
@@ -66,7 +76,7 @@ public:
     Vector2 GetMassCenter() const;
 
     /// Return fixture.
-    b2Fixture* GetFixture() const { return fixture_;}
+    b2Fixture* GetFixture() const { return fixture_; }
 
 protected:
     /// Handle node being assigned.

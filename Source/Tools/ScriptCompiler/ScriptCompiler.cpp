@@ -1,3 +1,5 @@
+
+
 #include <Clockwork/Clockwork.h>
 
 #include <Clockwork/Core/Context.h>
@@ -59,7 +61,7 @@ int main(int argc, char** argv)
     SharedPtr<Context> context(new Context());
     SharedPtr<Engine> engine(new Engine(context));
     context->RegisterSubsystem(new Script(context));
-
+    
     // In API dumping mode initialize the engine and instantiate LuaScript system if available so that we
     // can dump attributes from as many classes as possible
     if (dumpApiMode)
@@ -75,7 +77,7 @@ int main(int argc, char** argv)
         context->RegisterSubsystem(new LuaScript(context));
     #endif
     }
-
+    
     Log* log = context->GetSubsystem<Log>();
     // Register Log subsystem manually if compiled without logging support
     if (!log)

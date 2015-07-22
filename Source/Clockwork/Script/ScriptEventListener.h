@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Object.h"
@@ -29,7 +31,7 @@ class CLOCKWORK_API ScriptEventListener
 {
 public:
     /// Destruct
-    virtual ~ScriptEventListener() {};
+    virtual ~ScriptEventListener() { };
 
     /// Add a scripted event handler.
     virtual void AddEventHandler(StringHash eventType, const String& handlerName) = 0;

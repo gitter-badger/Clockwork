@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/ArrayPtr.h"
@@ -44,12 +46,16 @@ public:
 
     /// Return font face. Pack and render to a texture if not rendered yet. Return null on error.
     FontFace* GetFace(int pointSize);
+
     /// Is signed distance field font.
     bool IsSDFFont() const { return sdfFont_; }
+
     /// Return absolute position adjustment for glyphs.
     const IntVector2& GetAbsoluteGlyphOffset() const { return absoluteOffset_; }
+
     /// Return point size scaled position adjustment for glyphs.
     const Vector2& GetScaledGlyphOffset() const { return scaledOffset_; }
+
     /// Return the total effective offset for a point size.
     IntVector2 GetTotalGlyphOffset(int pointSize) const;
 

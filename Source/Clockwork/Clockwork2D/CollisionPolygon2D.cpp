@@ -1,8 +1,12 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
-#include "../Clockwork2D/CollisionPolygon2D.h"
 #include "../IO/MemoryBuffer.h"
-#include "../Clockwork2D/PhysicsUtils2D.h"
 #include "../IO/VectorBuffer.h"
+#include "../Clockwork2D/CollisionPolygon2D.h"
+#include "../Clockwork2D/PhysicsUtils2D.h"
 
 #include "../DebugNew.h"
 

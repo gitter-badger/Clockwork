@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include <Clockwork/Physics/CollisionShape.h>
@@ -9,15 +11,15 @@ using namespace Clockwork;
 class CreateRagdoll : public Component
 {
     OBJECT(CreateRagdoll);
-
+    
 public:
     /// Construct.
     CreateRagdoll(Context* context);
-
+    
 protected:
     /// Handle node being assigned.
     virtual void OnNodeSet(Node* node);
-
+    
 private:
     /// Handle scene node's physics collision.
     void HandleNodeCollision(StringHash eventType, VariantMap& eventData);

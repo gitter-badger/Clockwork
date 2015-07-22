@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Navigation/NavigationMesh.h"
@@ -58,8 +60,8 @@ public:
 protected:
     struct TileCacheData;
 
-    /// Subscribe to events when assigned to a node.
-    virtual void OnNodeSet(Node*);
+    /// Subscribe to events when assigned to a scene.
+    virtual void OnSceneSet(Scene* scene);
     /// Trigger the tile cache to make updates to the nav mesh if necessary.
     void HandleSceneSubsystemUpdate(StringHash eventType, VariantMap& eventData);
 

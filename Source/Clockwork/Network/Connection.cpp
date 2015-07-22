@@ -1,14 +1,17 @@
-#include "../Scene/Component.h"
-#include "../Network/Connection.h"
+
+
+#include "../Precompiled.h"
+
+#include "../Core/Profiler.h"
 #include "../IO/File.h"
 #include "../IO/FileSystem.h"
 #include "../IO/Log.h"
 #include "../IO/MemoryBuffer.h"
+#include "../IO/PackageFile.h"
+#include "../Network/Connection.h"
 #include "../Network/Network.h"
 #include "../Network/NetworkEvents.h"
 #include "../Network/NetworkPriority.h"
-#include "../IO/PackageFile.h"
-#include "../Core/Profiler.h"
 #include "../Network/Protocol.h"
 #include "../Resource/ResourceCache.h"
 #include "../Scene/Scene.h"
@@ -84,7 +87,7 @@ void Connection::SendMessage(int msgID, bool reliable, bool inOrder, const unsig
         return;
     }
 
-    kNet::NetworkMessage *msg = connection_->StartNewMessage(msgID, numBytes);
+    kNet::NetworkMessage* msg = connection_->StartNewMessage((unsigned long)msgID, numBytes);
     if (!msg)
     {
         LOGERROR("Can not start new network message");
@@ -262,16 +265,17 @@ void Connection::SendClientUpdate()
 
 void Connection::SendRemoteEvents()
 {
-    #ifdef CLOCKWORK_LOGGING
+#ifdef CLOCKWORK_LOGGING
     if (logStatistics_ && statsTimer_.GetMSec(false) > STATS_INTERVAL_MSEC)
     {
         statsTimer_.Reset();
         char statsBuffer[256];
-        sprintf(statsBuffer, "RTT %.3f ms Pkt in %d Pkt out %d Data in %.3f KB/s Data out %.3f KB/s", connection_->RoundTripTime(), (int)connection_->PacketsInPerSec(),
+        sprintf(statsBuffer, "RTT %.3f ms Pkt in %d Pkt out %d Data in %.3f KB/s Data out %.3f KB/s", connection_->RoundTripTime(),
+            (int)connection_->PacketsInPerSec(),
             (int)connection_->PacketsOutPerSec(), connection_->BytesInPerSec() / 1000.0f, connection_->BytesOutPerSec() / 1000.0f);
         LOGINFO(statsBuffer);
     }
-    #endif
+#endif
 
     if (remoteEvents_.Empty())
         return;
@@ -309,7 +313,8 @@ void Connection::SendPackages()
         {
             HashMap<StringHash, PackageUpload>::Iterator current = i++;
             PackageUpload& upload = current->second_;
-            unsigned fragmentSize = Min((int)(upload.file_->GetSize() - upload.file_->GetPosition()), (int)PACKAGE_FRAGMENT_SIZE);
+            unsigned fragmentSize =
+                (unsigned)Min((int)(upload.file_->GetSize() - upload.file_->GetPosition()), (int)PACKAGE_FRAGMENT_SIZE);
             upload.file_->Read(buffer, fragmentSize);
 
             msg_.Clear();
@@ -362,60 +367,60 @@ void Connection::ProcessPendingLatestData()
     }
 }
 
-bool Connection::ProcessMessage(int msgID, MemoryBuffer &msg)
+bool Connection::ProcessMessage(int msgID, MemoryBuffer& msg)
 {
     bool processed = true;
 
     switch (msgID)
     {
-        case MSG_IDENTITY:
-            ProcessIdentity(msgID, msg);
-            break;
+    case MSG_IDENTITY:
+        ProcessIdentity(msgID, msg);
+        break;
 
-        case MSG_CONTROLS:
-            ProcessControls(msgID, msg);
-            break;
+    case MSG_CONTROLS:
+        ProcessControls(msgID, msg);
+        break;
 
-        case MSG_SCENELOADED:
-            ProcessSceneLoaded(msgID, msg);
-            break;
+    case MSG_SCENELOADED:
+        ProcessSceneLoaded(msgID, msg);
+        break;
 
-        case MSG_REQUESTPACKAGE:
-        case MSG_PACKAGEDATA:
-            ProcessPackageDownload(msgID, msg);
-            break;
+    case MSG_REQUESTPACKAGE:
+    case MSG_PACKAGEDATA:
+        ProcessPackageDownload(msgID, msg);
+        break;
 
-        case MSG_LOADSCENE:
-            ProcessLoadScene(msgID, msg);
-            break;
+    case MSG_LOADSCENE:
+        ProcessLoadScene(msgID, msg);
+        break;
 
-        case MSG_SCENECHECKSUMERROR:
-            ProcessSceneChecksumError(msgID, msg);
-            break;
+    case MSG_SCENECHECKSUMERROR:
+        ProcessSceneChecksumError(msgID, msg);
+        break;
 
-        case MSG_CREATENODE:
-        case MSG_NODEDELTAUPDATE:
-        case MSG_NODELATESTDATA:
-        case MSG_REMOVENODE:
-        case MSG_CREATECOMPONENT:
-        case MSG_COMPONENTDELTAUPDATE:
-        case MSG_COMPONENTLATESTDATA:
-        case MSG_REMOVECOMPONENT:
-            ProcessSceneUpdate(msgID, msg);
-            break;
+    case MSG_CREATENODE:
+    case MSG_NODEDELTAUPDATE:
+    case MSG_NODELATESTDATA:
+    case MSG_REMOVENODE:
+    case MSG_CREATECOMPONENT:
+    case MSG_COMPONENTDELTAUPDATE:
+    case MSG_COMPONENTLATESTDATA:
+    case MSG_REMOVECOMPONENT:
+        ProcessSceneUpdate(msgID, msg);
+        break;
 
-        case MSG_REMOTEEVENT:
-        case MSG_REMOTENODEEVENT:
-            ProcessRemoteEvent(msgID, msg);
-            break;
+    case MSG_REMOTEEVENT:
+    case MSG_REMOTENODEEVENT:
+        ProcessRemoteEvent(msgID, msg);
+        break;
 
-        case MSG_PACKAGEINFO:
-            ProcessPackageInfo(msgID, msg);
-            break;
+    case MSG_PACKAGEINFO:
+        ProcessPackageInfo(msgID, msg);
+        break;
 
-        default:
-            processed = false;
-            break;
+    default:
+        processed = false;
+        break;
     }
 
     return processed;
@@ -684,6 +689,8 @@ void Connection::ProcessSceneUpdate(int msgID, MemoryBuffer& msg)
             componentLatestData_.Erase(componentID);
         }
         break;
+
+    default: break;
     }
 }
 
@@ -777,7 +784,9 @@ void Connection::ProcessPackageDownload(int msgID, MemoryBuffer& msg)
             // If file has not yet been opened, try to open now. Prepend the checksum to the filename to allow multiple versions
             if (!download.file_)
             {
-                download.file_ = new File(context_, GetSubsystem<Network>()->GetPackageCacheDir() + ToStringHex(download.checksum_) + "_" + download.name_, FILE_WRITE);
+                download.file_ = new File(context_,
+                    GetSubsystem<Network>()->GetPackageCacheDir() + ToStringHex(download.checksum_) + "_" + download.name_,
+                    FILE_WRITE);
                 if (!download.file_->IsOpen())
                 {
                     OnPackageDownloadFailed(download.name_);
@@ -802,7 +811,7 @@ void Connection::ProcessPackageDownload(int msgID, MemoryBuffer& msg)
 
                 // Instantiate the package and add to the resource system, as we will need it to load the scene
                 download.file_->Close();
-                GetSubsystem<ResourceCache>()->AddPackageFile(download.file_->GetName(), true);
+                GetSubsystem<ResourceCache>()->AddPackageFile(download.file_->GetName(), 0);
 
                 // Then start the next download if there are more
                 downloads_.Erase(i);
@@ -821,6 +830,8 @@ void Connection::ProcessPackageDownload(int msgID, MemoryBuffer& msg)
             }
         }
         break;
+
+    default: break;
     }
 }
 
@@ -1222,7 +1233,7 @@ void Connection::ProcessExistingNode(Node* node, NodeReplicationState& nodeState
 
     // Check for removed or changed components
     for (HashMap<unsigned, ComponentReplicationState>::Iterator i = nodeState.componentStates_.Begin();
-        i != nodeState.componentStates_.End(); )
+         i != nodeState.componentStates_.End();)
     {
         HashMap<unsigned, ComponentReplicationState>::Iterator current = i++;
         ComponentReplicationState& componentState = current->second_;
@@ -1366,12 +1377,12 @@ bool Connection::RequestNeededPackages(unsigned numPackages, MemoryBuffer& msg)
             // In download cache, package file name format is checksum_packagename
             if (!fileName.Find(checksumString) && !fileName.Substring(9).Compare(name, false))
             {
-                // Name matches. Check filesize and actual checksum to be sure
+                // Name matches. Check file size and actual checksum to be sure
                 SharedPtr<PackageFile> newPackage(new PackageFile(context_, packageCacheDir + fileName));
                 if (newPackage->GetTotalSize() == fileSize && newPackage->GetChecksum() == checksum)
                 {
                     // Add the package to the resource system now, as we will need it to load the scene
-                    cache->AddPackageFile(newPackage, true);
+                    cache->AddPackageFile(newPackage, 0);
                     found = true;
                     break;
                 }

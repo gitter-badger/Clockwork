@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../Graphics/DebugRenderer.h"
 #include "../Navigation/OffMeshConnection.h"
@@ -19,9 +23,9 @@ OffMeshConnection::OffMeshConnection(Context* context) :
     endPointID_(0),
     radius_(DEFAULT_RADIUS),
     bidirectional_(true),
+    endPointDirty_(false),
     mask_(DEFAULT_MASK_FLAG),
-    areaId_(DEFAULT_AREA),
-    endPointDirty_(false)
+    areaId_(DEFAULT_AREA)
 {
 }
 

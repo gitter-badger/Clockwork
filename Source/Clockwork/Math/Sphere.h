@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Vector3.h"
@@ -66,7 +68,7 @@ public:
     }
 
     /// Assign from another sphere.
-    Sphere& operator = (const Sphere& rhs)
+    Sphere& operator =(const Sphere& rhs)
     {
         center_ = rhs.center_;
         radius_ = rhs.radius_;
@@ -75,9 +77,10 @@ public:
     }
 
     /// Test for equality with another sphere.
-    bool operator == (const Sphere& rhs) const { return center_ == rhs.center_ && radius_ == rhs.radius_; }
+    bool operator ==(const Sphere& rhs) const { return center_ == rhs.center_ && radius_ == rhs.radius_; }
+
     /// Test for inequality with another sphere.
-    bool operator != (const Sphere& rhs) const { return center_ != rhs.center_ || radius_ != rhs.radius_; }
+    bool operator !=(const Sphere& rhs) const { return center_ != rhs.center_ || radius_ != rhs.radius_; }
 
     /// Define from another sphere.
     void Define(const Sphere& sphere)

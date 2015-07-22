@@ -1,17 +1,21 @@
-#include "../Resource/BackgroundLoader.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../Core/CoreEvents.h"
+#include "../Core/Profiler.h"
+#include "../Core/WorkQueue.h"
 #include "../IO/FileSystem.h"
 #include "../IO/FileWatcher.h"
-#include "../Resource/Image.h"
-#include "../Resource/JSONFile.h"
 #include "../IO/Log.h"
 #include "../IO/PackageFile.h"
+#include "../Resource/BackgroundLoader.h"
+#include "../Resource/Image.h"
+#include "../Resource/JSONFile.h"
 #include "../Resource/PListFile.h"
-#include "../Core/Profiler.h"
 #include "../Resource/ResourceCache.h"
 #include "../Resource/ResourceEvents.h"
-#include "../Core/WorkQueue.h"
 #include "../Resource/XMLFile.h"
 
 #include "../DebugNew.h"
@@ -19,7 +23,8 @@
 namespace Clockwork
 {
 
-static const char* checkDirs[] = {
+static const char* checkDirs[] =
+{
     "Fonts",
     "Materials",
     "Models",
@@ -231,7 +236,7 @@ void ResourceCache::ReleaseResources(StringHash type, bool force)
     if (i != resourceGroups_.End())
     {
         for (HashMap<StringHash, SharedPtr<Resource> >::Iterator j = i->second_.resources_.Begin();
-            j != i->second_.resources_.End();)
+             j != i->second_.resources_.End();)
         {
             HashMap<StringHash, SharedPtr<Resource> >::Iterator current = j++;
             // If other references exist, do not release, unless forced
@@ -255,7 +260,7 @@ void ResourceCache::ReleaseResources(StringHash type, const String& partialName,
     if (i != resourceGroups_.End())
     {
         for (HashMap<StringHash, SharedPtr<Resource> >::Iterator j = i->second_.resources_.Begin();
-            j != i->second_.resources_.End();)
+             j != i->second_.resources_.End();)
         {
             HashMap<StringHash, SharedPtr<Resource> >::Iterator current = j++;
             if (current->second_->GetName().Contains(partialName))
@@ -287,7 +292,7 @@ void ResourceCache::ReleaseResources(const String& partialName, bool force)
             bool released = false;
 
             for (HashMap<StringHash, SharedPtr<Resource> >::Iterator j = i->second_.resources_.Begin();
-                j != i->second_.resources_.End();)
+                 j != i->second_.resources_.End();)
             {
                 HashMap<StringHash, SharedPtr<Resource> >::Iterator current = j++;
                 if (current->second_->GetName().Contains(partialName))
@@ -313,12 +318,12 @@ void ResourceCache::ReleaseAllResources(bool force)
     while (repeat--)
     {
         for (HashMap<StringHash, ResourceGroup>::Iterator i = resourceGroups_.Begin();
-            i != resourceGroups_.End(); ++i)
+             i != resourceGroups_.End(); ++i)
         {
             bool released = false;
 
             for (HashMap<StringHash, SharedPtr<Resource> >::Iterator j = i->second_.resources_.Begin();
-                j != i->second_.resources_.End();)
+                 j != i->second_.resources_.End();)
             {
                 HashMap<StringHash, SharedPtr<Resource> >::Iterator current = j++;
                 // If other references exist, do not release, unless forced
@@ -651,7 +656,7 @@ void ResourceCache::GetResources(PODVector<Resource*>& result, StringHash type) 
     if (i != resourceGroups_.End())
     {
         for (HashMap<StringHash, SharedPtr<Resource> >::ConstIterator j = i->second_.resources_.Begin();
-            j != i->second_.resources_.End(); ++j)
+             j != i->second_.resources_.End(); ++j)
             result.Push(j->second_);
     }
 }
@@ -681,28 +686,19 @@ bool ResourceCache::Exists(const String& nameIn) const
     }
 
     // Fallback using absolute path
-    if (fileSystem->FileExists(name))
-        return true;
-
-    return false;
+    return fileSystem->FileExists(name);
 }
 
 unsigned ResourceCache::GetMemoryBudget(StringHash type) const
 {
     HashMap<StringHash, ResourceGroup>::ConstIterator i = resourceGroups_.Find(type);
-    if (i != resourceGroups_.End())
-        return i->second_.memoryBudget_;
-    else
-        return 0;
+    return i != resourceGroups_.End() ? i->second_.memoryBudget_ : 0;
 }
 
 unsigned ResourceCache::GetMemoryUse(StringHash type) const
 {
     HashMap<StringHash, ResourceGroup>::ConstIterator i = resourceGroups_.Find(type);
-    if (i != resourceGroups_.End())
-        return i->second_.memoryUse_;
-    else
-        return 0;
+    return i != resourceGroups_.End() ? i->second_.memoryUse_ : 0;
 }
 
 unsigned ResourceCache::GetTotalMemoryUse() const
@@ -828,8 +824,7 @@ void ResourceCache::ResetDependencies(Resource* resource)
 
     StringHash nameHash(resource->GetName());
 
-    for (HashMap<StringHash, HashSet<StringHash> >::Iterator i = dependentResources_.Begin(); i !=
-        dependentResources_.End();)
+    for (HashMap<StringHash, HashSet<StringHash> >::Iterator i = dependentResources_.Begin(); i != dependentResources_.End();)
     {
         HashSet<StringHash>& dependents = i->second_;
         dependents.Erase(nameHash);
@@ -878,8 +873,7 @@ void ResourceCache::ReleasePackageResources(PackageFile* package, bool force)
         StringHash nameHash(i->first_);
 
         // We do not know the actual resource type, so search all type containers
-        for (HashMap<StringHash, ResourceGroup>::Iterator j = resourceGroups_.Begin();
-            j != resourceGroups_.End(); ++j)
+        for (HashMap<StringHash, ResourceGroup>::Iterator j = resourceGroups_.Begin(); j != resourceGroups_.End(); ++j)
         {
             HashMap<StringHash, SharedPtr<Resource> >::Iterator k = j->second_.resources_.Find(nameHash);
             if (k != j->second_.resources_.End())
@@ -912,7 +906,7 @@ void ResourceCache::UpdateResourceGroup(StringHash type)
         HashMap<StringHash, SharedPtr<Resource> >::Iterator oldestResource = i->second_.resources_.End();
 
         for (HashMap<StringHash, SharedPtr<Resource> >::Iterator j = i->second_.resources_.Begin();
-            j != i->second_.resources_.End(); ++j)
+             j != i->second_.resources_.End(); ++j)
         {
             totalSize += j->second_->GetMemoryUse();
             unsigned useTimer = j->second_->GetUseTimer();
@@ -931,7 +925,7 @@ void ResourceCache::UpdateResourceGroup(StringHash type)
             oldestResource != i->second_.resources_.End())
         {
             LOGDEBUG("Resource group " + oldestResource->second_->GetTypeName() + " over memory budget, releasing resource " +
-                oldestResource->second_->GetName());
+                     oldestResource->second_->GetName());
             i->second_.resources_.Erase(oldestResource);
         }
         else

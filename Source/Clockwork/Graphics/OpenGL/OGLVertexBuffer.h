@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../../Container/ArrayPtr.h"
@@ -38,20 +40,28 @@ public:
 
     /// Return whether CPU memory shadowing is enabled.
     bool IsShadowed() const { return shadowed_; }
+
     /// Return whether is dynamic.
     bool IsDynamic() const { return dynamic_; }
+
     /// Return whether is currently locked.
     bool IsLocked() const { return lockState_ != LOCK_NONE; }
+
     /// Return number of vertices.
-    unsigned GetVertexCount() const {return vertexCount_; }
+    unsigned GetVertexCount() const { return vertexCount_; }
+
     /// Return vertex size.
     unsigned GetVertexSize() const { return vertexSize_; }
+
     /// Return bitmask of vertex elements.
     unsigned GetElementMask() const { return elementMask_; }
+
     /// Return offset of a specified element within a vertex.
     unsigned GetElementOffset(VertexElement element) const { return elementOffset_[element]; }
+
     /// Return CPU memory shadow data.
     unsigned char* GetShadowData() const { return shadowData_.Get(); }
+
     /// Return shared array pointer to the CPU memory shadow data.
     SharedArrayPtr<unsigned char> GetShadowDataShared() const { return shadowData_; }
 

@@ -1,14 +1,37 @@
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rightsR
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+#include "../../Precompiled.h"
+
 #include "../../Core/Context.h"
-#include "../../IO/FileSystem.h"
+#include "../../Core/Profiler.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsEvents.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../Resource/Image.h"
-#include "../../IO/Log.h"
-#include "../../Core/Profiler.h"
 #include "../../Graphics/Renderer.h"
-#include "../../Resource/ResourceCache.h"
 #include "../../Graphics/Texture2D.h"
+#include "../../IO/FileSystem.h"
+#include "../../IO/Log.h"
+#include "../../Resource/ResourceCache.h"
 #include "../../Resource/XMLFile.h"
 
 #include "../../DebugNew.h"
@@ -69,7 +92,7 @@ bool Texture2D::BeginLoad(Deserializer& source)
 bool Texture2D::EndLoad()
 {
     // In headless mode, do not actually load the texture, just return success
-     if (!graphics_ || graphics_->IsDeviceLost())
+    if (!graphics_ || graphics_->IsDeviceLost())
         return true;
 
     // If over the texture budget, see if materials can be freed to allow textures to be freed
@@ -296,6 +319,10 @@ bool Texture2D::SetData(SharedPtr<Image> image, bool useAlpha)
         case 4:
             format = Graphics::GetRGBAFormat();
             break;
+
+        default:
+            assert(false);  // Should not reach here
+            break;
         }
 
         // If image was previously compressed, reset number of requested levels to avoid error if level count is too high for new size
@@ -341,7 +368,7 @@ bool Texture2D::SetData(SharedPtr<Image> image, bool useAlpha)
         width /= (1 << mipsToSkip);
         height /= (1 << mipsToSkip);
 
-        SetNumLevels(Max((int)(levels - mipsToSkip), 1));
+        SetNumLevels((unsigned)Max((int)(levels - mipsToSkip), 1));
         SetSize(width, height, format);
 
         for (unsigned i = 0; i < levels_ && i < levels - mipsToSkip; ++i)
@@ -369,7 +396,7 @@ bool Texture2D::SetData(SharedPtr<Image> image, bool useAlpha)
 
 bool Texture2D::GetData(unsigned level, void* dest) const
 {
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     if (!object_ || !graphics_)
     {
         LOGERROR("No texture created, can not get data");
@@ -403,10 +430,10 @@ bool Texture2D::GetData(unsigned level, void* dest) const
 
     graphics_->SetTexture(0, 0);
     return true;
-    #else
+#else
     LOGERROR("Getting texture data not supported");
     return false;
-    #endif
+#endif
 }
 
 bool Texture2D::Create()
@@ -428,12 +455,12 @@ bool Texture2D::Create()
 
     // Create a renderbuffer instead of a texture if depth texture is not properly supported, or if this will be a packed
     // depth stencil texture
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     if (format == Graphics::GetDepthStencilFormat())
-    #else
+#else
     if (format == GL_DEPTH_COMPONENT16 || format == GL_DEPTH_COMPONENT24_OES || format == GL_DEPTH24_STENCIL8_OES ||
         (format == GL_DEPTH_COMPONENT && !graphics_->GetShadowMapFormat()))
-    #endif
+#endif
     {
         if (renderSurface_)
         {
@@ -475,10 +502,10 @@ bool Texture2D::Create()
         }
     }
 
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     glTexParameteri(target_, GL_TEXTURE_BASE_LEVEL, 0);
     glTexParameteri(target_, GL_TEXTURE_MAX_LEVEL, levels_ - 1);
-    #endif
+#endif
 
     // Set initial parameters, then unbind the texture
     UpdateParameters();

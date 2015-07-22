@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Graphics/StaticModel.h"
@@ -38,11 +40,13 @@ public:
 
     /// Return number of instance nodes.
     unsigned GetNumInstanceNodes() const { return instanceNodes_.Size(); }
+
     /// Return instance node by index.
     Node* GetInstanceNode(unsigned index) const;
 
     /// Set node IDs attribute.
     void SetNodeIDsAttr(const VariantVector& value);
+
     /// Return node IDs attribute.
     const VariantVector& GetNodeIDsAttr() const { return nodeIDsAttr_; }
 

@@ -1,13 +1,17 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Core/Context.h"
-#include "../../IO/FileSystem.h"
+#include "../../Core/Profiler.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsEvents.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
-#include "../../Core/Profiler.h"
 #include "../../Graphics/Renderer.h"
-#include "../../Resource/ResourceCache.h"
 #include "../../Graphics/TextureCube.h"
+#include "../../IO/FileSystem.h"
+#include "../../IO/Log.h"
+#include "../../Resource/ResourceCache.h"
 #include "../../Resource/XMLFile.h"
 
 #include "../../DebugNew.h"
@@ -30,7 +34,8 @@ static const char* cubeMapLayoutNames[] = {
 
 static SharedPtr<Image> GetTileImage(Image* src, int tileX, int tileY, int tileWidth, int tileHeight)
 {
-    return SharedPtr<Image>(src->GetSubimage(IntRect(tileX * tileWidth, tileY * tileHeight, (tileX + 1) * tileWidth, (tileY + 1) * tileHeight)));
+    return SharedPtr<Image>(
+        src->GetSubimage(IntRect(tileX * tileWidth, tileY * tileHeight, (tileX + 1) * tileWidth, (tileY + 1) * tileHeight)));
 }
 
 TextureCube::TextureCube(Context* context) :
@@ -88,7 +93,8 @@ bool TextureCube::BeginLoad(Deserializer& source)
         if (GetPath(name).Empty())
             name = texPath + name;
 
-        CubeMapLayout layout = (CubeMapLayout)GetStringListIndex(imageElem.GetAttribute("layout").CString(), cubeMapLayoutNames, CML_HORIZONTAL);
+        CubeMapLayout layout =
+            (CubeMapLayout)GetStringListIndex(imageElem.GetAttribute("layout").CString(), cubeMapLayoutNames, CML_HORIZONTAL);
         SharedPtr<Image> image = cache->GetTempResource<Image>(name);
         if (!image)
             return false;
@@ -360,10 +366,10 @@ bool TextureCube::SetData(CubeMapFace face, unsigned level, int x, int y, int wi
     else
     {
         D3D11_BOX destBox;
-        destBox.left = x;
-        destBox.right = x + width;
-        destBox.top = y;
-        destBox.bottom = y + height;
+        destBox.left = (UINT)x;
+        destBox.right = (UINT)(x + width);
+        destBox.top = (UINT)y;
+        destBox.bottom = (UINT)(y + height);
         destBox.front = 0;
         destBox.back = 1;
 
@@ -439,6 +445,8 @@ bool TextureCube::SetData(CubeMapFace face, SharedPtr<Image> image, bool useAlph
         case 4:
             format = Graphics::GetRGBAFormat();
             break;
+
+        default: break;
         }
 
         // Create the texture when face 0 is being loaded, check that rest of the faces are same size & format
@@ -508,7 +516,7 @@ bool TextureCube::SetData(CubeMapFace face, SharedPtr<Image> image, bool useAlph
         // Create the texture when face 0 is being loaded, assume rest of the faces are same size & format
         if (!face)
         {
-            SetNumLevels(Max((int)(levels - mipsToSkip), 1));
+            SetNumLevels((unsigned)Max((int)(levels - mipsToSkip), 1));
             SetSize(width, format);
         }
         else
@@ -578,8 +586,8 @@ bool TextureCube::GetData(CubeMapFace face, unsigned level, void* dest) const
 
     D3D11_TEXTURE2D_DESC textureDesc;
     memset(&textureDesc, 0, sizeof textureDesc);
-    textureDesc.Width = levelWidth;
-    textureDesc.Height = levelHeight;
+    textureDesc.Width = (UINT)levelWidth;
+    textureDesc.Height = (UINT)levelHeight;
     textureDesc.MipLevels = 1;
     textureDesc.ArraySize = 1;
     textureDesc.Format = (DXGI_FORMAT)format_;
@@ -599,9 +607,9 @@ bool TextureCube::GetData(CubeMapFace face, unsigned level, void* dest) const
     unsigned srcSubResource = D3D11CalcSubresource(level, face, levels_);
     D3D11_BOX srcBox;
     srcBox.left = 0;
-    srcBox.right = levelWidth;
+    srcBox.right = (UINT)levelWidth;
     srcBox.top = 0;
-    srcBox.bottom = levelHeight;
+    srcBox.bottom = (UINT)levelHeight;
     srcBox.front = 0;
     srcBox.back = 1;
     graphics_->GetImpl()->GetDeviceContext()->CopySubresourceRegion(stagingTexture, 0, 0, 0, 0, (ID3D11Resource*)object_,
@@ -610,7 +618,7 @@ bool TextureCube::GetData(CubeMapFace face, unsigned level, void* dest) const
     D3D11_MAPPED_SUBRESOURCE mappedData;
     mappedData.pData = 0;
     unsigned rowSize = GetRowDataSize(levelWidth);
-    unsigned numRows = IsCompressed() ? (levelHeight + 3) >> 2 : levelHeight;
+    unsigned numRows = (unsigned)(IsCompressed() ? (levelHeight + 3) >> 2 : levelHeight);
 
     graphics_->GetImpl()->GetDeviceContext()->Map((ID3D11Resource*)stagingTexture, 0, D3D11_MAP_READ, 0, &mappedData);
     if (mappedData.pData)
@@ -640,8 +648,8 @@ bool TextureCube::Create()
 
     D3D11_TEXTURE2D_DESC textureDesc;
     memset(&textureDesc, 0, sizeof textureDesc);
-    textureDesc.Width = width_;
-    textureDesc.Height = height_;
+    textureDesc.Width = (UINT)width_;
+    textureDesc.Height = (UINT)height_;
     textureDesc.MipLevels = levels_;
     textureDesc.ArraySize = MAX_CUBEMAP_FACES;
     textureDesc.Format = (DXGI_FORMAT)(sRGB_ ? GetSRGBFormat(format_) : format_);
@@ -667,7 +675,7 @@ bool TextureCube::Create()
     memset(&resourceViewDesc, 0, sizeof resourceViewDesc);
     resourceViewDesc.Format = (DXGI_FORMAT)GetSRVFormat(textureDesc.Format);
     resourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
-    resourceViewDesc.Texture2D.MipLevels = (unsigned)levels_;
+    resourceViewDesc.Texture2D.MipLevels = (UINT)levels_;
 
     graphics_->GetImpl()->GetDevice()->CreateShaderResourceView((ID3D11Resource*)object_, &resourceViewDesc,
         (ID3D11ShaderResourceView**)&shaderResourceView_);

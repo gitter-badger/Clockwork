@@ -1,8 +1,10 @@
-#include "../Graphics/Camera.h"
-#include "../IO/Log.h"
-#include "../Graphics/OcclusionBuffer.h"
 
-#include <cstring>
+
+#include "../Precompiled.h"
+
+#include "../Graphics/Camera.h"
+#include "../Graphics/OcclusionBuffer.h"
+#include "../IO/Log.h"
 
 #include "../DebugNew.h"
 
@@ -47,7 +49,7 @@ bool OcclusionBuffer::SetSize(int width, int height)
     if (width <= 0 || height <= 0)
         return false;
 
-    if (!IsPowerOfTwo(width))
+    if (!IsPowerOfTwo((unsigned)width))
     {
         LOGERROR("Width is not a power of two");
         return false;
@@ -74,7 +76,7 @@ bool OcclusionBuffer::SetSize(int width, int height)
     }
 
     LOGDEBUG("Set occlusion buffer size " + String(width_) + "x" + String(height_) + " with " +
-        String(mipBuffers_.Size()) + " mip levels");
+             String(mipBuffers_.Size()) + " mip levels");
 
     CalculateViewport();
     return true;
@@ -132,7 +134,8 @@ void OcclusionBuffer::Clear()
     depthHierarchyDirty_ = true;
 }
 
-bool OcclusionBuffer::Draw(const Matrix3x4& model, const void* vertexData, unsigned vertexSize, unsigned vertexStart, unsigned vertexCount)
+bool OcclusionBuffer::Draw(const Matrix3x4& model, const void* vertexData, unsigned vertexSize, unsigned vertexStart,
+    unsigned vertexCount)
 {
     const unsigned char* srcData = ((const unsigned char*)vertexData) + vertexStart * vertexSize;
 
@@ -676,17 +679,17 @@ struct Gradients
     Gradients(const Vector3* vertices)
     {
         float invdX = 1.0f / (((vertices[1].x_ - vertices[2].x_) *
-            (vertices[0].y_ - vertices[2].y_)) -
-            ((vertices[0].x_ - vertices[2].x_) *
-            (vertices[1].y_ - vertices[2].y_)));
+                               (vertices[0].y_ - vertices[2].y_)) -
+                              ((vertices[0].x_ - vertices[2].x_) *
+                               (vertices[1].y_ - vertices[2].y_)));
 
         float invdY = -invdX;
 
         dInvZdX_ = invdX * (((vertices[1].z_ - vertices[2].z_) * (vertices[0].y_ - vertices[2].y_)) -
-            ((vertices[0].z_ - vertices[2].z_) * (vertices[1].y_ - vertices[2].y_)));
+                            ((vertices[0].z_ - vertices[2].z_) * (vertices[1].y_ - vertices[2].y_)));
 
         dInvZdY_ = invdY * (((vertices[1].z_ - vertices[2].z_) * (vertices[0].x_ - vertices[2].x_)) -
-            ((vertices[0].z_ - vertices[2].z_) * (vertices[1].x_ - vertices[2].x_)));
+                            ((vertices[0].z_ - vertices[2].z_) * (vertices[1].x_ - vertices[2].x_)));
 
         dInvZdXInt_ = (int)dInvZdX_;
     }
@@ -736,7 +739,9 @@ void OcclusionBuffer::DrawTriangle2D(const Vector3* vertices, bool clockwise)
     {
         if (vertices[2].y_ < vertices[0].y_)
         {
-            top = 2; middle = 0; bottom = 1;
+            top = 2;
+            middle = 0;
+            bottom = 1;
             middleIsRight = true;
         }
         else
@@ -744,12 +749,14 @@ void OcclusionBuffer::DrawTriangle2D(const Vector3* vertices, bool clockwise)
             top = 0;
             if (vertices[1].y_ < vertices[2].y_)
             {
-                middle = 1; bottom = 2;
+                middle = 1;
+                bottom = 2;
                 middleIsRight = true;
             }
             else
             {
-                middle = 2; bottom = 1;
+                middle = 2;
+                bottom = 1;
                 middleIsRight = false;
             }
         }
@@ -758,7 +765,9 @@ void OcclusionBuffer::DrawTriangle2D(const Vector3* vertices, bool clockwise)
     {
         if (vertices[2].y_ < vertices[1].y_)
         {
-            top = 2; middle = 1; bottom = 0;
+            top = 2;
+            middle = 1;
+            bottom = 0;
             middleIsRight = false;
         }
         else
@@ -766,12 +775,14 @@ void OcclusionBuffer::DrawTriangle2D(const Vector3* vertices, bool clockwise)
             top = 1;
             if (vertices[0].y_ < vertices[2].y_)
             {
-                middle = 0; bottom = 2;
+                middle = 0;
+                bottom = 2;
                 middleIsRight = false;
             }
             else
             {
-                middle = 2; bottom = 0;
+                middle = 2;
+                bottom = 0;
                 middleIsRight = true;
             }
         }

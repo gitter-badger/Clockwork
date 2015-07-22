@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/Str.h"
@@ -35,7 +37,7 @@ public:
             memcpy(name_, name, nameLength + 1);
         }
     }
-
+    
     /// Destruct. Free the child blocks.
     ~ProfilerBlock()
     {
@@ -44,17 +46,17 @@ public:
             delete *i;
             *i = 0;
         }
-
+        
         delete [] name_;
     }
-
+    
     /// Begin timing.
     void Begin()
     {
         timer_.Reset();
         ++count_;
     }
-
+    
     /// End timing.
     void End()
     {
@@ -63,7 +65,7 @@ public:
             maxTime_ = time;
         time_ += time;
     }
-
+    
     /// End profiling frame and update interval and total values.
     void EndFrame()
     {
@@ -81,22 +83,22 @@ public:
         time_ = 0;
         maxTime_ = 0;
         count_ = 0;
-
+        
         for (PODVector<ProfilerBlock*>::Iterator i = children_.Begin(); i != children_.End(); ++i)
             (*i)->EndFrame();
     }
-
+    
     /// Begin new profiling interval.
     void BeginInterval()
     {
         intervalTime_ = 0;
         intervalMaxTime_ = 0;
         intervalCount_ = 0;
-
+        
         for (PODVector<ProfilerBlock*>::Iterator i = children_.Begin(); i != children_.End(); ++i)
             (*i)->BeginInterval();
     }
-
+    
     /// Return child block with the specified name.
     ProfilerBlock* GetChild(const char* name)
     {
@@ -105,13 +107,13 @@ public:
             if (!String::Compare((*i)->name_, name, true))
                 return *i;
         }
-
+        
         ProfilerBlock* newBlock = new ProfilerBlock(this, name);
         children_.Push(newBlock);
-
+        
         return newBlock;
     }
-
+    
     /// Block name.
     char* name_;
     /// High-resolution timer for measuring the block duration.
@@ -150,55 +152,55 @@ public:
 class CLOCKWORK_API Profiler : public Object
 {
     OBJECT(Profiler);
-
+    
 public:
     /// Construct.
     Profiler(Context* context);
     /// Destruct.
     virtual ~Profiler();
-
+    
     /// Begin timing a profiling block.
     void BeginBlock(const char* name)
     {
         // Profiler supports only the main thread currently
         if (!Thread::IsMainThread())
             return;
-
+        
         current_ = current_->GetChild(name);
         current_->Begin();
     }
-
+    
     /// End timing the current profiling block.
     void EndBlock()
     {
         if (!Thread::IsMainThread())
             return;
-
+        
         if (current_ != root_)
         {
             current_->End();
             current_ = current_->parent_;
         }
     }
-
+    
     /// Begin the profiling frame. Called by HandleBeginFrame().
     void BeginFrame();
     /// End the profiling frame. Called by HandleEndFrame().
     void EndFrame();
     /// Begin a new interval.
     void BeginInterval();
-
+    
     /// Return profiling data as text output.
     String GetData(bool showUnused = false, bool showTotal = false, unsigned maxDepth = M_MAX_UNSIGNED) const;
     /// Return the current profiling block.
     const ProfilerBlock* GetCurrentBlock() { return current_; }
     /// Return the root profiling block.
     const ProfilerBlock* GetRootBlock() { return root_; }
-
+    
 private:
     /// Return profiling data as text output for a specified profiling block.
     void GetData(ProfilerBlock* block, String& output, unsigned depth, unsigned maxDepth, bool showUnused, bool showTotal) const;
-
+    
     /// Current profiling block.
     ProfilerBlock* current_;
     /// Root profiling block.
@@ -220,14 +222,14 @@ public:
         if (profiler_)
             profiler_->BeginBlock(name);
     }
-
+    
     /// Destruct. End the profiling block.
     ~AutoProfileBlock()
     {
         if (profiler_)
             profiler_->EndBlock();
     }
-
+    
 private:
     /// Profiler.
     Profiler* profiler_;

@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Math/Matrix3.h"
 
 #include <cstdio>
@@ -17,11 +21,11 @@ const Matrix3 Matrix3::IDENTITY;
 Matrix3 Matrix3::Inverse() const
 {
     float det = m00_ * m11_ * m22_ +
-        m10_ * m21_ * m02_ +
-        m20_ * m01_ * m12_ -
-        m20_ * m11_ * m02_ -
-        m10_ * m01_ * m22_ -
-        m00_ * m21_ * m12_;
+                m10_ * m21_ * m02_ +
+                m20_ * m01_ * m12_ -
+                m20_ * m11_ * m02_ -
+                m10_ * m01_ * m22_ -
+                m00_ * m21_ * m12_;
 
     float invDet = 1.0f / det;
 

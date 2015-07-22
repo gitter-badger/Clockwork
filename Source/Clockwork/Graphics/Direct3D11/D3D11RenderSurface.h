@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../../Graphics/GraphicsDefs.h"
@@ -37,22 +39,29 @@ public:
 
     /// Return parent texture.
     Texture* GetParentTexture() const { return parentTexture_; }
+
     /// Return Direct3D rendertarget or depth-stencil view.
     void* GetRenderTargetView() const { return renderTargetView_; }
+
     /// Return width.
     int GetWidth() const;
     /// Return height.
     int GetHeight() const;
     /// Return usage.
     TextureUsage GetUsage() const;
+
     /// Return number of viewports.
     unsigned GetNumViewports() const { return viewports_.Size(); }
+
     /// Return viewport by index.
     Viewport* GetViewport(unsigned index) const;
+
     /// Return viewport update mode.
     RenderSurfaceUpdateMode GetUpdateMode() const { return updateMode_; }
+
     /// Return linked color rendertarget.
     RenderSurface* GetLinkedRenderTarget() const { return linkedRenderTarget_; }
+
     /// Return linked depth-stencil surface.
     RenderSurface* GetLinkedDepthStencil() const { return linkedDepthStencil_; }
 

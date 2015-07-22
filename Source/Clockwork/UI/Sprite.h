@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Matrix3x4.h"
@@ -55,16 +57,22 @@ public:
 
     /// Return floating point position.
     const Vector2& GetPosition() const { return floatPosition_; }
+
     /// Return hotspot.
     const IntVector2& GetHotSpot() const { return hotSpot_; }
+
     /// Return scale.
     const Vector2& GetScale() const { return scale_; }
+
     /// Return rotation angle.
     float GetRotation() const { return rotation_; }
+
     /// Return texture.
     Texture* GetTexture() const { return texture_; }
+
     /// Return image rectangle.
     const IntRect& GetImageRect() const { return imageRect_; }
+
     /// Return blend mode.
     BlendMode GetBlendMode() const { return blendMode_; }
 

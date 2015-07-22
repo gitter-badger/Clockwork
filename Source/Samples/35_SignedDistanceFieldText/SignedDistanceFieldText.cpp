@@ -1,3 +1,5 @@
+
+
 #include <Clockwork/Clockwork.h>
 
 #include <Clockwork/Graphics/Camera.h>
@@ -98,7 +100,7 @@ void SignedDistanceFieldText::CreateScene()
         mushroomTitleText->SetFont(cache->GetResource<Font>("Fonts/BlueHighway.sdf"), 24);
 
         mushroomTitleText->SetColor(Color::RED);
-
+        
         if (i % 3 == 1)
         {
             mushroomTitleText->SetColor(Color::GREEN);

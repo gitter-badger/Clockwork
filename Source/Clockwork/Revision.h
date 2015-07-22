@@ -1,4 +1,12 @@
+
+
 #pragma once
+
+#ifdef CLOCKWORK_IS_BUILDING
+#include "Clockwork.h"
+#else
+#include <Clockwork/Clockwork.h>
+#endif
 
 namespace Clockwork
 {

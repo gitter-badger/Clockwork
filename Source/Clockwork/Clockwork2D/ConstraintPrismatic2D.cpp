@@ -1,5 +1,9 @@
-#include "../Clockwork2D/ConstraintPrismatic2D.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
+#include "../Clockwork2D/ConstraintPrismatic2D.h"
 #include "../Clockwork2D/PhysicsUtils2D.h"
 #include "../Clockwork2D/RigidBody2D.h"
 
@@ -34,6 +38,7 @@ void ConstraintPrismatic2D::RegisterObject(Context* context)
     ACCESSOR_ATTRIBUTE("Motor Speed", GetMotorSpeed, SetMotorSpeed, float, 0.7f, AM_DEFAULT);
     COPY_BASE_ATTRIBUTES(Constraint2D);
 }
+
 void ConstraintPrismatic2D::SetAnchor(const Vector2& anchor)
 {
     if (anchor == anchor_)

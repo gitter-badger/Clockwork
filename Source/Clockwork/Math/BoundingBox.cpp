@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Math/Frustum.h"
 #include "../Math/Polyhedron.h"
 
@@ -185,7 +189,7 @@ Intersection BoundingBox::IsInside(const Sphere& sphere) const
     if (distSquared >= radius * radius)
         return OUTSIDE;
     else if (center.x_ - radius < min_.x_ || center.x_ + radius > max_.x_ || center.y_ - radius < min_.y_ ||
-        center.y_ + radius > max_.y_ || center.z_ - radius < min_.z_ || center.z_ + radius > max_.z_)
+             center.y_ + radius > max_.y_ || center.z_ - radius < min_.z_ || center.z_ + radius > max_.z_)
         return INTERSECTS;
     else
         return INSIDE;

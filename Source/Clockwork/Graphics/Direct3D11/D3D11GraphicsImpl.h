@@ -1,7 +1,9 @@
+
+
 #pragma once
 
-#include "../../Math/Color.h"
 #include "../../Graphics/GraphicsDefs.h"
+#include "../../Math/Color.h"
 
 #include <d3d11.h>
 #include <dxgi.h>
@@ -21,10 +23,13 @@ public:
 
     /// Return Direct3D device.
     ID3D11Device* GetDevice() const { return device_; }
+
     /// Return Direct3D immediate device context.
     ID3D11DeviceContext* GetDeviceContext() const { return deviceContext_; }
+
     /// Return swapchain.
     IDXGISwapChain* GetSwapChain() const { return swapChain_; }
+
     /// Return window.
     SDL_Window* GetWindow() const { return window_; }
 

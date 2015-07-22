@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Audio/SoundSource.h"
@@ -42,12 +44,16 @@ public:
 
     /// Return near distance.
     float GetNearDistance() const { return nearDistance_; }
+
     /// Return far distance.
     float GetFarDistance() const { return farDistance_; }
+
     /// Return inner angle in degrees.
     float GetInnerAngle() const { return innerAngle_; }
+
     /// Return outer angle in degrees.
     float GetOuterAngle() const { return outerAngle_; }
+
     /// Return rolloff power factor.
     float RollAngleoffFactor() const { return rolloffFactor_; }
 

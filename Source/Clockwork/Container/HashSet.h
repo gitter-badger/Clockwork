@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/HashBase.h"
@@ -31,8 +33,10 @@ public:
 
         /// Return next node.
         Node* Next() const { return static_cast<Node*>(next_); }
+
         /// Return previous node.
         Node* Prev() const { return static_cast<Node*>(prev_); }
+
         /// Return next node in the bucket.
         Node* Down() const { return static_cast<Node*>(down_); }
     };
@@ -52,18 +56,40 @@ public:
         }
 
         /// Preincrement the pointer.
-        Iterator& operator ++ () { GotoNext(); return *this; }
+        Iterator& operator ++()
+        {
+            GotoNext();
+            return *this;
+        }
+
         /// Postincrement the pointer.
-        Iterator operator ++ (int) { Iterator it = *this; GotoNext(); return it; }
+        Iterator operator ++(int)
+        {
+            Iterator it = *this;
+            GotoNext();
+            return it;
+        }
+
         /// Predecrement the pointer.
-        Iterator& operator -- () { GotoPrev(); return *this; }
+        Iterator& operator --()
+        {
+            GotoPrev();
+            return *this;
+        }
+
         /// Postdecrement the pointer.
-        Iterator operator -- (int) { Iterator it = *this; GotoPrev(); return it; }
+        Iterator operator --(int)
+        {
+            Iterator it = *this;
+            GotoPrev();
+            return it;
+        }
 
         /// Point to the key.
-        const T* operator -> () const { return &(static_cast<Node*>(ptr_))->key_; }
+        const T* operator ->() const { return &(static_cast<Node*>(ptr_))->key_; }
+
         /// Dereference the key.
-        const T& operator * () const { return (static_cast<Node*>(ptr_))->key_; }
+        const T& operator *() const { return (static_cast<Node*>(ptr_))->key_; }
     };
 
     /// Hash set node const iterator.
@@ -87,27 +113,54 @@ public:
         }
 
         /// Assign from a non-const iterator.
-        ConstIterator& operator = (const Iterator& rhs) { ptr_ = rhs.ptr_; return *this; }
+        ConstIterator& operator =(const Iterator& rhs)
+        {
+            ptr_ = rhs.ptr_;
+            return *this;
+        }
+
         /// Preincrement the pointer.
-        ConstIterator& operator ++ () { GotoNext(); return *this; }
+        ConstIterator& operator ++()
+        {
+            GotoNext();
+            return *this;
+        }
+
         /// Postincrement the pointer.
-        ConstIterator operator ++ (int) { ConstIterator it = *this; GotoNext(); return it; }
+        ConstIterator operator ++(int)
+        {
+            ConstIterator it = *this;
+            GotoNext();
+            return it;
+        }
+
         /// Predecrement the pointer.
-        ConstIterator& operator -- () { GotoPrev(); return *this; }
+        ConstIterator& operator --()
+        {
+            GotoPrev();
+            return *this;
+        }
+
         /// Postdecrement the pointer.
-        ConstIterator operator -- (int) { ConstIterator it = *this; GotoPrev(); return it; }
+        ConstIterator operator --(int)
+        {
+            ConstIterator it = *this;
+            GotoPrev();
+            return it;
+        }
 
         /// Point to the key.
-        const T* operator -> () const { return &(static_cast<Node*>(ptr_))->key_; }
+        const T* operator ->() const { return &(static_cast<Node*>(ptr_))->key_; }
+
         /// Dereference the key.
-        const T& operator * () const { return (static_cast<Node*>(ptr_))->key_; }
+        const T& operator *() const { return (static_cast<Node*>(ptr_))->key_; }
     };
 
     /// Construct empty.
     HashSet()
     {
         // Reserve the tail node
-        allocator_ = AllocatorInitialize(sizeof(Node));
+        allocator_ = AllocatorInitialize((unsigned)sizeof(Node));
         head_ = tail_ = ReserveNode();
     }
 
@@ -115,7 +168,7 @@ public:
     HashSet(const HashSet<T>& set)
     {
         // Reserve the tail node + initial capacity according to the set's size
-        allocator_ = AllocatorInitialize(sizeof(Node), set.Size() + 1);
+        allocator_ = AllocatorInitialize((unsigned)sizeof(Node), set.Size() + 1);
         head_ = tail_ = ReserveNode();
         *this = set;
     }
@@ -130,7 +183,7 @@ public:
     }
 
     /// Assign a hash set.
-    HashSet& operator = (const HashSet<T>& rhs)
+    HashSet& operator =(const HashSet<T>& rhs)
     {
         Clear();
         Insert(rhs);
@@ -138,21 +191,21 @@ public:
     }
 
     /// Add-assign a value.
-    HashSet& operator += (const T& rhs)
+    HashSet& operator +=(const T& rhs)
     {
         Insert(rhs);
         return *this;
     }
 
     /// Add-assign a hash set.
-    HashSet& operator += (const HashSet<T>& rhs)
+    HashSet& operator +=(const HashSet<T>& rhs)
     {
         Insert(rhs);
         return *this;
     }
 
     /// Test for equality with another hash set.
-    bool operator == (const HashSet<T>& rhs) const
+    bool operator ==(const HashSet<T>& rhs) const
     {
         if (rhs.Size() != Size())
             return false;
@@ -169,7 +222,7 @@ public:
     }
 
     /// Test for inequality with another hash set.
-    bool operator != (const HashSet<T>& rhs) const
+    bool operator !=(const HashSet<T>& rhs) const
     {
         if (rhs.Size() != Size())
             return true;
@@ -287,7 +340,7 @@ public:
     {
         if (Size())
         {
-            for (Iterator i = Begin(); i != End(); )
+            for (Iterator i = Begin(); i != End();)
             {
                 FreeNode(static_cast<Node*>(i++.ptr_));
                 i.ptr_->prev_ = 0;
@@ -307,7 +360,7 @@ public:
         if (!numKeys)
             return;
 
-        Node** ptrs = new Node*[numKeys];
+        Node** ptrs = new Node* [numKeys];
         Node* ptr = Head();
 
         for (unsigned i = 0; i < numKeys; ++i)
@@ -391,20 +444,26 @@ public:
 
     /// Return iterator to the beginning.
     Iterator Begin() { return Iterator(Head()); }
+
     /// Return iterator to the beginning.
     ConstIterator Begin() const { return ConstIterator(Head()); }
+
     /// Return iterator to the end.
     Iterator End() { return Iterator(Tail()); }
+
     /// Return iterator to the end.
     ConstIterator End() const { return ConstIterator(Tail()); }
+
     /// Return first key.
     const T& Front() const { return *Begin(); }
+
     /// Return last key.
     const T& Back() const { return *(--End()); }
 
 private:
     /// Return the head node.
     Node* Head() const { return static_cast<Node*>(head_); }
+
     /// Return the tail node.
     Node* Tail() const { return static_cast<Node*>(tail_); }
 
@@ -533,8 +592,11 @@ namespace std
 {
 
 template <class T> typename Clockwork::HashSet<T>::ConstIterator begin(const Clockwork::HashSet<T>& v) { return v.Begin(); }
+
 template <class T> typename Clockwork::HashSet<T>::ConstIterator end(const Clockwork::HashSet<T>& v) { return v.End(); }
+
 template <class T> typename Clockwork::HashSet<T>::Iterator begin(Clockwork::HashSet<T>& v) { return v.Begin(); }
+
 template <class T> typename Clockwork::HashSet<T>::Iterator end(Clockwork::HashSet<T>& v) { return v.End(); }
 
 }

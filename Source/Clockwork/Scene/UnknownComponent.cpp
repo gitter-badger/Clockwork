@@ -1,9 +1,13 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../IO/Deserializer.h"
 #include "../IO/Log.h"
 #include "../IO/Serializer.h"
-#include "../Scene/UnknownComponent.h"
 #include "../Resource/XMLElement.h"
+#include "../Scene/UnknownComponent.h"
 
 #include "../DebugNew.h"
 

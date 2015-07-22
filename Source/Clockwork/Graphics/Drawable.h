@@ -1,8 +1,10 @@
+
+
 #pragma once
 
+#include "../Graphics/GraphicsDefs.h"
 #include "../Math/BoundingBox.h"
 #include "../Scene/Component.h"
-#include "../Graphics/GraphicsDefs.h"
 
 namespace Clockwork
 {
@@ -100,12 +102,16 @@ public:
     virtual void UpdateBatches(const FrameInfo& frame);
     /// Prepare geometry for rendering.
     virtual void UpdateGeometry(const FrameInfo& frame);
+
     /// Return whether a geometry update is necessary, and if it can happen in a worker thread.
     virtual UpdateGeometryType GetUpdateGeometryType() { return UPDATE_NONE; }
+
     /// Return the geometry for a specific LOD level.
     virtual Geometry* GetLodGeometry(unsigned batchIndex, unsigned level);
+
     /// Return number of occlusion geometry triangles.
     virtual unsigned GetNumOccluderTriangles() { return 0; }
+
     /// Draw to occlusion buffer. Return true if did not run out of triangles.
     virtual bool DrawOcclusion(OcclusionBuffer* buffer);
     /// Visualize the component as debug geometry.
@@ -138,36 +144,51 @@ public:
 
     /// Return local space bounding box. May not be applicable or properly updated on all drawables.
     const BoundingBox& GetBoundingBox() const { return boundingBox_; }
+
     /// Return world-space bounding box.
     const BoundingBox& GetWorldBoundingBox();
+
     /// Return drawable flags.
     unsigned char GetDrawableFlags() const { return drawableFlags_; }
+
     /// Return draw distance.
     float GetDrawDistance() const { return drawDistance_; }
+
     /// Return shadow draw distance.
     float GetShadowDistance() const { return shadowDistance_; }
+
     /// Return LOD bias.
     float GetLodBias() const { return lodBias_; }
+
     /// Return view mask.
     unsigned GetViewMask() const { return viewMask_; }
+
     /// Return light mask.
     unsigned GetLightMask() const { return lightMask_; }
+
     /// Return shadow mask.
     unsigned GetShadowMask() const { return shadowMask_; }
+
     /// Return zone mask.
     unsigned GetZoneMask() const { return zoneMask_; }
+
     /// Return maximum number of per-pixel lights.
     unsigned GetMaxLights() const { return maxLights_; }
+
     /// Return shadowcaster flag.
     bool GetCastShadows() const { return castShadows_; }
+
     /// Return occluder flag.
     bool IsOccluder() const { return occluder_; }
+
     /// Return occludee flag.
     bool IsOccludee() const { return occludee_; }
+
     /// Return whether is in view this frame from any viewport camera. Excludes shadow map cameras.
     bool IsInView() const;
     /// Return whether is in view of a specific camera this frame. Pass in a null camera to allow any camera, including shadow map cameras.
     bool IsInView(Camera* camera) const;
+
     /// Return draw call source data.
     const Vector<SourceBatch>& GetBatches() const { return batches_; }
 
@@ -175,8 +196,14 @@ public:
     void SetZone(Zone* zone, bool temporary = false);
     /// Set sorting value.
     void SetSortValue(float value);
+
     /// Set view-space depth bounds.
-    void SetMinMaxZ(float minZ, float maxZ) { minZ_ = minZ; maxZ_ = maxZ; }
+    void SetMinMaxZ(float minZ, float maxZ)
+    {
+        minZ_ = minZ;
+        maxZ_ = maxZ;
+    }
+
     /// Mark in view. Also clear the light list.
     void MarkInView(const FrameInfo& frame);
     /// Mark in view without specifying a camera. Used for shadow casters.
@@ -185,32 +212,46 @@ public:
     void LimitLights();
     /// Sort and limit per-vertex lights to maximum allowed.
     void LimitVertexLights(bool removeConvertedLights);
+
     /// Set base pass flag for a batch.
     void SetBasePass(unsigned batchIndex) { basePassFlags_ |= (1 << batchIndex); }
+
     /// Return octree octant.
     Octant* GetOctant() const { return octant_; }
+
     /// Return current zone.
     Zone* GetZone() const { return zone_; }
+
     /// Return whether current zone is inconclusive or dirty due to the drawable moving.
     bool IsZoneDirty() const { return zoneDirty_; }
+
     /// Return distance from camera.
     float GetDistance() const { return distance_; }
+
     /// Return LOD scaled distance from camera.
     float GetLodDistance() const { return lodDistance_; }
+
     /// Return sorting value.
     float GetSortValue() const { return sortValue_; }
+
     /// Return whether is in view on the current frame. Called by View.
     bool IsInView(const FrameInfo& frame, bool anyCamera = false) const;
+
     /// Return whether has a base pass.
     bool HasBasePass(unsigned batchIndex) const { return (basePassFlags_ & (1 << batchIndex)) != 0; }
+
     /// Return per-pixel lights.
     const PODVector<Light*>& GetLights() const { return lights_; }
+
     /// Return per-vertex lights.
     const PODVector<Light*>& GetVertexLights() const { return vertexLights_; }
+
     /// Return the first added per-pixel light.
     Light* GetFirstLight() const { return firstLight_; }
+
     /// Return the minimum view-space depth.
     float GetMinZ() const { return minZ_; }
+
     /// Return the maximum view-space depth.
     float GetMaxZ() const { return maxZ_; }
 
@@ -235,16 +276,21 @@ public:
 protected:
     /// Handle node being assigned.
     virtual void OnNodeSet(Node* node);
+    /// Handle scene being assigned.
+    virtual void OnSceneSet(Scene* scene);
     /// Handle node transform being dirtied.
     virtual void OnMarkedDirty(Node* node);
     /// Recalculate the world-space bounding box.
     virtual void OnWorldBoundingBoxUpdate() = 0;
+
     /// Handle removal from octree.
-    virtual void OnRemoveFromOctree() {}
+    virtual void OnRemoveFromOctree() { }
+
     /// Add to octree.
     void AddToOctree();
     /// Remove from octree.
     void RemoveFromOctree();
+
     /// Move into another octree octant.
     void SetOctant(Octant* octant) { octant_ = octant; }
 

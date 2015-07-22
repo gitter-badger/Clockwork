@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/Ptr.h"
@@ -21,9 +23,9 @@ struct Transform2D
     Transform2D(const Transform2D& other);
 
     /// Assign from another transform.
-    Transform2D& operator = (const Transform2D& other);
+    Transform2D& operator =(const Transform2D& other);
     /// Multiply a transform.
-    Transform2D operator * (const Transform2D& other) const;
+    Transform2D operator *(const Transform2D& other) const;
     /// Linear interpolation with another transform.
     Transform2D Lerp(const Transform2D& other, float t, int spin) const;
 
@@ -94,14 +96,19 @@ public:
 
     /// Return animation set.
     AnimationSet2D* GetAnimationSet() const;
+
     /// Return name.
     const String& GetName() const { return name_; }
+
     /// Return length.
     float GetLength() const { return length_; }
+
     /// Return looped.
     bool IsLooped() const { return looped_; }
+
     /// Return number of animation tracks.
     unsigned GetNumTracks() const { return tracks_.Size(); }
+
     /// Return animation track.
     const AnimationTrack2D& GetTrack(unsigned index) const;
 

@@ -1,8 +1,8 @@
+
+
+#include "../Precompiled.h"
+
 #include "../IO/MemoryBuffer.h"
-
-#include <cstring>
-
-#include "../DebugNew.h"
 
 namespace Clockwork
 {

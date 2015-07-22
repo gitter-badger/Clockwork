@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Audio/AudioDefs.h"
@@ -48,29 +50,38 @@ public:
     void SetAttenuation(float attenuation);
     /// Set stereo panning. -1.0 is full left and 1.0 is full right.
     void SetPanning(float panning);
-   /// Set whether sound source will be automatically removed from the scene node when playback stops.
+    /// Set whether sound source will be automatically removed from the scene node when playback stops.
     void SetAutoRemove(bool enable);
     /// Set new playback position.
     void SetPlayPosition(signed char* pos);
 
     /// Return sound.
     Sound* GetSound() const { return sound_; }
+
     /// Return playback position.
     volatile signed char* GetPlayPosition() const { return position_; }
+
     /// Return sound type, determines the master gain group.
     String GetSoundType() const { return soundType_; }
+
     /// Return playback time position.
     float GetTimePosition() const { return timePosition_; }
+
     /// Return frequency.
     float GetFrequency() const { return frequency_; }
+
     /// Return gain.
     float GetGain() const { return gain_; }
+
     /// Return attenuation.
     float GetAttenuation() const { return attenuation_; }
+
     /// Return stereo panning.
     float GetPanning() const { return panning_; }
+
     /// Return autoremove mode.
     bool GetAutoRemove() const { return autoRemove_; }
+
     /// Return whether is playing.
     bool IsPlaying() const;
 
@@ -149,7 +160,7 @@ private:
     /// Sound stream that is being played.
     SharedPtr<SoundStream> soundStream_;
     /// Playback position.
-    volatile signed char *position_;
+    volatile signed char* position_;
     /// Playback fractional position.
     volatile int fractPosition_;
     /// Playback time position.

@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../UI/BorderImage.h"
@@ -21,7 +23,8 @@ public:
     /// Return UI rendering batches.
     virtual void GetBatches(PODVector<UIBatch>& batches, PODVector<float>& vertexData, const IntRect& currentScissor);
     /// React to mouse click begin.
-    virtual void OnClickBegin(const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers, Cursor* cursor);
+    virtual void OnClickBegin
+        (const IntVector2& position, const IntVector2& screenPosition, int button, int buttons, int qualifiers, Cursor* cursor);
     /// React to a key press.
     virtual void OnKey(int key, int buttons, int qualifiers);
 
@@ -34,6 +37,7 @@ public:
 
     /// Return whether is checked.
     bool IsChecked() const { return checked_; }
+
     /// Return checked image offset.
     const IntVector2& GetCheckedOffset() const { return checkedOffset_; }
 

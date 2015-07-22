@@ -1,15 +1,19 @@
-#include "../Graphics/AnimatedModel.h"
-#include "../Graphics/Camera.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../Core/CoreEvents.h"
+#include "../Core/Profiler.h"
+#include "../Graphics/AnimatedModel.h"
+#include "../Graphics/Camera.h"
 #include "../Graphics/DebugRenderer.h"
 #include "../Graphics/Graphics.h"
 #include "../Graphics/Light.h"
-#include "../Math/Polyhedron.h"
-#include "../Core/Profiler.h"
-#include "../Resource/ResourceCache.h"
 #include "../Graphics/ShaderVariation.h"
 #include "../Graphics/VertexBuffer.h"
+#include "../Math/Polyhedron.h"
+#include "../Resource/ResourceCache.h"
 
 #include "../DebugNew.h"
 
@@ -66,7 +70,7 @@ void DebugRenderer::AddLine(const Vector3& start, const Vector3& end, unsigned c
         noDepthLines_.Push(DebugLine(start, end, color));
 }
 
-void DebugRenderer::AddTriangle(const Vector3& v1, const Vector3& v2, const Vector3& v3,  const Color& color, bool depthTest)
+void DebugRenderer::AddTriangle(const Vector3& v1, const Vector3& v2, const Vector3& v3, const Color& color, bool depthTest)
 {
     AddTriangle(v1, v2, v3, color.ToUInt(), depthTest);
 }
@@ -343,9 +347,13 @@ void DebugRenderer::Render()
     {
         const DebugLine& line = lines_[i];
 
-        dest[0] = line.start_.x_; dest[1] = line.start_.y_; dest[2] = line.start_.z_;
+        dest[0] = line.start_.x_;
+        dest[1] = line.start_.y_;
+        dest[2] = line.start_.z_;
         ((unsigned&)dest[3]) = line.color_;
-        dest[4] = line.end_.x_; dest[5] = line.end_.y_; dest[6] = line.end_.z_;
+        dest[4] = line.end_.x_;
+        dest[5] = line.end_.y_;
+        dest[6] = line.end_.z_;
         ((unsigned&)dest[7]) = line.color_;
 
         dest += 8;
@@ -355,9 +363,13 @@ void DebugRenderer::Render()
     {
         const DebugLine& line = noDepthLines_[i];
 
-        dest[0] = line.start_.x_; dest[1] = line.start_.y_; dest[2] = line.start_.z_;
+        dest[0] = line.start_.x_;
+        dest[1] = line.start_.y_;
+        dest[2] = line.start_.z_;
         ((unsigned&)dest[3]) = line.color_;
-        dest[4] = line.end_.x_; dest[5] = line.end_.y_; dest[6] = line.end_.z_;
+        dest[4] = line.end_.x_;
+        dest[5] = line.end_.y_;
+        dest[6] = line.end_.z_;
         ((unsigned&)dest[7]) = line.color_;
 
         dest += 8;
@@ -367,13 +379,19 @@ void DebugRenderer::Render()
     {
         const DebugTriangle& triangle = triangles_[i];
 
-        dest[0] = triangle.v1_.x_; dest[1] = triangle.v1_.y_; dest[2] = triangle.v1_.z_;
+        dest[0] = triangle.v1_.x_;
+        dest[1] = triangle.v1_.y_;
+        dest[2] = triangle.v1_.z_;
         ((unsigned&)dest[3]) = triangle.color_;
 
-        dest[4] = triangle.v2_.x_; dest[5] = triangle.v2_.y_; dest[6] = triangle.v2_.z_;
+        dest[4] = triangle.v2_.x_;
+        dest[5] = triangle.v2_.y_;
+        dest[6] = triangle.v2_.z_;
         ((unsigned&)dest[7]) = triangle.color_;
 
-        dest[8] = triangle.v3_.x_; dest[9] = triangle.v3_.y_; dest[10] = triangle.v3_.z_;
+        dest[8] = triangle.v3_.x_;
+        dest[9] = triangle.v3_.y_;
+        dest[10] = triangle.v3_.z_;
         ((unsigned&)dest[11]) = triangle.color_;
 
         dest += 12;
@@ -383,13 +401,19 @@ void DebugRenderer::Render()
     {
         const DebugTriangle& triangle = noDepthTriangles_[i];
 
-        dest[0] = triangle.v1_.x_; dest[1] = triangle.v1_.y_; dest[2] = triangle.v1_.z_;
+        dest[0] = triangle.v1_.x_;
+        dest[1] = triangle.v1_.y_;
+        dest[2] = triangle.v1_.z_;
         ((unsigned&)dest[3]) = triangle.color_;
 
-        dest[4] = triangle.v2_.x_; dest[5] = triangle.v2_.y_; dest[6] = triangle.v2_.z_;
+        dest[4] = triangle.v2_.x_;
+        dest[5] = triangle.v2_.y_;
+        dest[6] = triangle.v2_.z_;
         ((unsigned&)dest[7]) = triangle.color_;
 
-        dest[8] = triangle.v3_.x_; dest[9] = triangle.v3_.y_; dest[10] = triangle.v3_.z_;
+        dest[8] = triangle.v3_.x_;
+        dest[9] = triangle.v3_.y_;
+        dest[10] = triangle.v3_.z_;
         ((unsigned&)dest[11]) = triangle.color_;
 
         dest += 12;
@@ -450,7 +474,7 @@ bool DebugRenderer::IsInside(const BoundingBox& box) const
 
 bool DebugRenderer::HasContent() const
 {
-    return (lines_.Empty() && noDepthLines_.Empty() && triangles_.Empty() && noDepthTriangles_.Empty()) ? false : true;
+    return !(lines_.Empty() && noDepthLines_.Empty() && triangles_.Empty() && noDepthTriangles_.Empty());
 }
 
 void DebugRenderer::HandleEndFrame(StringHash eventType, VariantMap& eventData)

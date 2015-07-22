@@ -1,5 +1,9 @@
-#include "../Clockwork2D/ConstraintWheel2D.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
+#include "../Clockwork2D/ConstraintWheel2D.h"
 #include "../Clockwork2D/PhysicsUtils2D.h"
 #include "../Clockwork2D/RigidBody2D.h"
 
@@ -33,6 +37,7 @@ void ConstraintWheel2D::RegisterObject(Context* context)
     ACCESSOR_ATTRIBUTE("Damping Ratio", GetDampingRatio, SetDampingRatio, float, 0.7f, AM_DEFAULT);
     COPY_BASE_ATTRIBUTES(Constraint2D);
 }
+
 void ConstraintWheel2D::SetAnchor(const Vector2& anchor)
 {
     if (anchor == anchor_)

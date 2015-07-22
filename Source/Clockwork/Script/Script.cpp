@@ -1,14 +1,16 @@
-#include "../Script/Addons.h"
+
+
+#include "../Precompiled.h"
+
+#include "../Core/Profiler.h"
 #include "../Engine/EngineEvents.h"
 #include "../IO/Log.h"
-#include "../Core/Profiler.h"
 #include "../Scene/Scene.h"
+#include "../Script/Addons.h"
 #include "../Script/Script.h"
 #include "../Script/ScriptAPI.h"
 #include "../Script/ScriptFile.h"
 #include "../Script/ScriptInstance.h"
-
-#include <AngelScript/angelscript.h>
 
 #include "../DebugNew.h"
 
@@ -30,10 +32,10 @@ Script::Script(Context* context) :
     }
 
     scriptEngine_->SetUserData(this);
-    scriptEngine_->SetEngineProperty(asEP_USE_CHARACTER_LITERALS, true);
-    scriptEngine_->SetEngineProperty(asEP_ALLOW_UNSAFE_REFERENCES, true);
-    scriptEngine_->SetEngineProperty(asEP_ALLOW_IMPLICIT_HANDLE_TYPES, true);
-    scriptEngine_->SetEngineProperty(asEP_BUILD_WITHOUT_LINE_CUES, true);
+    scriptEngine_->SetEngineProperty(asEP_USE_CHARACTER_LITERALS, (asPWORD)true);
+    scriptEngine_->SetEngineProperty(asEP_ALLOW_UNSAFE_REFERENCES, (asPWORD)true);
+    scriptEngine_->SetEngineProperty(asEP_ALLOW_IMPLICIT_HANDLE_TYPES, (asPWORD)true);
+    scriptEngine_->SetEngineProperty(asEP_BUILD_WITHOUT_LINE_CUES, (asPWORD)true);
     scriptEngine_->SetMessageCallback(asMETHOD(Script, MessageCallback), this, asCALL_THISCALL);
 
     // Create the context for immediate execution
@@ -86,7 +88,7 @@ Script::~Script()
         immediateContext_ = 0;
     }
 
-    for (unsigned i = 0 ; i < scriptFileContexts_.Size(); ++i)
+    for (unsigned i = 0; i < scriptFileContexts_.Size(); ++i)
         scriptFileContexts_[i]->Release();
 
     if (scriptEngine_)
@@ -114,7 +116,7 @@ bool Script::Execute(const String& line)
     if (!module)
         return false;
 
-    asIScriptFunction *function = 0;
+    asIScriptFunction* function = 0;
     if (module->CompileFunction("", wrappedLine.CString(), -1, 0, &function) < 0)
         return false;
 
@@ -177,7 +179,8 @@ void Script::MessageCallback(const asSMessageInfo* msg)
 void Script::ExceptionCallback(asIScriptContext* context)
 {
     String message;
-    message.AppendWithFormat("- Exception '%s' in '%s'\n%s", context->GetExceptionString(), context->GetExceptionFunction()->GetDeclaration(), GetCallStack(context).CString());
+    message.AppendWithFormat("- Exception '%s' in '%s'\n%s", context->GetExceptionString(),
+        context->GetExceptionFunction()->GetDeclaration(), GetCallStack(context).CString());
 
     asSMessageInfo msg;
     msg.row = context->GetExceptionLineNumber(&msg.col, &msg.section);

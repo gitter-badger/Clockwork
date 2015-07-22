@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../UI/Window.h"
@@ -38,8 +40,10 @@ public:
 
     /// Return render texture pixel format.
     unsigned GetFormat() const { return rttFormat_; }
+
     /// Return whether render target updates automatically.
     bool GetAutoUpdate() const { return autoUpdate_; }
+
     /// Return scene.
     Scene* GetScene() const;
     /// Return camera scene node.

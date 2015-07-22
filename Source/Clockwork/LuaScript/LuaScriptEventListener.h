@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Object.h"
@@ -10,7 +12,7 @@ class CLOCKWORK_API LuaScriptEventListener
 {
 public:
     /// Destruct.
-    virtual ~LuaScriptEventListener() {};
+    virtual ~LuaScriptEventListener() { };
 
     /// Add a scripted event handler by function.
     virtual void AddEventHandler(const String& eventName, int functionIndex) = 0;

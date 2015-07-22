@@ -1,4 +1,12 @@
+
+
 #pragma once
+
+#ifdef CLOCKWORK_IS_BUILDING
+#include "Clockwork.h"
+#else
+#include <Clockwork/Clockwork.h>
+#endif
 
 #include "../Container/Allocator.h"
 #include "../Container/Swap.h"
@@ -38,9 +46,10 @@ struct ListIteratorBase
     }
 
     /// Test for equality with another iterator.
-    bool operator == (const ListIteratorBase& rhs) const { return ptr_ == rhs.ptr_; }
+    bool operator ==(const ListIteratorBase& rhs) const { return ptr_ == rhs.ptr_; }
+
     /// Test for inequality with another iterator.
-    bool operator != (const ListIteratorBase& rhs) const { return ptr_ != rhs.ptr_; }
+    bool operator !=(const ListIteratorBase& rhs) const { return ptr_ != rhs.ptr_; }
 
     /// Go to the next node.
     void GotoNext()

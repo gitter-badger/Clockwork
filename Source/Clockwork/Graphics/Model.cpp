@@ -1,15 +1,15 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
-#include "../IO/Deserializer.h"
+#include "../Core/Profiler.h"
 #include "../Graphics/Geometry.h"
 #include "../Graphics/IndexBuffer.h"
-#include "../IO/Log.h"
 #include "../Graphics/Model.h"
-#include "../Core/Profiler.h"
 #include "../Graphics/Graphics.h"
-#include "../IO/Serializer.h"
 #include "../Graphics/VertexBuffer.h"
-
-#include <cstring>
+#include "../IO/Log.h"
 
 #include "../DebugNew.h"
 
@@ -372,8 +372,8 @@ bool Model::Save(Serializer& dest) const
         dest.WriteUInt(morphs_[i].buffers_.Size());
 
         // Write morph vertex buffers
-        for (HashMap<unsigned int, VertexBufferMorph>::ConstIterator j = morphs_[i].buffers_.Begin();
-            j != morphs_[i].buffers_.End(); ++j)
+        for (HashMap<unsigned, VertexBufferMorph>::ConstIterator j = morphs_[i].buffers_.Begin();
+             j != morphs_[i].buffers_.End(); ++j)
         {
             dest.WriteUInt(j->first_);
             dest.WriteUInt(j->second_.elementMask_);
@@ -411,7 +411,8 @@ void Model::SetBoundingBox(const BoundingBox& box)
     boundingBox_ = box;
 }
 
-bool Model::SetVertexBuffers(const Vector<SharedPtr<VertexBuffer> >& buffers, const PODVector<unsigned>& morphRangeStarts, const PODVector<unsigned>& morphRangeCounts)
+bool Model::SetVertexBuffers(const Vector<SharedPtr<VertexBuffer> >& buffers, const PODVector<unsigned>& morphRangeStarts,
+    const PODVector<unsigned>& morphRangeCounts)
 {
     for (unsigned i = 0; i < buffers.Size(); ++i)
     {
@@ -586,7 +587,8 @@ SharedPtr<Model> Model::Clone(const String& cloneName) const
         if (origBuffer)
         {
             cloneBuffer = new IndexBuffer(context_);
-            cloneBuffer->SetSize(origBuffer->GetIndexCount(), origBuffer->GetIndexSize() == sizeof(unsigned), origBuffer->IsDynamic());
+            cloneBuffer->SetSize(origBuffer->GetIndexCount(), origBuffer->GetIndexSize() == sizeof(unsigned),
+                origBuffer->IsDynamic());
             cloneBuffer->SetShadowed(origBuffer->IsShadowed());
             if (origBuffer->IsShadowed())
                 cloneBuffer->SetData(origBuffer->GetShadowData());

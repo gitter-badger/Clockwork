@@ -1,17 +1,21 @@
+
+
 #pragma once
 
-#include "../Math/BoundingBox.h"
-#include "../Math/Rect.h"
 #include "../Container/Ptr.h"
 #include "../Core/Variant.h"
+#include "../Math/BoundingBox.h"
+#include "../Math/Rect.h"
 
 namespace rapidjson
 {
-    template<typename CharType> struct UTF8;
-    class CrtAllocator;
-    template <typename BaseAllocator> class MemoryPoolAllocator;
-    template <typename Encoding, typename Allocator> class GenericValue;
-    typedef GenericValue<UTF8<char>, MemoryPoolAllocator<CrtAllocator> > Value;
+
+template <typename CharType> struct UTF8;
+class CrtAllocator;
+template <typename BaseAllocator> class MemoryPoolAllocator;
+template <typename Encoding, typename Allocator> class GenericValue;
+typedef GenericValue<UTF8<char>, MemoryPoolAllocator<CrtAllocator> > Value;
+
 }
 
 namespace Clockwork
@@ -44,14 +48,14 @@ public:
     ~JSONValue();
 
     /// Assignment operator.
-    JSONValue& operator = (const JSONValue& rhs);
+    JSONValue& operator =(const JSONValue& rhs);
 
     /// Return whether does not refer to JSON value.
     bool IsNull() const;
     /// Return whether refers to JSON value.
     bool NotNull() const;
     /// Return true if refers to JSON value.
-    operator bool () const;
+    operator bool() const;
 
     // JSON object value functions
     /// Create a child value.
@@ -64,6 +68,8 @@ public:
     void SetBool(const String& name, bool value);
     /// Set float.
     void SetFloat(const String& name, float value);
+    /// Set double.
+    void SetDouble(const String& name, double value);
     /// Set vector2.
     void SetVector2(const String& name, const Vector2& value);
     /// Set vector3.
@@ -113,6 +119,8 @@ public:
     bool GetBool(const String& name) const;
     /// Return float.
     float GetFloat(const String& name) const;
+    /// Return double.
+    double GetDouble(const String& name) const;
     /// Return vector2.
     Vector2 GetVector2(const String& name) const;
     /// Return vector3.
@@ -163,6 +171,8 @@ public:
     void AddBool(bool value);
     /// Add float.
     void AddFloat(float value);
+    /// Add double.
+    void AddDouble(double value);
     /// Add vector2.
     void AddVector2(const Vector2& value);
     /// Add vector3.
@@ -209,6 +219,8 @@ public:
     bool GetBool(unsigned index) const;
     /// Return float.
     float GetFloat(unsigned index) const;
+    /// Return double.
+    double GetDouble(unsigned index) const;
     /// Return vector2.
     Vector2 GetVector2(unsigned index) const;
     /// Return vector3.
@@ -259,7 +271,7 @@ private:
     /// Add JSON value to array type.
     void AddMember(rapidjson::Value& jsonValue);
     /// Return JSON value by index for array type.
-    rapidjson::Value&  GetMember(unsigned index) const;
+    rapidjson::Value& GetMember(unsigned index) const;
 
     /// JSON file.
     WeakPtr<JSONFile> file_;

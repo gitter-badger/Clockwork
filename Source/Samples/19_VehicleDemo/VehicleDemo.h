@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "Sample.h"
@@ -24,10 +26,10 @@ class VehicleDemo : public Sample
 public:
     /// Construct.
     VehicleDemo(Context* context);
-
+    
     /// Setup after engine initialization and before running the main loop.
     virtual void Start();
-
+    
 private:
     /// Create static scene content.
     void CreateScene();
@@ -41,7 +43,7 @@ private:
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
     /// Handle application post-update. Update camera position after vehicle has moved.
     void HandlePostUpdate(StringHash eventType, VariantMap& eventData);
-
+    
     /// The controllable vehicle component.
     WeakPtr<Vehicle> vehicle_;
 };

@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Scene/Component.h"
@@ -29,10 +31,13 @@ public:
 
     /// Return base priority.
     float GetBasePriority() const { return basePriority_; }
+
     /// Return priority reduction distance factor.
     float GetDistanceFactor() const { return distanceFactor_; }
+
     /// Return minimum priority.
     float GetMinPriority() const { return minPriority_; }
+
     /// Return whether updates to owner should be sent always at full rate.
     bool GetAlwaysUpdateOwner() const { return alwaysUpdateOwner_; }
 

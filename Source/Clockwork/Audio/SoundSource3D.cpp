@@ -1,12 +1,14 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Audio/Audio.h"
-#include "../Core/Context.h"
-#include "../Graphics/DebugRenderer.h"
-#include "../Scene/Node.h"
 #include "../Audio/Sound.h"
 #include "../Audio/SoundListener.h"
 #include "../Audio/SoundSource3D.h"
-
-#include "../DebugNew.h"
+#include "../Core/Context.h"
+#include "../Graphics/DebugRenderer.h"
+#include "../Scene/Node.h"
 
 namespace Clockwork
 {
@@ -194,7 +196,8 @@ void SoundSource3D::CalculateAttenuation()
         if (listener && listener->IsEnabledEffective() && (!listener->GetScene() || listener->GetScene() == GetScene()))
         {
             Node* listenerNode = listener->GetNode();
-            Vector3 relativePos(listenerNode->GetWorldRotation().Inverse() * (node_->GetWorldPosition() - listenerNode->GetWorldPosition()));
+            Vector3 relativePos
+                (listenerNode->GetWorldRotation().Inverse() * (node_->GetWorldPosition() - listenerNode->GetWorldPosition()));
             float distance = relativePos.Length();
 
             // Distance attenuation
@@ -209,8 +212,8 @@ void SoundSource3D::CalculateAttenuation()
             // Angle attenuation
             if (innerAngle_ < DEFAULT_ANGLE && outerAngle_ > 0.0f)
             {
-                Vector3 listenerRelativePos(node_->GetWorldRotation().Inverse() * (listenerNode->GetWorldPosition() -
-                    node_->GetWorldPosition()));
+                Vector3 listenerRelativePos
+                    (node_->GetWorldRotation().Inverse() * (listenerNode->GetWorldPosition() - node_->GetWorldPosition()));
                 float listenerDot = Vector3::FORWARD.DotProduct(listenerRelativePos.Normalized());
                 float listenerAngle = acosf(listenerDot) * M_RADTODEG * 2.0f;
                 float angleInterval = Max(outerAngle_ - innerAngle_, 0.0f);

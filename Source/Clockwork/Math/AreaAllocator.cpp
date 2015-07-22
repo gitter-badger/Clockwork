@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Math/AreaAllocator.h"
 
 namespace Clockwork
@@ -40,7 +44,7 @@ bool AreaAllocator::Allocate(int width, int height, int& x, int& y)
     PODVector<IntRect>::Iterator best;
     int bestFreeArea;
 
-    for(;;)
+    for (;;)
     {
         best = freeAreas_.End();
         bestFreeArea = M_MAX_INT;
@@ -70,7 +74,8 @@ bool AreaAllocator::Allocate(int width, int height, int& x, int& y)
                 size_.x_ <<= 1;
                 // If no allocations yet, simply expand the single free area
                 IntRect& first = freeAreas_.Front();
-                if (freeAreas_.Size() == 1 && first.left_ == 0 && first.top_ == 0 && first.right_ == oldWidth && first.bottom_ == size_.y_)
+                if (freeAreas_.Size() == 1 && first.left_ == 0 && first.top_ == 0 && first.right_ == oldWidth &&
+                    first.bottom_ == size_.y_)
                     first.right_ = size_.x_;
                 else
                 {
@@ -84,7 +89,8 @@ bool AreaAllocator::Allocate(int width, int height, int& x, int& y)
                 size_.y_ <<= 1;
                 // If no allocations yet, simply expand the single free area
                 IntRect& first = freeAreas_.Front();
-                if (freeAreas_.Size() == 1 && first.left_ == 0 && first.top_ == 0 && first.right_ == size_.x_ && first.bottom_ == oldHeight)
+                if (freeAreas_.Size() == 1 && first.left_ == 0 && first.top_ == 0 && first.right_ == size_.x_ &&
+                    first.bottom_ == oldHeight)
                     first.bottom_ = size_.y_;
                 else
                 {
@@ -176,10 +182,10 @@ bool AreaAllocator::SplitRect(IntRect original, const IntRect& reserve)
 void AreaAllocator::Cleanup()
 {
     // Remove rects which are contained within another rect
-    for (unsigned i = 0; i < freeAreas_.Size(); )
+    for (unsigned i = 0; i < freeAreas_.Size();)
     {
         bool erased = false;
-        for (unsigned j = i + 1; j < freeAreas_.Size(); )
+        for (unsigned j = i + 1; j < freeAreas_.Size();)
         {
             if ((freeAreas_[i].left_ >= freeAreas_[j].left_) &&
                 (freeAreas_[i].top_ >= freeAreas_[j].top_) &&

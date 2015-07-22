@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #ifdef CLOCKWORK_PHYSICS
 #include "../Physics/CollisionShape.h"
 #endif

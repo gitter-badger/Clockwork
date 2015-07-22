@@ -1,6 +1,9 @@
+
+
 #pragma once
 
 #include "../Scene/Component.h"
+
 #include <Box2D/Box2D.h>
 
 namespace Clockwork
@@ -16,7 +19,7 @@ class CLOCKWORK_API Constraint2D : public Component
 
 public:
     /// Construct.
-    Constraint2D(Context* scontext);
+    Constraint2D(Context* context);
     /// Destruct.
     virtual ~Constraint2D();
     /// Register object factory.
@@ -38,10 +41,13 @@ public:
 
     /// Return owner body.
     RigidBody2D* GetOwnerBody() const { return ownerBody_; }
+
     /// Return other body.
     RigidBody2D* GetOtherBody() const { return otherBody_; }
+
     /// Return collide connected.
     bool GetCollideConnected() const { return collideConnected_; }
+
     /// Return attached constraint (for gear).
     Constraint2D* GetAttachedConstraint() const { return attachedConstraint_; }
 
@@ -51,6 +57,8 @@ public:
 protected:
     /// Handle node being assigned.
     virtual void OnNodeSet(Node* node);
+    /// Handle scene being assigned.
+    virtual void OnSceneSet(Scene* scene);
     /// Return joint def.
     virtual b2JointDef* GetJointDef() { return 0; };
     /// Recreate joint.

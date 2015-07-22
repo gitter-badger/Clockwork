@@ -1,9 +1,11 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
 #include "../../Graphics/VertexBuffer.h"
-
-#include <cstring>
+#include "../../IO/Log.h"
 
 #include "../../DebugNew.h"
 

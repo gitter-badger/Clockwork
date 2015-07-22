@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Scene/Component.h"
 #include "../Core/Context.h"
 #include "../Graphics/DebugRenderer.h"
@@ -26,7 +30,7 @@ namespace Clockwork
     NavArea::~NavArea()
     {
     }
-
+    
     void NavArea::RegisterObject(Context* context)
     {
         context->RegisterFactory<NavArea>(NAVIGATION_CATEGORY);
@@ -52,7 +56,7 @@ namespace Clockwork
         return boundingBox_.Transformed(mat);
     }
 
-    void NavArea::DrawDebugGeometry(DebugRenderer* debug, bool depthTest)
+    void NavArea::DrawDebugGeometry(DebugRenderer* debug, bool depthTest) 
     {
         if (debug && IsEnabledEffective())
         {

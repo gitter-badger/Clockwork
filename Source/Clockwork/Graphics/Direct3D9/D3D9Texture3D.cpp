@@ -1,13 +1,17 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Core/Context.h"
-#include "../../IO/FileSystem.h"
+#include "../../Core/Profiler.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsEvents.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
 #include "../../Graphics/Renderer.h"
-#include "../../Core/Profiler.h"
-#include "../../Resource/ResourceCache.h"
 #include "../../Graphics/Texture3D.h"
+#include "../../IO/FileSystem.h"
+#include "../../IO/Log.h"
+#include "../../Resource/ResourceCache.h"
 #include "../../Resource/XMLFile.h"
 
 #include "../../DebugNew.h"
@@ -253,7 +257,8 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
     int levelWidth = GetLevelWidth(level);
     int levelHeight = GetLevelHeight(level);
     int levelDepth = GetLevelDepth(level);
-    if (x < 0 || x + width > levelWidth || y < 0 || y + height > levelHeight || z < 0 || z + depth > levelDepth || width <= 0 || height <= 0 || depth <= 0)
+    if (x < 0 || x + width > levelWidth || y < 0 || y + height > levelHeight || z < 0 || z + depth > levelDepth || width <= 0 ||
+        height <= 0 || depth <= 0)
     {
         LOGERROR("Illegal dimensions for setting data");
         return false;
@@ -261,15 +266,16 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
 
     D3DLOCKED_BOX d3dLockedBox;
     D3DBOX d3dBox;
-    d3dBox.Left = x;
-    d3dBox.Top = y;
-    d3dBox.Front = z;
-    d3dBox.Right = x + width;
-    d3dBox.Bottom = y + height;
-    d3dBox.Back = z + depth;
+    d3dBox.Left = (UINT)x;
+    d3dBox.Top = (UINT)y;
+    d3dBox.Front = (UINT)z;
+    d3dBox.Right = (UINT)(x + width);
+    d3dBox.Bottom = (UINT)(y + height);
+    d3dBox.Back = (UINT)(z + depth);
 
     DWORD flags = 0;
-    if (level == 0 && x == 0 && y == 0 && z == 0 && width == levelWidth && height == levelHeight && depth == levelDepth && pool_ == D3DPOOL_DEFAULT)
+    if (level == 0 && x == 0 && y == 0 && z == 0 && width == levelWidth && height == levelHeight && depth == levelDepth &&
+        pool_ == D3DPOOL_DEFAULT)
         flags |= D3DLOCK_DISCARD;
 
     if (FAILED(((IDirect3DVolumeTexture9*)object_)->LockBox(level, &d3dLockedBox, (flags & D3DLOCK_DISCARD) ? 0 : &d3dBox, flags)))
@@ -299,7 +305,8 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
         {
             for (int i = 0; i < height; ++i)
             {
-                unsigned char* dest = (unsigned char*)d3dLockedBox.pBits + (k * d3dLockedBox.SlicePitch) + i * d3dLockedBox.RowPitch;
+                unsigned char
+                    * dest = (unsigned char*)d3dLockedBox.pBits + (k * d3dLockedBox.SlicePitch) + i * d3dLockedBox.RowPitch;
                 memcpy(dest, src, rowSize);
                 src += rowSize;
             }
@@ -311,10 +318,14 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
         {
             for (int i = 0; i < height; ++i)
             {
-                unsigned char* dest = (unsigned char*)d3dLockedBox.pBits + (k * d3dLockedBox.SlicePitch) + i * d3dLockedBox.RowPitch;
+                unsigned char
+                    * dest = (unsigned char*)d3dLockedBox.pBits + (k * d3dLockedBox.SlicePitch) + i * d3dLockedBox.RowPitch;
                 for (int j = 0; j < width; ++j)
                 {
-                    *dest++  = src[2]; *dest++ = src[1]; *dest++ = src[0]; *dest++ = 255;
+                    *dest++ = src[2];
+                    *dest++ = src[1];
+                    *dest++ = src[0];
+                    *dest++ = 255;
                     src += 3;
                 }
             }
@@ -326,10 +337,14 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
         {
             for (int i = 0; i < height; ++i)
             {
-                unsigned char* dest = (unsigned char*)d3dLockedBox.pBits + (k * d3dLockedBox.SlicePitch) + i * d3dLockedBox.RowPitch;
+                unsigned char
+                    * dest = (unsigned char*)d3dLockedBox.pBits + (k * d3dLockedBox.SlicePitch) + i * d3dLockedBox.RowPitch;
                 for (int j = 0; j < width; ++j)
                 {
-                    *dest++  = src[2]; *dest++ = src[1]; *dest++ = src[0]; *dest++ = src[3];
+                    *dest++ = src[2];
+                    *dest++ = src[1];
+                    *dest++ = src[0];
+                    *dest++ = src[3];
                     src += 4;
                 }
             }
@@ -392,6 +407,10 @@ bool Texture3D::SetData(SharedPtr<Image> image, bool useAlpha)
         case 4:
             format = Graphics::GetRGBAFormat();
             break;
+
+        default:
+            assert(false);  // Should never reach here
+            break;
         }
 
         // If image was previously compressed, reset number of requested levels to avoid error if level count is too high for new size
@@ -438,7 +457,7 @@ bool Texture3D::SetData(SharedPtr<Image> image, bool useAlpha)
         height /= (1 << mipsToSkip);
         depth /= (1 << mipsToSkip);
 
-        SetNumLevels(Max((int)(levels - mipsToSkip), 1));
+        SetNumLevels((unsigned)Max((int)(levels - mipsToSkip), 1));
         SetSize(width, height, depth, format);
 
         for (unsigned i = 0; i < levels_ && i < levels - mipsToSkip; ++i)
@@ -499,9 +518,9 @@ bool Texture3D::GetData(unsigned level, void* dest) const
     d3dBox.Left = 0;
     d3dBox.Top = 0;
     d3dBox.Front = 0;
-    d3dBox.Right = levelWidth;
-    d3dBox.Bottom = levelHeight;
-    d3dBox.Back = levelDepth;
+    d3dBox.Right = (UINT)levelWidth;
+    d3dBox.Bottom = (UINT)levelHeight;
+    d3dBox.Back = (UINT)levelDepth;
 
     if (FAILED(((IDirect3DVolumeTexture9*)object_)->LockBox(level, &d3dLockedBox, &d3dBox, D3DLOCK_READONLY)))
     {
@@ -542,9 +561,12 @@ bool Texture3D::GetData(unsigned level, void* dest) const
                 unsigned char* src = (unsigned char*)d3dLockedBox.pBits + (k * d3dLockedBox.SlicePitch) + i * d3dLockedBox.RowPitch;
                 for (int j = 0; j < levelWidth; ++j)
                 {
-                    destPtr[2] = *src++; destPtr[1] = *src++; destPtr[0] = *src++; ++src;
+                    destPtr[2] = *src++;
+                    destPtr[1] = *src++;
+                    destPtr[0] = *src++;
+                    ++src;
                     destPtr += 3;
-               }
+                }
             }
         }
         break;
@@ -557,9 +579,12 @@ bool Texture3D::GetData(unsigned level, void* dest) const
                 unsigned char* src = (unsigned char*)d3dLockedBox.pBits + (k * d3dLockedBox.SlicePitch) + i * d3dLockedBox.RowPitch;
                 for (int j = 0; j < levelWidth; ++j)
                 {
-                    destPtr[2] = *src++; destPtr[1] = *src++; destPtr[0] = *src++; destPtr[3] = *src++;
+                    destPtr[2] = *src++;
+                    destPtr[1] = *src++;
+                    destPtr[0] = *src++;
+                    destPtr[3] = *src++;
                     destPtr += 4;
-               }
+                }
             }
         }
         break;
@@ -585,9 +610,9 @@ bool Texture3D::Create()
     IDirect3DDevice9* device = graphics_->GetImpl()->GetDevice();
 
     if (!device || FAILED(graphics_->GetImpl()->GetDevice()->CreateVolumeTexture(
-        width_,
-        height_,
-        depth_,
+        (UINT)width_,
+        (UINT)height_,
+        (UINT)depth_,
         requestedLevels_,
         usage_,
         (D3DFORMAT)format_,

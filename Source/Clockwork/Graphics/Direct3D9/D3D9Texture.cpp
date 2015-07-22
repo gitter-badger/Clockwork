@@ -1,11 +1,13 @@
-#include "../../IO/FileSystem.h"
+
+
+#include "../../Precompiled.h"
+
+#include "../../Core/StringUtils.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsImpl.h"
 #include "../../Graphics/Material.h"
-#include "../../Core/Profiler.h"
+#include "../../IO/FileSystem.h"
 #include "../../Resource/ResourceCache.h"
-#include "../../Core/StringUtils.h"
-#include "../../Graphics/Texture.h"
 #include "../../Resource/XMLFile.h"
 
 #include "../../DebugNew.h"
@@ -49,7 +51,7 @@ Texture::Texture(Context* context) :
     for (int i = 0; i < MAX_COORDS; ++i)
         addressMode_[i] = ADDRESS_WRAP;
     for (int i = 0; i < MAX_TEXTURE_QUALITY_LEVELS; ++i)
-        mipsToSkip_[i] = MAX_TEXTURE_QUALITY_LEVELS - 1 - i;
+        mipsToSkip_[i] = (unsigned)(MAX_TEXTURE_QUALITY_LEVELS - 1 - i);
 }
 
 Texture::~Texture()
@@ -96,7 +98,7 @@ void Texture::SetMipsToSkip(int quality, int mips)
 {
     if (quality >= QUALITY_LOW && quality < MAX_TEXTURE_QUALITY_LEVELS)
     {
-        mipsToSkip_[quality] = mips;
+        mipsToSkip_[quality] = (unsigned)mips;
 
         // Make sure a higher quality level does not actually skip more mips
         for (int i = 1; i < MAX_TEXTURE_QUALITY_LEVELS; ++i)
@@ -171,18 +173,18 @@ unsigned Texture::GetRowDataSize(int width) const
     {
     case D3DFMT_A8:
     case D3DFMT_L8:
-        return width;
+        return (unsigned)width;
 
     case D3DFMT_D16:
     case D3DFMT_R5G6B5:
     case D3DFMT_A4R4G4B4:
     case D3DFMT_A8L8:
     case D3DFMT_R16F:
-        return width * 2;
+        return (unsigned)(width * 2);
 
     case D3DFMT_X8R8G8B8:
         // Note: here source and destination data size differ
-        return width * 3;
+        return (unsigned)(width * 3);
 
     case D3DFMT_A8R8G8B8:
     case D3DFMT_G16R16:
@@ -190,25 +192,33 @@ unsigned Texture::GetRowDataSize(int width) const
     case D3DFMT_G16R16F:
     case D3DFMT_D24S8:
     case D3DFMT_D32:
-        return width * 4;
+        return (unsigned)(width * 4);
 
     case D3DFMT_A16B16G16R16:
     case D3DFMT_A16B16G16R16F:
-        return width * 8;
+        return (unsigned)(width * 8);
 
     case D3DFMT_A32B32G32R32F:
-        return width * 16;
+        return (unsigned)(width * 16);
 
     case D3DFMT_DXT1:
-        return ((width + 3) >> 2) * 8;
+        return (unsigned)(((width + 3) >> 2) * 8);
 
     case D3DFMT_DXT3:
     case D3DFMT_DXT5:
-        return ((width + 3) >> 2) * 16;
+        return (unsigned)(((width + 3) >> 2) * 16);
 
     default:
         return 0;
     }
+}
+
+unsigned Texture::GetComponents() const
+{
+    if (!width_ || IsCompressed())
+        return 0;
+    else
+        return GetRowDataSize(width_) / width_;
 }
 
 void Texture::SetParameters(XMLFile* file)

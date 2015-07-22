@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Clockwork2D/Constraint2D.h"
@@ -12,7 +14,7 @@ class CLOCKWORK_API ConstraintPulley2D : public Constraint2D
 
 public:
     /// Construct.
-    ConstraintPulley2D(Context* scontext);
+    ConstraintPulley2D(Context* context);
     /// Destruct.
     virtual ~ConstraintPulley2D();
     /// Register object factory.
@@ -31,12 +33,16 @@ public:
 
     /// Return owner body ground anchor.
     const Vector2& GetOwnerBodyGroundAnchor() const { return ownerBodyGroundAnchor_; }
+
     /// return other body ground anchor.
     const Vector2& GetOtherBodyGroundAnchor() const { return otherBodyGroundAnchor_; }
+
     /// Return owner body anchor.
     const Vector2& GetOwnerBodyAnchor() const { return ownerBodyAnchor_; }
+
     /// Return other body anchor.
     const Vector2& GetOtherBodyAnchor() const { return otherBodyAnchor_; }
+
     /// Return ratio.
     float GetRatio() const { return jointDef_.ratio; }
 

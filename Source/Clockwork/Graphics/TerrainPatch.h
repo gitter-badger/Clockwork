@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Graphics/Drawable.h"
@@ -64,20 +66,28 @@ public:
     VertexBuffer* GetVertexBuffer() const;
     /// Return owner terrain.
     Terrain* GetOwner() const;
+
     /// Return north neighbor patch.
     TerrainPatch* GetNorthPatch() const { return north_; }
+
     /// Return south neighbor patch.
     TerrainPatch* GetSouthPatch() const { return south_; }
+
     /// Return west neighbor patch.
     TerrainPatch* GetWestPatch() const { return west_; }
+
     /// Return east neighbor patch.
     TerrainPatch* GetEastPatch() const { return east_; }
+
     /// Return geometrical error array.
     PODVector<float>& GetLodErrors() { return lodErrors_; }
+
     /// Return patch coordinates.
     const IntVector2& GetCoordinates() const { return coordinates_; }
+
     /// Return current LOD level.
     unsigned GetLodLevel() const { return lodLevel_; }
+
     /// Return vertical offset for occlusion geometry..
     float GetOcclusionOffset() const { return occlusionOffset_; }
 

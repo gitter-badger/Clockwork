@@ -1,14 +1,16 @@
+
+
 #pragma once
 
-#include "../Scene/Component.h"
-#include "../Graphics/DebugRenderer.h"
-#include "../Math/MathDefs.h"
-#include "../Scene/Node.h"
 #include "../Container/Ptr.h"
 #include "../Core/Variant.h"
 #include "../Container/Vector.h"
-#include "../Math/Vector3.h"
 #include "../Core/Spline.h"
+#include "../Graphics/DebugRenderer.h"
+#include "../Math/MathDefs.h"
+#include "../Math/Vector3.h"
+#include "../Scene/Component.h"
+#include "../Scene/Node.h"
 
 namespace Clockwork
 {
@@ -21,8 +23,9 @@ class CLOCKWORK_API SplinePath : public Component
 public:
     /// Construct an Empty SplinePath.
     SplinePath(Context* context);
+
     /// Destructor.
-    virtual ~SplinePath() {};
+    virtual ~SplinePath() { };
     /// Register object factory.
     static void RegisterObject(Context* context);
 
@@ -40,8 +43,10 @@ public:
 
     /// Set the Interpolation Mode.
     void SetInterpolationMode(InterpolationMode interpolationMode);
+
     /// Set the movement Speed.
     void SetSpeed(float speed) { speed_ = speed; }
+
     /// Set the controlled Node's position on the SplinePath.
     void SetPosition(float factor);
     /// Set the Node to be moved along the SplinePath.
@@ -49,10 +54,13 @@ public:
 
     /// Get the Interpolation Mode.
     InterpolationMode GetInterpolationMode() const { return spline_.GetInterpolationMode(); }
+
     /// Get the movement Speed.
     float GetSpeed() const { return speed_; }
+
     /// Get the parent Node's last position on the spline.
     Vector3 GetPosition() const { return GetPoint(traveled_); }
+
     /// Get the controlled Node.
     Node* GetControlledNode() const { return controlledNode_; }
 
@@ -63,15 +71,19 @@ public:
     void Move(float timeStep);
     /// Reset movement along the path.
     void Reset();
+
     /// Returns whether the movement along the SplinePath is complete.
     bool IsFinished() const { return traveled_ >= 1.0f; }
 
     /// Set Control Point Node IDs attribute.
     void SetControlPointIdsAttr(const VariantVector& value);
+
     /// Return Control Point Node IDs attribute.
     const VariantVector& GetControlPointIdsAttr() const { return controlPointIdsAttr_; }
+
     /// Set Controlled Node ID attribute.
     void SetControlledIdAttr(unsigned value);
+
     /// Get Controlled Node ID attribute.
     unsigned GetControlledIdAttr() const { return controlledIdAttr_; }
 

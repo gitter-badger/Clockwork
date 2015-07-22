@@ -1,16 +1,19 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../Core/CoreEvents.h"
+#include "../Core/Profiler.h"
 #include "../IO/FileSystem.h"
 #include "../IO/Log.h"
 #include "../IO/MemoryBuffer.h"
-#include "../Core/Profiler.h"
 #include "../Resource/ResourceCache.h"
 #include "../Script/Script.h"
 #include "../Script/ScriptFile.h"
 #include "../Script/ScriptInstance.h"
 
 #include <AngelScript/angelscript.h>
-#include <cstring>
 
 #include "../DebugNew.h"
 
@@ -360,6 +363,7 @@ void ScriptFile::ClearDelayedExecute(const String& declaration)
         }
     }
 }
+
 asIScriptObject* ScriptFile::CreateObject(const String& className, bool useInterface)
 {
     PROFILE(CreateObject);
@@ -388,14 +392,14 @@ asIScriptObject* ScriptFile::CreateObject(const String& className, bool useInter
     }
     else
     {
-       type = scriptModule_->GetObjectTypeByDecl(className.CString());
+        type = scriptModule_->GetObjectTypeByDecl(className.CString());
     }
 
     if (!type)
         return 0;
 
     // Ensure that the type implements the "ScriptObject" interface, so it can be returned to script properly
-    bool found = false;
+    bool found;
     HashMap<asIObjectType*, bool>::ConstIterator i = validClasses_.Find(type);
     if (i != validClasses_.End())
         found = i->second_;
@@ -549,7 +553,7 @@ bool ScriptFile::AddScriptSection(asIScriptEngine* engine, Deserializer& source)
     // Adapted from Angelscript's scriptbuilder add-on
     Vector<String> includeFiles;
     unsigned pos = 0;
-    while(pos < dataSize)
+    while (pos < dataSize)
     {
         int len;
         asETokenClass t = engine->ParseToken(&buffer[pos], dataSize - pos, &len);
@@ -565,7 +569,7 @@ bool ScriptFile::AddScriptSection(asIScriptEngine* engine, Deserializer& source)
             asETokenClass t = engine->ParseToken(&buffer[pos], dataSize - pos, &len);
             if (t == asTC_IDENTIFIER)
             {
-                String token(&buffer[pos], len);
+                String token(&buffer[pos], (unsigned)len);
                 if (token == "include")
                 {
                     pos += len;
@@ -579,7 +583,7 @@ bool ScriptFile::AddScriptSection(asIScriptEngine* engine, Deserializer& source)
                     if (t == asTC_VALUE && len > 2 && buffer[pos] == '"')
                     {
                         // Get the include file
-                        String includeFile(&buffer[pos+1], len - 2);
+                        String includeFile(&buffer[pos + 1], (unsigned)(len - 2));
                         pos += len;
 
                         // If the file is not found as it is, add the path of current file but only if it is found there
@@ -628,7 +632,7 @@ bool ScriptFile::AddScriptSection(asIScriptEngine* engine, Deserializer& source)
                     {
                         if (buffer[pos] == '{')
                             ++level;
-                        else if(buffer[pos] == '}')
+                        else if (buffer[pos] == '}')
                             --level;
                     }
                     pos += len;
@@ -683,17 +687,17 @@ void ScriptFile::SetParameters(asIScriptContext* context, asIScriptFunction* fun
 
         case asTYPEID_INT8:
         case asTYPEID_UINT8:
-            context->SetArgByte(i, parameters[i].GetInt());
+            context->SetArgByte(i, (asBYTE)parameters[i].GetInt());
             break;
 
         case asTYPEID_INT16:
         case asTYPEID_UINT16:
-            context->SetArgWord(i, parameters[i].GetInt());
+            context->SetArgWord(i, (asWORD)parameters[i].GetInt());
             break;
 
         case asTYPEID_INT32:
         case asTYPEID_UINT32:
-            context->SetArgDWord(i, parameters[i].GetInt());
+            context->SetArgDWord(i, (asDWORD)parameters[i].GetInt());
             break;
 
         case asTYPEID_FLOAT:

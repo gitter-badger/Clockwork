@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/RefCounted.h"
@@ -39,7 +41,7 @@ public:
     }
 
     /// Assign from another shared pointer.
-    SharedPtr<T>& operator = (const SharedPtr<T>& rhs)
+    SharedPtr<T>& operator =(const SharedPtr<T>& rhs)
     {
         if (ptr_ == rhs.ptr_)
             return *this;
@@ -52,7 +54,7 @@ public:
     }
 
     /// Assign from a raw pointer.
-    SharedPtr<T>& operator = (T* ptr)
+    SharedPtr<T>& operator =(T* ptr)
     {
         if (ptr_ == ptr)
             return *this;
@@ -65,19 +67,37 @@ public:
     }
 
     /// Point to the object.
-    T* operator -> () const { assert(ptr_); return ptr_; }
+    T* operator ->() const
+    {
+        assert(ptr_);
+        return ptr_;
+    }
+
     /// Dereference the object.
-    T& operator * () const { assert(ptr_); return *ptr_; }
+    T& operator *() const
+    {
+        assert(ptr_);
+        return *ptr_;
+    }
+
     /// Subscript the object if applicable.
-    T& operator [] (const int index) { assert(ptr_); return ptr_[index]; }
+    T& operator [](const int index)
+    {
+        assert(ptr_);
+        return ptr_[index];
+    }
+
     /// Test for less than with another shared pointer.
-    bool operator < (const SharedPtr<T>& rhs) const { return ptr_ < rhs.ptr_; }
+    bool operator <(const SharedPtr<T>& rhs) const { return ptr_ < rhs.ptr_; }
+
     /// Test for equality with another shared pointer.
-    bool operator == (const SharedPtr<T>& rhs) const { return ptr_ == rhs.ptr_; }
+    bool operator ==(const SharedPtr<T>& rhs) const { return ptr_ == rhs.ptr_; }
+
     /// Test for inequality with another shared pointer.
-    bool operator != (const SharedPtr<T>& rhs) const { return ptr_ != rhs.ptr_; }
+    bool operator !=(const SharedPtr<T>& rhs) const { return ptr_ != rhs.ptr_; }
+
     /// Convert to a raw pointer.
-    operator T* () const { return ptr_; }
+    operator T*() const { return ptr_; }
 
     /// Reset to null and release the object reference.
     void Reset() { ReleaseRef(); }
@@ -112,22 +132,28 @@ public:
 
     /// Check if the pointer is null.
     bool Null() const { return ptr_ == 0; }
+
     /// Check if the pointer is not null.
     bool NotNull() const { return ptr_ != 0; }
+
     /// Return the raw pointer.
     T* Get() const { return ptr_; }
+
     /// Return the object's reference count, or 0 if the pointer is null.
     int Refs() const { return ptr_ ? ptr_->Refs() : 0; }
+
     /// Return the object's weak reference count, or 0 if the pointer is null.
     int WeakRefs() const { return ptr_ ? ptr_->WeakRefs() : 0; }
+
     /// Return pointer to the RefCount structure.
     RefCount* RefCountPtr() const { return ptr_ ? ptr_->RefCountPtr() : 0; }
+
     /// Return hash value for HashSet & HashMap.
-    unsigned ToHash() const { return ((unsigned)(size_t)ptr_) / sizeof(T); }
+    unsigned ToHash() const { return (unsigned)((size_t)ptr_ / sizeof(T)); }
 
 private:
     /// Prevent direct assignment from a shared pointer of another type.
-    template <class U> SharedPtr<T>& operator = (const SharedPtr<U>& rhs);
+    template <class U> SharedPtr<T>& operator =(const SharedPtr<U>& rhs);
 
     /// Add a reference to the object pointed to.
     void AddRef()
@@ -208,7 +234,7 @@ public:
     }
 
     /// Assign from a shared pointer.
-    WeakPtr<T>& operator = (const SharedPtr<T>& rhs)
+    WeakPtr<T>& operator =(const SharedPtr<T>& rhs)
     {
         if (ptr_ == rhs.Get() && refCount_ == rhs.RefCountPtr())
             return *this;
@@ -222,7 +248,7 @@ public:
     }
 
     /// Assign from a weak pointer.
-    WeakPtr<T>& operator = (const WeakPtr<T>& rhs)
+    WeakPtr<T>& operator =(const WeakPtr<T>& rhs)
     {
         if (ptr_ == rhs.ptr_ && refCount_ == rhs.refCount_)
             return *this;
@@ -236,7 +262,7 @@ public:
     }
 
     /// Assign from a raw pointer.
-    WeakPtr<T>& operator = (T* ptr)
+    WeakPtr<T>& operator =(T* ptr)
     {
         RefCount* refCount = ptr ? ptr->RefCountPtr() : 0;
 
@@ -270,7 +296,7 @@ public:
     }
 
     /// Point to the object.
-    T* operator -> () const
+    T* operator ->() const
     {
         T* rawPtr = Get();
         assert(rawPtr);
@@ -278,7 +304,7 @@ public:
     }
 
     /// Dereference the object.
-    T& operator * () const
+    T& operator *() const
     {
         T* rawPtr = Get();
         assert(rawPtr);
@@ -286,7 +312,7 @@ public:
     }
 
     /// Subscript the object if applicable.
-    T& operator [] (const int index)
+    T& operator [](const int index)
     {
         T* rawPtr = Get();
         assert(rawPtr);
@@ -294,13 +320,16 @@ public:
     }
 
     /// Test for equality with another weak pointer.
-    bool operator == (const WeakPtr<T>& rhs) const { return ptr_ == rhs.ptr_ && refCount_ == rhs.refCount_; }
+    bool operator ==(const WeakPtr<T>& rhs) const { return ptr_ == rhs.ptr_ && refCount_ == rhs.refCount_; }
+
     /// Test for inequality with another weak pointer.
-    bool operator != (const WeakPtr<T>& rhs) const { return ptr_ != rhs.ptr_ || refCount_ != rhs.refCount_; }
+    bool operator !=(const WeakPtr<T>& rhs) const { return ptr_ != rhs.ptr_ || refCount_ != rhs.refCount_; }
+
     /// Test for less than with another weak pointer.
-    bool operator < (const WeakPtr<T>& rhs) const { return ptr_ < rhs.ptr_; }
+    bool operator <(const WeakPtr<T>& rhs) const { return ptr_ < rhs.ptr_; }
+
     /// Convert to a raw pointer, null if the object is expired.
-    operator T* () const { return Get(); }
+    operator T*() const { return Get(); }
 
     /// Reset to null and release the weak reference.
     void Reset() { ReleaseRef(); }
@@ -331,8 +360,10 @@ public:
 
     /// Check if the pointer is null.
     bool Null() const { return refCount_ == 0; }
+
     /// Check if the pointer is not null.
     bool NotNull() const { return refCount_ != 0; }
+
     /// Return the object's reference count, or 0 if null pointer or if object has expired.
     int Refs() const { return (refCount_ && refCount_->refs_ >= 0) ? refCount_->refs_ : 0; }
 
@@ -347,14 +378,16 @@ public:
 
     /// Return whether the object has expired. If null pointer, always return true.
     bool Expired() const { return refCount_ ? refCount_->refs_ < 0 : true; }
+
     /// Return pointer to the RefCount structure.
     RefCount* RefCountPtr() const { return refCount_; }
+
     /// Return hash value for HashSet & HashMap.
-    unsigned ToHash() const { return ((unsigned)(size_t)ptr_) / sizeof(T); }
+    unsigned ToHash() const { return (unsigned)((size_t)ptr_ / sizeof(T)); }
 
 private:
     /// Prevent direct assignment from a weak pointer of different type.
-    template <class U> WeakPtr<T>& operator = (const WeakPtr<U>& rhs);
+    template <class U> WeakPtr<T>& operator =(const WeakPtr<U>& rhs);
 
     /// Add a weak reference to the object pointed to.
     void AddRef()

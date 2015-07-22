@@ -1,13 +1,15 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Graphics/Camera.h"
 #include "../Graphics/Graphics.h"
-#include "../IO/Log.h"
 #include "../Graphics/Renderer.h"
 #include "../Graphics/RenderPath.h"
-#include "../Resource/ResourceCache.h"
-#include "../Scene/Scene.h"
 #include "../Graphics/View.h"
-#include "../Graphics/Viewport.h"
+#include "../Resource/ResourceCache.h"
 #include "../Resource/XMLFile.h"
+#include "../Scene/Scene.h"
 
 #include "../DebugNew.h"
 

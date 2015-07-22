@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/LinkedList.h"
@@ -67,6 +69,7 @@ public:
 
     /// Return execution context.
     Context* GetContext() const { return context_; }
+
     /// Return subsystem by type.
     Object* GetSubsystem(StringHash type) const;
     /// Return active event sender. Null outside event handling.
@@ -77,8 +80,10 @@ public:
     bool HasSubscribedToEvent(StringHash eventType) const;
     /// Return whether has subscribed to a specific sender's event.
     bool HasSubscribedToEvent(Object* sender, StringHash eventType) const;
+
     /// Return whether has subscribed to any event.
     bool HasEventHandlers() const { return !eventHandlers_.Empty(); }
+
     /// Template version of returning a subsystem.
     template <class T> T* GetSubsystem() const;
     /// Return object category. Categories are (optionally) registered along with the object factory. Return an empty string if the object category is not registered.
@@ -120,10 +125,13 @@ public:
 
     /// Return execution context.
     Context* GetContext() const { return context_; }
+
     /// Return type hash of objects created by this factory.
     StringHash GetType() const { return type_; }
+
     /// Return base type hash of objects created by this factory.
     StringHash GetBaseType() const { return baseType_; }
+
     /// Return type name of objects created by this factory.
     const String& GetTypeName() const { return typeName_; }
 
@@ -178,7 +186,7 @@ public:
     }
 
     /// Destruct.
-    virtual ~EventHandler() {}
+    virtual ~EventHandler() { }
 
     /// Set sender and event type.
     void SetSenderAndEventType(Object* sender, StringHash eventType)
@@ -194,10 +202,13 @@ public:
 
     /// Return event receiver.
     Object* GetReceiver() const { return receiver_; }
+
     /// Return event sender. Null if the handler is non-specific.
     Object* GetSender() const { return sender_; }
+
     /// Return event type.
     const StringHash& GetEventType() const { return eventType_; }
+
     /// Return userdata.
     void* GetUserData() const { return userData_; }
 

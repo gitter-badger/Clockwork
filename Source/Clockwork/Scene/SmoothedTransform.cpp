@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../Scene/Scene.h"
 #include "../Scene/SceneEvents.h"

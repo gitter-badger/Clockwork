@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/HashSet.h"
@@ -17,7 +19,9 @@ class AttributeAnimationInfo : public ValueAnimationInfo
 {
 public:
     /// Construct.
-    AttributeAnimationInfo(Animatable* animatable, const AttributeInfo& attributeInfo, ValueAnimation* attributeAnimation, WrapMode wrapMode, float speed);
+    AttributeAnimationInfo
+        (Animatable* animatable, const AttributeInfo& attributeInfo, ValueAnimation* attributeAnimation, WrapMode wrapMode,
+            float speed);
     /// Copy construct.
     AttributeAnimationInfo(const AttributeAnimationInfo& other);
     /// Destruct.
@@ -55,10 +59,12 @@ public:
 
     /// Set animation enabled.
     void SetAnimationEnabled(bool enable) { animationEnabled_ = enable; }
+
     /// Set object animation.
     void SetObjectAnimation(ObjectAnimation* objectAnimation);
     /// Set attribute animation.
-    void SetAttributeAnimation(const String& name, ValueAnimation* attributeAnimation, WrapMode wrapMode = WM_LOOP, float speed = 1.0f);
+    void SetAttributeAnimation
+        (const String& name, ValueAnimation* attributeAnimation, WrapMode wrapMode = WM_LOOP, float speed = 1.0f);
     /// Set attribute animation wrap mode.
     void SetAttributeAnimationWrapMode(const String& name, WrapMode wrapMode);
     /// Set attribute animation speed.
@@ -66,6 +72,7 @@ public:
 
     /// Return animation enabled.
     bool GetAnimationEnabled() const { return animationEnabled_; }
+
     /// Return object animation.
     ObjectAnimation* GetObjectAnimation() const;
     /// Return attribute animation.
@@ -86,7 +93,8 @@ protected:
     /// Handle attribute animation removed.
     virtual void OnAttributeAnimationRemoved() = 0;
     /// Set object attribute animation internal.
-    virtual void SetObjectAttributeAnimation(const String& name, ValueAnimation* attributeAnimation, WrapMode wrapMode, float speed);
+    virtual void
+        SetObjectAttributeAnimation(const String& name, ValueAnimation* attributeAnimation, WrapMode wrapMode, float speed);
     /// Handle object animation added.
     void OnObjectAnimationAdded(ObjectAnimation* objectAnimation);
     /// Handle object animation removed.

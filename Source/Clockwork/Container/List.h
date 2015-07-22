@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/ListBase.h"
@@ -28,6 +30,7 @@ public:
 
         /// Return next node.
         Node* Next() const { return static_cast<Node*>(next_); }
+
         /// Return previous node.
         Node* Prev() { return static_cast<Node*>(prev_); }
     };
@@ -47,18 +50,40 @@ public:
         }
 
         /// Preincrement the pointer.
-        Iterator& operator ++ () { GotoNext(); return *this; }
+        Iterator& operator ++()
+        {
+            GotoNext();
+            return *this;
+        }
+
         /// Postincrement the pointer.
-        Iterator operator ++ (int) { Iterator it = *this; GotoNext(); return it; }
+        Iterator operator ++(int)
+        {
+            Iterator it = *this;
+            GotoNext();
+            return it;
+        }
+
         /// Predecrement the pointer.
-        Iterator& operator -- () { GotoPrev(); return *this; }
+        Iterator& operator --()
+        {
+            GotoPrev();
+            return *this;
+        }
+
         /// Postdecrement the pointer.
-        Iterator operator -- (int) { Iterator it = *this; GotoPrev(); return it; }
+        Iterator operator --(int)
+        {
+            Iterator it = *this;
+            GotoPrev();
+            return it;
+        }
 
         /// Point to the node value.
-        T* operator -> () const { return &(static_cast<Node*>(ptr_))->value_; }
+        T* operator ->() const { return &(static_cast<Node*>(ptr_))->value_; }
+
         /// Dereference the node value.
-        T& operator * () const { return (static_cast<Node*>(ptr_))->value_; }
+        T& operator *() const { return (static_cast<Node*>(ptr_))->value_; }
     };
 
     /// %List const iterator.
@@ -82,26 +107,53 @@ public:
         }
 
         /// Assign from a non-const iterator.
-        ConstIterator& operator = (const Iterator& rhs) { ptr_ = rhs.ptr_; return *this; }
+        ConstIterator& operator =(const Iterator& rhs)
+        {
+            ptr_ = rhs.ptr_;
+            return *this;
+        }
+
         /// Preincrement the pointer.
-        ConstIterator& operator ++ () { GotoNext(); return *this; }
+        ConstIterator& operator ++()
+        {
+            GotoNext();
+            return *this;
+        }
+
         /// Postincrement the pointer.
-        ConstIterator operator ++ (int) { ConstIterator it = *this; GotoNext(); return it; }
+        ConstIterator operator ++(int)
+        {
+            ConstIterator it = *this;
+            GotoNext();
+            return it;
+        }
+
         /// Predecrement the pointer.
-        ConstIterator& operator -- () { GotoPrev(); return *this; }
+        ConstIterator& operator --()
+        {
+            GotoPrev();
+            return *this;
+        }
+
         /// Postdecrement the pointer.
-        ConstIterator operator -- (int) { ConstIterator it = *this; GotoPrev(); return it; }
+        ConstIterator operator --(int)
+        {
+            ConstIterator it = *this;
+            GotoPrev();
+            return it;
+        }
 
         /// Point to the node value.
-        const T* operator -> () const { return &(static_cast<Node*>(ptr_))->value_; }
+        const T* operator ->() const { return &(static_cast<Node*>(ptr_))->value_; }
+
         /// Dereference the node value.
-        const T& operator * () const { return (static_cast<Node*>(ptr_))->value_; }
+        const T& operator *() const { return (static_cast<Node*>(ptr_))->value_; }
     };
 
     /// Construct empty.
     List()
     {
-        allocator_ = AllocatorInitialize(sizeof(Node));
+        allocator_ = AllocatorInitialize((unsigned)sizeof(Node));
         head_ = tail_ = ReserveNode();
     }
 
@@ -109,7 +161,7 @@ public:
     List(const List<T>& list)
     {
         // Reserve the tail node + initial capacity according to the list's size
-        allocator_ = AllocatorInitialize(sizeof(Node), list.Size() + 1);
+        allocator_ = AllocatorInitialize((unsigned)sizeof(Node), list.Size() + 1);
         head_ = tail_ = ReserveNode();
         *this = list;
     }
@@ -123,7 +175,7 @@ public:
     }
 
     /// Assign from another list.
-    List& operator = (const List<T>& rhs)
+    List& operator =(const List<T>& rhs)
     {
         // Clear, then insert the nodes of the other list
         Clear();
@@ -132,21 +184,21 @@ public:
     }
 
     /// Add-assign an element.
-    List& operator += (const T& rhs)
+    List& operator +=(const T& rhs)
     {
         Push(rhs);
         return *this;
     }
 
     /// Add-assign a list.
-    List& operator += (const List<T>& rhs)
+    List& operator +=(const List<T>& rhs)
     {
         Insert(End(), rhs);
         return *this;
     }
 
     /// Test for equality with another list.
-    bool operator == (const List<T>& rhs) const
+    bool operator ==(const List<T>& rhs) const
     {
         if (rhs.size_ != size_)
             return false;
@@ -165,7 +217,7 @@ public:
     }
 
     /// Test for inequality with another list.
-    bool operator != (const List<T>& rhs) const
+    bool operator !=(const List<T>& rhs) const
     {
         if (rhs.size_ != size_)
             return true;
@@ -185,8 +237,10 @@ public:
 
     /// Insert an element to the end.
     void Push(const T& value) { InsertNode(Tail(), value); }
+
     /// Insert an element to the beginning.
     void PushFront(const T& value) { InsertNode(Head(), value); }
+
     /// Insert an element at position.
     void Insert(const Iterator& dest, const T& value) { InsertNode(static_cast<Node*>(dest.ptr_), value); }
 
@@ -243,7 +297,7 @@ public:
     {
         Iterator it = start;
         while (it != end)
-            it = EraseNode(static_cast<Node*>(it.ptr_));
+            it = Erase(it);
 
         return it;
     }
@@ -253,7 +307,7 @@ public:
     {
         if (Size())
         {
-            for (Iterator i = Begin(); i != End(); )
+            for (Iterator i = Begin(); i != End();)
             {
                 FreeNode(static_cast<Node*>(i++.ptr_));
                 i.ptr_->prev_ = 0;
@@ -294,30 +348,41 @@ public:
 
     /// Return whether contains a specific value.
     bool Contains(const T& value) const { return Find(value) != End(); }
+
     /// Return iterator to the first element.
     Iterator Begin() { return Iterator(Head()); }
+
     /// Return iterator to the first element.
     ConstIterator Begin() const { return ConstIterator(Head()); }
+
     /// Return iterator to the end.
     Iterator End() { return Iterator(Tail()); }
+
     /// Return iterator to the end.
     ConstIterator End() const { return ConstIterator(Tail()); }
+
     /// Return first element.
     T& Front() { return *Begin(); }
+
     /// Return const first element.
     const T& Front() const { return *Begin(); }
+
     /// Return last element.
     T& Back() { return *(--End()); }
+
     /// Return const last element.
     const T& Back() const { return *(--End()); }
+
     /// Return number of elements.
     unsigned Size() const { return size_; }
+
     /// Return whether list is empty.
     bool Empty() const { return size_ == 0; }
 
 private:
     /// Return the head node.
     Node* Head() const { return static_cast<Node*>(head_); }
+
     /// Return the tail node.
     Node* Tail() const { return static_cast<Node*>(tail_); }
 
@@ -395,8 +460,11 @@ namespace std
 {
 
 template <class T> typename Clockwork::List<T>::ConstIterator begin(const Clockwork::List<T>& v) { return v.Begin(); }
+
 template <class T> typename Clockwork::List<T>::ConstIterator end(const Clockwork::List<T>& v) { return v.End(); }
+
 template <class T> typename Clockwork::List<T>::Iterator begin(Clockwork::List<T>& v) { return v.Begin(); }
+
 template <class T> typename Clockwork::List<T>::Iterator end(Clockwork::List<T>& v) { return v.End(); }
 
 }

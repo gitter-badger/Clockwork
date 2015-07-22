@@ -1,28 +1,32 @@
-#include "../Graphics/Camera.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/CoreEvents.h"
+#include "../Core/Profiler.h"
+#include "../Graphics/Camera.h"
 #include "../Graphics/DebugRenderer.h"
 #include "../Graphics/Geometry.h"
 #include "../Graphics/Graphics.h"
 #include "../Graphics/GraphicsEvents.h"
 #include "../Graphics/GraphicsImpl.h"
 #include "../Graphics/IndexBuffer.h"
-#include "../IO/Log.h"
 #include "../Graphics/Material.h"
 #include "../Graphics/OcclusionBuffer.h"
 #include "../Graphics/Octree.h"
-#include "../Core/Profiler.h"
 #include "../Graphics/Renderer.h"
 #include "../Graphics/RenderPath.h"
-#include "../Resource/ResourceCache.h"
-#include "../Scene/Scene.h"
 #include "../Graphics/ShaderVariation.h"
 #include "../Graphics/Technique.h"
 #include "../Graphics/Texture2D.h"
 #include "../Graphics/TextureCube.h"
 #include "../Graphics/VertexBuffer.h"
 #include "../Graphics/View.h"
-#include "../Resource/XMLFile.h"
 #include "../Graphics/Zone.h"
+#include "../IO/Log.h"
+#include "../Resource/ResourceCache.h"
+#include "../Resource/XMLFile.h"
+#include "../Scene/Scene.h"
 
 #include "../DebugNew.h"
 
@@ -127,7 +131,7 @@ static const float spotLightVertexData[] =
     -0.00001f, 0.00001f, 0.00001f,
     1.00000f, 1.00000f, 0.99999f,
     1.00000f, -1.00000f, 0.99999f,
-    -1.00000f,  -1.00000f, 0.99999f,
+    -1.00000f, -1.00000f, 0.99999f,
     -1.00000f, 1.00000f, 0.99999f,
 };
 
@@ -149,18 +153,18 @@ static const unsigned short spotLightIndexData[] =
 
 static const char* shadowVariations[] =
 {
-    #ifdef CLOCKWORK_OPENGL
+#ifdef CLOCKWORK_OPENGL
     // No specific hardware shadow compare variation on OpenGL, it is always supported
     "LQSHADOW ",
     "LQSHADOW ",
     "",
     ""
-    #else
+#else
     "LQSHADOW SHADOWCMP ",
     "LQSHADOW ",
     "SHADOWCMP ",
     ""
-    #endif
+#endif
 };
 
 static const char* geometryVSVariations[] =
@@ -351,7 +355,7 @@ void Renderer::SetShadowMapSize(int size)
     if (!graphics_)
         return;
 
-    size = NextPowerOfTwo(Max(size, SHADOW_MIN_PIXELS));
+    size = NextPowerOfTwo((unsigned)Max(size, SHADOW_MIN_PIXELS));
     if (size != shadowMapSize_)
     {
         shadowMapSize_ = size;
@@ -397,7 +401,7 @@ void Renderer::SetMaxShadowMaps(int shadowMaps)
     for (HashMap<int, Vector<SharedPtr<Texture2D> > >::Iterator i = shadowMaps_.Begin(); i != shadowMaps_.End(); ++i)
     {
         if ((int)i->second_.Size() > maxShadowMaps_)
-            i->second_.Resize(maxShadowMaps_);
+            i->second_.Resize((unsigned)maxShadowMaps_);
     }
 }
 
@@ -631,7 +635,7 @@ void Renderer::Render()
         SetIndirectionTextureData();
 
     graphics_->SetDefaultTextureFilterMode(textureFilterMode_);
-    graphics_->SetTextureAnisotropy(textureAnisotropy_);
+    graphics_->SetTextureAnisotropy((unsigned)textureAnisotropy_);
 
     // If no views, just clear the screen
     if (views_.Empty())
@@ -810,7 +814,7 @@ Texture2D* Renderer::GetShadowMap(Light* light, Camera* camera, unsigned viewWid
     // Adjust the size for directional or point light shadow map atlases
     if (type == LIGHT_DIRECTIONAL)
     {
-        unsigned numSplits = light->GetNumShadowSplits();
+        unsigned numSplits = (unsigned)light->GetNumShadowSplits();
         if (numSplits > 1)
             width *= 2;
         if (numSplits > 2)
@@ -842,8 +846,8 @@ Texture2D* Renderer::GetShadowMap(Light* light, Camera* camera, unsigned viewWid
         }
     }
 
-    unsigned shadowMapFormat = (shadowQuality_ & SHADOWQUALITY_LOW_24BIT) ? graphics_->GetHiresShadowMapFormat() :
-        graphics_->GetShadowMapFormat();
+    unsigned shadowMapFormat =
+        (shadowQuality_ & SHADOWQUALITY_LOW_24BIT) ? graphics_->GetHiresShadowMapFormat() : graphics_->GetShadowMapFormat();
     if (!shadowMapFormat)
         return 0;
 
@@ -861,16 +865,16 @@ Texture2D* Renderer::GetShadowMap(Light* light, Camera* camera, unsigned viewWid
         }
         else
         {
-            #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
             // OpenGL (desktop) and D3D11: shadow compare mode needs to be specifically enabled for the shadow map
             newShadowMap->SetFilterMode(FILTER_BILINEAR);
             newShadowMap->SetShadowCompare(true);
-            #endif
-            #ifndef CLOCKWORK_OPENGL
+#endif
+#ifndef CLOCKWORK_OPENGL
             // Direct3D9: when shadow compare must be done manually, use nearest filtering so that the filtering of point lights
             // and other shadowed lights matches
             newShadowMap->SetFilterMode(graphics_->GetHardwareShadowSupport() ? FILTER_BILINEAR : FILTER_NEAREST);
-            #endif
+#endif
             // Create dummy color texture for the shadow map if necessary: Direct3D9, or OpenGL when working around an OS X +
             // Intel driver bug
             if (dummyColorFormat)
@@ -899,7 +903,8 @@ Texture2D* Renderer::GetShadowMap(Light* light, Camera* camera, unsigned viewWid
     return newShadowMap;
 }
 
-Texture* Renderer::GetScreenBuffer(int width, int height, unsigned format, bool cubemap, bool filtered, bool srgb, unsigned persistentKey)
+Texture* Renderer::GetScreenBuffer(int width, int height, unsigned format, bool cubemap, bool filtered, bool srgb,
+    unsigned persistentKey)
 {
     bool depthStencil = (format == Graphics::GetDepthStencilFormat()) || (format == Graphics::GetReadableDepthFormat());
     if (depthStencil)
@@ -929,7 +934,7 @@ Texture* Renderer::GetScreenBuffer(int width, int height, unsigned format, bool 
 
     // Reuse depth-stencil buffers whenever the size matches, instead of allocating new
     unsigned allocations = screenBufferAllocations_[searchKey];
-    if(!depthStencil)
+    if (!depthStencil)
         ++screenBufferAllocations_[searchKey];
 
     if (allocations >= screenBuffers_[searchKey].Size())
@@ -941,7 +946,7 @@ Texture* Renderer::GetScreenBuffer(int width, int height, unsigned format, bool 
             SharedPtr<Texture2D> newTex2D(new Texture2D(context_));
             newTex2D->SetSize(width, height, format, depthStencil ? TEXTURE_DEPTHSTENCIL : TEXTURE_RENDERTARGET);
 
-            #ifdef CLOCKWORK_OPENGL
+#ifdef CLOCKWORK_OPENGL
             // OpenGL hack: clear persistent floating point screen buffers to ensure the initial contents aren't illegal (NaN)?
             // Otherwise eg. the AutoExposure post process will not work correctly
             if (persistentKey && Texture::GetDataType(format) == GL_FLOAT)
@@ -953,7 +958,7 @@ Texture* Renderer::GetScreenBuffer(int width, int height, unsigned format, bool 
                 graphics_->SetViewport(IntRect(0, 0, width, height));
                 graphics_->Clear(CLEAR_COLOR);
             }
-            #endif
+#endif
 
             newBuffer = StaticCast<Texture>(newTex2D);
         }
@@ -989,8 +994,8 @@ RenderSurface* Renderer::GetDepthStencil(int width, int height)
         return 0;
     else
     {
-        return static_cast<Texture2D*>(GetScreenBuffer(width, height, Graphics::GetDepthStencilFormat(), false, false, false))->
-            GetRenderSurface();
+        return static_cast<Texture2D*>(GetScreenBuffer(width, height, Graphics::GetDepthStencilFormat(), false, false,
+            false))->GetRenderSurface();
     }
 }
 
@@ -1039,8 +1044,7 @@ void Renderer::SetBatchShaders(Batch& batch, Technique* tech, bool allowShadows)
     Pass* pass = batch.pass_;
     Vector<SharedPtr<ShaderVariation> >& vertexShaders = pass->GetVertexShaders();
     Vector<SharedPtr<ShaderVariation> >& pixelShaders = pass->GetPixelShaders();
-    if (!vertexShaders.Size() || !pixelShaders.Size() || pass->GetShadersLoadedFrameNumber() !=
-        shadersChangedFrameNumber_)
+    if (!vertexShaders.Size() || !pixelShaders.Size() || pass->GetShadersLoadedFrameNumber() != shadersChangedFrameNumber_)
     {
         // First release all previous shaders, then load
         pass->ReleaseShaders();
@@ -1144,7 +1148,8 @@ void Renderer::SetBatchShaders(Batch& batch, Technique* tech, bool allowShadows)
     }
 }
 
-void Renderer::SetLightVolumeBatchShaders(Batch& batch, const String& vsName, const String& psName, const String& vsDefines, const String& psDefines)
+void Renderer::SetLightVolumeBatchShaders(Batch& batch, const String& vsName, const String& psName, const String& vsDefines,
+    const String& psDefines)
 {
     assert(deferredLightPSVariations_.Size());
 
@@ -1371,7 +1376,8 @@ void Renderer::RemoveUnusedBuffers()
             Texture* buffer = buffers[j];
             if (buffer->GetUseTimer() > MAX_BUFFER_AGE)
             {
-                LOGDEBUG("Removed unused screen buffer size " + String(buffer->GetWidth()) + "x" + String(buffer->GetHeight()) + " format " + String(buffer->GetFormat()));
+                LOGDEBUG("Removed unused screen buffer size " + String(buffer->GetWidth()) + "x" + String(buffer->GetHeight()) +
+                         " format " + String(buffer->GetFormat()));
                 buffers.Erase(j);
             }
         }
@@ -1444,7 +1450,7 @@ void Renderer::LoadShaders()
 
     // Construct new names for deferred light volume pixel shaders based on rendering options
     deferredLightPSVariations_.Resize(MAX_DEFERRED_LIGHT_PS_VARIATIONS);
-    unsigned shadows = (graphics_->GetHardwareShadowSupport() ? 1 : 0) | (shadowQuality_ & SHADOWQUALITY_HIGH_16BIT);
+    unsigned shadows = (unsigned)((graphics_->GetHardwareShadowSupport() ? 1 : 0) | (shadowQuality_ & SHADOWQUALITY_HIGH_16BIT));
     for (unsigned i = 0; i < MAX_DEFERRED_LIGHT_PS_VARIATIONS; ++i)
     {
         deferredLightPSVariations_[i] = lightPSVariations[i % DLPS_ORTHO];
@@ -1461,7 +1467,7 @@ void Renderer::LoadPassShaders(Pass* pass)
 {
     PROFILE(LoadPassShaders);
 
-    unsigned shadows = (graphics_->GetHardwareShadowSupport() ? 1 : 0) | (shadowQuality_ & SHADOWQUALITY_HIGH_16BIT);
+    unsigned shadows = (unsigned)((graphics_->GetHardwareShadowSupport() ? 1 : 0) | (shadowQuality_ & SHADOWQUALITY_HIGH_16BIT));
 
     Vector<SharedPtr<ShaderVariation> >& vertexShaders = pass->GetVertexShaders();
     Vector<SharedPtr<ShaderVariation> >& pixelShaders = pass->GetPixelShaders();
@@ -1481,8 +1487,8 @@ void Renderer::LoadPassShaders(Pass* pass)
             unsigned g = j / MAX_LIGHT_VS_VARIATIONS;
             unsigned l = j % MAX_LIGHT_VS_VARIATIONS;
 
-            vertexShaders[j] = graphics_->GetShader(VS, pass->GetVertexShader(), pass->GetVertexShaderDefines() + " " +
-                lightVSVariations[l] + geometryVSVariations[g]);
+            vertexShaders[j] = graphics_->GetShader(VS, pass->GetVertexShader(),
+                pass->GetVertexShaderDefines() + " " + lightVSVariations[l] + geometryVSVariations[g]);
         }
         for (unsigned j = 0; j < MAX_LIGHT_PS_VARIATIONS * 2; ++j)
         {
@@ -1491,12 +1497,13 @@ void Renderer::LoadPassShaders(Pass* pass)
 
             if (l & LPS_SHADOW)
             {
-                pixelShaders[j] = graphics_->GetShader(PS, pass->GetPixelShader(), pass->GetPixelShaderDefines() + " " +
-                    lightPSVariations[l] + shadowVariations[shadows] + heightFogVariations[h]);
+                pixelShaders[j] = graphics_->GetShader(PS, pass->GetPixelShader(),
+                    pass->GetPixelShaderDefines() + " " + lightPSVariations[l] + shadowVariations[shadows] +
+                    heightFogVariations[h]);
             }
             else
-                pixelShaders[j] = graphics_->GetShader(PS, pass->GetPixelShader(), pass->GetPixelShaderDefines() + " " +
-                    lightPSVariations[l] + heightFogVariations[h]);
+                pixelShaders[j] = graphics_->GetShader(PS, pass->GetPixelShader(),
+                    pass->GetPixelShaderDefines() + " " + lightPSVariations[l] + heightFogVariations[h]);
         }
     }
     else
@@ -1509,8 +1516,8 @@ void Renderer::LoadPassShaders(Pass* pass)
             {
                 unsigned g = j / MAX_VERTEXLIGHT_VS_VARIATIONS;
                 unsigned l = j % MAX_VERTEXLIGHT_VS_VARIATIONS;
-                vertexShaders[j] = graphics_->GetShader(VS, pass->GetVertexShader(), pass->GetVertexShaderDefines() + " " +
-                    vertexLightVSVariations[l] + geometryVSVariations[g]);
+                vertexShaders[j] = graphics_->GetShader(VS, pass->GetVertexShader(),
+                    pass->GetVertexShaderDefines() + " " + vertexLightVSVariations[l] + geometryVSVariations[g]);
             }
         }
         else
@@ -1518,16 +1525,16 @@ void Renderer::LoadPassShaders(Pass* pass)
             vertexShaders.Resize(MAX_GEOMETRYTYPES);
             for (unsigned j = 0; j < MAX_GEOMETRYTYPES; ++j)
             {
-                vertexShaders[j] = graphics_->GetShader(VS, pass->GetVertexShader(), pass->GetVertexShaderDefines() + " " +
-                    geometryVSVariations[j]);
+                vertexShaders[j] = graphics_->GetShader(VS, pass->GetVertexShader(),
+                    pass->GetVertexShaderDefines() + " " + geometryVSVariations[j]);
             }
         }
 
         pixelShaders.Resize(2);
         for (unsigned j = 0; j < 2; ++j)
         {
-            pixelShaders[j] = graphics_->GetShader(PS, pass->GetPixelShader(), pass->GetPixelShaderDefines() + " " +
-                heightFogVariations[j]);
+            pixelShaders[j] =
+                graphics_->GetShader(PS, pass->GetPixelShader(), pass->GetPixelShaderDefines() + " " + heightFogVariations[j]);
         }
     }
 
@@ -1606,7 +1613,7 @@ void Renderer::CreateGeometries()
     pointLightGeometry_->SetIndexBuffer(plib);
     pointLightGeometry_->SetDrawRange(TRIANGLE_LIST, 0, plib->GetIndexCount());
 
-    #if !defined(CLOCKWORK_OPENGL) || !defined(GL_ES_VERSION_2_0)
+#if !defined(CLOCKWORK_OPENGL) || !defined(GL_ES_VERSION_2_0)
     if (graphics_->GetShadowMapFormat())
     {
         faceSelectCubeMap_ = new TextureCube(context_);
@@ -1624,7 +1631,7 @@ void Renderer::CreateGeometries()
 
         SetIndirectionTextureData();
     }
-    #endif
+#endif
 }
 
 void Renderer::SetIndirectionTextureData()
@@ -1634,33 +1641,33 @@ void Renderer::SetIndirectionTextureData()
     for (unsigned i = 0; i < MAX_CUBEMAP_FACES; ++i)
     {
         unsigned axis = i / 2;
-        data[0] = (axis == 0) ? 255 : 0;
-        data[1] = (axis == 1) ? 255 : 0;
-        data[2] = (axis == 2) ? 255 : 0;
+        data[0] = (unsigned char)((axis == 0) ? 255 : 0);
+        data[1] = (unsigned char)((axis == 1) ? 255 : 0);
+        data[2] = (unsigned char)((axis == 2) ? 255 : 0);
         data[3] = 0;
         faceSelectCubeMap_->SetData((CubeMapFace)i, 0, 0, 0, 1, 1, data);
     }
 
     for (unsigned i = 0; i < MAX_CUBEMAP_FACES; ++i)
     {
-        unsigned char faceX = (i & 1) * 255;
-        unsigned char faceY = (i / 2) * 255 / 3;
+        unsigned char faceX = (unsigned char)((i & 1) * 255);
+        unsigned char faceY = (unsigned char)((i / 2) * 255 / 3);
         unsigned char* dest = data;
         for (unsigned y = 0; y < 256; ++y)
         {
             for (unsigned x = 0; x < 256; ++x)
             {
-                #ifdef CLOCKWORK_OPENGL
-                dest[0] = x;
-                dest[1] = 255 - y;
+#ifdef CLOCKWORK_OPENGL
+                dest[0] = (unsigned char)x;
+                dest[1] = (unsigned char)(255 - y);
                 dest[2] = faceX;
-                dest[3] = 255 * 2 / 3 - faceY;
-                #else
-                dest[0] = x;
-                dest[1] = y;
+                dest[3] = (unsigned char)(255 * 2 / 3 - faceY);
+#else
+                dest[0] = (unsigned char)x;
+                dest[1] = (unsigned char)y;
                 dest[2] = faceX;
                 dest[3] = faceY;
-                #endif
+#endif
                 dest += 4;
             }
         }

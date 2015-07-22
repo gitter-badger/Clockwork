@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/Ptr.h"
@@ -44,8 +46,8 @@ public:
     void DrawDebugGeometry(bool depthTest);
 
 protected:
-    /// Handle node being assigned, identify our DynamicNavigationMesh.
-    virtual void OnNodeSet(Node* node);
+    /// Handle scene being assigned, identify our DynamicNavigationMesh.
+    virtual void OnSceneSet(Scene* scene);
 
 private:
     /// Radius of this obstacle.

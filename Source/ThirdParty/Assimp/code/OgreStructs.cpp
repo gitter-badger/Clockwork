@@ -38,6 +38,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ----------------------------------------------------------------------
 */
 
+#include "AssimpPCH.h"
+
 #ifndef ASSIMP_BUILD_NO_OGRE_IMPORTER
 
 #include "OgreStructs.h"
@@ -325,7 +327,7 @@ uint32_t VertexData::VertexSize(uint16_t source) const
 MemoryStream *VertexData::VertexBuffer(uint16_t source)
 {
 	if (vertexBindings.find(source) != vertexBindings.end())
-		return vertexBindings[source].get();
+		return vertexBindings[source];
 	return 0;
 }
 

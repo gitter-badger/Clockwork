@@ -1,9 +1,11 @@
+
+
 #pragma once
 
 #include "../Container/Vector.h"
 
-#include <cstring>
 #include <cstdarg>
+#include <cstring>
 #include <cctype>
 
 namespace Clockwork
@@ -131,7 +133,7 @@ public:
     }
 
     /// Assign a string.
-    String& operator = (const String& rhs)
+    String& operator =(const String& rhs)
     {
         Resize(rhs.length_);
         CopyChars(buffer_, rhs.buffer_, rhs.length_);
@@ -140,7 +142,7 @@ public:
     }
 
     /// Assign a C string.
-    String& operator = (const char* rhs)
+    String& operator =(const char* rhs)
     {
         unsigned rhsLength = CStringLength(rhs);
         Resize(rhsLength);
@@ -150,7 +152,7 @@ public:
     }
 
     /// Add-assign a string.
-    String& operator += (const String& rhs)
+    String& operator +=(const String& rhs)
     {
         unsigned oldLength = length_;
         Resize(length_ + rhs.length_);
@@ -160,7 +162,7 @@ public:
     }
 
     /// Add-assign a C string.
-    String& operator += (const char* rhs)
+    String& operator +=(const char* rhs)
     {
         unsigned rhsLength = CStringLength(rhs);
         unsigned oldLength = length_;
@@ -171,40 +173,41 @@ public:
     }
 
     /// Add-assign a character.
-    String& operator += (char rhs)
+    String& operator +=(char rhs)
     {
         unsigned oldLength = length_;
         Resize(length_ + 1);
-        buffer_[oldLength]  = rhs;
+        buffer_[oldLength] = rhs;
 
         return *this;
     }
 
     /// Add-assign an integer.
-    String& operator += (int rhs);
+    String& operator +=(int rhs);
     /// Add-assign a short integer.
-    String& operator += (short rhs);
+    String& operator +=(short rhs);
     /// Add-assign a long integer.
-    String& operator += (long rhs);
+    String& operator +=(long rhs);
     /// Add-assign a long long integer.
-    String& operator += (long long rhs);
+    String& operator +=(long long rhs);
     /// Add-assign an unsigned integer.
-    String& operator += (unsigned rhs);
+    String& operator +=(unsigned rhs);
     /// Add-assign a short unsigned integer.
-    String& operator += (unsigned short rhs);
+    String& operator +=(unsigned short rhs);
     /// Add-assign a long unsigned integer.
-    String& operator += (unsigned long rhs);
+    String& operator +=(unsigned long rhs);
     /// Add-assign a long long unsigned integer.
-    String& operator += (unsigned long long rhs);
+    String& operator +=(unsigned long long rhs);
     /// Add-assign a float.
-    String& operator += (float rhs);
+    String& operator +=(float rhs);
     /// Add-assign a bool.
-    String& operator += (bool rhs);
+    String& operator +=(bool rhs);
+
     /// Add-assign an arbitraty type.
-    template <class T> String operator += (const T& rhs) { return *this += rhs.ToString(); }
+    template <class T> String operator +=(const T& rhs) { return *this += rhs.ToString(); }
 
     /// Add a string.
-    String operator + (const String& rhs) const
+    String operator +(const String& rhs) const
     {
         String ret;
         ret.Resize(length_ + rhs.length_);
@@ -215,7 +218,7 @@ public:
     }
 
     /// Add a C string.
-    String operator + (const char* rhs) const
+    String operator +(const char* rhs) const
     {
         unsigned rhsLength = CStringLength(rhs);
         String ret;
@@ -227,7 +230,7 @@ public:
     }
 
     /// Add a character.
-    String operator + (char rhs) const
+    String operator +(char rhs) const
     {
         String ret(*this);
         ret += rhs;
@@ -236,29 +239,56 @@ public:
     }
 
     /// Test for equality with another string.
-    bool operator == (const String& rhs) const { return strcmp(CString(), rhs.CString()) == 0; }
+    bool operator ==(const String& rhs) const { return strcmp(CString(), rhs.CString()) == 0; }
+
     /// Test for inequality with another string.
-    bool operator != (const String& rhs) const { return strcmp(CString(), rhs.CString()) != 0; }
+    bool operator !=(const String& rhs) const { return strcmp(CString(), rhs.CString()) != 0; }
+
     /// Test if string is less than another string.
-    bool operator < (const String& rhs) const { return strcmp(CString(), rhs.CString()) < 0; }
+    bool operator <(const String& rhs) const { return strcmp(CString(), rhs.CString()) < 0; }
+
     /// Test if string is greater than another string.
-    bool operator > (const String& rhs) const { return strcmp(CString(), rhs.CString()) > 0; }
+    bool operator >(const String& rhs) const { return strcmp(CString(), rhs.CString()) > 0; }
+
     /// Test for equality with a C string.
-    bool operator == (const char* rhs) const { return strcmp(CString(), rhs) == 0; }
+    bool operator ==(const char* rhs) const { return strcmp(CString(), rhs) == 0; }
+
     /// Test for inequality with a C string.
-    bool operator != (const char* rhs) const { return strcmp(CString(), rhs) != 0; }
+    bool operator !=(const char* rhs) const { return strcmp(CString(), rhs) != 0; }
+
     /// Test if string is less than a C string.
-    bool operator < (const char* rhs) const { return strcmp(CString(), rhs) < 0; }
+    bool operator <(const char* rhs) const { return strcmp(CString(), rhs) < 0; }
+
     /// Test if string is greater than a C string.
-    bool operator > (const char* rhs) const { return strcmp(CString(), rhs) > 0; }
+    bool operator >(const char* rhs) const { return strcmp(CString(), rhs) > 0; }
+
     /// Return char at index.
-    char& operator [] (unsigned index) { assert(index < length_); return buffer_[index]; }
+    char& operator [](unsigned index)
+    {
+        assert(index < length_);
+        return buffer_[index];
+    }
+
     /// Return const char at index.
-    const char& operator [] (unsigned index) const { assert(index < length_); return buffer_[index]; }
+    const char& operator [](unsigned index) const
+    {
+        assert(index < length_);
+        return buffer_[index];
+    }
+
     /// Return char at index.
-    char& At(unsigned index) { assert(index < length_); return buffer_[index]; }
+    char& At(unsigned index)
+    {
+        assert(index < length_);
+        return buffer_[index];
+    }
+
     /// Return const char at index.
-    const char& At(unsigned index) const { assert(index < length_); return buffer_[index]; }
+    const char& At(unsigned index) const
+    {
+        assert(index < length_);
+        return buffer_[index];
+    }
 
     /// Replace all occurrences of a character.
     void Replace(char replaceThis, char replaceWith, bool caseSensitive = true);
@@ -311,16 +341,22 @@ public:
 
     /// Return iterator to the beginning.
     Iterator Begin() { return Iterator(buffer_); }
+
     /// Return const iterator to the beginning.
     ConstIterator Begin() const { return ConstIterator(buffer_); }
+
     /// Return iterator to the end.
     Iterator End() { return Iterator(buffer_ + length_); }
+
     /// Return const iterator to the end.
     ConstIterator End() const { return ConstIterator(buffer_ + length_); }
+
     /// Return first char, or 0 if empty.
     char Front() const { return buffer_[0]; }
+
     /// Return last char, or 0 if empty.
     char Back() const { return length_ ? buffer_[length_ - 1] : buffer_[0]; }
+
     /// Return a substring from position to end.
     String Substring(unsigned pos) const;
     /// Return a substring with length from position.
@@ -347,20 +383,27 @@ public:
     bool StartsWith(const String& str, bool caseSensitive = true) const;
     /// Return whether ends with a string.
     bool EndsWith(const String& str, bool caseSensitive = true) const;
+
     /// Return the C string.
     const char* CString() const { return buffer_; }
+
     /// Return length.
     unsigned Length() const { return length_; }
+
     /// Return buffer capacity.
     unsigned Capacity() const { return capacity_; }
+
     /// Return whether the string is empty.
     bool Empty() const { return length_ == 0; }
+
     /// Return comparison result with a string.
     int Compare(const String& str, bool caseSensitive = true) const;
     /// Return comparison result with a C string.
     int Compare(const char* str, bool caseSensitive = true) const;
+
     /// Return whether contains a specific occurence of a string.
     bool Contains(const String& str, bool caseSensitive = true) const { return Find(str, 0, caseSensitive) != NPOS; }
+
     /// Return whether contains a specific character.
     bool Contains(char c, bool caseSensitive = true) const { return Find(c, 0, caseSensitive) != NPOS; }
 
@@ -407,7 +450,7 @@ public:
     static void EncodeUTF8(char*& dest, unsigned unicodeChar);
     /// Decode Unicode character from UTF8. Pointer will be incremented.
     static unsigned DecodeUTF8(const char*& src);
-    #ifdef WIN32
+#ifdef WIN32
     /// Encode Unicode character to UTF16. Pointer will be incremented.
     static void EncodeUTF16(wchar_t*& dest, unsigned unicodeChar);
     /// Decode Unicode character from UTF16. Pointer will be incremented.
@@ -419,18 +462,18 @@ public:
     {
         if (!str)
             return 0;
-        #ifdef _MSC_VER
+#ifdef _MSC_VER
         return (unsigned)strlen(str);
-        #else
+#else
         const char* ptr = str;
         while (*ptr)
             ++ptr;
         return (unsigned)(ptr - str);
-        #endif
+#endif
     }
 
     /// Append to string using formatting.
-    String& AppendWithFormat(const char* formatString, ... );
+    String& AppendWithFormat(const char* formatString, ...);
     /// Append to string using variable arguments.
     String& AppendWithFormatArgs(const char* formatString, va_list args);
 
@@ -455,10 +498,10 @@ private:
     /// Copy chars from one buffer to another.
     static void CopyChars(char* dest, const char* src, unsigned count)
     {
-        #ifdef _MSC_VER
+#ifdef _MSC_VER
         if (count)
             memcpy(dest, src, count);
-        #else
+#else
         char* end = dest + count;
         while (dest != end)
         {
@@ -466,7 +509,7 @@ private:
             ++dest;
             ++src;
         }
-        #endif
+#endif
     }
 
     /// Replace a substring with another substring.
@@ -484,7 +527,7 @@ private:
 };
 
 /// Add a string to a C string.
-inline String operator + (const char* lhs, const String& rhs)
+inline String operator +(const char* lhs, const String& rhs)
 {
     String ret(lhs);
     ret += rhs;
@@ -492,7 +535,7 @@ inline String operator + (const char* lhs, const String& rhs)
 }
 
 /// Add a string to a wide char C string.
-inline String operator + (const wchar_t* lhs, const String& rhs)
+inline String operator +(const wchar_t* lhs, const String& rhs)
 {
     String ret(lhs);
     ret += rhs;
@@ -511,19 +554,42 @@ public:
     ~WString();
 
     /// Return char at index.
-    wchar_t& operator [] (unsigned index) { assert(index < length_); return buffer_[index]; }
+    wchar_t& operator [](unsigned index)
+    {
+        assert(index < length_);
+        return buffer_[index];
+    }
+
     /// Return const char at index.
-    const wchar_t& operator [] (unsigned index) const { assert(index < length_); return buffer_[index]; }
+    const wchar_t& operator [](unsigned index) const
+    {
+        assert(index < length_);
+        return buffer_[index];
+    }
+
     /// Return char at index.
-    wchar_t& At(unsigned index) { assert(index < length_); return buffer_[index]; }
+    wchar_t& At(unsigned index)
+    {
+        assert(index < length_);
+        return buffer_[index];
+    }
+
     /// Return const char at index.
-    const wchar_t& At(unsigned index) const { assert(index < length_); return buffer_[index]; }
+    const wchar_t& At(unsigned index) const
+    {
+        assert(index < length_);
+        return buffer_[index];
+    }
+
     /// Resize the string.
     void Resize(unsigned newLength);
+
     /// Return whether the string is empty.
     bool Empty() const { return length_ == 0; }
+
     /// Return length.
     unsigned Length() const { return length_; }
+
     /// Return character data.
     const wchar_t* CString() const { return buffer_; }
 

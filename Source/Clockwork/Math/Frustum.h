@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/BoundingBox.h"
@@ -33,16 +35,18 @@ public:
     Frustum(const Frustum& frustum);
 
     /// Assign from another frustum.
-    Frustum& operator = (const Frustum& rhs);
+    Frustum& operator =(const Frustum& rhs);
 
     /// Define with projection parameters and a transform matrix.
-    void Define(float fov, float aspectRatio, float zoom, float nearZ, float farZ, const Matrix3x4& transform = Matrix3x4::IDENTITY);
+    void
+        Define(float fov, float aspectRatio, float zoom, float nearZ, float farZ, const Matrix3x4& transform = Matrix3x4::IDENTITY);
     /// Define with near and far dimension vectors and a transform matrix.
     void Define(const Vector3& near, const Vector3& far, const Matrix3x4& transform = Matrix3x4::IDENTITY);
     /// Define with a bounding box and a transform matrix.
     void Define(const BoundingBox& box, const Matrix3x4& transform = Matrix3x4::IDENTITY);
     /// Define with orthographic projection parameters and a transform matrix.
-    void DefineOrtho(float orthoSize, float aspectRatio, float zoom, float nearZ, float farZ, const Matrix3x4& transform = Matrix3x4::IDENTITY);
+    void DefineOrtho
+        (float orthoSize, float aspectRatio, float zoom, float nearZ, float farZ, const Matrix3x4& transform = Matrix3x4::IDENTITY);
     /// Transform by a 3x3 matrix.
     void Transform(const Matrix3& transform);
     /// Transform by a 3x4 matrix.

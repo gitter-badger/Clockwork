@@ -1,13 +1,17 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Core/Context.h"
-#include "../../IO/FileSystem.h"
+#include "../../Core/Profiler.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsEvents.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
-#include "../../Core/Profiler.h"
 #include "../../Graphics/Renderer.h"
-#include "../../Resource/ResourceCache.h"
 #include "../../Graphics/Texture3D.h"
+#include "../../IO/FileSystem.h"
+#include "../../IO/Log.h"
+#include "../../Resource/ResourceCache.h"
 #include "../../Resource/XMLFile.h"
 
 #include "../../DebugNew.h"
@@ -18,11 +22,11 @@ namespace Clockwork
 Texture3D::Texture3D(Context* context) :
     Texture(context)
 {
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     target_ = GL_TEXTURE_3D;
-    #else
+#else
     target_ = 0;
-    #endif
+#endif
 }
 
 Texture3D::~Texture3D()
@@ -254,7 +258,8 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
     int levelWidth = GetLevelWidth(level);
     int levelHeight = GetLevelHeight(level);
     int levelDepth = GetLevelDepth(level);
-    if (x < 0 || x + width > levelWidth || y < 0 || y + height > levelHeight || z < 0 || z + depth > levelDepth || width <= 0 || height <= 0 || depth <= 0)
+    if (x < 0 || x + width > levelWidth || y < 0 || y + height > levelHeight || z < 0 || z + depth > levelDepth || width <= 0 ||
+        height <= 0 || depth <= 0)
     {
         LOGERROR("Illegal dimensions for setting data");
         return false;
@@ -262,7 +267,7 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
 
     graphics_->SetTextureForUpdate(this);
 
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     bool wholeLevel = x == 0 && y == 0 && z == 0 && width == levelWidth && height == levelHeight && depth == levelDepth;
     unsigned format = GetSRGB() ? GetSRGBFormat(format_) : format_;
 
@@ -278,9 +283,10 @@ bool Texture3D::SetData(unsigned level, int x, int y, int z, int width, int heig
         if (wholeLevel)
             glCompressedTexImage3D(target_, level, format, width, height, depth, 0, GetDataSize(width, height, depth), data);
         else
-            glCompressedTexSubImage3D(target_, level, x, y, z, width, height, depth, format, GetDataSize(width, height, depth), data);
+            glCompressedTexSubImage3D(target_, level, x, y, z, width, height, depth, format, GetDataSize(width, height, depth),
+                data);
     }
-    #endif
+#endif
 
     graphics_->SetTexture(0, 0);
     return true;
@@ -346,6 +352,10 @@ bool Texture3D::SetData(SharedPtr<Image> image, bool useAlpha)
         case 4:
             format = Graphics::GetRGBAFormat();
             break;
+
+        default:
+            assert(false);  // Should not reach here
+            break;
         }
 
         // If image was previously compressed, reset number of requested levels to avoid error if level count is too high for new size
@@ -394,7 +404,7 @@ bool Texture3D::SetData(SharedPtr<Image> image, bool useAlpha)
         height /= (1 << mipsToSkip);
         depth /= (1 << mipsToSkip);
 
-        SetNumLevels(Max((int)(levels - mipsToSkip), 1));
+        SetNumLevels((unsigned)Max((int)(levels - mipsToSkip), 1));
         SetSize(width, height, depth, format);
 
         for (unsigned i = 0; i < levels_ && i < levels - mipsToSkip; ++i)
@@ -422,7 +432,7 @@ bool Texture3D::SetData(SharedPtr<Image> image, bool useAlpha)
 
 bool Texture3D::GetData(unsigned level, void* dest) const
 {
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     if (!object_ || !graphics_)
     {
         LOGERROR("No texture created, can not get data");
@@ -456,20 +466,20 @@ bool Texture3D::GetData(unsigned level, void* dest) const
 
     graphics_->SetTexture(0, 0);
     return true;
-    #else
+#else
     LOGERROR("Getting texture data not supported");
     return false;
-    #endif
+#endif
 }
 
 bool Texture3D::Create()
 {
     Release();
 
-    #ifdef GL_ES_VERSION_2_0
+#ifdef GL_ES_VERSION_2_0
     LOGERROR("Failed to create 3D texture, currently unsupported on OpenGL ES 2");
     return false;
-    #else
+#else
     if (!graphics_ || !width_ || !height_ || !depth_)
         return false;
 
@@ -506,7 +516,7 @@ bool Texture3D::Create()
     levels_ = requestedLevels_;
     if (!levels_)
     {
-        unsigned maxSize = Max(Max((int)width_, (int)height_), (int)depth_);
+        unsigned maxSize = (unsigned)Max(Max((int)width_, (int)height_), (int)depth_);
         while (maxSize)
         {
             maxSize >>= 1;
@@ -522,7 +532,7 @@ bool Texture3D::Create()
     graphics_->SetTexture(0, 0);
 
     return success;
-    #endif
+#endif
 }
 
 void Texture3D::HandleRenderSurfaceUpdate(StringHash eventType, VariantMap& eventData)

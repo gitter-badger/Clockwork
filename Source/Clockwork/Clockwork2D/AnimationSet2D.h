@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Resource/Resource.h"
@@ -20,7 +22,7 @@ public:
     AnimationSet2D(Context* context);
     /// Destruct.
     virtual ~AnimationSet2D();
-    /// Register object factory.
+    /// Register object factory. 
     static void RegisterObject(Context* context);
 
     /// Load resource from stream. May be called from a worker thread. Return true if successful.
@@ -39,7 +41,7 @@ private:
     /// Return sprite by hash.
     Sprite2D* GetSprite(const StringHash& hash) const;
     /// Begin load scml.
-    bool BeginLoadSpriter(Deserializer &source);
+    bool BeginLoadSpriter(Deserializer& source);
     /// Finish load scml.
     bool EndLoadSpriter();
     /// Load spriter folders.
@@ -56,3 +58,4 @@ private:
 };
 
 }
+

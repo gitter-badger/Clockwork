@@ -1,9 +1,14 @@
+
+
 #ifdef CLOCKWORK_PHYSICS
-#include "../Script/APITemplates.h"
+
+#include "../Precompiled.h"
+
 #include "../Physics/CollisionShape.h"
 #include "../Physics/Constraint.h"
 #include "../Physics/PhysicsWorld.h"
 #include "../Physics/RigidBody.h"
+#include "../Script/APITemplates.h"
 #include "../Scene/Scene.h"
 
 namespace Clockwork
@@ -307,4 +312,5 @@ void RegisterPhysicsAPI(asIScriptEngine* engine)
 }
 
 }
+
 #endif

@@ -1,3 +1,5 @@
+
+
 #include <Clockwork/Clockwork.h>
 
 #include <Clockwork/UI/Button.h>
@@ -47,7 +49,7 @@ void HelloGUI::Start()
 
     // Initialize Window
     InitWindow();
-
+    
     // Create and add some controls to the Window
     InitControls();
 
@@ -123,7 +125,7 @@ void HelloGUI::InitWindow()
 
     // Subscribe to buttonClose release (following a 'press') events
     SubscribeToEvent(buttonClose, E_RELEASED, HANDLER(HelloGUI, HandleClosePressed));
-
+    
     // Subscribe also to all UI mouse clicks just to see where we have clicked
     SubscribeToEvent(E_UIMOUSECLICK, HANDLER(HelloGUI, HandleControlClicked));
 }

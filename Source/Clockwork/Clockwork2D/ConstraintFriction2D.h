@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Clockwork2D/Constraint2D.h"
@@ -12,7 +14,7 @@ class CLOCKWORK_API ConstraintFriction2D : public Constraint2D
 
 public:
     /// Construct.
-    ConstraintFriction2D(Context* scontext);
+    ConstraintFriction2D(Context* context);
     /// Destruct.
     virtual ~ConstraintFriction2D();
     /// Register object factory.
@@ -27,8 +29,10 @@ public:
 
     /// Return anchor.
     const Vector2& GetAnchor() const { return anchor_; }
+
     /// Set max force.
     float GetMaxForce() const { return jointDef_.maxForce; }
+
     /// Set max torque.
     float GetMaxTorque() const { return jointDef_.maxTorque; }
 

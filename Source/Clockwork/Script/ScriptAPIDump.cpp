@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../IO/File.h"
 #include "../IO/FileSystem.h"
@@ -135,10 +139,6 @@ bool ComparePropertyInfos(const PropertyInfo& lhs, const PropertyInfo& rhs)
 void Script::OutputAPIRow(DumpMode mode, const String& row, bool removeReference, String separator)
 {
     String out(row);
-    ///\todo We need C++11 <regex> in String class to handle REGEX whole-word replacement correctly. Can't do that since we still support VS2008.
-    // Commenting out to temporary fix property name like 'doubleClickInterval' from being wrongly replaced.
-    // Fortunately, there is no occurence of type 'double' in the API at the moment.
-    //out.Replace("double", "float");   // s/\bdouble\b/float/g
     out.Replace("&in", "&");
     out.Replace("&out", "&");
     if (removeReference)
@@ -176,7 +176,7 @@ void Script::DumpAPI(DumpMode mode, const String& sourceTree)
     // and of Log subsystem availability
 
     // Dump event descriptions and attribute definitions in Doxygen mode. For events, this means going through the header files,
-    // as the information is not available otherwise.
+    // as the information is not available otherwise. 
     /// \todo Dump events + attributes before the actual script API because the remarks (readonly / writeonly) seem to throw off
     // Doxygen parsing and the following page definition(s) may not be properly recognized
     if (mode == DOXYGEN)
@@ -249,8 +249,7 @@ void Script::DumpAPI(DumpMode mode, const String& sourceTree)
         const HashMap<StringHash, Vector<AttributeInfo> >& attributes = context_->GetAllAttributes();
 
         Vector<String> objectTypes;
-        for (HashMap<StringHash, Vector<AttributeInfo> >::ConstIterator i = attributes.Begin(); i != attributes.End();
-            ++i)
+        for (HashMap<StringHash, Vector<AttributeInfo> >::ConstIterator i = attributes.Begin(); i != attributes.End(); ++i)
             objectTypes.Push(context_->GetTypeName(i->first_));
 
         Sort(objectTypes.Begin(), objectTypes.End());
@@ -281,7 +280,7 @@ void Script::DumpAPI(DumpMode mode, const String& sourceTree)
                 Vector<String> nameParts = attrs[j].name_.Split(' ');
                 for (unsigned k = 0; k < nameParts.Size(); ++k)
                 {
-                    if (nameParts[k].Length() > 1 && IsAlpha(nameParts[k][0]))
+                    if (nameParts[k].Length() > 1 && IsAlpha((unsigned)nameParts[k][0]))
                         nameParts[k] = "%" + nameParts[k];
                 }
                 String name;
@@ -289,7 +288,7 @@ void Script::DumpAPI(DumpMode mode, const String& sourceTree)
                 String type = Variant::GetTypeName(attrs[j].type_);
                 // Variant typenames are all uppercase. Convert primitive types to the proper lowercase form for the documentation
                 if (type == "Int" || type == "Bool" || type == "Float")
-                    type[0] = ToLower(type[0]);
+                    type[0] = (char)ToLower((unsigned)type[0]);
 
                 Log::WriteRaw("- " + name + " : " + type + "\n");
             }
@@ -301,14 +300,15 @@ void Script::DumpAPI(DumpMode mode, const String& sourceTree)
     if (mode == DOXYGEN)
         Log::WriteRaw("\n\\page ScriptAPI Scripting API\n\n");
     else if (mode == C_HEADER)
-        Log::WriteRaw("// Script API header intended to be 'force included' in IDE for AngelScript content assist / code completion\n\n"
-            "#define int8 signed char\n"
-            "#define int16 signed short\n"
-            "#define int64 long\n"
-            "#define uint8 unsigned char\n"
-            "#define uint16 unsigned short\n"
-            "#define uint64 unsigned long\n"
-            "#define null 0\n");
+        Log::WriteRaw(
+            "// Script API header intended to be 'force included' in IDE for AngelScript content assist / code completion\n\n"
+                "#define int8 signed char\n"
+                "#define int16 signed short\n"
+                "#define int64 long\n"
+                "#define uint8 unsigned char\n"
+                "#define uint16 unsigned short\n"
+                "#define uint64 unsigned long\n"
+                "#define null 0\n");
 
     unsigned types = scriptEngine_->GetObjectTypeCount();
     Vector<Pair<String, unsigned> > sortedTypes;
@@ -398,7 +398,7 @@ void Script::DumpAPI(DumpMode mode, const String& sourceTree)
                         {
                             // Assume this 'mark' is added as the last parameter
                             unsigned posEnd = declaration.Find(')', posBegin);
-                            if (posBegin != String::NPOS)
+                            if (posEnd != String::NPOS)
                             {
                                 declaration.Replace(posBegin, posEnd - posBegin, "");
                                 posBegin = declaration.Find(", ", posBegin - 2);

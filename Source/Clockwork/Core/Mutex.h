@@ -1,4 +1,12 @@
+
+
 #pragma once
+
+#ifdef CLOCKWORK_IS_BUILDING
+#include "Clockwork.h"
+#else
+#include <Clockwork/Clockwork.h>
+#endif
 
 namespace Clockwork
 {
@@ -35,7 +43,7 @@ private:
     /// Prevent copy construction.
     MutexLock(const MutexLock& rhs);
     /// Prevent assignment.
-    MutexLock& operator = (const MutexLock& rhs);
+    MutexLock& operator =(const MutexLock& rhs);
 
     /// Mutex reference.
     Mutex& mutex_;

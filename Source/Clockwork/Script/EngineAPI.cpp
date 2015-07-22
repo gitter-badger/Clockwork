@@ -1,7 +1,11 @@
-#include "../Script/APITemplates.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Engine/Console.h"
 #include "../Engine/DebugHud.h"
 #include "../Engine/Engine.h"
+#include "../Script/APITemplates.h"
 
 namespace Clockwork
 {

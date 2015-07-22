@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Clockwork2D/CollisionShape2D.h"
@@ -11,7 +13,7 @@ class CLOCKWORK_API CollisionChain2D : public CollisionShape2D
 
 public:
     /// Construct.
-    CollisionChain2D(Context* scontext);
+    CollisionChain2D(Context* context);
     /// Destruct.
     virtual ~CollisionChain2D();
     /// Register object factory.
@@ -30,12 +32,16 @@ public:
 
     /// Return loop.
     bool GetLoop() const { return loop_; }
+
     /// Return vertex count.
     unsigned GetVertexCount() const { return vertices_.Size(); }
+
     /// Return vertex.
     const Vector2& GetVertex(unsigned index) const { return (index < vertices_.Size()) ? vertices_[index] : Vector2::ZERO; }
+
     /// Return vertices.
     const PODVector<Vector2>& GetVertices() const { return vertices_; }
+
     /// Return vertices attribute.
     PODVector<unsigned char> GetVerticesAttr() const;
 

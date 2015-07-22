@@ -1,11 +1,15 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/CoreEvents.h"
+#include "../Core/Profiler.h"
 #include "../Engine/DebugHud.h"
 #include "../Engine/Engine.h"
-#include "../UI/Font.h"
 #include "../Graphics/Graphics.h"
-#include "../IO/Log.h"
-#include "../Core/Profiler.h"
 #include "../Graphics/Renderer.h"
+#include "../IO/Log.h"
+#include "../UI/Font.h"
 #include "../UI/Text.h"
 #include "../UI/UI.h"
 
@@ -181,7 +185,7 @@ void DebugHud::SetProfilerMaxDepth(unsigned depth)
 
 void DebugHud::SetProfilerInterval(float interval)
 {
-    profilerInterval_ = Max((int)(interval * 1000.0f), 0);
+    profilerInterval_ = (unsigned)Max((int)(interval * 1000.0f), 0);
 }
 
 void DebugHud::SetUseRendererStats(bool enable)

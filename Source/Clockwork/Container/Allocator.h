@@ -1,6 +1,14 @@
+
+
 #pragma once
 
-#include <new>
+#ifdef CLOCKWORK_IS_BUILDING
+#include "Clockwork.h"
+#else
+#include <Clockwork/Clockwork.h>
+#endif
+
+#include <stddef.h>
 
 namespace Clockwork
 {
@@ -48,7 +56,7 @@ public:
         allocator_(0)
     {
         if (initialCapacity)
-            allocator_ = AllocatorInitialize(sizeof(T), initialCapacity);
+            allocator_ = AllocatorInitialize((unsigned)sizeof(T), initialCapacity);
     }
 
     /// Destruct.
@@ -61,7 +69,7 @@ public:
     T* Reserve()
     {
         if (!allocator_)
-            allocator_ = AllocatorInitialize(sizeof(T));
+            allocator_ = AllocatorInitialize((unsigned)sizeof(T));
         T* newObject = static_cast<T*>(AllocatorReserve(allocator_));
         new(newObject) T();
 
@@ -72,7 +80,7 @@ public:
     T* Reserve(const T& object)
     {
         if (!allocator_)
-            allocator_ = AllocatorInitialize(sizeof(T));
+            allocator_ = AllocatorInitialize((unsigned)sizeof(T));
         T* newObject = static_cast<T*>(AllocatorReserve(allocator_));
         new(newObject) T(object);
 
@@ -90,7 +98,7 @@ private:
     /// Prevent copy construction.
     Allocator(const Allocator<T>& rhs);
     /// Prevent assignment.
-    Allocator<T>& operator = (const Allocator<T>& rhs);
+    Allocator<T>& operator =(const Allocator<T>& rhs);
 
     /// Allocator block.
     AllocatorBlock* allocator_;

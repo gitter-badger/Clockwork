@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Graphics/BillboardSet.h"
@@ -65,10 +67,13 @@ public:
 
     /// Return particle effect.
     ParticleEffect* GetEffect() const { return effect_; }
+
     /// Return maximum number of particles.
     unsigned GetNumParticles() const { return particles_.Size(); }
+
     /// Return whether is currently emitting.
     bool IsEmitting() const { return emitting_; }
+
     /// Return whether particles are to be serialized.
     bool GetSerializeParticles() const { return serializeParticles_; }
 
@@ -84,8 +89,8 @@ public:
     VariantVector GetParticleBillboardsAttr() const;
 
 protected:
-    /// Handle node being assigned.
-    virtual void OnNodeSet(Node* node);
+    /// Handle scene being assigned.
+    virtual void OnSceneSet(Scene* scene);
 
     /// Create a new particle. Return true if there was room.
     bool EmitNewParticle();

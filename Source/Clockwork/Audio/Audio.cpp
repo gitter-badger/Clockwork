@@ -1,13 +1,16 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Audio/Audio.h"
-#include "../Core/Context.h"
-#include "../Core/CoreEvents.h"
-#include "../IO/Log.h"
-#include "../Core/Mutex.h"
-#include "../Core/ProcessUtils.h"
-#include "../Core/Profiler.h"
 #include "../Audio/Sound.h"
 #include "../Audio/SoundListener.h"
 #include "../Audio/SoundSource3D.h"
+#include "../Core/Context.h"
+#include "../Core/CoreEvents.h"
+#include "../Core/ProcessUtils.h"
+#include "../Core/Profiler.h"
+#include "../IO/Log.h"
 
 #include <SDL/SDL.h>
 
@@ -23,7 +26,7 @@ static const int MIN_MIXRATE = 11025;
 static const int MAX_MIXRATE = 48000;
 static const StringHash SOUND_MASTER_HASH("MASTER");
 
-static void SDLAudioCallback(void *userdata, Uint8 *stream, int len);
+static void SDLAudioCallback(void* userdata, Uint8* stream, int len);
 
 Audio::Audio(Context* context) :
     Object(context),
@@ -57,19 +60,19 @@ bool Audio::SetMode(int bufferLengthMSec, int mixRate, bool stereo, bool interpo
 
     desired.freq = mixRate;
 
-// The concept behind the emspcripten audio port is to treat it as 16 bit until the final acumulation form the clip buffer
+// The concept behind the emscripten audio port is to treat it as 16 bit until the final accumulation form the clip buffer
 #ifdef EMSCRIPTEN
     desired.format = AUDIO_F32LSB;
 #else
     desired.format = AUDIO_S16;
 #endif
-    desired.channels = stereo ? 2 : 1;
+    desired.channels = (Uint8)(stereo ? 2 : 1);
     desired.callback = SDLAudioCallback;
     desired.userdata = this;
 
     // SDL uses power of two audio fragments. Determine the closest match
     int bufferSamples = mixRate * bufferLengthMSec / 1000;
-    desired.samples = NextPowerOfTwo(bufferSamples);
+    desired.samples = (Uint16)NextPowerOfTwo((unsigned)bufferSamples);
     if (Abs((int)desired.samples / 2 - bufferSamples) < Abs((int)desired.samples - bufferSamples))
         desired.samples /= 2;
 
@@ -99,15 +102,15 @@ bool Audio::SetMode(int bufferLengthMSec, int mixRate, bool stereo, bool interpo
 #endif
 
     stereo_ = obtained.channels == 2;
-    sampleSize_ = stereo_ ? sizeof(int) : sizeof(short);
+    sampleSize_ = (unsigned)(stereo_ ? sizeof(int) : sizeof(short));
     // Guarantee a fragment size that is low enough so that Vorbis decoding buffers do not wrap
-    fragmentSize_ = Min((int)NextPowerOfTwo(mixRate >> 6), (int)obtained.samples);
+    fragmentSize_ = (unsigned)Min((int)NextPowerOfTwo((unsigned)(mixRate >> 6)), (int)obtained.samples);
     mixRate_ = obtained.freq;
     interpolation_ = interpolation;
     clipBuffer_ = new int[stereo ? fragmentSize_ << 1 : fragmentSize_];
 
     LOGINFO("Set audio mode " + String(mixRate_) + " Hz " + (stereo_ ? "stereo" : "mono") + " " +
-        (interpolation_ ? "interpolated" : ""));
+            (interpolation_ ? "interpolated" : ""));
 
     return Play();
 }
@@ -211,7 +214,7 @@ float Audio::GetSoundSourceMasterGain(StringHash typeHash) const
     return masterIt->second_.GetFloat() * typeIt->second_.GetFloat();
 }
 
-void SDLAudioCallback(void *userdata, Uint8* stream, int len)
+void SDLAudioCallback(void* userdata, Uint8* stream, int len)
 {
     Audio* audio = static_cast<Audio*>(userdata);
     {
@@ -220,7 +223,7 @@ void SDLAudioCallback(void *userdata, Uint8* stream, int len)
     }
 }
 
-void Audio::MixOutput(void *dest, unsigned samples)
+void Audio::MixOutput(void* dest, unsigned samples)
 {
     if (!playing_ || !clipBuffer_)
     {
@@ -231,7 +234,7 @@ void Audio::MixOutput(void *dest, unsigned samples)
     while (samples)
     {
         // If sample count exceeds the fragment (clip buffer) size, split the work
-        unsigned workSamples = Min((int)samples, (int)fragmentSize_);
+        unsigned workSamples = (unsigned)Min((int)samples, (int)fragmentSize_);
         unsigned clipSamples = workSamples;
         if (stereo_)
             clipSamples <<= 1;
@@ -252,7 +255,7 @@ void Audio::MixOutput(void *dest, unsigned samples)
 #else
         short* destPtr = (short*)dest;
         while (clipSamples--)
-            *destPtr++ = Clamp(*clipPtr++, -32768, 32767);
+            *destPtr++ = (short)Clamp(*clipPtr++, -32768, 32767);
 #endif
         samples -= workSamples;
         ((unsigned char*&)dest) += sampleSize_ * SAMPLE_SIZE_MUL * workSamples;

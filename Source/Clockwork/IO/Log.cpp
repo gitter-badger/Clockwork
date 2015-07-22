@@ -1,12 +1,15 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../Core/CoreEvents.h"
-#include "../IO/File.h"
-#include "../IO/IOEvents.h"
-#include "../IO/Log.h"
-#include "../Core/Mutex.h"
 #include "../Core/ProcessUtils.h"
 #include "../Core/Thread.h"
 #include "../Core/Timer.h"
+#include "../IO/File.h"
+#include "../IO/IOEvents.h"
+#include "../IO/Log.h"
 
 #include <cstdio>
 
@@ -57,7 +60,7 @@ Log::~Log()
 
 void Log::Open(const String& fileName)
 {
-    #if !defined(ANDROID) && !defined(IOS)
+#if !defined(ANDROID) && !defined(IOS)
     if (fileName.Empty())
         return;
     if (logFile_ && logFile_->IsOpen())
@@ -76,18 +79,18 @@ void Log::Open(const String& fileName)
         logFile_.Reset();
         Write(LOG_ERROR, "Failed to create log file " + fileName);
     }
-    #endif
+#endif
 }
 
 void Log::Close()
 {
-    #if !defined(ANDROID) && !defined(IOS)
+#if !defined(ANDROID) && !defined(IOS)
     if (logFile_ && logFile_->IsOpen())
     {
         logFile_->Close();
         logFile_.Reset();
     }
-    #endif
+#endif
 }
 
 void Log::SetLevel(int level)
@@ -134,12 +137,12 @@ void Log::Write(int level, const String& message)
     if (logInstance->timeStamp_)
         formattedMessage = "[" + Time::GetTimeStamp() + "] " + formattedMessage;
 
-    #if defined(ANDROID)
+#if defined(ANDROID)
     int androidLevel = ANDROID_LOG_DEBUG + level;
     __android_log_print(androidLevel, "Clockwork", "%s", message.CString());
-    #elif defined(IOS)
+#elif defined(IOS)
     SDL_IOS_LogMessage(message.CString());
-    #else
+#else
     if (logInstance->quiet_)
     {
         // If in quiet mode, still print the error message to the standard error stream
@@ -148,7 +151,7 @@ void Log::Write(int level, const String& message)
     }
     else
         PrintUnicodeLine(formattedMessage, level == LOG_ERROR);
-    #endif
+#endif
 
     if (logInstance->logFile_)
     {
@@ -188,7 +191,7 @@ void Log::WriteRaw(const String& message, bool error)
 
     logInstance->lastMessage_ = message;
 
-    #if defined(ANDROID)
+#if defined(ANDROID)
     if (logInstance->quiet_)
     {
         if (error)
@@ -196,9 +199,9 @@ void Log::WriteRaw(const String& message, bool error)
     }
     else
         __android_log_print(error ? ANDROID_LOG_ERROR : ANDROID_LOG_INFO, "Clockwork", message.CString());
-    #elif defined(IOS)
+#elif defined(IOS)
     SDL_IOS_LogMessage(message.CString());
-    #else
+#else
     if (logInstance->quiet_)
     {
         // If in quiet mode, still print the error message to the standard error stream
@@ -207,7 +210,7 @@ void Log::WriteRaw(const String& message, bool error)
     }
     else
         PrintUnicode(message, error);
-    #endif
+#endif
 
     if (logInstance->logFile_)
     {

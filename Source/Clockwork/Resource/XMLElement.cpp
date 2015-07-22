@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../IO/Log.h"
 #include "../Resource/XMLFile.h"
@@ -28,7 +32,8 @@ XMLElement::XMLElement(XMLFile* file, pugi::xml_node_struct* node) :
 {
 }
 
-XMLElement::XMLElement(XMLFile* file, const XPathResultSet* resultSet, const pugi::xpath_node* xpathNode, unsigned xpathResultIndex) :
+XMLElement::XMLElement(XMLFile* file, const XPathResultSet* resultSet, const pugi::xpath_node* xpathNode,
+    unsigned xpathResultIndex) :
     file_(file),
     node_(0),
     xpathResultSet_(resultSet),
@@ -56,7 +61,7 @@ XMLElement::~XMLElement()
     }
 }
 
-XMLElement& XMLElement::operator = (const XMLElement& rhs)
+XMLElement& XMLElement::operator =(const XMLElement& rhs)
 {
     file_ = rhs.file_;
     node_ = rhs.node_;
@@ -76,7 +81,7 @@ XMLElement XMLElement::CreateChild(const char* name)
     if (!file_ || (!node_ && !xpathNode_))
         return XMLElement();
 
-    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node(): pugi::xml_node(node_);
+    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node() : pugi::xml_node(node_);
     pugi::xml_node child = const_cast<pugi::xml_node&>(node).append_child(name);
     return XMLElement(file_, child.internal_object());
 }
@@ -86,8 +91,8 @@ bool XMLElement::RemoveChild(const XMLElement& element)
     if (!element.file_ || (!element.node_ && !element.xpathNode_) || !file_ || (!node_ && !xpathNode_))
         return false;
 
-    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node(): pugi::xml_node(node_);
-    const pugi::xml_node& child = element.xpathNode_ ? element.xpathNode_->node(): pugi::xml_node(element.node_);
+    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node() : pugi::xml_node(node_);
+    const pugi::xml_node& child = element.xpathNode_ ? element.xpathNode_->node() : pugi::xml_node(element.node_);
     return const_cast<pugi::xml_node&>(node).remove_child(child);
 }
 
@@ -101,7 +106,7 @@ bool XMLElement::RemoveChild(const char* name)
     if (!file_ || (!node_ && !xpathNode_))
         return false;
 
-    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node(): pugi::xml_node(node_);
+    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node() : pugi::xml_node(node_);
     return const_cast<pugi::xml_node&>(node).remove_child(name);
 }
 
@@ -115,7 +120,7 @@ bool XMLElement::RemoveChildren(const char* name)
     if ((!file_ || !node_) && !xpathNode_)
         return false;
 
-    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node(): pugi::xml_node(node_);
+    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node() : pugi::xml_node(node_);
     if (!String::CStringLength(name))
     {
         for (;;)
@@ -152,9 +157,10 @@ bool XMLElement::RemoveAttribute(const char* name)
 
     // If xpath_node contains just attribute, remove it regardless of the specified name
     if (xpathNode_ && xpathNode_->attribute())
-        return xpathNode_->parent().remove_attribute(xpathNode_->attribute());  // In attribute context, xpath_node's parent is the parent node of the attribute itself
+        return xpathNode_->parent().remove_attribute(
+            xpathNode_->attribute());  // In attribute context, xpath_node's parent is the parent node of the attribute itself
 
-    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node(): pugi::xml_node(node_);
+    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node() : pugi::xml_node(node_);
     return const_cast<pugi::xml_node&>(node).remove_attribute(node.attribute(name));
 }
 
@@ -163,7 +169,7 @@ XMLElement XMLElement::SelectSingle(const String& query, pugi::xpath_variable_se
     if (!file_ || (!node_ && !xpathNode_))
         return XMLElement();
 
-    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node(): pugi::xml_node(node_);
+    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node() : pugi::xml_node(node_);
     pugi::xpath_node result = node.select_single_node(query.CString(), variables);
     return XMLElement(file_, 0, &result, 0);
 }
@@ -173,7 +179,7 @@ XMLElement XMLElement::SelectSinglePrepared(const XPathQuery& query) const
     if (!file_ || (!node_ && !xpathNode_ && !query.GetXPathQuery()))
         return XMLElement();
 
-    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node(): pugi::xml_node(node_);
+    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node() : pugi::xml_node(node_);
     pugi::xpath_node result = node.select_single_node(*query.GetXPathQuery());
     return XMLElement(file_, 0, &result, 0);
 }
@@ -183,7 +189,7 @@ XPathResultSet XMLElement::Select(const String& query, pugi::xpath_variable_set*
     if (!file_ || (!node_ && !xpathNode_))
         return XPathResultSet();
 
-    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node(): pugi::xml_node(node_);
+    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node() : pugi::xml_node(node_);
     pugi::xpath_node_set result = node.select_nodes(query.CString(), variables);
     return XPathResultSet(file_, &result);
 }
@@ -193,7 +199,7 @@ XPathResultSet XMLElement::SelectPrepared(const XPathQuery& query) const
     if (!file_ || (!node_ && !xpathNode_ && query.GetXPathQuery()))
         return XPathResultSet();
 
-    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node(): pugi::xml_node(node_);
+    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node() : pugi::xml_node(node_);
     pugi::xpath_node_set result = node.select_nodes(*query.GetXPathQuery());
     return XPathResultSet(file_, &result);
 }
@@ -226,7 +232,7 @@ bool XMLElement::SetAttribute(const char* name, const char* value)
     if (xpathNode_ && xpathNode_->attribute())
         return xpathNode_->attribute().set_value(value);
 
-    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node(): pugi::xml_node(node_);
+    const pugi::xml_node& node = xpathNode_ ? xpathNode_->node() : pugi::xml_node(node_);
     pugi::xml_attribute attr = node.attribute(name);
     if (attr.empty())
         attr = const_cast<pugi::xml_node&>(node).append_attribute(name);
@@ -277,6 +283,11 @@ bool XMLElement::SetColor(const String& name, const Color& value)
 }
 
 bool XMLElement::SetFloat(const String& name, float value)
+{
+    return SetAttribute(name, String(value));
+}
+
+bool XMLElement::SetDouble(const String& name, double value)
 {
     return SetAttribute(name, String(value));
 }
@@ -401,7 +412,7 @@ bool XMLElement::SetVariantMap(const VariantMap& value)
         XMLElement variantElem = CreateChild("variant");
         if (!variantElem)
             return false;
-        variantElem.SetInt("hash", i->first_.Value());
+        variantElem.SetUInt("hash", i->first_.Value());
         variantElem.SetVariant(i->second_);
     }
 
@@ -458,7 +469,7 @@ bool XMLElement::NotNull() const
     return node_ || (xpathNode_ && !xpathNode_->operator !());
 }
 
-XMLElement::operator bool () const
+XMLElement::operator bool() const
 {
     return NotNull();
 }
@@ -663,14 +674,13 @@ PODVector<unsigned char> XMLElement::GetBuffer(const String& name) const
 
 bool XMLElement::GetBuffer(const String& name, void* dest, unsigned size) const
 {
-    PODVector<unsigned char> ret;
     Vector<String> bytes = GetAttribute(name).Split(' ');
-    unsigned char* destBytes = (unsigned char*)dest;
     if (size < bytes.Size())
         return false;
 
+    unsigned char* destBytes = (unsigned char*)dest;
     for (unsigned i = 0; i < bytes.Size(); ++i)
-        destBytes[i] = ToInt(bytes[i]);
+        destBytes[i] = (unsigned char)ToInt(bytes[i]);
     return true;
 }
 
@@ -682,6 +692,11 @@ Color XMLElement::GetColor(const String& name) const
 float XMLElement::GetFloat(const String& name) const
 {
     return ToFloat(GetAttribute(name));
+}
+
+double XMLElement::GetDouble(const String& name) const
+{
+    return ToDouble(GetAttribute(name));
 }
 
 unsigned XMLElement::GetUInt(const String& name) const
@@ -789,7 +804,7 @@ VariantMap XMLElement::GetVariantMap() const
     XMLElement variantElem = GetChild("variant");
     while (variantElem)
     {
-        StringHash key(variantElem.GetInt("hash"));
+        StringHash key(variantElem.GetUInt("hash"));
         ret[key] = variantElem.GetVariant();
         variantElem = variantElem.GetNext("variant");
     }
@@ -876,17 +891,19 @@ XPathResultSet::~XPathResultSet()
     resultSet_ = 0;
 }
 
-XPathResultSet& XPathResultSet::operator = (const XPathResultSet& rhs)
+XPathResultSet& XPathResultSet::operator =(const XPathResultSet& rhs)
 {
     file_ = rhs.file_;
     resultSet_ = rhs.resultSet_ ? new pugi::xpath_node_set(rhs.resultSet_->begin(), rhs.resultSet_->end()) : 0;
     return *this;
 }
 
-XMLElement XPathResultSet::operator[](unsigned index) const
+XMLElement XPathResultSet::operator [](unsigned index) const
 {
     if (!resultSet_)
-        LOGERRORF("Could not return result at index: %u. Most probably this is caused by the XPathResultSet not being stored in a lhs variable.", index);
+        LOGERRORF(
+            "Could not return result at index: %u. Most probably this is caused by the XPathResultSet not being stored in a lhs variable.",
+            index);
 
     return resultSet_ && index < Size() ? XMLElement(file_, this, &resultSet_->operator [](index), index) : XMLElement();
 }
@@ -1027,7 +1044,7 @@ bool XPathQuery::EvaluateToBool(XMLElement element) const
     if (!query_ || ((!element.GetFile() || !element.GetNode()) && !element.GetXPathNode()))
         return false;
 
-    const pugi::xml_node& node = element.GetXPathNode() ? element.GetXPathNode()->node(): pugi::xml_node(element.GetNode());
+    const pugi::xml_node& node = element.GetXPathNode() ? element.GetXPathNode()->node() : pugi::xml_node(element.GetNode());
     return query_->evaluate_boolean(node);
 }
 
@@ -1036,7 +1053,7 @@ float XPathQuery::EvaluateToFloat(XMLElement element) const
     if (!query_ || ((!element.GetFile() || !element.GetNode()) && !element.GetXPathNode()))
         return 0.0f;
 
-    const pugi::xml_node& node = element.GetXPathNode() ? element.GetXPathNode()->node(): pugi::xml_node(element.GetNode());
+    const pugi::xml_node& node = element.GetXPathNode() ? element.GetXPathNode()->node() : pugi::xml_node(element.GetNode());
     return (float)query_->evaluate_number(node);
 }
 
@@ -1045,10 +1062,12 @@ String XPathQuery::EvaluateToString(XMLElement element) const
     if (!query_ || ((!element.GetFile() || !element.GetNode()) && !element.GetXPathNode()))
         return String::EMPTY;
 
-    const pugi::xml_node& node = element.GetXPathNode() ? element.GetXPathNode()->node(): pugi::xml_node(element.GetNode());
+    const pugi::xml_node& node = element.GetXPathNode() ? element.GetXPathNode()->node() : pugi::xml_node(element.GetNode());
     String result;
-    result.Reserve((unsigned)query_->evaluate_string(0, 0, node));    // First call get the size
-    query_->evaluate_string(const_cast<pugi::char_t*>(result.CString()), result.Capacity(), node);  // Second call get the actual string
+    // First call get the size
+    result.Reserve((unsigned)query_->evaluate_string(0, 0, node));
+    // Second call get the actual string
+    query_->evaluate_string(const_cast<pugi::char_t*>(result.CString()), result.Capacity(), node);
     return result;
 }
 
@@ -1057,7 +1076,7 @@ XPathResultSet XPathQuery::Evaluate(XMLElement element) const
     if (!query_ || ((!element.GetFile() || !element.GetNode()) && !element.GetXPathNode()))
         return XPathResultSet();
 
-    const pugi::xml_node& node = element.GetXPathNode() ? element.GetXPathNode()->node(): pugi::xml_node(element.GetNode());
+    const pugi::xml_node& node = element.GetXPathNode() ? element.GetXPathNode()->node() : pugi::xml_node(element.GetNode());
     pugi::xpath_node_set result = query_->evaluate_node_set(node);
     return XPathResultSet(element.GetFile(), &result);
 }

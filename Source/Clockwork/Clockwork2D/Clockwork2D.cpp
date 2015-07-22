@@ -1,4 +1,27 @@
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
+#include "../Precompiled.h"
+
+#include "../Core/Context.h"
 #include "../Clockwork2D/AnimatedSprite2D.h"
 #include "../Clockwork2D/AnimationSet2D.h"
 #include "../Clockwork2D/CollisionBox2D.h"
@@ -6,7 +29,6 @@
 #include "../Clockwork2D/CollisionCircle2D.h"
 #include "../Clockwork2D/CollisionEdge2D.h"
 #include "../Clockwork2D/CollisionPolygon2D.h"
-#include "../Clockwork2D/CollisionShape2D.h"
 #include "../Clockwork2D/Constraint2D.h"
 #include "../Clockwork2D/ConstraintDistance2D.h"
 #include "../Clockwork2D/ConstraintFriction2D.h"
@@ -19,8 +41,6 @@
 #include "../Clockwork2D/ConstraintRope2D.h"
 #include "../Clockwork2D/ConstraintWeld2D.h"
 #include "../Clockwork2D/ConstraintWheel2D.h"
-#include "../Core/Context.h"
-#include "../Clockwork2D/Drawable2D.h"
 #include "../Clockwork2D/ParticleEffect2D.h"
 #include "../Clockwork2D/ParticleEmitter2D.h"
 #include "../Clockwork2D/PhysicsWorld2D.h"
@@ -28,7 +48,6 @@
 #include "../Clockwork2D/RigidBody2D.h"
 #include "../Clockwork2D/Sprite2D.h"
 #include "../Clockwork2D/SpriteSheet2D.h"
-#include "../Clockwork2D/StaticSprite2D.h"
 #include "../Clockwork2D/TileMap2D.h"
 #include "../Clockwork2D/TileMapLayer2D.h"
 #include "../Clockwork2D/TmxFile2D.h"

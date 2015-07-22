@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include <Clockwork/Engine/Application.h>
@@ -30,7 +32,7 @@ private:
 
     /// Script file name.
     String scriptFileName_;
-
+    
 #ifdef CLOCKWORK_ANGELSCRIPT
     /// Script file.
     SharedPtr<ScriptFile> scriptFile_;

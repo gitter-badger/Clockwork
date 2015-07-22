@@ -1,9 +1,13 @@
+
+
+#include "../Precompiled.h"
+
 #include "../IO/Log.h"
-#include "../Scene/LogicComponent.h"
 #ifdef CLOCKWORK_PHYSICS
 #include "../Physics/PhysicsEvents.h"
 #include "../Physics/PhysicsWorld.h"
 #endif
+#include "../Scene/LogicComponent.h"
 #include "../Scene/Scene.h"
 #include "../Scene/SceneEvents.h"
 
@@ -56,9 +60,7 @@ void LogicComponent::OnNodeSet(Node* node)
 {
     if (node)
     {
-        // We have been attached to a node. Set initial update event subscription state
-        UpdateEventSubscription();
-        // Then execute the user-defined start function
+        // Execute the user-defined start function
         Start();
     }
     else
@@ -68,18 +70,27 @@ void LogicComponent::OnNodeSet(Node* node)
     }
 }
 
+void LogicComponent::OnSceneSet(Scene* scene)
+{
+    if (scene)
+        UpdateEventSubscription();
+    else
+    {
+        UnsubscribeFromEvent(E_SCENEUPDATE);
+        UnsubscribeFromEvent(E_SCENEPOSTUPDATE);
+#ifdef CLOCKWORK_PHYSICS
+        UnsubscribeFromEvent(E_PHYSICSPRESTEP);
+        UnsubscribeFromEvent(E_PHYSICSPOSTSTEP);
+#endif
+        currentEventMask_ = 0;
+    }
+}
+
 void LogicComponent::UpdateEventSubscription()
 {
-    // If scene node is not assigned yet, no need to update subscription
-    if (!node_)
-        return;
-
     Scene* scene = GetScene();
     if (!scene)
-    {
-        LOGWARNING("Node is detached from scene, can not subscribe to update events");
         return;
-    }
 
     bool enabled = IsEnabledEffective();
 
@@ -170,6 +181,7 @@ void LogicComponent::HandleScenePostUpdate(StringHash eventType, VariantMap& eve
 }
 
 #ifdef CLOCKWORK_PHYSICS
+
 void LogicComponent::HandlePhysicsPreStep(StringHash eventType, VariantMap& eventData)
 {
     using namespace PhysicsPreStep;
@@ -185,6 +197,7 @@ void LogicComponent::HandlePhysicsPostStep(StringHash eventType, VariantMap& eve
     // Execute user-defined fixed post-update function
     FixedPostUpdate(eventData[P_TIMESTEP].GetFloat());
 }
+
 #endif
 
 }

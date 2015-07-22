@@ -1,6 +1,10 @@
+
+
+#include "../Precompiled.h"
+
+#include "../IO/Log.h"
 #include "../Clockwork2D/Animation2D.h"
 #include "../Clockwork2D/AnimationSet2D.h"
-#include "../IO/Log.h"
 #include "../Clockwork2D/Sprite2D.h"
 
 #include "../DebugNew.h"
@@ -29,7 +33,7 @@ Transform2D::Transform2D(const Transform2D& other) :
 {
 }
 
-Transform2D& Transform2D::operator = (const Transform2D& other)
+Transform2D& Transform2D::operator =(const Transform2D& other)
 {
     position_ = other.position_;
     angle_ = other.angle_;
@@ -37,7 +41,7 @@ Transform2D& Transform2D::operator = (const Transform2D& other)
     return *this;
 }
 
-Transform2D Transform2D::operator * (const Transform2D& other) const
+Transform2D Transform2D::operator *(const Transform2D& other) const
 {
     float x = scale_.x_ * other.position_.x_;
     float y = scale_.y_ * other.position_.y_;
@@ -63,9 +67,9 @@ Transform2D Transform2D::Lerp(const Transform2D& other, float t, int spin) const
     if (spin > 0 && angle_ > other.angle_)
         ret.angle_ = Clockwork::Lerp(angle_, other.angle_ + 360.0f, t);
     else if (spin < 0 && angle_ < other.angle_)
-        ret.angle_= Clockwork::Lerp(angle_, other.angle_ - 360.0f, t);
+        ret.angle_ = Clockwork::Lerp(angle_, other.angle_ - 360.0f, t);
     else
-        ret.angle_= Clockwork::Lerp(angle_, other.angle_, t);
+        ret.angle_ = Clockwork::Lerp(angle_, other.angle_, t);
 
     ret.scale_ = scale_.Lerp(other.scale_, t);
     return ret;

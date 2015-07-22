@@ -1,3 +1,5 @@
+
+
 #include <Clockwork/Clockwork.h>
 
 #include <Clockwork/UI/Button.h>
@@ -32,10 +34,10 @@ void SceneAndUILoad::Start()
 
     // Create the scene content
     CreateScene();
-
+    
     // Create the UI content
     CreateUI();
-
+    
     // Setup the viewport for displaying the scene
     SetupViewport();
 
@@ -66,7 +68,7 @@ void SceneAndUILoad::CreateUI()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     UI* ui = GetSubsystem<UI>();
-
+    
     // Set up global UI style into the root UI element
     XMLFile* style = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
     ui->GetRoot()->SetDefaultStyle(style);
@@ -79,7 +81,7 @@ void SceneAndUILoad::CreateUI()
     // Set starting position of the cursor at the rendering window center
     Graphics* graphics = GetSubsystem<Graphics>();
     cursor->SetPosition(graphics->GetWidth() / 2, graphics->GetHeight() / 2);
-
+    
     // Load UI content prepared in the editor and add to the UI hierarchy
     SharedPtr<UIElement> layoutRoot = ui->LoadLayout(cache->GetResource<XMLFile>("UI/UILoadExample.xml"));
     ui->GetRoot()->AddChild(layoutRoot);
@@ -96,7 +98,7 @@ void SceneAndUILoad::CreateUI()
 void SceneAndUILoad::SetupViewport()
 {
     Renderer* renderer = GetSubsystem<Renderer>();
-
+    
     // Set up a viewport to the Renderer subsystem so that the 3D scene can be seen
     SharedPtr<Viewport> viewport(new Viewport(context_, scene_, cameraNode_->GetComponent<Camera>()));
     renderer->SetViewport(0, viewport);
@@ -114,16 +116,16 @@ void SceneAndUILoad::MoveCamera(float timeStep)
     UI* ui = GetSubsystem<UI>();
     Input* input = GetSubsystem<Input>();
     ui->GetCursor()->SetVisible(!input->GetMouseButtonDown(MOUSEB_RIGHT));
-
+    
     // Do not move if the UI has a focused element
     if (ui->GetFocusElement())
         return;
-
+    
     // Movement speed as world units per second
     const float MOVE_SPEED = 20.0f;
     // Mouse sensitivity as degrees per pixel
     const float MOUSE_SENSITIVITY = 0.1f;
-
+    
     // Use this frame's mouse motion to adjust camera node yaw and pitch. Clamp the pitch between -90 and 90 degrees
     // Only move the camera when the cursor is hidden
     if (!ui->GetCursor()->IsVisible())
@@ -132,11 +134,11 @@ void SceneAndUILoad::MoveCamera(float timeStep)
         yaw_ += MOUSE_SENSITIVITY * mouseMove.x_;
         pitch_ += MOUSE_SENSITIVITY * mouseMove.y_;
         pitch_ = Clamp(pitch_, -90.0f, 90.0f);
-
+        
         // Construct new orientation for the camera scene node from yaw and pitch. Roll is fixed to zero
         cameraNode_->SetRotation(Quaternion(pitch_, yaw_, 0.0f));
     }
-
+    
     // Read WASD keys and move the camera scene node to the corresponding direction if they are pressed
     if (input->GetKeyDown('W'))
         cameraNode_->Translate(Vector3::FORWARD * MOVE_SPEED * timeStep);
@@ -154,7 +156,7 @@ void SceneAndUILoad::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
     // Take the frame time step, which is stored as a float
     float timeStep = eventData[P_TIMESTEP].GetFloat();
-
+    
     // Move the camera, scale movement with time step
     MoveCamera(timeStep);
 }

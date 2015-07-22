@@ -1,13 +1,16 @@
+
+
+#include "../Precompiled.h"
+
+#include "../Audio/OggVorbisSoundStream.h"
+#include "../Audio/Sound.h"
 #include "../Core/Context.h"
+#include "../Core/Profiler.h"
 #include "../IO/FileSystem.h"
 #include "../IO/Log.h"
-#include "../Audio/OggVorbisSoundStream.h"
-#include "../Core/Profiler.h"
 #include "../Resource/ResourceCache.h"
-#include "../Audio/Sound.h"
 #include "../Resource/XMLFile.h"
 
-#include <cstring>
 #include <STB/stb_vorbis.h>
 
 #include "../DebugNew.h"
@@ -62,7 +65,7 @@ bool Sound::BeginLoad(Deserializer& source)
 {
     PROFILE(LoadSound);
 
-    bool success = false;
+    bool success;
     if (GetExtension(source.GetName()) == ".ogg")
         success = LoadOggVorbis(source);
     else if (GetExtension(source.GetName()) == ".wav")
@@ -334,7 +337,7 @@ void Sound::LoadParameters()
         if (name == "format" && !compressed_)
         {
             if (paramElem.HasAttribute("frequency"))
-                frequency_ = paramElem.GetInt("frequency");
+                frequency_ = (unsigned)paramElem.GetInt("frequency");
             if (paramElem.HasAttribute("sixteenbit"))
                 sixteenBit_ = paramElem.GetBool("sixteenbit");
             if (paramElem.HasAttribute("16bit"))
@@ -348,7 +351,7 @@ void Sound::LoadParameters()
             if (paramElem.HasAttribute("enable"))
                 SetLooped(paramElem.GetBool("enable"));
             if (paramElem.HasAttribute("start") && paramElem.HasAttribute("end"))
-                SetLoop(paramElem.GetInt("start"), paramElem.GetInt("end"));
+                SetLoop((unsigned)paramElem.GetInt("start"), (unsigned)paramElem.GetInt("end"));
         }
 
         paramElem = paramElem.GetNext();

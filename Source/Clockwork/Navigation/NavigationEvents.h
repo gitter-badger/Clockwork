@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Object.h"
@@ -28,6 +30,7 @@ EVENT(E_CROWD_AGENT_REPOSITION, CrowdAgentReposition)
     PARAM(P_CROWD_AGENT, CrowdAgent); // CrowdAgent pointer
     PARAM(P_POSITION, Position); // Vector3
     PARAM(P_VELOCITY, Velocity); // Vector3
+    PARAM(P_ARRIVED, Arrived); // bool
 }
 
 /// Crowd agent's internal state has become invalidated.

@@ -1,6 +1,8 @@
-#include "../Container/RefCounted.h"
 
-#include <cassert>
+
+#include "../Precompiled.h"
+
+#include "../Container/RefCounted.h"
 
 #include "../DebugNew.h"
 

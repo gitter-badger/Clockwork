@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Matrix3x4.h"
@@ -75,10 +77,13 @@ public:
 
     /// Project a point on the plane.
     Vector3 Project(const Vector3& point) const { return point - normal_ * (normal_.DotProduct(point) + d_); }
+
     /// Return signed distance to a point.
     float Distance(const Vector3& point) const { return normal_.DotProduct(point) + d_; }
+
     /// Reflect a normalized direction vector.
     Vector3 Reflect(const Vector3& direction) const { return direction - (2.0f * normal_.DotProduct(direction) * normal_); }
+
     /// Return a reflection matrix.
     Matrix3x4 ReflectionMatrix() const;
     /// Return transformed by a 3x3 matrix.
@@ -87,6 +92,7 @@ public:
     Plane Transformed(const Matrix3x4& transform) const;
     /// Return transformed by a 4x4 matrix.
     Plane Transformed(const Matrix4& transform) const;
+
     /// Return as a vector.
     Vector4 ToVector4() const { return Vector4(normal_, d_); }
 

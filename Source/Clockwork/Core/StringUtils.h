@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Variant.h"
@@ -13,6 +15,10 @@ CLOCKWORK_API bool ToBool(const char* source);
 CLOCKWORK_API float ToFloat(const String& source);
 /// Parse a float from a C string.
 CLOCKWORK_API float ToFloat(const char* source);
+/// Parse a double from a string.
+CLOCKWORK_API double ToDouble(const String& source);
+/// Parse a double from a C string.
+CLOCKWORK_API double ToDouble(const char* source);
 /// Parse an integer from a string.
 CLOCKWORK_API int ToInt(const String& source);
 /// Parse an integer from a C string.

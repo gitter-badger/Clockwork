@@ -1,9 +1,11 @@
+
+
 #pragma once
 
-#include "../../Graphics/GPUObject.h"
 #include "../../Core/Object.h"
-#include "../../Graphics/GraphicsDefs.h"
 #include "../../Container/ArrayPtr.h"
+#include "../../Graphics/GPUObject.h"
+#include "../../Graphics/GraphicsDefs.h"
 
 namespace Clockwork
 {
@@ -37,18 +39,25 @@ public:
 
     /// Return whether CPU memory shadowing is enabled.
     bool IsShadowed() const { return shadowed_; }
+
     /// Return whether is dynamic.
     bool IsDynamic() const { return dynamic_; }
+
     /// Return whether is currently locked.
     bool IsLocked() const { return lockState_ != LOCK_NONE; }
+
     /// Return number of indices.
-    unsigned GetIndexCount() const {return indexCount_; }
+    unsigned GetIndexCount() const { return indexCount_; }
+
     /// Return index size.
     unsigned GetIndexSize() const { return indexSize_; }
+
     /// Return used vertex range from index range.
     bool GetUsedVertexRange(unsigned start, unsigned count, unsigned& minVertex, unsigned& vertexCount);
+
     /// Return CPU memory shadow data.
     unsigned char* GetShadowData() const { return shadowData_.Get(); }
+
     /// Return shared array pointer to the CPU memory shadow data.
     SharedArrayPtr<unsigned char> GetShadowDataShared() const { return shadowData_; }
 

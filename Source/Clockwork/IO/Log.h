@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/List.h"
@@ -71,10 +73,13 @@ public:
 
     /// Return logging level.
     int GetLevel() const { return level_; }
+
     /// Return whether log messages are timestamped.
     bool GetTimeStamp() const { return timeStamp_; }
+
     /// Return last log message.
     String GetLastMessage() const { return lastMessage_; }
+
     /// Return whether log is in quiet mode (only errors printed to standard error stream).
     bool IsQuiet() const { return quiet_; }
 

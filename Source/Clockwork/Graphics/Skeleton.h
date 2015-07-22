@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/BoundingBox.h"
@@ -79,10 +81,13 @@ public:
 
     /// Return all bones.
     const Vector<Bone>& GetBones() const { return bones_; }
+
     /// Return modifiable bones.
     Vector<Bone>& GetModifiableBones() { return bones_; }
+
     /// Return number of bones.
     unsigned GetNumBones() const { return bones_.Size(); }
+
     /// Return root bone.
     Bone* GetRootBone();
     /// Return bone by index.

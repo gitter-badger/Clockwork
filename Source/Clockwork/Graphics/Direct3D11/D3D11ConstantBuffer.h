@@ -1,9 +1,11 @@
+
+
 #pragma once
 
-#include "../../Graphics/GPUObject.h"
-#include "../../Graphics/GraphicsDefs.h"
 #include "../../Container/ArrayPtr.h"
 #include "../../Core/Object.h"
+#include "../../Graphics/GPUObject.h"
+#include "../../Graphics/GraphicsDefs.h"
 
 namespace Clockwork
 {
@@ -33,13 +35,11 @@ public:
 
     /// Return size.
     unsigned GetSize() const { return size_; }
+
     /// Return whether has unapplied data.
     bool IsDirty() const { return dirty_; }
 
 private:
-    /// Create buffer.
-    bool Create();
-
     /// Shadow data.
     SharedArrayPtr<unsigned char> shadowData_;
     /// Buffer byte size.

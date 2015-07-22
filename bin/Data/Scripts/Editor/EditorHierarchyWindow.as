@@ -63,8 +63,8 @@ void CreateHierarchyWindow()
     hierarchyWindow.SetSize(300, height);
     hierarchyWindow.SetPosition(35, 100);
     hierarchyWindow.opacity = uiMaxOpacity;
-    hierarchyWindow.BringToFront();
-
+    HideHierarchyWindow();
+   // hierarchyWindow.BringToFront();
     UpdateHierarchyItem(editorScene);
 
     // Set selection to happen on click end, so that we can drag nodes to the inspector without resetting the inspector view

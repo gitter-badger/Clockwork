@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Object.h"
@@ -53,22 +55,31 @@ public:
 
     /// Get timestep of the next frame. Updated by ApplyFrameLimit().
     float GetNextTimeStep() const { return timeStep_; }
+
     /// Return the minimum frames per second.
     int GetMinFps() const { return minFps_; }
+
     /// Return the maximum frames per second.
     int GetMaxFps() const { return maxFps_; }
+
     /// Return the maximum frames per second when the application does not have input focus.
     int GetMaxInactiveFps() const { return maxInactiveFps_; }
+
     /// Return how many frames to average for timestep smoothing.
     int GetTimeStepSmoothing() const { return timeStepSmoothing_; }
+
     /// Return whether to pause update events and audio when minimized.
     bool GetPauseMinimized() const { return pauseMinimized_; }
+
     /// Return whether to exit automatically on exit request.
     bool GetAutoExit() const { return autoExit_; }
+
     /// Return whether engine has been initialized.
     bool IsInitialized() const { return initialized_; }
+
     /// Return whether exit has been requested.
     bool IsExiting() const { return exiting_; }
+
     /// Return whether the engine has been created in headless mode.
     bool IsHeadless() const { return headless_; }
 
@@ -84,7 +95,8 @@ public:
     /// Return whether startup parameters contains a specific parameter.
     static bool HasParameter(const VariantMap& parameters, const String& parameter);
     /// Get an engine startup parameter, with default value if missing.
-    static const Variant& GetParameter(const VariantMap& parameters, const String& parameter, const Variant& defaultValue = Variant::EMPTY);
+    static const Variant
+        & GetParameter(const VariantMap& parameters, const String& parameter, const Variant& defaultValue = Variant::EMPTY);
 
 private:
     /// Handle exit requested event. Auto-exit if enabled.

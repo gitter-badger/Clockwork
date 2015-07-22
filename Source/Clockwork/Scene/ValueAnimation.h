@@ -1,7 +1,9 @@
+
+
 #pragma once
 
-#include "../Resource/Resource.h"
 #include "../Core/Variant.h"
+#include "../Resource/Resource.h"
 
 namespace Clockwork
 {
@@ -75,22 +77,31 @@ public:
 
     /// Return animation is valid.
     bool IsValid() const;
+
     /// Return owner.
     void* GetOwner() const { return owner_; }
+
     /// Return interpolation method.
     InterpMethod GetInterpolationMethod() const { return interpolationMethod_; }
+
     /// Return spline tension.
     float GetSplineTension() const { return splineTension_; }
+
     /// Return value type.
     VariantType GetValueType() const { return valueType_; }
+
     /// Return begin time.
     float GetBeginTime() const { return beginTime_; }
+
     /// Return end time.
     float GetEndTime() const { return endTime_; }
+
     /// Return animation value.
     Variant GetAnimationValue(float scaledTime);
+
     /// Has event frames.
     bool HasEventFrames() const { return !eventFrames_.Empty(); }
+
     /// Return all event frames between time.
     void GetEventFrames(float beginTime, float endTime, PODVector<const VAnimEventFrame*>& eventFrames) const;
 

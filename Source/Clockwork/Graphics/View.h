@@ -1,12 +1,14 @@
+
+
 #pragma once
 
-#include "../Graphics/Batch.h"
 #include "../Container/HashSet.h"
-#include "../Graphics/Light.h"
 #include "../Container/List.h"
 #include "../Core/Object.h"
-#include "../Math/Polyhedron.h"
+#include "../Graphics/Batch.h"
+#include "../Graphics/Light.h"
 #include "../Graphics/Zone.h"
+#include "../Math/Polyhedron.h"
 
 namespace Clockwork
 {
@@ -111,26 +113,37 @@ public:
     Graphics* GetGraphics() const;
     /// Return renderer subsystem.
     Renderer* GetRenderer() const;
+
     /// Return scene.
     Scene* GetScene() const { return scene_; }
+
     /// Return octree.
     Octree* GetOctree() const { return octree_; }
+
     /// Return camera.
     Camera* GetCamera() const { return camera_; }
+
     /// Return information of the frame being rendered.
     const FrameInfo& GetFrameInfo() const { return frame_; }
+
     /// Return the rendertarget. 0 if using the backbuffer.
     RenderSurface* GetRenderTarget() const { return renderTarget_; }
+
     /// Return whether should draw debug geometry.
     bool GetDrawDebug() const { return drawDebug_; }
+
     /// Return geometry objects.
     const PODVector<Drawable*>& GetGeometries() const { return geometries_; }
+
     /// Return occluder objects.
     const PODVector<Drawable*>& GetOccluders() const { return occluders_; }
+
     /// Return lights.
     const PODVector<Light*>& GetLights() const { return lights_; }
+
     /// Return light batch queues.
     const Vector<LightBatchQueue>& GetLightQueues() const { return lightQueues_; }
+
     /// Set global (per-frame) shader parameters. Called by Batch and internally by View.
     void SetGlobalShaderParameters();
     /// Set camera-specific shader parameters. Called by Batch and internally by View.
@@ -188,11 +201,14 @@ private:
     /// Set up a directional light shadow camera
     void SetupDirLightShadowCamera(Camera* shadowCamera, Light* light, float nearSplit, float farSplit);
     /// Finalize shadow camera view after shadow casters and the shadow map are known.
-    void FinalizeShadowCamera(Camera* shadowCamera, Light* light, const IntRect& shadowViewport, const BoundingBox& shadowCasterBox);
+    void
+        FinalizeShadowCamera(Camera* shadowCamera, Light* light, const IntRect& shadowViewport, const BoundingBox& shadowCasterBox);
     /// Quantize a directional light shadow camera view to eliminate swimming.
-    void QuantizeDirLightShadowCamera(Camera* shadowCamera, Light* light, const IntRect& shadowViewport, const BoundingBox& viewBox);
+    void
+        QuantizeDirLightShadowCamera(Camera* shadowCamera, Light* light, const IntRect& shadowViewport, const BoundingBox& viewBox);
     /// Check visibility of one shadow caster.
-    bool IsShadowCasterVisible(Drawable* drawable, BoundingBox lightViewBox, Camera* shadowCamera, const Matrix3x4& lightView, const Frustum& lightViewFrustum, const BoundingBox& lightViewFrustumBox);
+    bool IsShadowCasterVisible(Drawable* drawable, BoundingBox lightViewBox, Camera* shadowCamera, const Matrix3x4& lightView,
+        const Frustum& lightViewFrustum, const BoundingBox& lightViewFrustumBox);
     /// Return the viewport for a shadow map split.
     IntRect GetShadowMapViewport(Light* light, unsigned splitIndex, Texture2D* shadowMap);
     /// Find and set a new zone for a drawable when it has moved.

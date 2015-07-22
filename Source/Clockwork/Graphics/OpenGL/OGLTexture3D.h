@@ -1,9 +1,11 @@
+
+
 #pragma once
 
-#include "../../Resource/Image.h"
-#include "../../Graphics/RenderSurface.h"
 #include "../../Container/Ptr.h"
+#include "../../Graphics/RenderSurface.h"
 #include "../../Graphics/Texture.h"
+#include "../../Resource/Image.h"
 
 namespace Clockwork
 {
@@ -41,6 +43,7 @@ public:
 
     /// Get data from a mip level. The destination buffer must be big enough. Return true if successful.
     bool GetData(unsigned level, void* dest) const;
+
     /// Return render surface.
     RenderSurface* GetRenderSurface() const { return renderSurface_; }
 

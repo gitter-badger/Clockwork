@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Color.h"
@@ -41,7 +43,7 @@ inline bool operator == (const b2Vec2& left, const b2Vec2& right)
 }
 */
 
-inline bool operator != (const b2Vec2& left, const b2Vec2& right)
+inline bool operator !=(const b2Vec2& left, const b2Vec2& right)
 {
     return left.x != right.x || left.y != right.y;
 }

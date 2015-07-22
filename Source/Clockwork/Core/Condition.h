@@ -1,4 +1,12 @@
+
+
 #pragma once
+
+#ifdef CLOCKWORK_IS_BUILDING
+#include "Clockwork.h"
+#else
+#include <Clockwork/Clockwork.h>
+#endif
 
 namespace Clockwork
 {
@@ -20,10 +28,10 @@ public:
     void Wait();
 
 private:
-    #ifndef WIN32
+#ifndef WIN32
     /// Mutex for the event, necessary for pthreads-based implementation.
     void* mutex_;
-    #endif
+#endif
     /// Operating system specific event.
     void* event_;
 };

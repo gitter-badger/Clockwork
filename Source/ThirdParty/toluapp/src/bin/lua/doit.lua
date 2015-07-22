@@ -52,9 +52,9 @@ function doit ()
 		_basic_ctype.cppstring = 'const char*'
 		
 		-- Clockwork: Add Clockwork::String Support in tolua++
-		_basic['String'] = 'clockwork3dstring'
-		_basic['Clockwork::String'] = 'clockwork3dstring'
-		_basic_ctype.clockwork3dstring = 'const char*'
+		_basic['String'] = 'clockworkstring'
+		_basic['Clockwork::String'] = 'clockworkstring'
+		_basic_ctype.clockworkstring = 'const char*'
 	end
 
 	-- proccess package

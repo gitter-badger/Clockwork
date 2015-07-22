@@ -1,3 +1,5 @@
+
+
 /// Return true when the running OS has the specified version number or later.
 bool CheckMinimalVersion(int major, int minor);
 

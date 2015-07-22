@@ -1,4 +1,12 @@
+
+
 #pragma once
+
+#ifdef CLOCKWORK_IS_BUILDING
+#include "Clockwork.h"
+#else
+#include <Clockwork/Clockwork.h>
+#endif
 
 namespace Clockwork
 {
@@ -44,6 +52,7 @@ public:
     int Refs() const;
     /// Return weak reference count.
     int WeakRefs() const;
+
     /// Return pointer to the reference count structure.
     RefCount* RefCountPtr() { return refCount_; }
 
@@ -51,7 +60,7 @@ private:
     /// Prevent copy construction.
     RefCounted(const RefCounted& rhs);
     /// Prevent assignment.
-    RefCounted& operator = (const RefCounted& rhs);
+    RefCounted& operator =(const RefCounted& rhs);
 
     /// Pointer to the reference count structure.
     RefCount* refCount_;

@@ -1,5 +1,9 @@
-#include "../IO/Log.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Spline.h"
+#include "../IO/Log.h"
 
 namespace Clockwork
 {
@@ -62,7 +66,8 @@ void Spline::SetKnot(const Variant& knot, unsigned index)
         else if (knots_.Empty())
             knots_.Push(knot);
         else
-            LOGERRORF("Attempted to set a Spline's Knot value of type %s where elements are already using %s", knot.GetTypeName().CString(), knots_[0].GetTypeName().CString());
+            LOGERRORF("Attempted to set a Spline's Knot value of type %s where elements are already using %s",
+                knot.GetTypeName().CString(), knots_[0].GetTypeName().CString());
     }
 }
 
@@ -73,7 +78,8 @@ void Spline::AddKnot(const Variant& knot)
     else if (knots_.Empty())
         knots_.Push(knot);
     else
-        LOGERRORF("Attempted to add Knot to Spline of type %s where elements are already using %s", knot.GetTypeName().CString(), knots_[0].GetTypeName().CString());
+        LOGERRORF("Attempted to add Knot to Spline of type %s where elements are already using %s", knot.GetTypeName().CString(),
+            knots_[0].GetTypeName().CString());
 }
 
 void Spline::AddKnot(const Variant& knot, unsigned index)
@@ -86,7 +92,8 @@ void Spline::AddKnot(const Variant& knot, unsigned index)
     else if (knots_.Empty())
         knots_.Push(knot);
     else
-        LOGERRORF("Attempted to add Knot to Spline of type %s where elements are already using %s", knot.GetTypeName().CString(), knots_[0].GetTypeName().CString());
+        LOGERRORF("Attempted to add Knot to Spline of type %s where elements are already using %s", knot.GetTypeName().CString(),
+            knots_[0].GetTypeName().CString());
 }
 
 Variant Spline::BezierInterpolation(const Vector<Variant>& knots, float t) const
@@ -100,6 +107,7 @@ Variant Spline::BezierInterpolation(const Vector<Variant>& knots, float t) const
         case VAR_VECTOR3:
         case VAR_VECTOR4:
         case VAR_COLOR:
+        case VAR_DOUBLE:
             return LinearInterpolation(knots[0], knots[1], t);
         default:
             return Variant::EMPTY;
@@ -117,6 +125,7 @@ Variant Spline::BezierInterpolation(const Vector<Variant>& knots, float t) const
             case VAR_VECTOR3:
             case VAR_VECTOR4:
             case VAR_COLOR:
+            case VAR_DOUBLE:
                 interpolatedKnots.Push(LinearInterpolation(knots[i - 1], knots[i], t));
                 break;
             default:
@@ -141,6 +150,8 @@ Variant Spline::LinearInterpolation(const Variant& lhs, const Variant& rhs, floa
         return lhs.GetVector4().Lerp(rhs.GetVector4(), t);
     case VAR_COLOR:
         return lhs.GetColor().Lerp(rhs.GetColor(), t);
+    case VAR_DOUBLE:
+        return Lerp(lhs.GetDouble(), rhs.GetDouble(), t);
     default:
         return Variant::EMPTY;
     }

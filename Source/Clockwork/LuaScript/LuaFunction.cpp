@@ -1,8 +1,12 @@
+
+
+#include "../Precompiled.h"
+
 #include "../IO/Log.h"
+#include "../IO/VectorBuffer.h"
 #include "../LuaScript/LuaFunction.h"
 #include "../LuaScript/LuaScript.h"
 #include "../LuaScript/LuaScriptInstance.h"
-#include "../IO/VectorBuffer.h"
 
 #include <toluapp/tolua++.h>
 #include "../LuaScript/ToluaUtils.h"
@@ -93,7 +97,7 @@ void LuaFunction::PushString(const String& string)
 {
     ++numArguments_;
 
-    tolua_pushclockwork3dstring(luaState_, string);
+    tolua_pushclockworkstring(luaState_, string);
 }
 
 void LuaFunction::PushUserType(void* userType, const char* typeName)

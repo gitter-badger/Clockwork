@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Clockwork2D/Constraint2D.h"
@@ -12,7 +14,7 @@ class CLOCKWORK_API ConstraintMouse2D : public Constraint2D
 
 public:
     /// Construct.
-    ConstraintMouse2D(Context* scontext);
+    ConstraintMouse2D(Context* context);
     /// Destruct.
     virtual ~ConstraintMouse2D();
     /// Register object factory.
@@ -29,10 +31,13 @@ public:
 
     /// Return target.
     const Vector2& GetTarget() const { return target_; }
+
     /// Return max force.
     float GetMaxForce() const { return jointDef_.maxForce; }
+
     /// Return frequency Hz.
     float GetFrequencyHz() const { return jointDef_.frequencyHz; }
+
     /// Return damping ratio.
     float GetDampingRatio() const { return jointDef_.dampingRatio; }
 

@@ -1,11 +1,13 @@
+
+
 #pragma once
 
 #include "../Container/ArrayPtr.h"
-#include "../Math/BoundingBox.h"
+#include "../Container/Ptr.h"
 #include "../Graphics/GraphicsDefs.h"
 #include "../Graphics/Skeleton.h"
+#include "../Math/BoundingBox.h"
 #include "../Resource/Resource.h"
-#include "../Container/Ptr.h"
 
 namespace Clockwork
 {
@@ -105,7 +107,8 @@ public:
     /// Set local-space bounding box.
     void SetBoundingBox(const BoundingBox& box);
     /// Set vertex buffers and their morph ranges.
-    bool SetVertexBuffers(const Vector<SharedPtr<VertexBuffer> >& buffers, const PODVector<unsigned>& morphRangeStarts, const PODVector<unsigned>& morphRangeCounts);
+    bool SetVertexBuffers(const Vector<SharedPtr<VertexBuffer> >& buffers, const PODVector<unsigned>& morphRangeStarts,
+        const PODVector<unsigned>& morphRangeCounts);
     /// Set index buffers.
     bool SetIndexBuffers(const Vector<SharedPtr<IndexBuffer> >& buffers);
     /// Set number of geometries.
@@ -127,30 +130,46 @@ public:
 
     /// Return bounding box.
     const BoundingBox& GetBoundingBox() const { return boundingBox_; }
+
     /// Return skeleton.
     Skeleton& GetSkeleton() { return skeleton_; }
+
     /// Return vertex buffers.
     const Vector<SharedPtr<VertexBuffer> >& GetVertexBuffers() const { return vertexBuffers_; }
+
     /// Return index buffers.
     const Vector<SharedPtr<IndexBuffer> >& GetIndexBuffers() const { return indexBuffers_; }
+
     /// Return number of geometries.
     unsigned GetNumGeometries() const { return geometries_.Size(); }
+
     /// Return number of LOD levels in geometry.
     unsigned GetNumGeometryLodLevels(unsigned index) const;
+
     /// Return geometry pointers.
     const Vector<Vector<SharedPtr<Geometry> > >& GetGeometries() const { return geometries_; }
+
     /// Return geometry center points.
     const PODVector<Vector3>& GetGeometryCenters() const { return geometryCenters_; }
+
     /// Return geometry by index and LOD level. The LOD level is clamped if out of range.
     Geometry* GetGeometry(unsigned index, unsigned lodLevel) const;
+
     /// Return geometry center by index.
-    const Vector3& GetGeometryCenter(unsigned index) const { return index < geometryCenters_.Size() ? geometryCenters_[index] : Vector3::ZERO; }
+    const Vector3& GetGeometryCenter(unsigned index) const
+    {
+        return index < geometryCenters_.Size() ? geometryCenters_[index] : Vector3::ZERO;
+    }
+
     /// Return geometery bone mappings.
     const Vector<PODVector<unsigned> >& GetGeometryBoneMappings() const { return geometryBoneMappings_; }
+
     /// Return vertex morphs.
     const Vector<ModelMorph>& GetMorphs() const { return morphs_; }
+
     /// Return number of vertex morphs.
     unsigned GetNumMorphs() const { return morphs_.Size(); }
+
     /// Return vertex morph by index.
     const ModelMorph* GetMorph(unsigned index) const;
     /// Return vertex morph by name.

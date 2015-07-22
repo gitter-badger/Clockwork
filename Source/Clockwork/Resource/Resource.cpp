@@ -1,6 +1,9 @@
-#include "../IO/Log.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Profiler.h"
-#include "../Core/Thread.h"
+#include "../IO/Log.h"
 #include "../Resource/Resource.h"
 
 namespace Clockwork

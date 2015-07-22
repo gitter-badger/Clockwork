@@ -57,6 +57,8 @@ float uiMinOpacity = 0.3;
 float uiMaxOpacity = 0.7;
 bool uiHidden = false;
 
+TerrainEditor terrainEditor;
+
 void CreateUI()
 {
     // Remove all existing UI content in case we are reloading the editor script
@@ -70,7 +72,7 @@ void CreateUI()
     CreateCursor();
     CreateMenuBar();
     CreateToolBar();
-  //CreateSecondaryToolBar();
+    //CreateSecondaryToolBar();
     CreateQuickMenu();
     CreateContextMenu();
     CreateHierarchyWindow();
@@ -86,6 +88,7 @@ void CreateUI()
     CreateDebugHud();
     CreateResourceBrowser();
     CreateCamera();
+    terrainEditor.Create();
 
     SubscribeToEvent("ScreenMode", "ResizeUI");
     SubscribeToEvent("MenuSelected", "HandleMenuSelected");
@@ -128,7 +131,7 @@ void ResizeUI()
 
     // Relayout root UI element
     editorUIElement.SetSize(graphics.width, graphics.height);
-
+    
     // Set new viewport area and reset the viewport layout
     viewportArea = IntRect(0, 0, graphics.width, graphics.height);
     SetViewportMode(viewportMode);
@@ -248,7 +251,7 @@ void CreateQuickMenu()
     quickMenu.enabled = false;
     quickMenu.visible = false;
     quickMenu.opacity = uiMaxOpacity;
-
+    
     // Handle a dummy search in the quick menu to finalize its initial size to empty
     PerformQuickMenuSearch("");
 
@@ -421,6 +424,7 @@ void CreateMenuBar()
         popup.AddChild(CreateMenuItem("Attribute inspector", @ShowAttributeInspectorWindow, 'I', QUAL_CTRL));
         popup.AddChild(CreateMenuItem("Resource browser", @ShowResourceBrowserWindow, 'B', QUAL_CTRL));
         popup.AddChild(CreateMenuItem("Material editor", @ShowMaterialEditor));
+        popup.AddChild(CreateMenuItem("Terrain editor", TerrainEditorShowCallback(terrainEditor.Show)));
         popup.AddChild(CreateMenuItem("Particle editor", @ShowParticleEffectEditor));
         popup.AddChild(CreateMenuItem("Spawn editor", @ShowSpawnEditor));
         popup.AddChild(CreateMenuItem("Sound Type editor", @ShowSoundTypeEditor));
@@ -1137,13 +1141,13 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
             fileSystem.CreateDir(screenshotDir);
         screenshot.SavePNG(screenshotDir + "/Screenshot_" +
                 time.timeStamp.Replaced(':', '_').Replaced('.', '_').Replaced(' ', '_') + ".png");
-    }
+    }   
     else if (key == KEY_KP_1 && ui.focusElement is null) // Front view
     {
         Vector3 center = Vector3(0,0,0);
         if (selectedNodes.length > 0 || selectedComponents.length > 0)
             center = SelectedNodesCenterPoint();
-
+            
         Vector3 pos = cameraNode.worldPosition - center;
         cameraNode.worldPosition = center - Vector3(0.0, 0.0, pos.length * viewDirection);
         cameraNode.direction = Vector3(0, 0, viewDirection);
@@ -1155,7 +1159,7 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
         Vector3 center = Vector3(0,0,0);
         if (selectedNodes.length > 0 || selectedComponents.length > 0)
             center = SelectedNodesCenterPoint();
-
+            
         Vector3 pos = cameraNode.worldPosition - center;
         cameraNode.worldPosition = center - Vector3(pos.length * -viewDirection, 0.0, 0.0);
         cameraNode.direction = Vector3(-viewDirection, 0, 0);
@@ -1167,7 +1171,7 @@ void HandleKeyDown(StringHash eventType, VariantMap& eventData)
         Vector3 center = Vector3(0,0,0);
         if (selectedNodes.length > 0 || selectedComponents.length > 0)
             center = SelectedNodesCenterPoint();
-
+            
         Vector3 pos = cameraNode.worldPosition - center;
         cameraNode.worldPosition = center - Vector3(0.0, pos.length * -viewDirection, 0.0);
         cameraNode.direction = Vector3(0, -viewDirection, 0);
@@ -1342,6 +1346,7 @@ void SetIconEnabledColor(UIElement@ element, bool enabled, bool partial = false)
 void UpdateDirtyUI()
 {
     UpdateDirtyToolBar();
+    terrainEditor.UpdateDirty();
 
     // Perform hierarchy selection latently after the new selections are finalized (used in undo/redo action)
     if (!hierarchyUpdateSelections.empty)

@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../../Container/HashMap.h"
@@ -15,7 +17,7 @@ public:
     {
         const HashMap<StringHash, ShaderParameter>& vsParams = vertexShader->GetParameters();
         for (HashMap<StringHash, ShaderParameter>::ConstIterator i = vsParams.Begin(); i != vsParams.End(); ++i)
-        parameters_[i->first_] = i->second_;
+            parameters_[i->first_] = i->second_;
 
         const HashMap<StringHash, ShaderParameter>& psParams = pixelShader->GetParameters();
         for (HashMap<StringHash, ShaderParameter>::ConstIterator i = psParams.Begin(); i != psParams.End(); ++i)

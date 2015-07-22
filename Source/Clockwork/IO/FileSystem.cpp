@@ -1,20 +1,23 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Container/ArrayPtr.h"
 #include "../Core/Context.h"
 #include "../Core/CoreEvents.h"
+#include "../Core/Thread.h"
 #include "../Engine/EngineEvents.h"
 #include "../IO/File.h"
 #include "../IO/FileSystem.h"
 #include "../IO/IOEvents.h"
 #include "../IO/Log.h"
-#include "../Core/Thread.h"
 
 #include <SDL/SDL_filesystem.h>
 
-#include <cstdio>
-#include <cstring>
 #include <sys/stat.h>
 
 #ifdef WIN32
+#include <cstdio>
 #ifndef _MSC_VER
 #define _WIN32_IE 0x501
 #endif
@@ -58,7 +61,7 @@ int DoSystemCommand(const String& commandLine, bool redirectToLog, Context* cont
     // Get a platform-agnostic temporary file name for stderr redirection
     String stderrFilename;
     String adjustedCommandLine(commandLine);
-    char* prefPath = SDL_GetPrefPath("clockwork3d", "temp");
+    char* prefPath = SDL_GetPrefPath("clockwork", "temp");
     if (prefPath)
     {
         stderrFilename = String(prefPath) + "command-stderr";
@@ -66,13 +69,13 @@ int DoSystemCommand(const String& commandLine, bool redirectToLog, Context* cont
         SDL_free(prefPath);
     }
 
-    #ifdef _MSC_VER
+#ifdef _MSC_VER
     #define popen _popen
     #define pclose _pclose
-    #endif
+#endif
 
     // Use popen/pclose to capture the stdout and stderr of the command
-    FILE *file = popen(adjustedCommandLine.CString(), "r");
+    FILE* file = popen(adjustedCommandLine.CString(), "r");
     if (!file)
         return -1;
 
@@ -104,11 +107,11 @@ int DoSystemRun(const String& fileName, const Vector<String>& arguments)
 {
     String fixedFileName = GetNativePath(fileName);
 
-    #ifdef WIN32
+#ifdef WIN32
     // Add .exe extension if no extension defined
     if (GetExtension(fixedFileName).Empty())
         fixedFileName += ".exe";
-
+    
     String commandLine = "\"" + fixedFileName + "\"";
     for (unsigned i = 0; i < arguments.Size(); ++i)
         commandLine += " " + arguments[i];
@@ -130,7 +133,7 @@ int DoSystemRun(const String& fileName, const Vector<String>& arguments)
     CloseHandle(processInfo.hThread);
 
     return exitCode;
-    #else
+#else
     pid_t pid = fork();
     if (!pid)
     {
@@ -151,7 +154,7 @@ int DoSystemRun(const String& fileName, const Vector<String>& arguments)
     }
     else
         return -1;
-    #endif
+#endif
 }
 
 /// Base class for async execution requests.
@@ -171,8 +174,10 @@ public:
 
     /// Return request ID.
     unsigned GetRequestID() const { return requestID_; }
+
     /// Return exit code. Valid when IsCompleted() is true.
     int GetExitCode() const { return exitCode_; }
+
     /// Return completion status.
     bool IsCompleted() const { return completed_; }
 
@@ -266,19 +271,19 @@ bool FileSystem::SetCurrentDir(const String& pathName)
         LOGERROR("Access denied to " + pathName);
         return false;
     }
-    #ifdef WIN32
+#ifdef WIN32
     if (SetCurrentDirectoryW(GetWideNativePath(pathName).CString()) == FALSE)
     {
         LOGERROR("Failed to change directory to " + pathName);
         return false;
     }
-    #else
+#else
     if (chdir(GetNativePath(pathName).CString()) != 0)
     {
         LOGERROR("Failed to change directory to " + pathName);
         return false;
     }
-    #endif
+#endif
 
     return true;
 }
@@ -291,12 +296,12 @@ bool FileSystem::CreateDir(const String& pathName)
         return false;
     }
 
-    #ifdef WIN32
+#ifdef WIN32
     bool success = (CreateDirectoryW(GetWideNativePath(RemoveTrailingSlash(pathName)).CString(), 0) == TRUE) ||
         (GetLastError() == ERROR_ALREADY_EXISTS);
-    #else
+#else
     bool success = mkdir(GetNativePath(RemoveTrailingSlash(pathName)).CString(), S_IRWXU) == 0 || errno == EEXIST;
-    #endif
+#endif
 
     if (success)
         LOGDEBUG("Created directory " + pathName);
@@ -382,20 +387,20 @@ bool FileSystem::SystemOpen(const String& fileName, const String& mode)
             return false;
         }
 
-        #ifdef WIN32
+#ifdef WIN32
         bool success = (size_t)ShellExecuteW(0, !mode.Empty() ? WString(mode).CString() : 0,
             GetWideNativePath(fileName).CString(), 0, 0, SW_SHOW) > 32;
-        #else
+#else
         Vector<String> arguments;
         arguments.Push(fileName);
         bool success = SystemRun(
-        #if defined(__APPLE__)
-                "/usr/bin/open",
-        #else
-                "/usr/bin/xdg-open",
-        #endif
-                arguments) == 0;
-        #endif
+#if defined(__APPLE__)
+            "/usr/bin/open",
+#else
+            "/usr/bin/xdg-open",
+#endif
+            arguments) == 0;
+#endif
         if (!success)
             LOGERROR("Failed to open " + fileName + " externally");
         return success;
@@ -448,11 +453,11 @@ bool FileSystem::Rename(const String& srcFileName, const String& destFileName)
         return false;
     }
 
-    #ifdef WIN32
+#ifdef WIN32
     return MoveFileW(GetWideNativePath(srcFileName).CString(), GetWideNativePath(destFileName).CString()) != 0;
-    #else
+#else
     return rename(GetNativePath(srcFileName).CString(), GetNativePath(destFileName).CString()) == 0;
-    #endif
+#endif
 }
 
 bool FileSystem::Delete(const String& fileName)
@@ -463,26 +468,26 @@ bool FileSystem::Delete(const String& fileName)
         return false;
     }
 
-    #ifdef WIN32
+#ifdef WIN32
     return DeleteFileW(GetWideNativePath(fileName).CString()) != 0;
-    #else
+#else
     return remove(GetNativePath(fileName).CString()) == 0;
-    #endif
+#endif
 }
 
 String FileSystem::GetCurrentDir() const
 {
-    #ifdef WIN32
+#ifdef WIN32
     wchar_t path[MAX_PATH];
     path[0] = 0;
     GetCurrentDirectoryW(MAX_PATH, path);
     return AddTrailingSlash(String(path));
-    #else
+#else
     char path[MAX_PATH];
     path[0] = 0;
     getcwd(path, MAX_PATH);
     return AddTrailingSlash(String(path));
-    #endif
+#endif
 }
 
 bool FileSystem::CheckAccess(const String& pathName) const
@@ -513,19 +518,19 @@ unsigned FileSystem::GetLastModifiedTime(const String& fileName) const
     if (fileName.Empty() || !CheckAccess(fileName))
         return 0;
 
-    #ifdef WIN32
+#ifdef WIN32
     struct _stat st;
     if (!_stat(fileName.CString(), &st))
         return (unsigned)st.st_mtime;
     else
         return 0;
-    #else
+#else
     struct stat st;
     if (!stat(fileName.CString(), &st))
         return (unsigned)st.st_mtime;
     else
         return 0;
-    #endif
+#endif
 }
 
 bool FileSystem::FileExists(const String& fileName) const
@@ -535,7 +540,7 @@ bool FileSystem::FileExists(const String& fileName) const
 
     String fixedName = GetNativePath(RemoveTrailingSlash(fileName));
 
-    #ifdef ANDROID
+#ifdef ANDROID
     if (fixedName.StartsWith("/apk/"))
     {
         SDL_RWops* rwOps = SDL_RWFromFile(fileName.Substring(5).CString(), "rb");
@@ -547,17 +552,17 @@ bool FileSystem::FileExists(const String& fileName) const
         else
             return false;
     }
-    #endif
+#endif
 
-    #ifdef WIN32
+#ifdef WIN32
     DWORD attributes = GetFileAttributesW(WString(fixedName).CString());
     if (attributes == INVALID_FILE_ATTRIBUTES || attributes & FILE_ATTRIBUTE_DIRECTORY)
         return false;
-    #else
+#else
     struct stat st;
     if (stat(fixedName.CString(), &st) || st.st_mode & S_IFDIR)
         return false;
-    #endif
+#endif
 
     return true;
 }
@@ -567,29 +572,29 @@ bool FileSystem::DirExists(const String& pathName) const
     if (!CheckAccess(pathName))
         return false;
 
-    #ifndef WIN32
+#ifndef WIN32
     // Always return true for the root directory
     if (pathName == "/")
         return true;
-    #endif
+#endif
 
     String fixedName = GetNativePath(RemoveTrailingSlash(pathName));
 
-    #ifdef ANDROID
+#ifdef ANDROID
     /// \todo Actually check for existence, now true is always returned for directories within the APK
     if (fixedName.StartsWith("/apk/"))
         return true;
-    #endif
+#endif
 
-    #ifdef WIN32
+#ifdef WIN32
     DWORD attributes = GetFileAttributesW(WString(fixedName).CString());
     if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY))
         return false;
-    #else
+#else
     struct stat st;
     if (stat(fixedName.CString(), &st) || !(st.st_mode & S_IFDIR))
         return false;
-    #endif
+#endif
 
     return true;
 }
@@ -611,40 +616,40 @@ String FileSystem::GetProgramDir() const
     if (!programDir_.Empty())
         return programDir_;
 
-    #if defined(ANDROID)
+#if defined(ANDROID)
     // This is an internal directory specifier pointing to the assets in the .apk
     // Files from this directory will be opened using special handling
     programDir_ = "/apk/";
     return programDir_;
-    #elif defined(IOS)
+#elif defined(IOS)
     programDir_ = AddTrailingSlash(SDL_IOS_GetResourceDir());
     return programDir_;
-    #elif defined(WIN32)
+#elif defined(WIN32)
     wchar_t exeName[MAX_PATH];
     exeName[0] = 0;
     GetModuleFileNameW(0, exeName, MAX_PATH);
     programDir_ = GetPath(String(exeName));
-    #elif defined(__APPLE__)
+#elif defined(__APPLE__)
     char exeName[MAX_PATH];
     memset(exeName, 0, MAX_PATH);
     unsigned size = MAX_PATH;
     _NSGetExecutablePath(exeName, &size);
     programDir_ = GetPath(String(exeName));
-    #elif defined(__linux__)
+#elif defined(__linux__)
     char exeName[MAX_PATH];
     memset(exeName, 0, MAX_PATH);
     pid_t pid = getpid();
     String link = "/proc/" + String(pid) + "/exe";
     readlink(link.CString(), exeName, MAX_PATH);
     programDir_ = GetPath(String(exeName));
-    #endif
+#endif
 
     // If the executable directory does not contain CoreData & Data directories, but the current working directory does, use the
     // current working directory instead
     /// \todo Should not rely on such fixed convention
     String currentDir = GetCurrentDir();
-    if (!DirExists(programDir_ + "CoreData") && !DirExists(programDir_ + "Data") && (DirExists(currentDir + "CoreData") ||
-        DirExists(currentDir + "Data")))
+    if (!DirExists(programDir_ + "CoreData") && !DirExists(programDir_ + "Data") &&
+        (DirExists(currentDir + "CoreData") || DirExists(currentDir + "Data")))
         programDir_ = currentDir;
 
     // Sanitate /./ construct away
@@ -655,21 +660,21 @@ String FileSystem::GetProgramDir() const
 
 String FileSystem::GetUserDocumentsDir() const
 {
-    #if defined(ANDROID)
+#if defined(ANDROID)
     return AddTrailingSlash(SDL_Android_GetFilesDir());
-    #elif defined(IOS)
+#elif defined(IOS)
     return AddTrailingSlash(SDL_IOS_GetDocumentsDir());
-    #elif defined(WIN32)
+#elif defined(WIN32)
     wchar_t pathName[MAX_PATH];
     pathName[0] = 0;
     SHGetSpecialFolderPathW(0, pathName, CSIDL_PERSONAL, 0);
     return AddTrailingSlash(String(pathName));
-    #else
+#else
     char pathName[MAX_PATH];
     pathName[0] = 0;
     strcpy(pathName, getenv("HOME"));
     return AddTrailingSlash(String(pathName));
-    #endif
+#endif
 }
 
 String FileSystem::GetAppPreferencesDir(const String& org, const String& app) const
@@ -700,7 +705,7 @@ bool FileSystem::SetLastModifiedTime(const String& fileName, unsigned newTime)
     if (fileName.Empty() || !CheckAccess(fileName))
         return false;
 
-    #ifdef WIN32
+#ifdef WIN32
     struct _stat oldTime;
     struct _utimbuf newTimes;
     if (_stat(fileName.CString(), &oldTime) != 0)
@@ -708,7 +713,7 @@ bool FileSystem::SetLastModifiedTime(const String& fileName, unsigned newTime)
     newTimes.actime = oldTime.st_atime;
     newTimes.modtime = newTime;
     return _utime(fileName.CString(), &newTimes) == 0;
-    #else
+#else
     struct stat oldTime;
     struct utimbuf newTimes;
     if (stat(fileName.CString(), &oldTime) != 0)
@@ -716,7 +721,7 @@ bool FileSystem::SetLastModifiedTime(const String& fileName, unsigned newTime)
     newTimes.actime = oldTime.st_atime;
     newTimes.modtime = newTime;
     return utime(fileName.CString(), &newTimes) == 0;
-    #endif
+#endif
 }
 
 void FileSystem::ScanDirInternal(Vector<String>& result, String path, const String& startPath,
@@ -731,7 +736,7 @@ void FileSystem::ScanDirInternal(Vector<String>& result, String path, const Stri
     if (filterExtension.Contains('*'))
         filterExtension.Clear();
 
-    #ifdef WIN32
+#ifdef WIN32
     WIN32_FIND_DATAW info;
     HANDLE handle = FindFirstFileW(WString(path + "*").CString(), &info);
     if (handle != INVALID_HANDLE_VALUE)
@@ -761,9 +766,9 @@ void FileSystem::ScanDirInternal(Vector<String>& result, String path, const Stri
 
         FindClose(handle);
     }
-    #else
-    DIR *dir;
-    struct dirent *de;
+#else
+    DIR* dir;
+    struct dirent* de;
     struct stat st;
     dir = opendir(GetNativePath(path).CString());
     if (dir)
@@ -794,7 +799,7 @@ void FileSystem::ScanDirInternal(Vector<String>& result, String path, const Stri
         }
         closedir(dir);
     }
-    #endif
+#endif
 }
 
 void FileSystem::HandleBeginFrame(StringHash eventType, VariantMap& eventData)
@@ -807,10 +812,10 @@ void FileSystem::HandleBeginFrame(StringHash eventType, VariantMap& eventData)
         {
             using namespace AsyncExecFinished;
 
-            VariantMap& eventData = GetEventDataMap();
-            eventData[P_REQUESTID] = request->GetRequestID();
-            eventData[P_EXITCODE] = request->GetExitCode();
-            SendEvent(E_ASYNCEXECFINISHED, eventData);
+            VariantMap& newEventData = GetEventDataMap();
+            newEventData[P_REQUESTID] = request->GetRequestID();
+            newEventData[P_EXITCODE] = request->GetExitCode();
+            SendEvent(E_ASYNCEXECFINISHED, newEventData);
 
             delete request;
             i = asyncExecQueue_.Erase(i);

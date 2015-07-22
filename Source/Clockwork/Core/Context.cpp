@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../Core/Thread.h"
 
@@ -31,10 +35,10 @@ void RemoveNamedAttribute(HashMap<StringHash, Vector<AttributeInfo> >& attribute
 Context::Context() :
     eventHandler_(0)
 {
-    #ifdef ANDROID
+#ifdef ANDROID
     // Always reset the random seed on Android, as the Clockwork library might not be unloaded between runs
     SetRandomSeed(1);
-    #endif
+#endif
 
     // Set the main thread ID (assuming the Context is created in it)
     Thread::SetMainThread();

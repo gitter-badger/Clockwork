@@ -130,7 +130,7 @@ void CreateAttributeInspectorWindow()
     attributeInspectorWindow.opacity = uiMaxOpacity;
     attributeInspectorWindow.BringToFront();
     inspectorLockButton = attributeInspectorWindow.GetChild("LockButton", true);
-
+    HideAttributeInspectorWindow();
     UpdateAttributeInspector();
 
     SubscribeToEvent(inspectorLockButton, "Pressed", "ToggleInspectorLock");

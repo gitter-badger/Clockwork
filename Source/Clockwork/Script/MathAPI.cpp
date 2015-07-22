@@ -1,10 +1,11 @@
-#include "../Script/APITemplates.h"
-#include "../Math/Color.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Math/Frustum.h"
 #include "../Math/Polyhedron.h"
 #include "../Math/Ray.h"
-
-#include <AngelScript/angelscript.h>
+#include "../Script/APITemplates.h"
 
 namespace Clockwork
 {
@@ -748,7 +749,7 @@ static void RegisterRay(asIScriptEngine* engine)
     engine->RegisterObjectMethod("Ray", "float HitDistance(const Sphere&in) const", asMETHODPR(Ray, HitDistance, (const Sphere&) const, float), asCALL_THISCALL);
     engine->RegisterObjectMethod("Ray", "float HitDistance(const BoundingBox&in) const", asMETHODPR(Ray, HitDistance, (const BoundingBox&) const, float), asCALL_THISCALL);
     engine->RegisterObjectMethod("Ray", "float HitDistance(const Frustum&in, bool solidInside = true) const", asMETHODPR(Ray, HitDistance, (const Frustum&, bool) const, float), asCALL_THISCALL);
-    engine->RegisterObjectMethod("Ray", "float HitDistance(const Vector3&in, const Vector3&in, const Vector3&in) const", asMETHODPR(Ray, HitDistance, (const Vector3&, const Vector3&, const Vector3&) const, float), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Ray", "float HitDistance(const Vector3&in, const Vector3&in, const Vector3&in) const", asMETHODPR(Ray, HitDistance, (const Vector3&, const Vector3&, const Vector3&, Vector3*, Vector3*) const, float), asCALL_THISCALL);
     engine->RegisterObjectMethod("Ray", "Ray Transformed(const Matrix3x4&in) const", asMETHOD(Ray, Transformed), asCALL_THISCALL);
     engine->RegisterObjectProperty("Ray", "Vector3 origin", offsetof(Ray, origin_));
     engine->RegisterObjectProperty("Ray", "Vector3 direction", offsetof(Ray, direction_));

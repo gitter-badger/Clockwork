@@ -264,6 +264,9 @@ bool SaveScene(const String&in fileName)
     bool success = (extension != ".xml" ? editorScene.Save(file) : editorScene.SaveXML(file));
     RemoveBackup(success, fileName);
 
+    // Save all the terrains we've modified
+    terrainEditor.Save();
+
     editorScene.updateEnabled = false;
 
     if (success)

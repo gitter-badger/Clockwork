@@ -1,9 +1,11 @@
-#include "../Script/APITemplates.h"
+
+
+#include "../Precompiled.h"
+
 #include "../IO/Compression.h"
 #include "../IO/FileSystem.h"
-#include "../IO/Log.h"
 #include "../IO/PackageFile.h"
-#include "../Core/ProcessUtils.h"
+#include "../Script/APITemplates.h"
 
 namespace Clockwork
 {
@@ -159,10 +161,10 @@ static void ConstructVectorBufferCopy(const VectorBuffer& buffer, VectorBuffer* 
 
 static void ConstructVectorBufferFromStream(Deserializer* src, unsigned size, VectorBuffer* ptr)
 {
-    if (!src)
-        size = 0;
-
-    new(ptr) VectorBuffer(*src, size);
+    if (src)
+        new(ptr) VectorBuffer(*src, size);
+    else
+        new(ptr) VectorBuffer();
 }
 
 static void DestructVectorBuffer(VectorBuffer* ptr)

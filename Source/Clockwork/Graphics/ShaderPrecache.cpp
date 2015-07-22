@@ -1,10 +1,14 @@
-#include "../IO/File.h"
-#include "../IO/FileSystem.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Graphics/Graphics.h"
 #include "../Graphics/GraphicsImpl.h"
-#include "../IO/Log.h"
 #include "../Graphics/ShaderPrecache.h"
 #include "../Graphics/ShaderVariation.h"
+#include "../IO/File.h"
+#include "../IO/FileSystem.h"
+#include "../IO/Log.h"
 
 #include "../DebugNew.h"
 
@@ -26,7 +30,7 @@ ShaderPrecache::ShaderPrecache(Context* context, const String& fileName) :
         while (shader)
         {
             String oldCombination = shader.GetAttribute("vs") + " " + shader.GetAttribute("vsdefines") + " " +
-                shader.GetAttribute("ps") + " " + shader.GetAttribute("psdefines");
+                                    shader.GetAttribute("ps") + " " + shader.GetAttribute("psdefines");
             usedCombinations_.Insert(oldCombination);
 
             shader = shader.GetNext("shader");
@@ -94,13 +98,13 @@ void ShaderPrecache::LoadShaders(Graphics* graphics, Deserializer& source)
         String psDefines = shader.GetAttribute("psdefines");
 
         // Check for illegal variations on OpenGL ES and skip them
-        #ifdef GL_ES_VERSION_2_0
+#ifdef GL_ES_VERSION_2_0
         if (vsDefines.Contains("INSTANCED") || (psDefines.Contains("POINTLIGHT") && psDefines.Contains("SHADOW")))
         {
             shader = shader.GetNext("shader");
             continue;
         }
-        #endif
+#endif
 
         ShaderVariation* vs = graphics->GetShader(VS, shader.GetAttribute("vs"), vsDefines);
         ShaderVariation* ps = graphics->GetShader(PS, shader.GetAttribute("ps"), psDefines);

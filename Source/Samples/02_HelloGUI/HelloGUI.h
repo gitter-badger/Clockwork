@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "Sample.h"
@@ -64,3 +66,5 @@ private:
     /// Remembered drag begin position.
     IntVector2 dragBeginPosition_;
 };
+
+

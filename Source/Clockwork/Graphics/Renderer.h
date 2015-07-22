@@ -1,11 +1,13 @@
+
+
 #pragma once
 
-#include "../Graphics/Batch.h"
-#include "../Math/Color.h"
-#include "../Graphics/Drawable.h"
 #include "../Container/HashSet.h"
 #include "../Core/Mutex.h"
+#include "../Graphics/Batch.h"
+#include "../Graphics/Drawable.h"
 #include "../Graphics/Viewport.h"
+#include "../Math/Color.h"
 
 namespace Clockwork
 {
@@ -187,54 +189,78 @@ public:
 
     /// Return number of backbuffer viewports.
     unsigned GetNumViewports() const { return viewports_.Size(); }
+
     /// Return backbuffer viewport by index.
     Viewport* GetViewport(unsigned index) const;
     /// Return default renderpath.
     RenderPath* GetDefaultRenderPath() const;
+
     /// Return whether HDR rendering is enabled.
     bool GetHDRRendering() const { return hdrRendering_; }
+
     /// Return whether specular lighting is enabled.
     bool GetSpecularLighting() const { return specularLighting_; }
+
     /// Return whether drawing shadows is enabled.
     bool GetDrawShadows() const { return drawShadows_; }
+
     /// Return texture anisotropy.
     int GetTextureAnisotropy() const { return textureAnisotropy_; }
+
     /// Return texture filtering.
     TextureFilterMode GetTextureFilterMode() const { return textureFilterMode_; }
+
     /// Return texture quality level.
     int GetTextureQuality() const { return textureQuality_; }
+
     /// Return material quality level.
     int GetMaterialQuality() const { return materialQuality_; }
+
     /// Return shadow map resolution.
     int GetShadowMapSize() const { return shadowMapSize_; }
+
     /// Return shadow quality.
     int GetShadowQuality() const { return shadowQuality_; }
+
     /// Return whether shadow maps are reused.
     bool GetReuseShadowMaps() const { return reuseShadowMaps_; }
+
     /// Return maximum number of shadow maps per resolution.
     int GetMaxShadowMaps() const { return maxShadowMaps_; }
+
     /// Return whether dynamic instancing is in use.
     bool GetDynamicInstancing() const { return dynamicInstancing_; }
+
     /// Return minimum number of instances required in a batch group to render as instanced.
     int GetMinInstances() const { return minInstances_; }
+
     /// Return maximum number of sorted instances per batch group.
     int GetMaxSortedInstances() const { return maxSortedInstances_; }
+
     /// Return maximum number of occluder triangles.
     int GetMaxOccluderTriangles() const { return maxOccluderTriangles_; }
+
     /// Return occlusion buffer width.
     int GetOcclusionBufferSize() const { return occlusionBufferSize_; }
+
     /// Return occluder screen size threshold.
     float GetOccluderSizeThreshold() const { return occluderSizeThreshold_; }
+
     /// Return shadow depth bias multiplier for mobile platforms.
     float GetMobileShadowBiasMul() const { return mobileShadowBiasMul_; }
+
     /// Return shadow depth bias addition for mobile platforms.
     float GetMobileShadowBiasAdd() const { return mobileShadowBiasAdd_; }
+
     /// Return number of views rendered.
     unsigned GetNumViews() const { return views_.Size(); }
+
     /// Return number of primitives rendered.
     unsigned GetNumPrimitives() const { return numPrimitives_; }
+
     /// Return number of batches rendered.
     unsigned GetNumBatches() const { return numBatches_; }
+
     /// Return number of geometries rendered.
     unsigned GetNumGeometries(bool allViews = false) const;
     /// Return number of lights rendered.
@@ -243,20 +269,28 @@ public:
     unsigned GetNumShadowMaps(bool allViews = false) const;
     /// Return number of occluders rendered.
     unsigned GetNumOccluders(bool allViews = false) const;
+
     /// Return the default zone.
     Zone* GetDefaultZone() const { return defaultZone_; }
+
     /// Return the default material.
     Material* GetDefaultMaterial() const { return defaultMaterial_; }
+
     /// Return the default range attenuation texture.
     Texture2D* GetDefaultLightRamp() const { return defaultLightRamp_; }
+
     /// Return the default spotlight attenuation texture.
     Texture2D* GetDefaultLightSpot() const { return defaultLightSpot_; }
+
     /// Return the shadowed pointlight face selection cube map.
     TextureCube* GetFaceSelectCubeMap() const { return faceSelectCubeMap_; }
+
     /// Return the shadowed pointlight indirection cube map.
     TextureCube* GetIndirectionCubeMap() const { return indirectionCubeMap_; }
+
     /// Return the instancing vertex buffer
     VertexBuffer* GetInstancingBuffer() const { return dynamicInstancing_ ? instancingBuffer_ : (VertexBuffer*)0; }
+
     /// Return the frame update parameters.
     const FrameInfo& GetFrameInfo() const { return frame_; }
 
@@ -278,7 +312,8 @@ public:
     /// Allocate a shadow map. If shadow map reuse is disabled, a different map is returned each time.
     Texture2D* GetShadowMap(Light* light, Camera* camera, unsigned viewWidth, unsigned viewHeight);
     /// Allocate a rendertarget or depth-stencil texture for deferred rendering or postprocessing. Should only be called during actual rendering, not before.
-    Texture* GetScreenBuffer(int width, int height, unsigned format, bool cubemap, bool filtered, bool srgb, unsigned persistentKey = 0);
+    Texture* GetScreenBuffer
+        (int width, int height, unsigned format, bool cubemap, bool filtered, bool srgb, unsigned persistentKey = 0);
     /// Allocate a depth-stencil surface that does not need to be readable. Should only be called during actual rendering, not before.
     RenderSurface* GetDepthStencil(int width, int height);
     /// Allocate an occlusion buffer.
@@ -288,7 +323,8 @@ public:
     /// Choose shaders for a forward rendering batch.
     void SetBatchShaders(Batch& batch, Technique* tech, bool allowShadows = true);
     /// Choose shaders for a deferred light volume batch.
-    void SetLightVolumeBatchShaders(Batch& batch, const String& vsName, const String& psName, const String& vsDefines, const String& psDefines);
+    void SetLightVolumeBatchShaders
+        (Batch& batch, const String& vsName, const String& psName, const String& vsDefines, const String& psDefines);
     /// Set cull mode while taking possible projection flipping into account.
     void SetCullMode(CullMode mode, Camera* camera);
     /// Ensure sufficient size of the instancing vertex buffer. Return true if successful.

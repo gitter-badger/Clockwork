@@ -1,7 +1,9 @@
-#include "../Core/Context.h"
-#include "../Audio/SoundListener.h"
 
-#include "../DebugNew.h"
+
+#include "../Precompiled.h"
+
+#include "../Audio/SoundListener.h"
+#include "../Core/Context.h"
 
 namespace Clockwork
 {

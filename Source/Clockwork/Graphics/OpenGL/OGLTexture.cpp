@@ -1,12 +1,13 @@
-#include "../../IO/FileSystem.h"
+
+
+#include "../../Precompiled.h"
+
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
 #include "../../Graphics/Material.h"
-#include "../../Core/Profiler.h"
 #include "../../Graphics/RenderSurface.h"
+#include "../../IO/Log.h"
 #include "../../Resource/ResourceCache.h"
-#include "../../Graphics/Texture.h"
 #include "../../Resource/XMLFile.h"
 
 #include "../../DebugNew.h"
@@ -19,11 +20,11 @@ static GLenum glWrapModes[] =
     GL_REPEAT,
     GL_MIRRORED_REPEAT,
     GL_CLAMP_TO_EDGE,
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     GL_CLAMP
-    #else
+#else
     GL_CLAMP_TO_EDGE
-    #endif
+#endif
 };
 
 #ifndef GL_ES_VERSION_2_0
@@ -57,11 +58,11 @@ static const char* filterModeNames[] =
 
 static GLenum GetWrapMode(TextureAddressMode mode)
 {
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     return Graphics::GetGL3Support() ? gl3WrapModes[mode] : glWrapModes[mode];
-    #else
+#else
     return glWrapModes[mode];
-    #endif
+#endif
 }
 
 Texture::Texture(Context* context) :
@@ -82,7 +83,7 @@ Texture::Texture(Context* context) :
     for (int i = 0; i < MAX_COORDS; ++i)
         addressMode_[i] = ADDRESS_WRAP;
     for (int i = 0; i < MAX_TEXTURE_QUALITY_LEVELS; ++i)
-        mipsToSkip_[i] = MAX_TEXTURE_QUALITY_LEVELS - 1 - i;
+        mipsToSkip_[i] = (unsigned)(MAX_TEXTURE_QUALITY_LEVELS - 1 - i);
 }
 
 Texture::~Texture()
@@ -145,7 +146,7 @@ void Texture::SetMipsToSkip(int quality, int mips)
 {
     if (quality >= QUALITY_LOW && quality < MAX_TEXTURE_QUALITY_LEVELS)
     {
-        mipsToSkip_[quality] = mips;
+        mipsToSkip_[quality] = (unsigned)mips;
 
         // Make sure a higher quality level does not actually skip more mips
         for (int i = 1; i < MAX_TEXTURE_QUALITY_LEVELS; ++i)
@@ -169,9 +170,9 @@ void Texture::UpdateParameters()
     // Wrapping
     glTexParameteri(target_, GL_TEXTURE_WRAP_S, GetWrapMode(addressMode_[COORD_U]));
     glTexParameteri(target_, GL_TEXTURE_WRAP_T, GetWrapMode(addressMode_[COORD_V]));
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     glTexParameteri(target_, GL_TEXTURE_WRAP_R, GetWrapMode(addressMode_[COORD_W]));
-    #endif
+#endif
 
     TextureFilterMode filterMode = filterMode_;
     if (filterMode == FILTER_DEFAULT)
@@ -206,12 +207,12 @@ void Texture::UpdateParameters()
         break;
     }
 
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     // Anisotropy
     if (graphics_->GetAnisotropySupport())
     {
-        glTexParameterf(target_, GL_TEXTURE_MAX_ANISOTROPY_EXT, filterMode == FILTER_ANISOTROPIC ?
-            (float)graphics_->GetTextureAnisotropy() : 1.0f);
+        glTexParameterf(target_, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+            filterMode == FILTER_ANISOTROPIC ? (float)graphics_->GetTextureAnisotropy() : 1.0f);
     }
 
     // Shadow compare
@@ -224,7 +225,7 @@ void Texture::UpdateParameters()
         glTexParameteri(target_, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 
     glTexParameterfv(target_, GL_TEXTURE_BORDER_COLOR, borderColor_.Data());
-    #endif
+#endif
 
     parametersDirty_ = false;
 }
@@ -237,9 +238,9 @@ int Texture::GetMipsToSkip(int quality) const
 bool Texture::IsCompressed() const
 {
     return format_ == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT || format_ == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT ||
-        format_ == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT || format_ == GL_ETC1_RGB8_OES ||
-        format_ == COMPRESSED_RGB_PVRTC_4BPPV1_IMG || format_ == COMPRESSED_RGBA_PVRTC_4BPPV1_IMG ||
-        format_ == COMPRESSED_RGB_PVRTC_2BPPV1_IMG || format_ == COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
+           format_ == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT || format_ == GL_ETC1_RGB8_OES ||
+           format_ == COMPRESSED_RGB_PVRTC_4BPPV1_IMG || format_ == COMPRESSED_RGBA_PVRTC_4BPPV1_IMG ||
+           format_ == COMPRESSED_RGB_PVRTC_2BPPV1_IMG || format_ == COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
 }
 
 int Texture::GetLevelWidth(unsigned level) const
@@ -268,9 +269,9 @@ unsigned Texture::GetDataSize(int width, int height) const
     if (IsCompressed())
     {
         if (format_ == COMPRESSED_RGB_PVRTC_4BPPV1_IMG || format_ == COMPRESSED_RGBA_PVRTC_4BPPV1_IMG)
-            return (Max(width, 8) * Max(height, 8) * 4 + 7) >> 3;
+            return (unsigned)((Max(width, 8) * Max(height, 8) * 4 + 7) >> 3);
         else if (format_ == COMPRESSED_RGB_PVRTC_2BPPV1_IMG || format_ == COMPRESSED_RGBA_PVRTC_2BPPV1_IMG)
-            return (Max(width, 16) * Max(height, 8) * 2 + 7) >> 3;
+            return (unsigned)((Max(width, 16) * Max(height, 8) * 2 + 7) >> 3);
         else
             return GetRowDataSize(width) * ((height + 3) >> 2);
     }
@@ -289,64 +290,72 @@ unsigned Texture::GetRowDataSize(int width) const
     {
     case GL_ALPHA:
     case GL_LUMINANCE:
-        return width;
+        return (unsigned)width;
 
     case GL_LUMINANCE_ALPHA:
-        return width * 2;
+        return (unsigned)(width * 2);
 
     case GL_RGB:
-        return width * 3;
+        return (unsigned)(width * 3);
 
     case GL_RGBA:
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     case GL_DEPTH24_STENCIL8_EXT:
     case GL_RG16:
     case GL_R16F:
     case GL_R32F:
-    #endif
-        return width * 4;
+#endif
+        return (unsigned)(width * 4);
 
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     case GL_R8:
-        return width;
+        return (unsigned)width;
 
     case GL_RG8:
-        return width * 2;
+        return (unsigned)(width * 2);
 
     case GL_RGBA16:
-        return width * 8;
+        return (unsigned)(width * 8);
 
     case GL_RGBA16F_ARB:
     case GL_RGBA32F_ARB:
-        return width * 16;
-    #endif
+        return (unsigned)(width * 16);
+#endif
 
     case GL_COMPRESSED_RGBA_S3TC_DXT1_EXT:
-        return ((width + 3) >> 2) * 8;
+        return (unsigned)(((width + 3) >> 2) * 8);
 
     case GL_COMPRESSED_RGBA_S3TC_DXT3_EXT:
     case GL_COMPRESSED_RGBA_S3TC_DXT5_EXT:
-        return ((width + 3) >> 2) * 16;
+        return (unsigned)(((width + 3) >> 2) * 16);
 
     case GL_ETC1_RGB8_OES:
-        return ((width + 3) >> 2) * 8;
+        return (unsigned)(((width + 3) >> 2) * 8);
 
     case COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
     case COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-        return (width * 4 + 7) >> 3;
+        return (unsigned)((width * 4 + 7) >> 3);
 
     case COMPRESSED_RGB_PVRTC_2BPPV1_IMG:
     case COMPRESSED_RGBA_PVRTC_2BPPV1_IMG:
-        return (width * 2 + 7) >> 3;
+        return (unsigned)((width * 2 + 7) >> 3);
 
     default:
         return 0;
     }
 }
 
+unsigned Texture::GetComponents() const
+{
+    if (!width_ || IsCompressed())
+        return 0;
+    else
+        return GetRowDataSize(width_) / width_;
+}
+
 unsigned Texture::GetExternalFormat(unsigned format)
 {
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     if (format == GL_DEPTH_COMPONENT16 || format == GL_DEPTH_COMPONENT24 || format == GL_DEPTH_COMPONENT32)
         return GL_DEPTH_COMPONENT;
     else if (format == GL_DEPTH24_STENCIL8_EXT)
@@ -365,31 +374,31 @@ unsigned Texture::GetExternalFormat(unsigned format)
         return GL_RGB;
     else
         return format;
-    #else
+#else
     return format;
-    #endif
+#endif
 }
 
 unsigned Texture::GetDataType(unsigned format)
 {
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     if (format == GL_DEPTH24_STENCIL8_EXT)
         return GL_UNSIGNED_INT_24_8_EXT;
     else if (format == GL_RG16 || format == GL_RGBA16)
         return GL_UNSIGNED_SHORT;
-    else if (format == GL_RGBA16F_ARB || format == GL_RGBA32F_ARB || format == GL_RG16F || format == GL_RG32F || format == GL_R16F ||
-        format == GL_R32F)
+    else if (format == GL_RGBA16F_ARB || format == GL_RGBA32F_ARB || format == GL_RG16F || format == GL_RG32F ||
+             format == GL_R16F || format == GL_R32F)
         return GL_FLOAT;
     else
         return GL_UNSIGNED_BYTE;
-    #else
+#else
     if (format == GL_DEPTH_COMPONENT || format == GL_DEPTH_COMPONENT24_OES)
         return GL_UNSIGNED_INT;
     else if (format == GL_DEPTH_COMPONENT16)
         return GL_UNSIGNED_SHORT;
     else
         return GL_UNSIGNED_BYTE;
-    #endif
+#endif
 }
 
 void Texture::SetParameters(XMLFile* file)
@@ -452,7 +461,7 @@ void Texture::SetParameters(const XMLElement& elem)
 
 unsigned Texture::GetSRGBFormat(unsigned format)
 {
-    #ifndef GL_ES_VERSION_2_0
+#ifndef GL_ES_VERSION_2_0
     if (!graphics_ || !graphics_->GetSRGBSupport())
         return format;
 
@@ -475,9 +484,9 @@ unsigned Texture::GetSRGBFormat(unsigned format)
     default:
         return format;
     }
-    #else
+#else
     return format;
-    #endif
+#endif
 }
 
 void Texture::CheckTextureBudget(StringHash type)

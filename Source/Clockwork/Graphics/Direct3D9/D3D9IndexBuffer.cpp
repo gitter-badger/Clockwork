@@ -1,3 +1,7 @@
+
+
+#include "../../Precompiled.h"
+
 #include "../../Core/Context.h"
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsImpl.h"
@@ -101,7 +105,7 @@ bool IndexBuffer::SetSize(unsigned indexCount, bool largeIndices, bool dynamic)
     }
 
     indexCount_ = indexCount;
-    indexSize_ = largeIndices ? sizeof(unsigned) : sizeof(unsigned short);
+    indexSize_ = (unsigned)(largeIndices ? sizeof(unsigned) : sizeof(unsigned short));
 
     if (shadowed_ && indexCount_ && indexSize_)
         shadowData_ = new unsigned char[indexCount_ * indexSize_];
@@ -266,6 +270,8 @@ void IndexBuffer::Unlock()
         lockScratchData_ = 0;
         lockState_ = LOCK_NONE;
         break;
+
+    default: break;
     }
 }
 

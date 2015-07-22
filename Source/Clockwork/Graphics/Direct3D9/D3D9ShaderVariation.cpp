@@ -1,13 +1,16 @@
-#include "../../IO/File.h"
-#include "../../IO/FileSystem.h"
+
+
+#include "../../Precompiled.h"
+
 #include "../../Graphics/Graphics.h"
 #include "../../Graphics/GraphicsImpl.h"
-#include "../../IO/Log.h"
-#include "../../Resource/ResourceCache.h"
 #include "../../Graphics/Shader.h"
 #include "../../Graphics/ShaderVariation.h"
+#include "../../IO/File.h"
+#include "../../IO/FileSystem.h"
+#include "../../IO/Log.h"
+#include "../../Resource/ResourceCache.h"
 
-#include <windows.h>
 #include <d3dcompiler.h>
 #include <MojoShader/mojoshader.h>
 
@@ -140,8 +143,7 @@ bool ShaderVariation::LoadByteCode(PODVector<unsigned>& byteCode, const String& 
     unsigned sourceTimeStamp = owner_->GetTimeStamp();
     // If source code is loaded from a package, its timestamp will be zero. Else check that binary is not older
     // than source
-    if (sourceTimeStamp && fileSystem->GetLastModifiedTime(cache->GetResourceFileName(binaryShaderName)) <
-        sourceTimeStamp)
+    if (sourceTimeStamp && fileSystem->GetLastModifiedTime(cache->GetResourceFileName(binaryShaderName)) < sourceTimeStamp)
         return false;
 
     SharedPtr<File> file = cache->GetFile(binaryShaderName);
@@ -152,8 +154,8 @@ bool ShaderVariation::LoadByteCode(PODVector<unsigned>& byteCode, const String& 
     }
 
     /// \todo Check that shader type and model match
-    unsigned short shaderType = file->ReadUShort();
-    unsigned short shaderModel = file->ReadUShort();
+    /*unsigned short shaderType = */file->ReadUShort();
+    /*unsigned short shaderModel = */file->ReadUShort();
 
     unsigned numParameters = file->ReadUInt();
     for (unsigned i = 0; i < numParameters; ++i)
@@ -169,7 +171,7 @@ bool ShaderVariation::LoadByteCode(PODVector<unsigned>& byteCode, const String& 
     unsigned numTextureUnits = file->ReadUInt();
     for (unsigned i = 0; i < numTextureUnits; ++i)
     {
-        String unitName = file->ReadString();
+        /*String unitName = */file->ReadString();
         unsigned reg = file->ReadUByte();
 
         if (reg < MAX_TEXTURE_UNITS)
@@ -245,10 +247,10 @@ bool ShaderVariation::Compile(PODVector<unsigned>& byteCode)
         macros.Push(macro);
 
         // In debug mode, check that all defines are referenced by the shader code
-        #ifdef _DEBUG
+#ifdef _DEBUG
         if (sourceCode.Find(defines[i]) == String::NPOS)
             LOGWARNING("Shader " + GetFullName() + " does not use the define " + defines[i]);
-        #endif
+#endif
     }
 
     D3D_SHADER_MACRO endMacro;
@@ -263,7 +265,7 @@ bool ShaderVariation::Compile(PODVector<unsigned>& byteCode)
 
     if (FAILED(D3DCompile(sourceCode.CString(), sourceCode.Length(), owner_->GetName().CString(), &macros.Front(), 0,
         entryPoint, profile, flags, 0, &shaderCode, &errorMsgs)))
-        compilerOutput_ = String((const char*)errorMsgs->GetBufferPointer(), errorMsgs->GetBufferSize());
+        compilerOutput_ = String((const char*)errorMsgs->GetBufferPointer(), (unsigned)errorMsgs->GetBufferSize());
     else
     {
         if (type_ == VS)
@@ -273,7 +275,7 @@ bool ShaderVariation::Compile(PODVector<unsigned>& byteCode)
 
         // Inspect the produced bytecode using MojoShader, then strip and store it
         unsigned char* bufData = (unsigned char*)shaderCode->GetBufferPointer();
-        unsigned bufSize = shaderCode->GetBufferSize();
+        unsigned bufSize = (unsigned)shaderCode->GetBufferSize();
         ParseParameters(bufData, bufSize);
         CopyStrippedCode(byteCode, bufData, bufSize);
     }
@@ -288,7 +290,7 @@ bool ShaderVariation::Compile(PODVector<unsigned>& byteCode)
 
 void ShaderVariation::ParseParameters(unsigned char* bufData, unsigned bufSize)
 {
-    MOJOSHADER_parseData const *parseData = MOJOSHADER_parse("bytecode", bufData, bufSize, 0, 0, 0, 0, 0, 0, 0);
+    MOJOSHADER_parseData const* parseData = MOJOSHADER_parse("bytecode", bufData, bufSize, 0, 0, 0, 0, 0, 0, 0);
 
     for (int i = 0; i < parseData->symbol_count; i++)
     {
@@ -330,7 +332,7 @@ void ShaderVariation::CopyStrippedCode(PODVector<unsigned>& byteCode, unsigned c
     for (unsigned i = 0; i < srcWordSize; ++i)
     {
         unsigned opcode = srcWords[i] & 0xffff;
-        unsigned paramLength = (srcWords[i] & 0x0f000000) >> 24;
+        // unsigned paramLength = (srcWords[i] & 0x0f000000) >> 24;
         unsigned commentLength = srcWords[i] >> 16;
 
         // For now, skip comment only at fixed position to prevent false positives
@@ -369,8 +371,8 @@ void ShaderVariation::SaveByteCode(const PODVector<unsigned>& byteCode, const St
     for (HashMap<StringHash, ShaderParameter>::ConstIterator i = parameters_.Begin(); i != parameters_.End(); ++i)
     {
         file->WriteString(i->second_.name_);
-        file->WriteUByte(i->second_.register_);
-        file->WriteUByte(i->second_.regCount_);
+        file->WriteUByte((unsigned char)i->second_.register_);
+        file->WriteUByte((unsigned char)i->second_.regCount_);
     }
 
     unsigned usedTextureUnits = 0;
@@ -385,7 +387,7 @@ void ShaderVariation::SaveByteCode(const PODVector<unsigned>& byteCode, const St
         if (useTextureUnit_[i])
         {
             file->WriteString(graphics_->GetTextureUnitName((TextureUnit)i));
-            file->WriteUByte(i);
+            file->WriteUByte((unsigned char)i);
         }
     }
 

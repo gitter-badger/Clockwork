@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/Ptr.h"
@@ -88,7 +90,8 @@ struct AttributeInfo
     }
 
     /// Construct accessor enum attribute.
-    AttributeInfo(const char* name, AttributeAccessor* accessor, const char** enumNames, const Variant& defaultValue, unsigned mode) :
+    AttributeInfo(const char* name, AttributeAccessor* accessor, const char** enumNames, const Variant& defaultValue,
+        unsigned mode) :
         type_(VAR_INT),
         name_(name),
         offset_(0),

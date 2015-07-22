@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/ArrayPtr.h"
@@ -43,30 +45,43 @@ public:
 
     /// Return a new instance of a decoder sound stream. Used by compressed sounds.
     SharedPtr<SoundStream> GetDecoderStream() const;
+
     /// Return shared sound data.
     SharedArrayPtr<signed char> GetData() const { return data_; }
+
     /// Return sound data start.
     signed char* GetStart() const { return data_.Get(); }
+
     /// Return loop start.
     signed char* GetRepeat() const { return repeat_; }
+
     /// Return sound data end.
     signed char* GetEnd() const { return end_; }
+
     /// Return length in seconds.
     float GetLength() const;
+
     /// Return total sound data size.
     unsigned GetDataSize() const { return dataSize_; }
+
     /// Return sample size.
     unsigned GetSampleSize() const;
+
     /// Return default frequency as a float.
     float GetFrequency() const { return (float)frequency_; }
+
     /// Return default frequency as an integer.
     unsigned GetIntFrequency() const { return frequency_; }
+
     /// Return whether is looped.
     bool IsLooped() const { return looped_; }
+
     /// Return whether data is sixteen bit.
     bool IsSixteenBit() const { return sixteenBit_; }
+
     /// Return whether data is stereo.
     bool IsStereo() const { return stereo_; }
+
     /// Return whether is compressed.
     bool IsCompressed() const { return compressed_; }
 

@@ -1,7 +1,9 @@
+
+
 #pragma once
 
-#include "../../Graphics/RenderSurface.h"
 #include "../../Container/Ptr.h"
+#include "../../Graphics/RenderSurface.h"
 #include "../../Graphics/Texture.h"
 
 namespace Clockwork
@@ -41,6 +43,7 @@ public:
 
     /// Get data from a face's mip level. The destination buffer must be big enough. Return true if successful.
     bool GetData(CubeMapFace face, unsigned level, void* dest) const;
+
     /// Return render surface for one face.
     RenderSurface* GetRenderSurface(CubeMapFace face) const { return renderSurfaces_[face]; }
 

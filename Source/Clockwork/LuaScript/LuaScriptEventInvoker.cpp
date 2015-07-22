@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../LuaScript/LuaFunction.h"
 #include "../LuaScript/LuaScriptEventInvoker.h"
 #include "../LuaScript/LuaScriptInstance.h"

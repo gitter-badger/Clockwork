@@ -1,10 +1,12 @@
+
+
 #pragma once
 
 #include "../Container/ArrayPtr.h"
-#include "../IO/Deserializer.h"
 #include "../Core/Mutex.h"
 #include "../Container/RefCounted.h"
 #include "../Core/Thread.h"
+#include "../IO/Deserializer.h"
 
 namespace Clockwork
 {
@@ -37,14 +39,17 @@ public:
 
     /// Return URL used in the request.
     const String& GetURL() const { return url_; }
+
     /// Return verb used in the request. Default GET if empty verb specified on construction.
     const String& GetVerb() const { return verb_; }
+
     /// Return error. Only non-empty in the error state.
     String GetError() const;
     /// Return connection state.
     HttpRequestState GetState() const;
     /// Return amount of bytes in the read buffer.
     unsigned GetAvailableSize() const;
+
     /// Return whether connection is in the open state.
     bool IsOpen() const { return GetState() == HTTP_OPEN; }
 

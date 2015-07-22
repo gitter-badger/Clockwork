@@ -38,13 +38,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ----------------------------------------------------------------------
 */
 
-#ifndef ASSIMP_BUILD_NO_OGRE_IMPORTER
-
 #include "AssimpPCH.h"
 
 #include "OgreImporter.h"
 #include "OgreBinarySerializer.h"
 #include "OgreXmlSerializer.h"
+
+#ifndef ASSIMP_BUILD_NO_OGRE_IMPORTER
 
 static const aiImporterDesc desc = {
 	"Ogre3D Mesh Importer",
@@ -108,10 +108,10 @@ void OgreImporter::InternReadFile(const std::string &pFile, aiScene *pScene, Ass
 		MemoryStreamReader reader(f);
 
 		// Import mesh
-		boost::scoped_ptr<Mesh> mesh(OgreBinarySerializer::ImportMesh(&reader));
+		boost::scoped_ptr<Mesh> mesh = OgreBinarySerializer::ImportMesh(&reader);
 
 		// Import skeleton
-		OgreBinarySerializer::ImportSkeleton(pIOHandler, mesh.get());
+		OgreBinarySerializer::ImportSkeleton(pIOHandler, mesh);
 
 		// Import mesh referenced materials
 		ReadMaterials(pFile, pIOHandler, pScene, mesh.get());
@@ -128,10 +128,10 @@ void OgreImporter::InternReadFile(const std::string &pFile, aiScene *pScene, Ass
 		boost::scoped_ptr<XmlReader> reader(irr::io::createIrrXMLReader(xmlStream.get()));
 
 		// Import mesh
-		boost::scoped_ptr<MeshXml> mesh(OgreXmlSerializer::ImportMesh(reader.get()));
+		boost::scoped_ptr<MeshXml> mesh = OgreXmlSerializer::ImportMesh(reader.get());
 		
 		// Import skeleton
-		OgreXmlSerializer::ImportSkeleton(pIOHandler, mesh.get());
+		OgreXmlSerializer::ImportSkeleton(pIOHandler, mesh);
 
 		// Import mesh referenced materials
 		ReadMaterials(pFile, pIOHandler, pScene, mesh.get());

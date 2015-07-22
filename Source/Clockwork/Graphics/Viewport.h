@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Core/Object.h"
@@ -49,12 +51,16 @@ public:
     Camera* GetCamera() const;
     /// Return the internal rendering structure. May be null if the viewport has not been rendered yet.
     View* GetView() const;
+
     /// Return rectangle.
     const IntRect& GetRect() const { return rect_; }
+
     /// Return rendering path.
     RenderPath* GetRenderPath() const;
+
     /// Return whether to draw debug geometry.
     bool GetDrawDebug() const { return drawDebug_; }
+
     /// Return ray corresponding to normalized screen coordinates.
     Ray GetScreenRay(int x, int y) const;
     // Convert a world space point to normalized screen coordinates.

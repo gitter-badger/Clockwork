@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Container/VectorBase.h"
@@ -48,7 +50,7 @@ public:
     }
 
     /// Assign from another vector.
-    Vector<T>& operator = (const Vector<T>& rhs)
+    Vector<T>& operator =(const Vector<T>& rhs)
     {
         Clear();
         Resize(rhs.size_, rhs.Buffer());
@@ -56,21 +58,21 @@ public:
     }
 
     /// Add-assign an element.
-    Vector<T>& operator += (const T& rhs)
+    Vector<T>& operator +=(const T& rhs)
     {
         Push(rhs);
         return *this;
     }
 
     /// Add-assign another vector.
-    Vector<T>& operator += (const Vector<T>& rhs)
+    Vector<T>& operator +=(const Vector<T>& rhs)
     {
         Push(rhs);
         return *this;
     }
 
     /// Add an element.
-    Vector<T> operator + (const T& rhs) const
+    Vector<T> operator +(const T& rhs) const
     {
         Vector<T> ret(*this);
         ret.Push(rhs);
@@ -78,7 +80,7 @@ public:
     }
 
     /// Add another vector.
-    Vector<T> operator + (const Vector<T>& rhs) const
+    Vector<T> operator +(const Vector<T>& rhs) const
     {
         Vector<T> ret(*this);
         ret.Push(rhs);
@@ -86,7 +88,7 @@ public:
     }
 
     /// Test for equality with another vector.
-    bool operator == (const Vector<T>& rhs) const
+    bool operator ==(const Vector<T>& rhs) const
     {
         if (rhs.size_ != size_)
             return false;
@@ -103,7 +105,7 @@ public:
     }
 
     /// Test for inequality with another vector.
-    bool operator != (const Vector<T>& rhs) const
+    bool operator !=(const Vector<T>& rhs) const
     {
         if (rhs.size_ != size_)
             return true;
@@ -120,16 +122,36 @@ public:
     }
 
     /// Return element at index.
-    T& operator [] (unsigned index) { assert(index < size_); return Buffer()[index]; }
+    T& operator [](unsigned index)
+    {
+        assert(index < size_);
+        return Buffer()[index];
+    }
+
     /// Return const element at index.
-    const T& operator [] (unsigned index) const { assert(index < size_); return Buffer()[index]; }
+    const T& operator [](unsigned index) const
+    {
+        assert(index < size_);
+        return Buffer()[index];
+    }
+
     /// Return element at index.
-    T& At(unsigned index) { assert(index < size_); return Buffer()[index]; }
+    T& At(unsigned index)
+    {
+        assert(index < size_);
+        return Buffer()[index];
+    }
+
     /// Return const element at index.
-    const T& At(unsigned index) const { assert(index < size_); return Buffer()[index]; }
+    const T& At(unsigned index) const
+    {
+        assert(index < size_);
+        return Buffer()[index];
+    }
 
     /// Add an element at the end.
     void Push(const T& value) { Resize(size_ + 1, &value); }
+
     /// Add another vector at the end.
     void Push(const Vector<T>& vector) { Resize(size_ + vector.size_, vector.Buffer()); }
 
@@ -167,7 +189,7 @@ public:
     /// Insert an element by iterator.
     Iterator Insert(const Iterator& dest, const T& value)
     {
-        unsigned pos = dest - Begin();
+        unsigned pos = (unsigned)(dest - Begin());
         if (pos > size_)
             pos = size_;
         Insert(pos, value);
@@ -178,7 +200,7 @@ public:
     /// Insert a vector by iterator.
     Iterator Insert(const Iterator& dest, const Vector<T>& vector)
     {
-        unsigned pos = dest - Begin();
+        unsigned pos = (unsigned)(dest - Begin());
         if (pos > size_)
             pos = size_;
         Insert(pos, vector);
@@ -189,7 +211,7 @@ public:
     /// Insert a vector partially by iterators.
     Iterator Insert(const Iterator& dest, const ConstIterator& start, const ConstIterator& end)
     {
-        unsigned pos = dest - Begin();
+        unsigned pos = (unsigned)(dest - Begin());
         if (pos > size_)
             pos = size_;
         unsigned length = (unsigned)(end - start);
@@ -206,7 +228,7 @@ public:
     /// Insert elements.
     Iterator Insert(const Iterator& dest, const T* start, const T* end)
     {
-        unsigned pos = dest - Begin();
+        unsigned pos = (unsigned)(dest - Begin());
         if (pos > size_)
             pos = size_;
         unsigned length = (unsigned)(end - start);
@@ -234,7 +256,7 @@ public:
     /// Erase an element by iterator. Return iterator to the next element.
     Iterator Erase(const Iterator& it)
     {
-        unsigned pos = it - Begin();
+        unsigned pos = (unsigned)(it - Begin());
         if (pos >= size_)
             return End();
         Erase(pos);
@@ -245,7 +267,7 @@ public:
     /// Erase a range by iterators. Return iterator to the next element.
     Iterator Erase(const Iterator& start, const Iterator& end)
     {
-        unsigned pos = start - Begin();
+        unsigned pos = (unsigned)(start - Begin());
         if (pos >= size_)
             return End();
         unsigned length = (unsigned)(end - start);
@@ -269,6 +291,7 @@ public:
 
     /// Clear the vector.
     void Clear() { Resize(0); }
+
     /// Resize the vector.
     void Resize(unsigned newSize) { Resize(newSize, 0); }
 
@@ -285,7 +308,7 @@ public:
 
             if (capacity_)
             {
-                newBuffer = reinterpret_cast<T*>(AllocateBuffer(capacity_ * sizeof(T)));
+                newBuffer = reinterpret_cast<T*>(AllocateBuffer((unsigned)(capacity_ * sizeof(T))));
                 // Move the data into the new buffer
                 ConstructElements(newBuffer, Buffer(), size_);
             }
@@ -323,24 +346,50 @@ public:
 
     /// Return iterator to the beginning.
     Iterator Begin() { return Iterator(Buffer()); }
+
     /// Return const iterator to the beginning.
     ConstIterator Begin() const { return ConstIterator(Buffer()); }
+
     /// Return iterator to the end.
     Iterator End() { return Iterator(Buffer() + size_); }
+
     /// Return const iterator to the end.
     ConstIterator End() const { return ConstIterator(Buffer() + size_); }
+
     /// Return first element.
-    T& Front() { assert(size_); return Buffer()[0]; }
+    T& Front()
+    {
+        assert(size_);
+        return Buffer()[0];
+    }
+
     /// Return const first element.
-    const T& Front() const { assert(size_); return Buffer()[0]; }
+    const T& Front() const
+    {
+        assert(size_);
+        return Buffer()[0];
+    }
+
     /// Return last element.
-    T& Back() { assert(size_); return Buffer()[size_ - 1]; }
+    T& Back()
+    {
+        assert(size_);
+        return Buffer()[size_ - 1];
+    }
+
     /// Return const last element.
-    const T& Back() const { assert(size_); return Buffer()[size_ - 1]; }
+    const T& Back() const
+    {
+        assert(size_);
+        return Buffer()[size_ - 1];
+    }
+
     /// Return size of vector.
     unsigned Size() const { return size_; }
+
     /// Return capacity of vector.
     unsigned Capacity() const { return capacity_; }
+
     /// Return whether vector is empty.
     bool Empty() const { return size_ == 0; }
 
@@ -348,7 +397,7 @@ private:
     /// Return the buffer with right type.
     T* Buffer() const { return reinterpret_cast<T*>(buffer_); }
 
-   /// Resize the vector and create/remove new elements as necessary.
+    /// Resize the vector and create/remove new elements as necessary.
     void Resize(unsigned newSize, const T* src)
     {
         // If size shrinks, destruct the removed elements
@@ -367,7 +416,7 @@ private:
                         capacity_ += (capacity_ + 1) >> 1;
                 }
 
-                unsigned char* newBuffer = AllocateBuffer(capacity_ * sizeof(T));
+                unsigned char* newBuffer = AllocateBuffer((unsigned)(capacity_ * sizeof(T)));
                 if (buffer_)
                 {
                     ConstructElements(reinterpret_cast<T*>(newBuffer), Buffer(), size_);
@@ -472,7 +521,7 @@ public:
     }
 
     /// Assign from another vector.
-    PODVector<T>& operator = (const PODVector<T>& rhs)
+    PODVector<T>& operator =(const PODVector<T>& rhs)
     {
         Resize(rhs.size_);
         CopyElements(Buffer(), rhs.Buffer(), rhs.size_);
@@ -480,21 +529,21 @@ public:
     }
 
     /// Add-assign an element.
-    PODVector<T>& operator += (const T& rhs)
+    PODVector<T>& operator +=(const T& rhs)
     {
         Push(rhs);
         return *this;
     }
 
     /// Add-assign another vector.
-    PODVector<T>& operator += (const PODVector<T>& rhs)
+    PODVector<T>& operator +=(const PODVector<T>& rhs)
     {
         Push(rhs);
         return *this;
     }
 
     /// Add an element.
-    PODVector<T> operator + (const T& rhs) const
+    PODVector<T> operator +(const T& rhs) const
     {
         PODVector<T> ret(*this);
         ret.Push(rhs);
@@ -502,7 +551,7 @@ public:
     }
 
     /// Add another vector.
-    PODVector<T> operator + (const PODVector<T>& rhs) const
+    PODVector<T> operator +(const PODVector<T>& rhs) const
     {
         PODVector<T> ret(*this);
         ret.Push(rhs);
@@ -510,7 +559,7 @@ public:
     }
 
     /// Test for equality with another vector.
-    bool operator == (const PODVector<T>& rhs) const
+    bool operator ==(const PODVector<T>& rhs) const
     {
         if (rhs.size_ != size_)
             return false;
@@ -527,7 +576,7 @@ public:
     }
 
     /// Test for inequality with another vector.
-    bool operator != (const PODVector<T>& rhs) const
+    bool operator !=(const PODVector<T>& rhs) const
     {
         if (rhs.size_ != size_)
             return true;
@@ -544,13 +593,32 @@ public:
     }
 
     /// Return element at index.
-    T& operator [] (unsigned index) { assert(index < size_); return Buffer()[index]; }
+    T& operator [](unsigned index)
+    {
+        assert(index < size_);
+        return Buffer()[index];
+    }
+
     /// Return const element at index.
-    const T& operator [] (unsigned index) const { assert(index < size_); return Buffer()[index]; }
+    const T& operator [](unsigned index) const
+    {
+        assert(index < size_);
+        return Buffer()[index];
+    }
+
     /// Return element at index.
-    T& At(unsigned index) { assert(index < size_); return Buffer()[index]; }
+    T& At(unsigned index)
+    {
+        assert(index < size_);
+        return Buffer()[index];
+    }
+
     /// Return const element at index.
-    const T& At(unsigned index) const { assert(index < size_); return Buffer()[index]; }
+    const T& At(unsigned index) const
+    {
+        assert(index < size_);
+        return Buffer()[index];
+    }
 
     /// Add an element at the end.
     void Push(const T& value)
@@ -604,7 +672,7 @@ public:
     /// Insert an element by iterator.
     Iterator Insert(const Iterator& dest, const T& value)
     {
-        unsigned pos = dest - Begin();
+        unsigned pos = (unsigned)(dest - Begin());
         if (pos > size_)
             pos = size_;
         Insert(pos, value);
@@ -615,7 +683,7 @@ public:
     /// Insert a vector by iterator.
     Iterator Insert(const Iterator& dest, const PODVector<T>& vector)
     {
-        unsigned pos = dest - Begin();
+        unsigned pos = (unsigned)(dest - Begin());
         if (pos > size_)
             pos = size_;
         Insert(pos, vector);
@@ -626,7 +694,7 @@ public:
     /// Insert a vector partially by iterators.
     Iterator Insert(const Iterator& dest, const ConstIterator& start, const ConstIterator& end)
     {
-        unsigned pos = dest - Begin();
+        unsigned pos = (unsigned)(dest - Begin());
         if (pos > size_)
             pos = size_;
         unsigned length = (unsigned)(end - start);
@@ -640,7 +708,7 @@ public:
     /// Insert elements.
     Iterator Insert(const Iterator& dest, const T* start, const T* end)
     {
-        unsigned pos = dest - Begin();
+        unsigned pos = (unsigned)(dest - Begin());
         if (pos > size_)
             pos = size_;
         unsigned length = (unsigned)(end - start);
@@ -668,7 +736,7 @@ public:
     /// Erase an element by iterator. Return iterator to the next element.
     Iterator Erase(const Iterator& it)
     {
-        unsigned pos = it - Begin();
+        unsigned pos = (unsigned)(it - Begin());
         if (pos >= size_)
             return End();
         Erase(pos);
@@ -679,7 +747,7 @@ public:
     /// Erase a range by iterators. Return iterator to the next element.
     Iterator Erase(const Iterator& start, const Iterator& end)
     {
-        unsigned pos = start - Begin();
+        unsigned pos = (unsigned)(start - Begin());
         if (pos >= size_)
             return End();
         unsigned length = (unsigned)(end - start);
@@ -717,7 +785,7 @@ public:
                     capacity_ += (capacity_ + 1) >> 1;
             }
 
-            unsigned char* newBuffer = AllocateBuffer(capacity_ * sizeof(T));
+            unsigned char* newBuffer = AllocateBuffer((unsigned)(capacity_ * sizeof(T)));
             // Move the data into the new buffer and delete the old
             if (buffer_)
             {
@@ -743,7 +811,7 @@ public:
 
             if (capacity_)
             {
-                newBuffer = AllocateBuffer(capacity_ * sizeof(T));
+                newBuffer = AllocateBuffer((unsigned)(capacity_ * sizeof(T)));
                 // Move the data into the new buffer
                 CopyElements(reinterpret_cast<T*>(newBuffer), Buffer(), size_);
             }
@@ -777,26 +845,45 @@ public:
 
     /// Return whether contains a specific value.
     bool Contains(const T& value) const { return Find(value) != End(); }
+
     /// Return iterator to the beginning.
     Iterator Begin() { return Iterator(Buffer()); }
+
     /// Return const iterator to the beginning.
     ConstIterator Begin() const { return ConstIterator(Buffer()); }
+
     /// Return iterator to the end.
     Iterator End() { return Iterator(Buffer() + size_); }
+
     /// Return const iterator to the end.
     ConstIterator End() const { return ConstIterator(Buffer() + size_); }
+
     /// Return first element.
     T& Front() { return Buffer()[0]; }
+
     /// Return const first element.
     const T& Front() const { return Buffer()[0]; }
+
     /// Return last element.
-    T& Back() { assert(size_); return Buffer()[size_ - 1]; }
+    T& Back()
+    {
+        assert(size_);
+        return Buffer()[size_ - 1];
+    }
+
     /// Return const last element.
-    const T& Back() const { assert(size_); return Buffer()[size_ - 1]; }
+    const T& Back() const
+    {
+        assert(size_);
+        return Buffer()[size_ - 1];
+    }
+
     /// Return number of elements.
     unsigned Size() const { return size_; }
+
     /// Return capacity of vector.
     unsigned Capacity() const { return capacity_; }
+
     /// Return whether vector is empty.
     bool Empty() const { return size_ == 0; }
 
@@ -825,13 +912,19 @@ namespace std
 {
 
 template <class T> typename Clockwork::Vector<T>::ConstIterator begin(const Clockwork::Vector<T>& v) { return v.Begin(); }
+
 template <class T> typename Clockwork::Vector<T>::ConstIterator end(const Clockwork::Vector<T>& v) { return v.End(); }
+
 template <class T> typename Clockwork::Vector<T>::Iterator begin(Clockwork::Vector<T>& v) { return v.Begin(); }
+
 template <class T> typename Clockwork::Vector<T>::Iterator end(Clockwork::Vector<T>& v) { return v.End(); }
 
 template <class T> typename Clockwork::PODVector<T>::ConstIterator begin(const Clockwork::PODVector<T>& v) { return v.Begin(); }
+
 template <class T> typename Clockwork::PODVector<T>::ConstIterator end(const Clockwork::PODVector<T>& v) { return v.End(); }
+
 template <class T> typename Clockwork::PODVector<T>::Iterator begin(Clockwork::PODVector<T>& v) { return v.Begin(); }
+
 template <class T> typename Clockwork::PODVector<T>::Iterator end(Clockwork::PODVector<T>& v) { return v.End(); }
 
 }

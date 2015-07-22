@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Scene/Component.h"
@@ -26,12 +28,16 @@ class CLOCKWORK_API LogicComponent : public Component
 
     /// Handle enabled/disabled state change. Changes update event subscription.
     virtual void OnSetEnabled();
+
     /// Called when the component is added to a scene node. Other components may not yet exist.
-    virtual void Start() {}
+    virtual void Start() { }
+
     /// Called before the first update. At this point all other components of the node should exist. Will also be called if update events are not wanted; in that case the event is immediately unsubscribed afterward.
-    virtual void DelayedStart() {}
+    virtual void DelayedStart() { }
+
     /// Called when the component is detached from a scene node, usually on destruction. Note that you will no longer have access to the node and scene at that point.
-    virtual void Stop() {}
+    virtual void Stop() { }
+
     /// Called on scene update, variable timestep.
     virtual void Update(float timeStep);
     /// Called on scene post-update, variable timestep.
@@ -46,12 +52,15 @@ class CLOCKWORK_API LogicComponent : public Component
 
     /// Return what update events are subscribed to.
     unsigned char GetUpdateEventMask() const { return updateEventMask_; }
+
     /// Return whether the DelayedStart() function has been called.
     bool IsDelayedStartCalled() const { return delayedStartCalled_; }
 
 protected:
     /// Handle scene node being assigned at creation.
     virtual void OnNodeSet(Node* node);
+    /// Handle scene being assigned.
+    virtual void OnSceneSet(Scene* scene);
 
 private:
     /// Subscribe/unsubscribe to update events based on current enabled state and update event mask.

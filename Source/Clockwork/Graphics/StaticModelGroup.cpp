@@ -1,12 +1,16 @@
+
+
+#include "../Precompiled.h"
+
+#include "../Core/Context.h"
 #include "../Graphics/Batch.h"
 #include "../Graphics/Camera.h"
-#include "../Core/Context.h"
 #include "../Graphics/Geometry.h"
 #include "../Graphics/Material.h"
 #include "../Graphics/OcclusionBuffer.h"
 #include "../Graphics/OctreeQuery.h"
-#include "../Scene/Scene.h"
 #include "../Graphics/StaticModelGroup.h"
+#include "../Scene/Scene.h"
 
 #include "../DebugNew.h"
 
@@ -32,7 +36,8 @@ void StaticModelGroup::RegisterObject(Context* context)
     context->RegisterFactory<StaticModelGroup>(GEOMETRY_CATEGORY);
 
     COPY_BASE_ATTRIBUTES(StaticModel);
-    ACCESSOR_ATTRIBUTE("Instance Nodes", GetNodeIDsAttr, SetNodeIDsAttr, VariantVector, Variant::emptyVariantVector, AM_DEFAULT | AM_NODEIDVECTOR);
+    ACCESSOR_ATTRIBUTE("Instance Nodes", GetNodeIDsAttr, SetNodeIDsAttr, VariantVector, Variant::emptyVariantVector,
+        AM_DEFAULT | AM_NODEIDVECTOR);
 }
 
 void StaticModelGroup::ApplyAttributes()
@@ -350,7 +355,7 @@ void StaticModelGroup::OnWorldBoundingBoxUpdate()
 
     worldBoundingBox_ = worldBox;
 
-    // Store the amount of valid instances we found instead of resizing worldTransforms_. This is because this function may be
+    // Store the amount of valid instances we found instead of resizing worldTransforms_. This is because this function may be 
     // called from multiple worker threads simultaneously
     numWorldTransforms_ = index;
 }

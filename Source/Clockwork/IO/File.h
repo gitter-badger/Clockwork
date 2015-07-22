@@ -1,9 +1,11 @@
+
+
 #pragma once
 
 #include "../Container/ArrayPtr.h"
+#include "../Core/Object.h"
 #include "../IO/Deserializer.h"
 #include "../IO/Serializer.h"
-#include "../Core/Object.h"
 
 #ifdef ANDROID
 #include <SDL/SDL_rwops.h>
@@ -43,8 +45,10 @@ public:
     virtual unsigned Seek(unsigned position);
     /// Write bytes to the file. Return number of bytes actually written.
     virtual unsigned Write(const void* data, unsigned size);
+
     /// Return the file name.
     virtual const String& GetName() const { return fileName_; }
+
     /// Return a checksum of the file contents using the SDBM hash algorithm.
     virtual unsigned GetChecksum();
 
@@ -61,10 +65,13 @@ public:
 
     /// Return the open mode.
     FileMode GetMode() const { return mode_; }
+
     /// Return whether is open.
     bool IsOpen() const;
+
     /// Return the file handle.
     void* GetHandle() const { return handle_; }
+
     /// Return whether the file originates from a package.
     bool IsPackaged() const { return offset_ != 0; }
 
@@ -75,10 +82,10 @@ private:
     FileMode mode_;
     /// File handle.
     void* handle_;
-    #ifdef ANDROID
+#ifdef ANDROID
     /// SDL RWops context for Android asset loading.
     SDL_RWops* assetHandle_;
-    #endif
+#endif
     /// Read buffer for Android asset or compressed file loading.
     SharedArrayPtr<unsigned char> readBuffer_;
     /// Decompression input buffer for compressed file loading.

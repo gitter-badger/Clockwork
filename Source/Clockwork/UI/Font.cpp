@@ -1,11 +1,15 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
+#include "../Core/Profiler.h"
+#include "../Graphics/Graphics.h"
 #include "../IO/Deserializer.h"
 #include "../IO/FileSystem.h"
 #include "../UI/Font.h"
 #include "../UI/FontFaceBitmap.h"
 #include "../UI/FontFaceFreeType.h"
-#include "../Graphics/Graphics.h"
-#include "../Core/Profiler.h"
 #include "../Resource/ResourceCache.h"
 #include "../Resource/XMLElement.h"
 #include "../Resource/XMLFile.h"

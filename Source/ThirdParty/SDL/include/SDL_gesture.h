@@ -78,7 +78,7 @@ extern DECLSPEC int SDLCALL SDL_SaveDollarTemplate(SDL_GestureID gestureId,SDL_R
 extern DECLSPEC int SDLCALL SDL_LoadDollarTemplates(SDL_TouchID touchId, SDL_RWops *src);
 
 
-// Clockwork3d: added functions
+// Clockwork: added functions
 extern DECLSPEC int SDLCALL SDL_RemoveDollarTemplate(SDL_GestureID gestureId);
 extern DECLSPEC void SDLCALL SDL_RemoveAllDollarTemplates(void);
 

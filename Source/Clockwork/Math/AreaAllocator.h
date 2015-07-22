@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Rect.h"
@@ -20,10 +22,13 @@ public:
     void Reset(int width, int height, int maxWidth = 0, int maxHeight = 0, bool fastMode = true);
     /// Try to allocate an area. Return true if successful, with x & y coordinates filled.
     bool Allocate(int width, int height, int& x, int& y);
+
     /// Return the current width.
     int GetWidth() const { return size_.x_; }
+
     /// Return the current height.
     int GetHeight() const { return size_.y_; }
+
     /// Return whether uses fast mode. Fast mode uses a simpler allocation scheme which may waste free space, but is OK for eg. fonts.
     bool GetFastMode() const { return fastMode_; }
 

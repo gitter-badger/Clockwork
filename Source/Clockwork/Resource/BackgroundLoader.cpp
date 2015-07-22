@@ -1,10 +1,13 @@
-#include "../Resource/BackgroundLoader.h"
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
-#include "../IO/Log.h"
 #include "../Core/Profiler.h"
+#include "../IO/Log.h"
+#include "../Resource/BackgroundLoader.h"
 #include "../Resource/ResourceCache.h"
 #include "../Resource/ResourceEvents.h"
-#include "../Core/Timer.h"
 
 #include "../DebugNew.h"
 
@@ -60,11 +63,10 @@ void BackgroundLoader::ThreadFunction()
             backgroundLoadMutex_.Acquire();
             if (item.dependents_.Size())
             {
-                for (HashSet<Pair<StringHash, StringHash> >::Iterator i = item.dependents_.Begin(); i != item.dependents_.End();
-                    ++i)
+                for (HashSet<Pair<StringHash, StringHash> >::Iterator i = item.dependents_.Begin();
+                     i != item.dependents_.End(); ++i)
                 {
-                    HashMap<Pair<StringHash, StringHash>, BackgroundLoadItem>::Iterator j =
-                        backgroundLoadQueue_.Find(*i);
+                    HashMap<Pair<StringHash, StringHash>, BackgroundLoadItem>::Iterator j = backgroundLoadQueue_.Find(*i);
                     if (j != backgroundLoadQueue_.End())
                         j->second_.dependencies_.Erase(key);
                 }
@@ -128,7 +130,8 @@ bool BackgroundLoader::QueueResource(StringHash type, const String& name, bool s
             callerItem.dependencies_.Insert(key);
         }
         else
-            LOGWARNING("Resource " + caller->GetName() + " requested for a background loaded resource but was not in the background load queue");
+            LOGWARNING("Resource " + caller->GetName() +
+                       " requested for a background loaded resource but was not in the background load queue");
     }
 
     // Start the background loader thread now
@@ -168,7 +171,8 @@ void BackgroundLoader::WaitForResource(StringHash type, StringHash nameHash)
             }
 
             if (didWait)
-                LOGDEBUG("Waited " + String(waitTimer.GetUSec(false) / 1000) + " ms for background loaded resource " + resource->GetName());
+                LOGDEBUG("Waited " + String(waitTimer.GetUSec(false) / 1000) + " ms for background loaded resource " +
+                         resource->GetName());
         }
 
         // This may take a long time and may potentially wait on other resources, so it is important we do not hold the mutex during this
@@ -191,7 +195,7 @@ void BackgroundLoader::FinishResources(int maxMs)
         backgroundLoadMutex_.Acquire();
 
         for (HashMap<Pair<StringHash, StringHash>, BackgroundLoadItem>::Iterator i = backgroundLoadQueue_.Begin();
-            i != backgroundLoadQueue_.End();)
+             i != backgroundLoadQueue_.End();)
         {
             Resource* resource = i->second_.resource_;
             unsigned numDeps = i->second_.dependencies_.Size();

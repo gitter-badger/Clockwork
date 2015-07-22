@@ -1,6 +1,8 @@
-#include "../Math/BoundingBox.h"
+
+
+#include "../Precompiled.h"
+
 #include "../IO/Serializer.h"
-#include "../Core/Variant.h"
 
 #include "../DebugNew.h"
 
@@ -45,10 +47,15 @@ bool Serializer::WriteUByte(unsigned char value)
 
 bool Serializer::WriteBool(bool value)
 {
-    return WriteUByte(value ? 1 : 0) == 1;
+    return WriteUByte((unsigned char)(value ? 1 : 0)) == 1;
 }
 
 bool Serializer::WriteFloat(float value)
+{
+    return Write(&value, sizeof value) == sizeof value;
+}
+
+bool Serializer::WriteDouble(double value)
 {
     return Write(&value, sizeof value) == sizeof value;
 }
@@ -150,7 +157,7 @@ bool Serializer::WriteString(const String& value)
 bool Serializer::WriteFileID(const String& value)
 {
     bool success = true;
-    unsigned length = Min((int)value.Length(), 4);
+    unsigned length = (unsigned)Min((int)value.Length(), 4);
 
     success &= Write(value.CString(), length) == length;
     for (unsigned i = value.Length(); i < 4; ++i)
@@ -272,6 +279,9 @@ bool Serializer::WriteVariantData(const Variant& value)
 
     case VAR_MATRIX4:
         return WriteMatrix4(value.GetMatrix4());
+        
+    case VAR_DOUBLE:
+        return WriteDouble(value.GetDouble());
 
     default:
         return false;
@@ -304,26 +314,26 @@ bool Serializer::WriteVLE(unsigned value)
     unsigned char data[4];
 
     if (value < 0x80)
-        return WriteUByte(value);
+        return WriteUByte((unsigned char)value);
     else if (value < 0x4000)
     {
-        data[0] = value | 0x80;
-        data[1] = value >> 7;
+        data[0] = (unsigned char)(value | 0x80);
+        data[1] = (unsigned char)(value >> 7);
         return Write(data, 2) == 2;
     }
     else if (value < 0x200000)
     {
-        data[0] = value | 0x80;
-        data[1] = (value >> 7) | 0x80;
-        data[2] = value >> 14;
+        data[0] = (unsigned char)(value | 0x80);
+        data[1] = (unsigned char)((value >> 7) | 0x80);
+        data[2] = (unsigned char)(value >> 14);
         return Write(data, 3) == 3;
     }
     else
     {
-        data[0] = value | 0x80;
-        data[1] = (value >> 7) | 0x80;
-        data[2] = (value >> 14) | 0x80;
-        data[3] = (value >> 21);
+        data[0] = (unsigned char)(value | 0x80);
+        data[1] = (unsigned char)((value >> 7) | 0x80);
+        data[2] = (unsigned char)((value >> 14) | 0x80);
+        data[3] = (unsigned char)(value >> 21);
         return Write(data, 4) == 4;
     }
 }

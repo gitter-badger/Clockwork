@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Clockwork2D/Constraint2D.h"
@@ -12,7 +14,7 @@ class CLOCKWORK_API ConstraintWeld2D : public Constraint2D
 
 public:
     /// Construct.
-    ConstraintWeld2D(Context* scontext);
+    ConstraintWeld2D(Context* context);
     /// Destruct.
     virtual ~ConstraintWeld2D();
     /// Register object factory.
@@ -27,8 +29,10 @@ public:
 
     /// Return anchor.
     const Vector2& GetAnchor() const { return anchor_; }
+
     /// Return frequency Hz.
     float GetFrequencyHz() const { return jointDef_.frequencyHz; }
+
     /// Return damping ratio.
     float GetDampingRatio() const { return jointDef_.dampingRatio; }
 

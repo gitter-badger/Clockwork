@@ -1,16 +1,20 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../Core/CoreEvents.h"
+#include "../Core/Profiler.h"
 #include "../Engine/EngineEvents.h"
 #include "../IO/FileSystem.h"
-#include "../Network/HttpRequest.h"
 #include "../Input/InputEvents.h"
 #include "../IO/IOEvents.h"
 #include "../IO/Log.h"
 #include "../IO/MemoryBuffer.h"
+#include "../Network/HttpRequest.h"
 #include "../Network/Network.h"
 #include "../Network/NetworkEvents.h"
 #include "../Network/NetworkPriority.h"
-#include "../Core/Profiler.h"
 #include "../Network/Protocol.h"
 #include "../Scene/Scene.h"
 
@@ -95,14 +99,15 @@ Network::~Network()
     network_ = 0;
 }
 
-void Network::HandleMessage(kNet::MessageConnection *source, kNet::packet_id_t packetId, kNet::message_id_t msgId, const char *data, size_t numBytes)
+void Network::HandleMessage(kNet::MessageConnection* source, kNet::packet_id_t packetId, kNet::message_id_t msgId, const char* data,
+    size_t numBytes)
 {
     // Only process messages from known sources
     Connection* connection = GetConnection(source);
     if (connection)
     {
         MemoryBuffer msg(data, (unsigned)numBytes);
-        if (connection->ProcessMessage(msgId, msg))
+        if (connection->ProcessMessage((int)msgId, msg))
             return;
 
         // If message was not handled internally, forward as an event
@@ -257,7 +262,7 @@ void Network::BroadcastMessage(int msgID, bool reliable, bool inOrder, const Vec
 void Network::BroadcastMessage(int msgID, bool reliable, bool inOrder, const unsigned char* data, unsigned numBytes,
     unsigned contentID)
 {
-   // Make sure not to use kNet internal message ID's
+    // Make sure not to use kNet internal message ID's
     if (msgID <= 0x4 || msgID >= 0x3ffffffe)
     {
         LOGERROR("Can not send message with reserved ID");
@@ -266,7 +271,7 @@ void Network::BroadcastMessage(int msgID, bool reliable, bool inOrder, const uns
 
     kNet::NetworkServer* server = network_->GetServer();
     if (server)
-        server->BroadcastMessage(msgID, reliable, inOrder, 0, contentID, (const char*)data, numBytes);
+        server->BroadcastMessage((unsigned long)msgID, reliable, inOrder, 0, contentID, (const char*)data, numBytes);
     else
         LOGERROR("Server not running, can not broadcast messages");
 }
@@ -274,14 +279,14 @@ void Network::BroadcastMessage(int msgID, bool reliable, bool inOrder, const uns
 void Network::BroadcastRemoteEvent(StringHash eventType, bool inOrder, const VariantMap& eventData)
 {
     for (HashMap<kNet::MessageConnection*, SharedPtr<Connection> >::Iterator i = clientConnections_.Begin();
-        i != clientConnections_.End(); ++i)
+         i != clientConnections_.End(); ++i)
         i->second_->SendRemoteEvent(eventType, inOrder, eventData);
 }
 
 void Network::BroadcastRemoteEvent(Scene* scene, StringHash eventType, bool inOrder, const VariantMap& eventData)
 {
     for (HashMap<kNet::MessageConnection*, SharedPtr<Connection> >::Iterator i = clientConnections_.Begin();
-        i != clientConnections_.End(); ++i)
+         i != clientConnections_.End(); ++i)
     {
         if (i->second_->GetScene() == scene)
             i->second_->SendRemoteEvent(eventType, inOrder, eventData);
@@ -303,7 +308,7 @@ void Network::BroadcastRemoteEvent(Node* node, StringHash eventType, bool inOrde
 
     Scene* scene = node->GetScene();
     for (HashMap<kNet::MessageConnection*, SharedPtr<Connection> >::Iterator i = clientConnections_.Begin();
-        i != clientConnections_.End(); ++i)
+         i != clientConnections_.End(); ++i)
     {
         if (i->second_->GetScene() == scene)
             i->second_->SendRemoteEvent(node, eventType, inOrder, eventData);
@@ -369,14 +374,15 @@ void Network::SendPackageToClients(Scene* scene, PackageFile* package)
     }
 
     for (HashMap<kNet::MessageConnection*, SharedPtr<Connection> >::Iterator i = clientConnections_.Begin();
-        i != clientConnections_.End(); ++i)
+         i != clientConnections_.End(); ++i)
     {
         if (i->second_->GetScene() == scene)
             i->second_->SendPackageToClient(package);
     }
 }
 
-SharedPtr<HttpRequest> Network::MakeHttpRequest(const String& url, const String& verb, const Vector<String>& headers, const String& postData)
+SharedPtr<HttpRequest> Network::MakeHttpRequest(const String& url, const String& verb, const Vector<String>& headers,
+    const String& postData)
 {
     PROFILE(MakeHttpRequest);
 
@@ -408,7 +414,7 @@ Vector<SharedPtr<Connection> > Network::GetClientConnections() const
 {
     Vector<SharedPtr<Connection> > ret;
     for (HashMap<kNet::MessageConnection*, SharedPtr<Connection> >::ConstIterator i = clientConnections_.Begin();
-        i != clientConnections_.End(); ++i)
+         i != clientConnections_.End(); ++i)
         ret.Push(i->second_);
 
     return ret;
@@ -477,7 +483,7 @@ void Network::PostUpdate(float timeStep)
 
                 networkScenes_.Clear();
                 for (HashMap<kNet::MessageConnection*, SharedPtr<Connection> >::Iterator i = clientConnections_.Begin();
-                    i != clientConnections_.End(); ++i)
+                     i != clientConnections_.End(); ++i)
                 {
                     Scene* scene = i->second_->GetScene();
                     if (scene)
@@ -493,7 +499,7 @@ void Network::PostUpdate(float timeStep)
 
                 // Then send server updates for each client connection
                 for (HashMap<kNet::MessageConnection*, SharedPtr<Connection> >::Iterator i = clientConnections_.Begin();
-                    i != clientConnections_.End(); ++i)
+                     i != clientConnections_.End(); ++i)
                 {
                     i->second_->SendServerUpdate();
                     i->second_->SendRemoteEvents();
@@ -566,7 +572,7 @@ void Network::ConfigureNetworkSimulator()
         serverConnection_->ConfigureNetworkSimulator(simulatedLatency_, simulatedPacketLoss_);
 
     for (HashMap<kNet::MessageConnection*, SharedPtr<Connection> >::Iterator i = clientConnections_.Begin();
-        i != clientConnections_.End(); ++i)
+         i != clientConnections_.End(); ++i)
         i->second_->ConfigureNetworkSimulator(simulatedLatency_, simulatedPacketLoss_);
 }
 

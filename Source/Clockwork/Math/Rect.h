@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Vector4.h"
@@ -58,7 +60,7 @@ public:
     }
 
     /// Assign from another rect.
-    Rect& operator = (const Rect& rhs)
+    Rect& operator =(const Rect& rhs)
     {
         min_ = rhs.min_;
         max_ = rhs.max_;
@@ -67,9 +69,10 @@ public:
     }
 
     /// Test for equality with another rect.
-    bool operator == (const Rect& rhs) const { return min_ == rhs.min_ && max_ == rhs.max_; }
+    bool operator ==(const Rect& rhs) const { return min_ == rhs.min_ && max_ == rhs.max_; }
+
     /// Test for inequality with another rect.
-    bool operator != (const Rect& rhs) const { return min_ != rhs.min_ || max_ != rhs.max_; }
+    bool operator !=(const Rect& rhs) const { return min_ != rhs.min_ || max_ != rhs.max_; }
 
     /// Define from another rect.
     void Define(const Rect& rect)
@@ -146,10 +149,13 @@ public:
 
     /// Return center.
     Vector2 Center() const { return (max_ + min_) * 0.5f; }
+
     /// Return size.
     Vector2 Size() const { return max_ - min_; }
+
     /// Return half-size.
     Vector2 HalfSize() const { return (max_ - min_) * 0.5f; }
+
     /// Test for equality with another rect with epsilon.
     bool Equals(const Rect& rhs) const { return min_.Equals(rhs.min_) && max_.Equals(rhs.max_); }
 
@@ -164,8 +170,10 @@ public:
 
     /// Return float data.
     const void* Data() const { return &min_.x_; }
+
     /// Return as a vector.
     Vector4 ToVector4() const { return Vector4(min_.x_, min_.y_, max_.x_, max_.y_); }
+
     /// Return as string.
     String ToString() const;
 
@@ -216,14 +224,23 @@ public:
     }
 
     /// Test for equality with another rect.
-    bool operator == (const IntRect& rhs) const { return left_ == rhs.left_ && top_ == rhs.top_ && right_ == rhs.right_ && bottom_ == rhs.bottom_; }
+    bool operator ==(const IntRect& rhs) const
+    {
+        return left_ == rhs.left_ && top_ == rhs.top_ && right_ == rhs.right_ && bottom_ == rhs.bottom_;
+    }
+
     /// Test for inequality with another rect.
-    bool operator != (const IntRect& rhs) const { return left_ != rhs.left_ || top_ != rhs.top_ || right_ != rhs.right_ || bottom_ != rhs.bottom_; }
+    bool operator !=(const IntRect& rhs) const
+    {
+        return left_ != rhs.left_ || top_ != rhs.top_ || right_ != rhs.right_ || bottom_ != rhs.bottom_;
+    }
 
     /// Return size.
     IntVector2 Size() const { return IntVector2(Width(), Height()); }
+
     /// Return width.
     int Width() const { return right_ - left_; }
+
     /// Return height.
     int Height() const { return bottom_ - top_; }
 
@@ -238,6 +255,7 @@ public:
 
     /// Return integer data.
     const int* Data() const { return &left_; }
+
     /// Return as string.
     String ToString() const;
 

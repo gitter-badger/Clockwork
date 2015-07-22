@@ -1,11 +1,17 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Graphics/GraphicsDefs.h"
-#include "../Math/StringHash.h"
 #include "../Math/Vector3.h"
 
 #include "../DebugNew.h"
 
 namespace Clockwork
 {
+
+// The extern keyword is required when building Clockwork.dll for Windows platform
+// The keyword is not required for other platforms but it does no harm, aside from warning from static analyzer
 
 extern CLOCKWORK_API const StringHash VSP_AMBIENTSTARTCOLOR("AmbientStartColor");
 extern CLOCKWORK_API const StringHash VSP_AMBIENTENDCOLOR("AmbientEndColor");
@@ -43,7 +49,7 @@ extern CLOCKWORK_API const StringHash PSP_LIGHTDIR("LightDirPS");
 extern CLOCKWORK_API const StringHash PSP_LIGHTPOS("LightPosPS");
 extern CLOCKWORK_API const StringHash PSP_MATDIFFCOLOR("MatDiffColor");
 extern CLOCKWORK_API const StringHash PSP_MATEMISSIVECOLOR("MatEmissiveColor");
-extern CLOCKWORK_API const StringHash PSP_MATENVMAPECOLOR("MatEnvMapColor");
+extern CLOCKWORK_API const StringHash PSP_MATENVMAPCOLOR("MatEnvMapColor");
 extern CLOCKWORK_API const StringHash PSP_MATSPECCOLOR("MatSpecColor");
 extern CLOCKWORK_API const StringHash PSP_NEARCLIP("NearClipPS");
 extern CLOCKWORK_API const StringHash PSP_FARCLIP("FarClipPS");

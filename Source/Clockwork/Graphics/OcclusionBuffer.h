@@ -1,10 +1,12 @@
+
+
 #pragma once
 
-#include "../Container/ArrayPtr.h"
-#include "../Math/Frustum.h"
 #include "../Core/Object.h"
-#include "../Graphics/GraphicsDefs.h"
 #include "../Core/Timer.h"
+#include "../Container/ArrayPtr.h"
+#include "../Graphics/GraphicsDefs.h"
+#include "../Math/Frustum.h"
 
 namespace Clockwork
 {
@@ -59,7 +61,8 @@ public:
     /// Draw a triangle mesh to the buffer using non-indexed geometry.
     bool Draw(const Matrix3x4& model, const void* vertexData, unsigned vertexSize, unsigned vertexStart, unsigned vertexCount);
     /// Draw a triangle mesh to the buffer using indexed geometry.
-    bool Draw(const Matrix3x4& model, const void* vertexData, unsigned vertexSize, const void* indexData, unsigned indexSize, unsigned indexStart, unsigned indexCount);
+    bool Draw(const Matrix3x4& model, const void* vertexData, unsigned vertexSize, const void* indexData, unsigned indexSize,
+        unsigned indexStart, unsigned indexCount);
     /// Build reduced size mip levels.
     void BuildDepthHierarchy();
     /// Reset last used timer.
@@ -67,20 +70,28 @@ public:
 
     /// Return highest level depth values.
     int* GetBuffer() const { return buffer_; }
+
     /// Return view transform matrix.
     const Matrix3x4& GetView() const { return view_; }
+
     /// Return projection matrix.
     const Matrix4& GetProjection() const { return projection_; }
+
     /// Return buffer width.
     int GetWidth() const { return width_; }
+
     /// Return buffer height.
     int GetHeight() const { return height_; }
+
     /// Return number of rendered triangles.
     unsigned GetNumTriangles() const { return numTriangles_; }
+
     /// Return maximum number of triangles.
     unsigned GetMaxTriangles() const { return maxTriangles_; }
+
     /// Return culling mode.
     CullMode GetCullMode() const { return cullMode_; }
+
     /// Test a bounding box for visibility. For best performance, build depth hierarchy first.
     bool IsVisible(const BoundingBox& worldSpaceBox) const;
     /// Return time since last use in milliseconds.

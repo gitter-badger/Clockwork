@@ -1,3 +1,7 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Graphics/Tangent.h"
 #include "../Math/Vector4.h"
 
@@ -38,8 +42,8 @@ void GenerateTangents(void* vertexData, unsigned vertexSize, const void* indexDa
     }
 
     unsigned vertexCount = maxVertex + 1;
-    Vector3 *tan1 = new Vector3[vertexCount * 2];
-    Vector3 *tan2 = tan1 + vertexCount;
+    Vector3* tan1 = new Vector3[vertexCount * 2];
+    Vector3* tan2 = tan1 + vertexCount;
     memset(tan1, 0, sizeof(Vector3) * vertexCount * 2);
 
     indexPointer = const_cast<void*>(indexData);
@@ -70,10 +74,8 @@ void GenerateTangents(void* vertexData, unsigned vertexSize, const void* indexDa
         float t2 = w3.y_ - w1.y_;
 
         float r = 1.0f / (s1 * t2 - s2 * t1);
-        Vector3 sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r,
-                (t2 * z1 - t1 * z2) * r);
-        Vector3 tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,
-                (s1 * z2 - s2 * z1) * r);
+        Vector3 sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
+        Vector3 tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r);
 
         tan1[i1] += sdir;
         tan1[i2] += sdir;

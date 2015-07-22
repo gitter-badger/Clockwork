@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Vector3.h"
@@ -55,7 +57,7 @@ public:
     }
 
     /// Assign from another vector.
-    Vector4& operator = (const Vector4& rhs)
+    Vector4& operator =(const Vector4& rhs)
     {
         x_ = rhs.x_;
         y_ = rhs.y_;
@@ -65,26 +67,34 @@ public:
     }
 
     /// Test for equality with another vector without epsilon.
-    bool operator == (const Vector4& rhs) const { return x_ == rhs.x_ && y_ == rhs.y_ && z_ == rhs.z_ && w_ == rhs.w_; }
+    bool operator ==(const Vector4& rhs) const { return x_ == rhs.x_ && y_ == rhs.y_ && z_ == rhs.z_ && w_ == rhs.w_; }
+
     /// Test for inequality with another vector without epsilon.
-    bool operator != (const Vector4& rhs) const { return x_ != rhs.x_ || y_ != rhs.y_ || z_ != rhs.z_ || w_ != rhs.w_; }
+    bool operator !=(const Vector4& rhs) const { return x_ != rhs.x_ || y_ != rhs.y_ || z_ != rhs.z_ || w_ != rhs.w_; }
+
     /// Add a vector.
-    Vector4 operator + (const Vector4& rhs) const { return Vector4(x_ + rhs.x_, y_ + rhs.y_, z_ + rhs.z_, w_ + rhs.w_); }
+    Vector4 operator +(const Vector4& rhs) const { return Vector4(x_ + rhs.x_, y_ + rhs.y_, z_ + rhs.z_, w_ + rhs.w_); }
+
     /// Return negation.
-    Vector4 operator - () const { return Vector4(-x_, -y_, -z_, -w_); }
+    Vector4 operator -() const { return Vector4(-x_, -y_, -z_, -w_); }
+
     /// Subtract a vector.
-    Vector4 operator - (const Vector4& rhs) const { return Vector4(x_ - rhs.x_, y_ - rhs.y_, z_ - rhs.z_, w_ - rhs.w_); }
+    Vector4 operator -(const Vector4& rhs) const { return Vector4(x_ - rhs.x_, y_ - rhs.y_, z_ - rhs.z_, w_ - rhs.w_); }
+
     /// Multiply with a scalar.
-    Vector4 operator * (float rhs) const { return Vector4(x_ * rhs, y_ * rhs, z_ * rhs, w_ * rhs); }
+    Vector4 operator *(float rhs) const { return Vector4(x_ * rhs, y_ * rhs, z_ * rhs, w_ * rhs); }
+
     /// Multiply with a vector.
-    Vector4 operator * (const Vector4& rhs) const { return Vector4(x_ * rhs.x_, y_ * rhs.y_, z_ * rhs.z_, w_ * rhs.w_); }
+    Vector4 operator *(const Vector4& rhs) const { return Vector4(x_ * rhs.x_, y_ * rhs.y_, z_ * rhs.z_, w_ * rhs.w_); }
+
     /// Divide by a scalar.
-    Vector4 operator / (float rhs) const { return Vector4(x_ / rhs, y_ / rhs, z_ / rhs, w_ / rhs); }
+    Vector4 operator /(float rhs) const { return Vector4(x_ / rhs, y_ / rhs, z_ / rhs, w_ / rhs); }
+
     /// Divide by a vector.
-    Vector4 operator / (const Vector4& rhs) const { return Vector4(x_ / rhs.x_, y_ / rhs.y_, z_ / rhs.z_, w_ / rhs.w_); }
+    Vector4 operator /(const Vector4& rhs) const { return Vector4(x_ / rhs.x_, y_ / rhs.y_, z_ / rhs.z_, w_ / rhs.w_); }
 
     /// Add-assign a vector.
-    Vector4& operator += (const Vector4& rhs)
+    Vector4& operator +=(const Vector4& rhs)
     {
         x_ += rhs.x_;
         y_ += rhs.y_;
@@ -94,7 +104,7 @@ public:
     }
 
     /// Subtract-assign a vector.
-    Vector4& operator -= (const Vector4& rhs)
+    Vector4& operator -=(const Vector4& rhs)
     {
         x_ -= rhs.x_;
         y_ -= rhs.y_;
@@ -104,7 +114,7 @@ public:
     }
 
     /// Multiply-assign a scalar.
-    Vector4& operator *= (float rhs)
+    Vector4& operator *=(float rhs)
     {
         x_ *= rhs;
         y_ *= rhs;
@@ -114,7 +124,7 @@ public:
     }
 
     /// Multiply-assign a vector.
-    Vector4& operator *= (const Vector4& rhs)
+    Vector4& operator *=(const Vector4& rhs)
     {
         x_ *= rhs.x_;
         y_ *= rhs.y_;
@@ -124,7 +134,7 @@ public:
     }
 
     /// Divide-assign a scalar.
-    Vector4& operator /= (float rhs)
+    Vector4& operator /=(float rhs)
     {
         float invRhs = 1.0f / rhs;
         x_ *= invRhs;
@@ -135,7 +145,7 @@ public:
     }
 
     /// Divide-assign a vector.
-    Vector4& operator /= (const Vector4& rhs)
+    Vector4& operator /=(const Vector4& rhs)
     {
         x_ /= rhs.x_;
         y_ /= rhs.y_;
@@ -146,19 +156,31 @@ public:
 
     /// Calculate dot product.
     float DotProduct(const Vector4& rhs) const { return x_ * rhs.x_ + y_ * rhs.y_ + z_ * rhs.z_ + w_ * rhs.w_; }
+
     /// Calculate absolute dot product.
-    float AbsDotProduct(const Vector4& rhs) const { return Clockwork::Abs(x_ * rhs.x_) + Clockwork::Abs(y_ * rhs.y_) + Clockwork::Abs(z_ * rhs.z_) + Clockwork::Abs(w_ * rhs.w_); }
+    float AbsDotProduct(const Vector4& rhs) const
+    {
+        return Clockwork::Abs(x_ * rhs.x_) + Clockwork::Abs(y_ * rhs.y_) + Clockwork::Abs(z_ * rhs.z_) + Clockwork::Abs(w_ * rhs.w_);
+    }
+
     /// Return absolute vector.
     Vector4 Abs() const { return Vector4(Clockwork::Abs(x_), Clockwork::Abs(y_), Clockwork::Abs(z_), Clockwork::Abs(w_)); }
+
     /// Linear interpolation with another vector.
     Vector4 Lerp(const Vector4& rhs, float t) const { return *this * (1.0f - t) + rhs * t; }
+
     /// Test for equality with another vector with epsilon.
-    bool Equals(const Vector4& rhs) const { return Clockwork::Equals(x_, rhs.x_) && Clockwork::Equals(y_, rhs.y_) && Clockwork::Equals(z_, rhs.z_) && Clockwork::Equals(w_, rhs.w_); }
+    bool Equals(const Vector4& rhs) const
+    {
+        return Clockwork::Equals(x_, rhs.x_) && Clockwork::Equals(y_, rhs.y_) && Clockwork::Equals(z_, rhs.z_) && Clockwork::Equals(w_, rhs.w_);
+    }
+
     /// Return whether is NaN.
     bool IsNaN() const { return Clockwork::IsNaN(x_) || Clockwork::IsNaN(y_) || Clockwork::IsNaN(z_) || Clockwork::IsNaN(w_); }
 
     /// Return float data.
     const float* Data() const { return &x_; }
+
     /// Return as string.
     String ToString() const;
 
@@ -178,6 +200,6 @@ public:
 };
 
 /// Multiply Vector4 with a scalar.
-inline Vector4 operator * (float lhs, const Vector4& rhs) { return rhs * lhs; }
+inline Vector4 operator *(float lhs, const Vector4& rhs) { return rhs * lhs; }
 
 }

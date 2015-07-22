@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Vector3.h"
@@ -34,7 +36,7 @@ public:
     }
 
     /// Assign from another ray.
-    Ray& operator = (const Ray& rhs)
+    Ray& operator =(const Ray& rhs)
     {
         origin_ = rhs.origin_;
         direction_ = rhs.direction_;
@@ -42,9 +44,10 @@ public:
     }
 
     /// Check for equality with another ray.
-    bool operator == (const Ray& rhs) const { return origin_ == rhs.origin_ && direction_ == rhs.direction_; }
+    bool operator ==(const Ray& rhs) const { return origin_ == rhs.origin_ && direction_ == rhs.direction_; }
+
     /// Check for inequality with another ray.
-    bool operator != (const Ray& rhs) const { return origin_ != rhs.origin_ || direction_ != rhs.direction_; }
+    bool operator !=(const Ray& rhs) const { return origin_ != rhs.origin_ || direction_ != rhs.direction_; }
 
     /// Define from origin and direction. The direction will be normalized.
     void Define(const Vector3& origin, const Vector3& direction)
@@ -77,18 +80,20 @@ public:
     float HitDistance(const Frustum& frustum, bool solidInside = true) const;
     /// Return hit distance to a sphere, or infinity if no hit.
     float HitDistance(const Sphere& sphere) const;
-    /// Return hit distance to a triangle, or infinity if no hit.
-    float HitDistance(const Vector3& v0, const Vector3& v1, const Vector3& v2) const;
-    /// Return hit distance to a triangle and out normal, or infinity if no hit.
-    float HitDistance(const Vector3& v0, const Vector3& v1, const Vector3& v2, Vector3* outNormal) const;
-    /// Return hit distance to non-indexed geometry data, or infinity if no hit. Optionally return normal.
-    float HitDistance(const void* vertexData, unsigned vertexSize, unsigned vertexStart, unsigned vertexCount, Vector3* outNormal = 0) const;
-    /// Return hit distance to indexed geometry data, or infinity if no hit.
-    float HitDistance(const void* vertexData, unsigned vertexSize, const void* indexData, unsigned indexSize, unsigned indexStart, unsigned indexCount, Vector3* outNormal = 0) const;
+    /// Return hit distance to a triangle, or infinity if no hit. Optionally return hit normal and hit barycentric coordinate at intersect point.
+    float HitDistance(const Vector3& v0, const Vector3& v1, const Vector3& v2, Vector3* outNormal = 0, Vector3* outBary = 0) const;
+    /// Return hit distance to non-indexed geometry data, or infinity if no hit. Optionally return hit normal and hit uv coordinates at intersect point.
+    float HitDistance
+        (const void* vertexData, unsigned vertexStride, unsigned vertexStart, unsigned vertexCount, Vector3* outNormal = 0,
+            Vector2* outUV = 0, unsigned uvOffset = 0) const;
+    /// Return hit distance to indexed geometry data, or infinity if no hit. Optionally return hit normal and hit uv coordinates at intersect point.
+    float HitDistance(const void* vertexData, unsigned vertexStride, const void* indexData, unsigned indexSize, unsigned indexStart,
+        unsigned indexCount, Vector3* outNormal = 0, Vector2* outUV = 0, unsigned uvOffset = 0) const;
     /// Return whether ray is inside non-indexed geometry.
     bool InsideGeometry(const void* vertexData, unsigned vertexSize, unsigned vertexStart, unsigned vertexCount) const;
     /// Return whether ray is inside indexed geometry.
-    bool InsideGeometry(const void* vertexData, unsigned vertexSize, const void* indexData, unsigned indexSize, unsigned indexStart, unsigned indexCount) const;
+    bool InsideGeometry(const void* vertexData, unsigned vertexSize, const void* indexData, unsigned indexSize, unsigned indexStart,
+        unsigned indexCount) const;
     /// Return transformed by a 3x4 matrix. This may result in a non-normalized direction.
     Ray Transformed(const Matrix3x4& transform) const;
 

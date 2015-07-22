@@ -1,3 +1,5 @@
+
+
 #pragma once
 
 #include "../Math/Vector3.h"
@@ -74,6 +76,7 @@ public:
     Polyhedron Transformed(const Matrix3& transform) const;
     /// Return transformed with a 3x4 matrix.
     Polyhedron Transformed(const Matrix3x4& transform) const;
+
     /// Return whether is empty.
     bool Empty() const { return faces_.Empty(); }
 

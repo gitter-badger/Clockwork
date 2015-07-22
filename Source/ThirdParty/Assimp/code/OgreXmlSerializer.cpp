@@ -38,6 +38,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ----------------------------------------------------------------------
 */
 
+#include "AssimpPCH.h"
+
 #include "OgreXmlSerializer.h"
 #include "OgreBinarySerializer.h"
 #include "OgreParsingUtils.h"

@@ -1,11 +1,14 @@
+
+
+#include "../Precompiled.h"
+
 #include "../Core/Context.h"
 #include "../IO/FileSystem.h"
 #include "../IO/Log.h"
-#include "../Clockwork2D/ParticleEffect2D.h"
 #include "../Resource/ResourceCache.h"
-#include "../Core/StringUtils.h"
-#include "../Clockwork2D/Sprite2D.h"
 #include "../Resource/XMLFile.h"
+#include "../Clockwork2D/ParticleEffect2D.h"
+#include "../Clockwork2D/Sprite2D.h"
 
 #include "../DebugNew.h"
 
@@ -483,7 +486,7 @@ void ParticleEffect2D::WriteColor(XMLElement& element, const String& name, const
     child.SetFloat("alpha", color.a_);
 }
 
-void ParticleEffect2D::WriteVector2(XMLElement& element,const String& name,const Vector2& value) const
+void ParticleEffect2D::WriteVector2(XMLElement& element, const String& name, const Vector2& value) const
 {
     XMLElement child = element.CreateChild(name);
     child.SetFloat("x", value.x_);
