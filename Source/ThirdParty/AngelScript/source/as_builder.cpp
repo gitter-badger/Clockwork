@@ -28,7 +28,7 @@
    andreas@angelcode.com
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 //
 // as_builder.cpp

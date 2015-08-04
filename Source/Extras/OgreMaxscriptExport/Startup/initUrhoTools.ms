@@ -1,7 +1,7 @@
 
 -- initOgreTools.ms
 --
--- Copyright © 2002 John Martin
+-- Copyright ï¿½ 2002 John Martin
 --
 -- $Id: initOgreTools.ms,v 1.1 2006-09-19 21:58:40 sinbad Exp $
 --

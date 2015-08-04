@@ -24,7 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// Modified by Lasse Oorni for Clockwork: removed the MSR specific code
+// Modified by Joshua Nuttall for Clockwork: removed the MSR specific code
 
 #ifndef __LIBCPUID_H__
 #define __LIBCPUID_H__

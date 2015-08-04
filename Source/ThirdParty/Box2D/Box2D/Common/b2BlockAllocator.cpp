@@ -16,7 +16,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #include <Box2D/Common/b2BlockAllocator.h>
 #include <limits.h>

@@ -1,4 +1,4 @@
-/* Copyright 2010 Jukka Jylänki
+/* Copyright 2010 Jukka Jylï¿½nki
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 /** @file Clock.cpp
 	@brief */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 // Clockwork: ensure that kNetBuildConfig.h is included for WinXP compatibility
 #include "kNetBuildConfig.h"

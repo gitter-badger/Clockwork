@@ -78,7 +78,7 @@ void CreateScene()
     terrain.spacing = Vector3(2.0f, 0.1f, 2.0f); // Spacing between vertices and vertical resolution of the height map
     terrain.smoothing = true;
     terrain.heightMap = cache.GetResource("Image", "Textures/HeightMap.png");
-    terrain.material = cache.GetResource("Material", "Materials/Terrain.xml");
+    terrain.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
     // The terrain consists of large triangles, which fits well for occlusion rendering, as a hill can occlude all
     // terrain patches and other objects behind it
     terrain.occluder = true;
@@ -100,8 +100,8 @@ void CreateScene()
         objectNode.rotation = Quaternion(Vector3(0.0f, 1.0f, 0.0), terrain.GetNormal(position));
         objectNode.SetScale(3.0f);
         StaticModel@ object = objectNode.CreateComponent("StaticModel");
-        object.model = cache.GetResource("Model", "Models/Mushroom.mdl");
-        object.material = cache.GetResource("Material", "Materials/Mushroom.xml");
+        object.model = cache.GetResource("Model", "Models/TeaPot.mdl");
+        object.material = cache.GetResource("Material", "Materials/Grids/GridWhite+.xml");
         object.castShadows = true;
 
         RigidBody@ body = objectNode.CreateComponent("RigidBody");
@@ -286,7 +286,7 @@ class Vehicle : ScriptObject
 
         node.scale = Vector3(1.5f, 1.0f, 3.0f);
         hullObject.model = cache.GetResource("Model", "Models/Box.mdl");
-        hullObject.material = cache.GetResource("Material", "Materials/Stone.xml");
+        hullObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile.xml");
         hullObject.castShadows = true;
         hullShape.SetBox(Vector3(1.0f, 1.0f, 1.0f));
         hullBody.mass = 4.0f;
@@ -323,7 +323,7 @@ class Vehicle : ScriptObject
         Constraint@ wheelConstraint = wheelNode.CreateComponent("Constraint");
 
         wheelObject.model = cache.GetResource("Model", "Models/Cylinder.mdl");
-        wheelObject.material = cache.GetResource("Material", "Materials/Stone.xml");
+        wheelObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
         wheelObject.castShadows = true;
         wheelShape.SetSphere(1.0f);
         wheelBody.friction = 1;

@@ -19,7 +19,7 @@
  * 	
  * */
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #ifndef JO_INCLUDE_JPEG_H
 #define JO_INCLUDE_JPEG_H

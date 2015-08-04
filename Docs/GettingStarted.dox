@@ -38,7 +38,7 @@ To run Clockwork, the minimum system requirements are:
 
 SSE requirement can be eliminated by disabling the use of SSE instruction set, see CLOCKWORK_SSE build option below.
 
-CMake is required to configure and generate the Clockwork project build tree. The minimum required version is 2.8.6. However, it is recommended to use the latest CMake version avaiable out there, especially when targeting Mac OS X and iOS platforms using the latest Xcode version available. This is because Apple is known to change the internal working of Xcode with little regards to other third party build tools, such as CMake.
+CMake (http://www.cmake.org) is required to configure and generate the Clockwork project build tree. The minimum required version is 2.8.6. However, it is recommended to use the latest CMake version avaiable out there, especially when targeting Mac OS X and iOS platforms using the latest Xcode version available. This is because Apple is known to change the internal working of Xcode with little regards to other third party build tools, such as CMake.
 
 \section Build_Scripts Build scripts
 
@@ -77,6 +77,7 @@ A number of build options can be defined when invoking the build scripts or when
 |CLOCKWORK_LUAJIT        |0|Enable Lua scripting support using LuaJIT (check LuaJIT's CMakeLists.txt for more options)|
 |CLOCKWORK_LUAJIT_AMALG  |0|Enable LuaJIT amalgamated build (LuaJIT only)|
 |CLOCKWORK_SAFE_LUA      |0|Enable Lua C++ wrapper safety checks (Lua/LuaJIT only)|
+|CLOCKWORK_LUA_RAW_SCRIPT_LOADER  |0|Prefer loading raw script files from the file system before falling back on Clockwork resource cache. Useful for debugging (e.g. breakpoints), but less performant (Lua/LuaJIT only)|
 |CLOCKWORK_NETWORK       |1|Enable Networking support|
 |CLOCKWORK_PHYSICS       |1|Enable Physics support|
 |CLOCKWORK_NAVIGATION    |1|Enable Navigation support|
@@ -86,6 +87,7 @@ A number of build options can be defined when invoking the build scripts or when
 |CLOCKWORK_EXTRAS        |0|Build extras (native and RPI only)|
 |CLOCKWORK_DOCS          |0|Generate documentation as part of normal build (the 'doc' builtin target can be used to generate documentation regardless of this option's value)|
 |CLOCKWORK_DOCS_QUIET    |0|Generate documentation as part of normal build, suppress generation process from sending anything to stdout|
+|CLOCKWORK_PCH           |1|Enable PCH support|
 |CLOCKWORK_SSE           |1|Enable SSE instruction set|
 |CLOCKWORK_MINIDUMPS     |1|Enable minidumps on crash (VS only)|
 |CLOCKWORK_FILEWATCHER   |1|Enable filewatcher support|
@@ -127,7 +129,7 @@ Note that the specified build option values are cached by CMake after the initia
 
 \section Building_Native Native build process
 
-Clockwork uses CMake (http://www.cmake.org) to build. The process has two steps:
+A native build of Clockwork has two steps:
 
 -# Run CMake in the root directory (which is also CMake's source tree) with your preferred generator and toolchain specified to generate the build tree. You can use cmake-gui or the provided batch files or shell scripts on the respective host system. All the batch files and shell scripts expect the build tree location to be passed as the first argument, or to execute them in the build tree itself when reconfiguring the existing build tree.\n
     - Windows: cmake_vs20xx.bat, cmake_mingw.bat, cmake_codeblock.bat, cmake_ninja.bat, or cmake_generic.bat\n
@@ -139,8 +141,9 @@ Clockwork uses CMake (http://www.cmake.org) to build. The process has two steps:
     - Xcode: open Clockwork.xcodeproj\n
     - CodeBlocks: open Clockwork.cbp\n
     - Eclipse: import project using File|Import "Existing Projects into Workspace"\n
+    - Alternatively, on make-based toolchains like GCC / MinGW, execute make in the build tree
 
-Note that Eclipse requires CDT plugin to build C/C++ project. When using generator backed by Unix Makefiles, you can also execute make command directly in the build tree to build the project.
+Note that Eclipse requires CDT plugin to build a C/C++ project.
 
 On Windows platform Clockwork can use either Direct3D 9 (default), Direct3D 11 or OpenGL rendering. Other platforms always use OpenGL. Use the CMake options "-DCLOCKWORK_D3D11=1" or "-DCLOCKWORK_OPENGL=1" to choose the non-default APIs.
 
@@ -710,7 +713,7 @@ All the \ref Running_Commandline "command line options" supported by Clockwork p
 
 Hint: to get more content to look at, run the Physics sample application (bin/Data/Scripts/11_Physics.as), and press F5. This saves a scene file called Physics.xml into the Data/Scenes subdirectory, which can be loaded in the editor. Scenes utilized by the NinjaSnowWar and SceneAndUILoad examples also exist in the Data/Scenes subdirectory, and the NinjaSnowWar object "prefabs" are in the Data/Objects subdirectory.
 
-\section EditorInstructions_Controls Controls
+\section EditorInstructions_Controls Controls (standard style hotkeys)
 
 \verbatim
 Left mouse         - Select nodes or drag the node transform gizmo. Hold Shift to
@@ -718,13 +721,13 @@ Left mouse         - Select nodes or drag the node transform gizmo. Hold Shift t
 Right mouse        - Hold down and move mouse to rotate camera
 Middle mouse       - Hold down orbits the camera around selected objects
 Shift+Middle mouse - Hold down pans the camera
-
 WSAD or arrows     - Move
 Shift+WSAD         - Move faster
 E                  - Ascend
 Q                  - Descend
 Shift+E,Q          - Ascend or descend faster
 
+Home               - Center view on currently selected object
 Numpad5            - Toggle orthographic / perspective camera
 Numpad1            - Front view
 Numpad3            - Right hand view
@@ -758,6 +761,7 @@ Ctrl+W             - Cycle through solid, wireframe and point rendering
 Ctrl+Z             - Undo
 Ctrl+Y             - Redo
 Ctrl+Space         - Open quick menu
+Alt+W              - Open color wheel menu
 ESC                - Close the file selector or editor settings window
 DEL                - Delete node or component
 F1                 - Toggle console
@@ -768,7 +772,42 @@ F11                - Captures a screenshot
 F12                - Toggle UI
 \endverbatim
 
+The editor setting "Pan using middle mouse button" switches the controls to the following:
+
+\verbatim
+Middle mouse       - Hold down pans the camera
+Shift+Middle mouse - Hold down orbits the camera around selected objects
+\endverbatim
+
+\section EditorInstructions_Controls2 Controls (Blender style hotkeys)
+
+Hotkeys list show only differences with standard style
+
+\verbatim
+Left mouse         - Drag the node manipulator gizmo
+Middle mouse       - Hold down orbits the camera
+Shift+middle mouse - Hold down pans the camera
+Right mouse        - Select objects
+Shift+F            - Enter/Exit camera's flying mode
+G,R,S              - Object manipulation mode: move/rotate/scale ( note: camera flying mode must be off to do this manipulation)
+Cycle press G,R,S  - Toggle between world and local axes manipulation
+Shift+D            - Duplicate node or component
+H                  - Enable/disable node hierarchy or component
+Alt+H              - Enable all nodes hierarchy or component in scene
+Alt+P              - Unparent scene node
+Ctrl+P             - Parent all selected scene nodes to last selected node
+Z                  - Cycle through solid, wireframe and point rendering
+M                  - Show/Hide LayerEditor
+F                  - Focus on selected object (LookAt)
+X                  - Delete node or component
+Alt+D              - Smart Duplicate (note: select one of axises on gizmo to show direction for next instance)
+Key "." or Del     - View Closer selected node(s)
+\endverbatim
+
 Press right mouse button in the 3D view if you want to defocus the active window without changing the object selection.
+
+The "Pan using middle mouse button" option has no effect in Blender hotkeys mode.
+\endverbatim
 
 \section EditorInstructions_Workflow Workflow
 

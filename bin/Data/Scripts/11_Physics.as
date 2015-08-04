@@ -72,7 +72,7 @@ void CreateScene()
         floorNode.scale = Vector3(1000.0f, 1.0f, 1000.0f);
         StaticModel@ floorObject = floorNode.CreateComponent("StaticModel");
         floorObject.model = cache.GetResource("Model", "Models/Box.mdl");
-        floorObject.material = cache.GetResource("Material", "Materials/StoneTiled.xml");
+        floorObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
 
         // Make the floor physical by adding RigidBody and CollisionShape components. The RigidBody's default
         // parameters make the object static (zero mass.) Note that a CollisionShape by itself will not participate
@@ -94,7 +94,7 @@ void CreateScene()
                 boxNode.position = Vector3(x, -y + 8.0f, 0.0f);
                 StaticModel@ boxObject = boxNode.CreateComponent("StaticModel");
                 boxObject.model = cache.GetResource("Model", "Models/Box.mdl");
-                boxObject.material = cache.GetResource("Material", "Materials/StoneEnvMapSmall.xml");
+                boxObject.material = cache.GetResource("Material", "Materials/Grids/GridOrange+.xml");
                 boxObject.castShadows = true;
 
                 // Create RigidBody and CollisionShape components like above. Give the RigidBody mass to make it movable
@@ -216,7 +216,7 @@ void SpawnObject()
     boxNode.SetScale(0.25f);
     StaticModel@ boxObject = boxNode.CreateComponent("StaticModel");
     boxObject.model = cache.GetResource("Model", "Models/Box.mdl");
-    boxObject.material = cache.GetResource("Material", "Materials/StoneEnvMapSmall.xml");
+    boxObject.material = cache.GetResource("Material", "Materials/Grids/GridDark+.xml");
     boxObject.castShadows = true;
 
     // Create physics components, use a smaller mass also

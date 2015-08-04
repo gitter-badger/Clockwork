@@ -14,7 +14,7 @@
 #if !defined(_MSC_VER) || _MSC_VER > 1600
 #define foreach(VAL, VALS) for (VAL : VALS)
 // Fallback solution for VS2010. Will have problem with break statement.
-// See https://github.com/clockwork/Clockwork/issues/561
+// See https://github.com/clockwork3d/Clockwork/issues/561
 #else
 
 namespace Clockwork

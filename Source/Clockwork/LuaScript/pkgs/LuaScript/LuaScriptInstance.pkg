@@ -146,8 +146,8 @@ static int tolua_LuaScriptLuaAPI_LuaScriptInstance_SubscribeToEvent(lua_State* t
     {   
         // LuaScriptInstance::AddEventHandler(const String eventName, void* functionOrFunctionName);
         if (!tolua_isusertype(tolua_S,1,"LuaScriptInstance",0,&tolua_err) ||
-            !tolua_isclockworkstring(tolua_S,2,0,&tolua_err) || 
-            !tolua_isfunctionorclockworkstring(tolua_S,3,0,&tolua_err))
+            !tolua_isclockwork3dstring(tolua_S,2,0,&tolua_err) || 
+            !tolua_isfunctionorclockwork3dstring(tolua_S,3,0,&tolua_err))
             goto tolua_lerror;
     }
     else if (args == 4)
@@ -155,8 +155,8 @@ static int tolua_LuaScriptLuaAPI_LuaScriptInstance_SubscribeToEvent(lua_State* t
         // LuaScriptInstance::AddEventHandler(Object* sender, const String eventName, void* functionOrFunctionName);
         if (!tolua_isusertype(tolua_S,1,"LuaScriptInstance",0,&tolua_err) || 
             !tolua_isuserdata(tolua_S,2,0,&tolua_err) ||
-            !tolua_isclockworkstring(tolua_S,3,0,&tolua_err) ||
-            !tolua_isfunctionorclockworkstring(tolua_S,4,0,&tolua_err))
+            !tolua_isclockwork3dstring(tolua_S,3,0,&tolua_err) ||
+            !tolua_isfunctionorclockwork3dstring(tolua_S,4,0,&tolua_err))
             goto tolua_lerror;
     }
     else
@@ -168,12 +168,12 @@ static int tolua_LuaScriptLuaAPI_LuaScriptInstance_SubscribeToEvent(lua_State* t
     if (args == 3)
     {
         // LuaScriptInstance::AddEventHandler(const String eventName, void* functionOrFunctionName);
-        const String eventName = ((const String)  tolua_toclockworkstring(tolua_S,2,0));
+        const String eventName = ((const String)  tolua_toclockwork3dstring(tolua_S,2,0));
         if (lua_isfunction(tolua_S,3))
             self->AddEventHandler(eventName,3);
         else
         {
-            const String functionName = (const String)tolua_toclockworkstring(tolua_S,3,0);
+            const String functionName = (const String)tolua_toclockwork3dstring(tolua_S,3,0);
             self->AddEventHandler(eventName,functionName);
         }        
     }
@@ -181,12 +181,12 @@ static int tolua_LuaScriptLuaAPI_LuaScriptInstance_SubscribeToEvent(lua_State* t
     {
         // LuaScriptInstance::AddEventHandler(Object* sender, const String eventName, void* functionOrFunctionName);
         Object* sender = ((Object*)  tolua_touserdata(tolua_S,2,0));
-        const String eventName = ((const String)  tolua_toclockworkstring(tolua_S,3,0));
+        const String eventName = ((const String)  tolua_toclockwork3dstring(tolua_S,3,0));
         if (lua_isfunction(tolua_S,4))
             self->AddEventHandler(sender,eventName,4);
         else
         {
-            const String functionName = (const String)tolua_toclockworkstring(tolua_S,4,0);
+            const String functionName = (const String)tolua_toclockwork3dstring(tolua_S,4,0);
             self->AddEventHandler(sender,eventName,functionName);
         }
     }
@@ -223,7 +223,7 @@ static int tolua_LuaScriptLuaAPI_LuaScriptInstance_UnsubscribeFromEvent(lua_Stat
     {
         // LuaScriptInstance::RemoveEventHandler(const String eventName);
         if (!tolua_isusertype(tolua_S,1,"LuaScriptInstance",0,&tolua_err) ||
-            !tolua_isclockworkstring(tolua_S,2,0,&tolua_err))
+            !tolua_isclockwork3dstring(tolua_S,2,0,&tolua_err))
             goto tolua_lerror;
     }
     else if (args == 3)
@@ -231,7 +231,7 @@ static int tolua_LuaScriptLuaAPI_LuaScriptInstance_UnsubscribeFromEvent(lua_Stat
        // LuaScriptInstance::RemoveEventHandler(Object* sender, const String eventName);
         if (!tolua_isusertype(tolua_S,1,"LuaScriptInstance",0,&tolua_err) ||
             !tolua_isuserdata(tolua_S,2,0,&tolua_err) ||
-            !tolua_isclockworkstring(tolua_S,3,0,&tolua_err))
+            !tolua_isclockwork3dstring(tolua_S,3,0,&tolua_err))
                 goto tolua_lerror;
     }
     else
@@ -243,14 +243,14 @@ static int tolua_LuaScriptLuaAPI_LuaScriptInstance_UnsubscribeFromEvent(lua_Stat
     if (args == 2)
     {
         // LuaScriptInstance::RemoveEventHandler(const String eventName);
-        const String eventName = ((const String)  tolua_toclockworkstring(tolua_S,2,0));
+        const String eventName = ((const String)  tolua_toclockwork3dstring(tolua_S,2,0));
         self->RemoveEventHandler(eventName);
     }
     else if (args == 3)
     {
         // LuaScriptInstance::RemoveEventHandler(Object* sender, const String eventName);
         Object* sender = ((Object*)  tolua_touserdata(tolua_S,2,0));
-        const String eventName = ((const String)  tolua_toclockworkstring(tolua_S,3,0));
+        const String eventName = ((const String)  tolua_toclockwork3dstring(tolua_S,3,0));
         self->RemoveEventHandler(sender, eventName);
     }
 

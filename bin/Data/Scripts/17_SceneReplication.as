@@ -86,7 +86,7 @@ void CreateScene()
             floorNode.scale = Vector3(20.0f, 1.0f, 20.0f);
             StaticModel@ floorObject = floorNode.CreateComponent("StaticModel");
             floorObject.model = cache.GetResource("Model", "Models/Box.mdl");
-            floorObject.material = cache.GetResource("Material", "Materials/Stone.xml");
+            floorObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
 
             RigidBody@ body = floorNode.CreateComponent("RigidBody");
             body.friction = 1.0f;
@@ -218,7 +218,7 @@ Node@ CreateControllableObject()
     ballNode.SetScale(0.5f);
     StaticModel@ ballObject = ballNode.CreateComponent("StaticModel");
     ballObject.model = cache.GetResource("Model", "Models/Sphere.mdl");
-    ballObject.material = cache.GetResource("Material", "Materials/StoneSmall.xml");
+    ballObject.material = cache.GetResource("Material", "Materials/Grids/GridLight.xml");
 
     // Create the physics components
     RigidBody@ body = ballNode.CreateComponent("RigidBody");

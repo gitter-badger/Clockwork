@@ -16,7 +16,7 @@
 /** @file MessageConnection.h
 	@brief The MessageConnection and ConnectionStatistics classes. */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #include <vector>
 #include <map>

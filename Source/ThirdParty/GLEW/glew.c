@@ -29,7 +29,7 @@
 ** THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #include <glew.h>
 

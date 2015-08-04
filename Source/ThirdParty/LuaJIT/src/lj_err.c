@@ -3,7 +3,7 @@
 ** Copyright (C) 2005-2014 Mike Pall. See Copyright Notice in luajit.h
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #define lj_err_c
 #define LUA_CORE

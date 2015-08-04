@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni & OvermindDL1 for Clockwork
+// Modified by Joshua Nuttall & OvermindDL1 for Clockwork
 
 #include "../../SDL_internal.h"
 

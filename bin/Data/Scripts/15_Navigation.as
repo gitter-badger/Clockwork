@@ -45,7 +45,7 @@ void CreateScene()
     planeNode.scale = Vector3(100.0f, 1.0f, 100.0f);
     StaticModel@ planeObject = planeNode.CreateComponent("StaticModel");
     planeObject.model = cache.GetResource("Model", "Models/Plane.mdl");
-    planeObject.material = cache.GetResource("Material", "Materials/StoneTiled.xml");
+    planeObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
 
     // Create a Zone component for ambient lighting & fog control
     Node@ zoneNode = scene_.CreateChild("Zone");
@@ -82,7 +82,7 @@ void CreateScene()
         boxNode.SetScale(size);
         StaticModel@ boxObject = boxNode.CreateComponent("StaticModel");
         boxObject.model = cache.GetResource("Model", "Models/Box.mdl");
-        boxObject.material = cache.GetResource("Material", "Materials/Stone.xml");
+        boxObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefault.xml");
         boxObject.castShadows = true;
         if (size >= 3.0f)
             boxObject.occluder = true;
@@ -93,7 +93,7 @@ void CreateScene()
     jackNode.position = Vector3(-5.0f, 0.0f, 20.0f);
     AnimatedModel@ modelObject = jackNode.CreateComponent("AnimatedModel");
     modelObject.model = cache.GetResource("Model", "Models/Jack.mdl");
-    modelObject.material = cache.GetResource("Material", "Materials/Jack.xml");
+    modelObject.material = cache.GetResource("Material", "Materials/MaterialsPlane/Metals/Copper.xml");
     modelObject.castShadows = true;
 
     // Create a NavigationMesh component to the scene root
@@ -278,8 +278,8 @@ Node@ CreateMushroom(const Vector3& pos)
     mushroomNode.rotation = Quaternion(0.0f, Random(360.0f), 0.0f);
     mushroomNode.SetScale(2.0f + Random(0.5f));
     StaticModel@ mushroomObject = mushroomNode.CreateComponent("StaticModel");
-    mushroomObject.model = cache.GetResource("Model", "Models/Mushroom.mdl");
-    mushroomObject.material = cache.GetResource("Material", "Materials/Mushroom.xml");
+    mushroomObject.model = cache.GetResource("Model", "Models/TeaPot.mdl");
+    mushroomObject.material = cache.GetResource("Material", "Materials/Grids/GridWhite+.xml");
     mushroomObject.castShadows = true;
 
     return mushroomNode;

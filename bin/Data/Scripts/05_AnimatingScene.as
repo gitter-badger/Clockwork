@@ -12,7 +12,7 @@ void Start()
     SampleStart();
 
     // Create the scene content
-    CreateScene();
+    CreateScene(); 
 
     // Create the UI content
     CreateInstructions();
@@ -54,7 +54,7 @@ void CreateScene()
         boxNode.rotation = Quaternion(Random(360.0f), Random(360.0f), Random(360.0f));
         StaticModel@ boxObject = boxNode.CreateComponent("StaticModel");
         boxObject.model = cache.GetResource("Model", "Models/Box.mdl");
-        boxObject.material = cache.GetResource("Material", "Materials/Stone.xml");
+        boxObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefault.xml");
 
         // Add the Rotator script object which will rotate the scene node each frame, when the scene sends its update event.
         // This requires the C++ component ScriptInstance in the scene node, which acts as a container. We need to tell the

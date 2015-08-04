@@ -22,7 +22,7 @@ void Start()
     SetupViewport();
 
     // Hook up to the frame update events
-    SubscribeToEvents();
+    SubscribeToEvents(); 
 }
 
 void CreateScene()
@@ -42,7 +42,7 @@ void CreateScene()
     planeNode.scale = Vector3(100.0f, 1.0f, 100.0f);
     StaticModel@ planeObject = planeNode.CreateComponent("StaticModel");
     planeObject.model = cache.GetResource("Model", "Models/Plane.mdl");
-    planeObject.material = cache.GetResource("Material", "Materials/StoneTiled.xml");
+    planeObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
 
     // Create a directional light to the world so that we can see something. The light scene node's orientation controls the
     // light direction; we will use the SetDirection() function which calculates the orientation from a forward direction vector.
@@ -65,8 +65,8 @@ void CreateScene()
         mushroomNode.position = Vector3(Random(90.0f) - 45.0f, 0.0f, Random(90.0f) - 45.0f);
         mushroomNode.SetScale(0.5f + Random(2.0f));
         StaticModel@ mushroomObject = mushroomNode.CreateComponent("StaticModel");
-        mushroomObject.model = cache.GetResource("Model", "Models/Mushroom.mdl");
-        mushroomObject.material = cache.GetResource("Material", "Materials/Mushroom.xml");
+        mushroomObject.model = cache.GetResource("Model", "Models/TeaPot.mdl");
+        mushroomObject.material = cache.GetResource("Material", "Materials/Grids/GridLight+.xml");
 
         Node@ mushroomTitleNode = mushroomNode.CreateChild("MushroomTitle");
         mushroomTitleNode.position = Vector3(0.0f, 1.2f, 0.0f);

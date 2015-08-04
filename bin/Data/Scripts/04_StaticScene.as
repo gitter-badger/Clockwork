@@ -11,7 +11,7 @@ void Start()
     // Execute the common startup for samples
     SampleStart();
 
-    // Create the scene content
+    // Create the scene content 
     CreateScene();
 
     // Create the UI content
@@ -41,7 +41,7 @@ void CreateScene()
     planeNode.scale = Vector3(100.0f, 1.0f, 100.0f);
     StaticModel@ planeObject = planeNode.CreateComponent("StaticModel");
     planeObject.model = cache.GetResource("Model", "Models/Plane.mdl");
-    planeObject.material = cache.GetResource("Material", "Materials/StoneTiled.xml");
+    planeObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
 
     // Create a directional light to the world so that we can see something. The light scene node's orientation controls the
     // light direction; we will use the SetDirection() function which calculates the orientation from a forward direction vector.
@@ -50,6 +50,7 @@ void CreateScene()
     lightNode.direction = Vector3(0.6f, -1.0f, 0.8f); // The direction vector does not need to be normalized
     Light@ light = lightNode.CreateComponent("Light");
     light.lightType = LIGHT_DIRECTIONAL;
+    light.castShadows = true;
 
     // Create more StaticModel objects to the scene, randomly positioned, rotated and scaled. For rotation, we construct a
     // quaternion from Euler angles where the Y angle (rotation about the Y axis) is randomized. The mushroom model contains
@@ -65,8 +66,9 @@ void CreateScene()
         mushroomNode.rotation = Quaternion(0.0f, Random(360.0f), 0.0f);
         mushroomNode.SetScale(0.5f + Random(2.0f));
         StaticModel@ mushroomObject = mushroomNode.CreateComponent("StaticModel");
-        mushroomObject.model = cache.GetResource("Model", "Models/Mushroom.mdl");
-        mushroomObject.material = cache.GetResource("Material", "Materials/Mushroom.xml");
+        mushroomObject.model = cache.GetResource("Model", "Models/TeaPot.mdl");
+        mushroomObject.material = cache.GetResource("Material", "Materials/Grids/GridWhite+.xml");
+        mushroomObject.castShadows = true;
     }
 
     // Create a scene node for the camera, which we will move around

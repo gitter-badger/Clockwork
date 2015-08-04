@@ -102,7 +102,7 @@ void ClockworkPlayer::Setup()
     else
     {
         // Use the script file name as the base name for the log file
-        engineParameters_["LogName"] = filesystem->GetAppPreferencesDir("clockwork", "logs") + GetFileNameAndExtension(scriptFileName_) + ".log";
+        engineParameters_["LogName"] = filesystem->GetAppPreferencesDir("clockwork3d", "logs") + GetFileNameAndExtension(scriptFileName_) + ".log";
     }
 }
 

@@ -62,7 +62,7 @@ void CreateScene()
         floorNode.scale = Vector3(500.0f, 1.0f, 500.0f);
         StaticModel@ floorObject = floorNode.CreateComponent("StaticModel");
         floorObject.model = cache.GetResource("Model", "Models/Box.mdl");
-        floorObject.material = cache.GetResource("Material", "Materials/StoneTiled.xml");
+        floorObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
 
         // Make the floor physical by adding RigidBody and CollisionShape components
         RigidBody@ body = floorNode.CreateComponent("RigidBody");
@@ -85,7 +85,7 @@ void CreateScene()
             modelNode.rotation = Quaternion(0.0f, 180.0f, 0.0f);
             AnimatedModel@ modelObject = modelNode.CreateComponent("AnimatedModel");
             modelObject.model = cache.GetResource("Model", "Models/Jack.mdl");
-            modelObject.material = cache.GetResource("Material", "Materials/Jack.xml");
+            modelObject.material = cache.GetResource("Material", "Materials/MaterialsPlane/Metals/Copper.xml");
             modelObject.castShadows = true;
             // Set the model to also update when invisible to avoid staying invisible when the model should come into
             // view, but does not as the bounding box is not updated

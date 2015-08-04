@@ -1,5 +1,3 @@
-
-
 #pragma once
 
 #include <Clockwork/Core/Object.h>
@@ -46,4 +44,3 @@ public:
     /// Gyroscope on/off flag.
     bool useGyroscope_;
 };
-

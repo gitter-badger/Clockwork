@@ -18,7 +18,7 @@
 //
 // ===============================================================================
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 // Suppress 'gcc_struct' is being ignored warnings when compiling for Raspberry-PI
 
 #ifdef AI_PUSHPACK_IS_DEFINED

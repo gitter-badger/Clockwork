@@ -16,7 +16,7 @@
 /** @file Clock.h
 	@brief The Clock class. Supplies timing facilities. */
 
-// Modifed by Lasse Oorni for Clockwork
+// Modifed by Joshua Nuttall for Clockwork
 
 #ifdef WIN32
 // Clockwork: windows.h in lowercase to fix MinGW cross-compiling on a case-sensitive system

@@ -1,5 +1,3 @@
-
-
 #include <Clockwork/Clockwork.h>
 
 #include <Clockwork/Physics/CollisionShape.h>
@@ -27,7 +25,7 @@ Vehicle::Vehicle(Context* context) :
 void Vehicle::RegisterObject(Context* context)
 {
     context->RegisterFactory<Vehicle>();
-    
+
     ATTRIBUTE("Controls Yaw", float, controls_.yaw_, 0.0f, AM_DEFAULT);
     ATTRIBUTE("Controls Pitch", float, controls_.pitch_, 0.0f, AM_DEFAULT);
     ATTRIBUTE("Steering", float, steering_, 0.0f, AM_DEFAULT);
@@ -44,13 +42,13 @@ void Vehicle::ApplyAttributes()
     // This function is called on each Serializable after the whole scene has been loaded. Reacquire wheel nodes from ID's
     // as well as all required physics components
     Scene* scene = GetScene();
-    
+
     frontLeft_ = scene->GetNode(frontLeftID_);
     frontRight_ = scene->GetNode(frontRightID_);
     rearLeft_ = scene->GetNode(rearLeftID_);
     rearRight_ = scene->GetNode(rearRightID_);
     hullBody_ = node_->GetComponent<RigidBody>();
-    
+
     GetWheelComponents();
 }
 
@@ -89,7 +87,7 @@ void Vehicle::FixedUpdate(float timeStep)
     {
         // Torques are applied in world space, so need to take the vehicle & wheel rotation into account
         Vector3 torqueVec = Vector3(ENGINE_POWER * accelerator, 0.0f, 0.0f);
-        
+
         frontLeftBody_->ApplyTorque(hullRot * steeringRot * torqueVec);
         frontRightBody_->ApplyTorque(hullRot * steeringRot * torqueVec);
         rearLeftBody_->ApplyTorque(hullRot * torqueVec);
@@ -105,7 +103,7 @@ void Vehicle::Init()
 {
     // This function is called only from the main program when initially creating the vehicle, not on scene load
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    
+
     StaticModel* hullObject = node_->CreateComponent<StaticModel>();
     hullBody_ = node_->CreateComponent<RigidBody>();
     CollisionShape* hullShape = node_->CreateComponent<CollisionShape>();
@@ -119,19 +117,19 @@ void Vehicle::Init()
     hullBody_->SetLinearDamping(0.2f); // Some air resistance
     hullBody_->SetAngularDamping(0.5f);
     hullBody_->SetCollisionLayer(1);
-    
+
     InitWheel("FrontLeft", Vector3(-0.6f, -0.4f, 0.3f), frontLeft_, frontLeftID_);
     InitWheel("FrontRight", Vector3(0.6f, -0.4f, 0.3f), frontRight_, frontRightID_);
     InitWheel("RearLeft", Vector3(-0.6f, -0.4f, -0.3f), rearLeft_, rearLeftID_);
     InitWheel("RearRight", Vector3(0.6f, -0.4f, -0.3f), rearRight_, rearRightID_);
-    
+
     GetWheelComponents();
 }
 
 void Vehicle::InitWheel(const String& name, const Vector3& offset, WeakPtr<Node>& wheelNode, unsigned& wheelNodeID)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    
+
     // Note: do not parent the wheel to the hull scene node. Instead create it on the root level and let the physics
     // constraint keep it together
     wheelNode = GetScene()->CreateChild(name);
@@ -141,7 +139,7 @@ void Vehicle::InitWheel(const String& name, const Vector3& offset, WeakPtr<Node>
     wheelNode->SetScale(Vector3(0.8f, 0.5f, 0.8f));
     // Remember the ID for serialization
     wheelNodeID = wheelNode->GetID();
-    
+
     StaticModel* wheelObject = wheelNode->CreateComponent<StaticModel>();
     RigidBody* wheelBody = wheelNode->CreateComponent<RigidBody>();
     CollisionShape* wheelShape = wheelNode->CreateComponent<CollisionShape>();

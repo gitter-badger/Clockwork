@@ -9,7 +9,7 @@
 #include "Scripts/Utilities/Sample.as"
 
 void Start()
-{
+{ 
     // Execute the common startup for samples
     SampleStart();
 
@@ -40,7 +40,7 @@ void CreateScene()
     planeNode.scale = Vector3(100.0f, 1.0f, 100.0f);
     StaticModel@ planeObject = planeNode.CreateComponent("StaticModel");
     planeObject.model = cache.GetResource("Model", "Models/Plane.mdl");
-    planeObject.material = cache.GetResource("Material", "Materials/StoneTiled.xml");
+    planeObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
 
     // Create a Zone component for ambient lighting & fog control
     Node@ zoneNode = scene_.CreateChild("Zone");
@@ -74,7 +74,7 @@ void CreateScene()
         modelNode.rotation = Quaternion(0.0f, Random(360.0f), 0.0f);
         AnimatedModel@ modelObject = modelNode.CreateComponent("AnimatedModel");
         modelObject.model = cache.GetResource("Model", "Models/Jack.mdl");
-        modelObject.material = cache.GetResource("Material", "Materials/Jack.xml");
+        modelObject.material = cache.GetResource("Material", "Materials/Editor/Entities/EntityCharacter.xml");
         modelObject.castShadows = true;
 
         // Create an AnimationState for a walk animation. Its time position will need to be manually updated to advance the

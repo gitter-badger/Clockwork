@@ -1,5 +1,3 @@
-
-
 #include <Clockwork/Clockwork.h>
 
 #include <Clockwork/Graphics/Animation.h>

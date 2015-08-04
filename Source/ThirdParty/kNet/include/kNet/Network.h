@@ -16,7 +16,7 @@
 /** @file Network.h
 	@brief The class Network. The root point for creating client and server objects. */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #if defined(KNET_UNIX) || defined(ANDROID)
 #include <sys/types.h>

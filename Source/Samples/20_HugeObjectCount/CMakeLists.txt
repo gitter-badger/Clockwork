@@ -1,5 +1,3 @@
-clockwork
-
 # Define target name
 set (TARGET_NAME 20_HugeObjectCount)
 

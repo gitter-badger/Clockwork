@@ -146,7 +146,7 @@
     <element type="Zone">
         <attribute name="Texture" value="Texture2D;Textures/Editor/EditorIcons.png" />
         <attribute name="Image Rect" value="720 1 762 42" />
-    </element>    
+    </element>
     <element type="NavigationMesh">
         <attribute name="Texture" value="Texture2D;Textures/Editor/EditorIcons.png" />
         <attribute name="Image Rect" value="191 47 234 90" />
@@ -293,7 +293,7 @@
     </element>
     <element type="Lock">
         <attribute name="Texture" value="Texture2D;Textures/Editor/EditorIcons.png" />
-        <attribute name="Image Rect" value="678 239 714 282" />
+        <attribute name="Image Rect" value="671 239 714 282" />
     </element>
     <element type="EditMove">
         <attribute name="Texture" value="Texture2D;Textures/Editor/EditorIcons.png" />

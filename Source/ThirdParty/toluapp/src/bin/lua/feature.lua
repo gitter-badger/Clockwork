@@ -9,7 +9,7 @@
 -- the author has no obligation to provide maintenance, support, updates,
 -- enhancements, or modifications.
 
--- Modified by Yao Wei Tjong for Clockwork
+-- Modified by Joshua Nuttall for Clockwork
 
 
 -- Feature class

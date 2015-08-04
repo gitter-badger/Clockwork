@@ -16,7 +16,7 @@
 /** @file Thread.h
 	@brief The Thread class. Implements threading either using Boost, native Win32 or pthreads constructs. */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #include <string>
 

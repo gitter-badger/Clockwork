@@ -1,3 +1,5 @@
+
+
 # Set project name
 project (Clockwork-Samples)
 
@@ -72,3 +74,5 @@ if (CLOCKWORK_CLOCKWORK2D)
     add_sample_subdirectory (33_Clockwork2DSpriterAnimation)
     add_sample_subdirectory (36_Clockwork2DTileMap)
 endif ()
+add_sample_subdirectory (40_Localization)
+

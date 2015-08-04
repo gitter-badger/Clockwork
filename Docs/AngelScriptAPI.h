@@ -348,6 +348,7 @@ bool GetLooped(const String&) const;
 float GetSpeed(const String&) const;
 float GetTime(const String&) const;
 float GetWeight(const String&) const;
+bool IsAtEnd(const String&) const;
 bool IsFadingIn(const String&) const;
 bool IsFadingOut(const String&) const;
 bool IsPlaying(const String&) const;
@@ -891,6 +892,8 @@ void Define(float, float);
 Intersection IsInside(const BoundingBox&) const;
 Intersection IsInside(const Sphere&) const;
 Intersection IsInside(const Vector3&) const;
+Intersection IsInsideFast(const BoundingBox&) const;
+Intersection IsInsideFast(const Sphere&) const;
 void Merge(const BoundingBox&);
 void Merge(const Frustum&);
 void Merge(const Polyhedron&);
@@ -3087,8 +3090,8 @@ void SetAttributeAnimation(const String&, ValueAnimation, WrapMode = WM_LOOP, fl
 void SetAttributeAnimationSpeed(const String&, float);
 void SetAttributeAnimationWrapMode(const String&, WrapMode);
 void SetInterceptNetworkUpdate(const String&, bool);
-bool SetMoveTarget(const Vector3&);
-bool SetMoveVelocity(const Vector3&);
+void SetMoveTarget(const Vector3&);
+void SetMoveVelocity(const Vector3&);
 
 // Properties:
 /* readonly */
@@ -3096,6 +3099,8 @@ Vector3 actualVelocity;
 /* readonly */
 CrowdAgentState agentState;
 bool animationEnabled;
+/* readonly */
+bool arrived;
 /* readonly */
 Array<Variant> attributeDefaults;
 /* readonly */
@@ -3647,6 +3652,7 @@ bool ReadBool();
 BoundingBox ReadBoundingBox();
 int8 ReadByte();
 Color ReadColor();
+double ReadDouble();
 String ReadFileID();
 float ReadFloat();
 int ReadInt();
@@ -3709,6 +3715,7 @@ bool LoadXML(const XMLElement&, bool = false);
 void MarkNetworkUpdate() const;
 void Remove();
 void RemoveInstanceDefault();
+void ResetCrowdTarget(int = 0, int = M_MAX_INT);
 void ResetToDefault();
 bool Save(File) const;
 bool Save(VectorBuffer&) const;
@@ -3719,6 +3726,8 @@ bool SetAttribute(const String&, const Variant&);
 void SetAttributeAnimation(const String&, ValueAnimation, WrapMode = WM_LOOP, float = 1.0f);
 void SetAttributeAnimationSpeed(const String&, float);
 void SetAttributeAnimationWrapMode(const String&, WrapMode);
+void SetCrowdTarget(const Vector3&, int = 0, int = M_MAX_INT);
+void SetCrowdVelocity(const Vector3&, int = 0, int = M_MAX_INT);
 void SetInterceptNetworkUpdate(const String&, bool);
 
 // Properties:
@@ -4307,6 +4316,7 @@ bool ReadBool();
 BoundingBox ReadBoundingBox();
 int8 ReadByte();
 Color ReadColor();
+double ReadDouble();
 String ReadFileID();
 float ReadFloat();
 int ReadInt();
@@ -4340,6 +4350,7 @@ bool WriteBool(bool);
 bool WriteBoundingBox(const BoundingBox&);
 bool WriteByte(int8);
 bool WriteColor(const Color&);
+bool WriteDouble(double);
 bool WriteFileID(const String&);
 bool WriteFloat(float);
 bool WriteInt(int);
@@ -4544,6 +4555,8 @@ float Distance(const Vector3&) const;
 Intersection IsInside(const BoundingBox&);
 Intersection IsInside(const Sphere&);
 Intersection IsInside(const Vector3&);
+Intersection IsInsideFast(const BoundingBox&) const;
+Intersection IsInsideFast(const Sphere&) const;
 void Transform(const Matrix3&);
 void Transform(const Matrix3x4&);
 Frustum Transformed(const Matrix3&) const;
@@ -4690,6 +4703,7 @@ bool ReadBool();
 BoundingBox ReadBoundingBox();
 int8 ReadByte();
 Color ReadColor();
+double ReadDouble();
 String ReadFileID();
 float ReadFloat();
 int ReadInt();
@@ -4768,10 +4782,10 @@ bool LoadColorLUT(VectorBuffer&);
 bool Resize(int, int);
 bool Save(File) const;
 bool Save(VectorBuffer&) const;
-void SaveBMP(const String&) const;
-void SaveJPG(const String&, int) const;
-void SavePNG(const String&) const;
-void SaveTGA(const String&) const;
+bool SaveBMP(const String&) const;
+bool SaveJPG(const String&, int) const;
+bool SavePNG(const String&) const;
+bool SaveTGA(const String&) const;
 void SendEvent(const String&, VariantMap& = VariantMap ( ));
 void SetPixel(int, int, const Color&);
 void SetPixel(int, int, int, const Color&);
@@ -4781,6 +4795,8 @@ bool SetSize(int, int, int, uint);
 bool SetSize(int, int, uint);
 
 // Properties:
+/* readonly */
+bool array;
 /* readonly */
 StringHash baseType;
 /* readonly */
@@ -4792,6 +4808,8 @@ bool compressed;
 /* readonly */
 CompressedFormat compressedFormat;
 /* readonly */
+bool cubemap;
+/* readonly */
 int depth;
 /* readonly */
 int height;
@@ -4802,6 +4820,8 @@ String name;
 uint numCompressedLevels;
 /* readonly */
 int refs;
+/* readonly */
+bool sRGB;
 /* readonly */
 StringHash type;
 /* readonly */
@@ -5004,6 +5024,7 @@ class JSONValue
 // Methods:
 void AddBool(bool);
 void AddColor(const Color&);
+void AddDouble(double);
 void AddFloat(float);
 void AddInt(int);
 void AddIntRect(const IntRect&);
@@ -5030,6 +5051,8 @@ JSONValue GetChild(uint, JSONValueType = JSON_ANY) const;
 Array<String> GetChildNames() const;
 Color GetColor(const String&) const;
 Color GetColor(uint) const;
+double GetDouble(const String&) const;
+double GetDouble(uint) const;
 float GetFloat(const String&) const;
 float GetFloat(uint) const;
 int GetInt(const String&) const;
@@ -5067,6 +5090,7 @@ Variant GetVectorVariant(const String&) const;
 Variant GetVectorVariant(uint) const;
 void SetBool(const String&, bool);
 void SetColor(const String&, const Color&);
+void SetDouble(const String&, double);
 void SetFloat(const String&, float);
 void SetInt(const String&, int);
 void SetIntRect(const String&, const IntRect&);
@@ -5652,6 +5676,40 @@ bool visible;
 /* readonly */
 int weakRefs;
 int width;
+};
+
+class Localization
+{
+// Methods:
+String Get(const String&);
+String GetLanguage(int);
+int GetLanguageIndex(const String&);
+void LoadJSON(const JSONValue&);
+void LoadJSONFile(const String&);
+void Reset();
+void SendEvent(const String&, VariantMap& = VariantMap ( ));
+void SetLanguage(const String&);
+void SetLanguage(int);
+
+// Properties:
+/* readonly */
+StringHash baseType;
+/* readonly */
+String category;
+/* readonly */
+String language;
+/* readonly */
+int languageIndex;
+/* readonly */
+int numLanguages;
+/* readonly */
+int refs;
+/* readonly */
+StringHash type;
+/* readonly */
+String typeName;
+/* readonly */
+int weakRefs;
 };
 
 class Log
@@ -6484,6 +6542,7 @@ void RemoveChildren(bool, bool, bool);
 void RemoveComponent(Component);
 void RemoveComponent(const String&);
 void RemoveComponents(bool, bool);
+void RemoveComponents(const String&);
 void RemoveInstanceDefault();
 void ResetDeepEnabled();
 void ResetToDefault();
@@ -7510,6 +7569,7 @@ Node node;
 Vector3 normal;
 Vector3 position;
 uint subObject;
+Vector2 textureUV;
 };
 
 class Rect
@@ -7589,6 +7649,7 @@ void RemoveShaderParameter(const String&);
 void SetOutput(uint, const String&, CubeMapFace = FACE_POSITIVE_X);
 
 // Properties:
+BlendMode blendMode;
 Color clearColor;
 float clearDepth;
 uint clearFlags;
@@ -8078,6 +8139,7 @@ void RemoveChildren(bool, bool, bool);
 void RemoveComponent(Component);
 void RemoveComponent(const String&);
 void RemoveComponents(bool, bool);
+void RemoveComponents(const String&);
 void RemoveInstanceDefault();
 void ResetToDefault();
 void Roll(float, TransformSpace = TS_LOCAL);
@@ -8296,6 +8358,7 @@ WrapMode GetAttributeAnimationWrapMode(const String&) const;
 Variant GetAttributeDefault(const String&) const;
 bool GetInterceptNetworkUpdate(const String&) const;
 bool HasMethod(const String&) const;
+bool IsA(const String&) const;
 bool Load(File, bool = false);
 bool Load(VectorBuffer&, bool = false);
 bool LoadXML(const XMLElement&, bool = false);
@@ -8789,6 +8852,7 @@ bool WriteBool(bool);
 bool WriteBoundingBox(const BoundingBox&);
 bool WriteByte(int8);
 bool WriteColor(const Color&);
+bool WriteDouble(double);
 bool WriteFileID(const String&);
 bool WriteFloat(float);
 bool WriteInt(int);
@@ -9456,6 +9520,8 @@ float Distance(const Vector3&) const;
 Intersection IsInside(const BoundingBox&) const;
 Intersection IsInside(const Sphere&) const;
 Intersection IsInside(const Vector3&) const;
+Intersection IsInsideFast(const BoundingBox&) const;
+Intersection IsInsideFast(const Sphere&) const;
 void Merge(const BoundingBox&);
 void Merge(const Frustum&);
 void Merge(const Sphere&);
@@ -10061,6 +10127,7 @@ String SubstringUTF8(uint) const;
 String SubstringUTF8(uint, uint) const;
 bool ToBool() const;
 Color ToColor() const;
+double ToDouble() const;
 float ToFloat() const;
 int ToInt() const;
 IntRect ToIntRect() const;
@@ -10397,6 +10464,7 @@ Array<Variant> attributeDefaults;
 /* readonly */
 Array<AttributeInfo> attributeInfos;
 Array<Variant> attributes;
+bool autoLocalizable;
 /* readonly */
 StringHash baseType;
 bool bringToBack;
@@ -10655,6 +10723,8 @@ Color borderColor;
 /* readonly */
 String category;
 /* readonly */
+uint components;
+/* readonly */
 bool compressed;
 /* readonly */
 bool dataLost;
@@ -10711,6 +10781,8 @@ StringHash baseType;
 Color borderColor;
 /* readonly */
 String category;
+/* readonly */
+uint components;
 /* readonly */
 bool compressed;
 /* readonly */
@@ -10771,6 +10843,8 @@ Color borderColor;
 /* readonly */
 String category;
 /* readonly */
+uint components;
+/* readonly */
 bool compressed;
 /* readonly */
 bool dataLost;
@@ -10829,6 +10903,8 @@ StringHash baseType;
 Color borderColor;
 /* readonly */
 String category;
+/* readonly */
+uint components;
 /* readonly */
 bool compressed;
 /* readonly */
@@ -11617,6 +11693,7 @@ void FromString(VariantType, const String&);
 void FromString(const String&, const String&);
 bool GetBool() const;
 VectorBuffer GetBuffer() const;
+double GetDouble() const;
 float GetFloat() const;
 int GetInt() const;
 RefCounted GetPtr() const;
@@ -11671,6 +11748,7 @@ Array<Variant> values;
 class Vector2
 {
 // Methods:
+Vector2 Abs() const;
 float AbsDotProduct(const Vector2&) const;
 float DotProduct(const Vector2&) const;
 bool Equals(const Vector2&) const;
@@ -11694,6 +11772,7 @@ float y;
 class Vector3
 {
 // Methods:
+Vector3 Abs() const;
 float AbsDotProduct(const Vector3&) const;
 float Angle(const Vector3&) const;
 Vector3 CrossProduct(const Vector3&) const;
@@ -11720,6 +11799,7 @@ float z;
 class Vector4
 {
 // Methods:
+Vector4 Abs() const;
 float AbsDotProduct(const Vector4&) const;
 float DotProduct(const Vector4&) const;
 bool Equals(const Vector4&) const;
@@ -11745,6 +11825,7 @@ bool ReadBool();
 BoundingBox ReadBoundingBox();
 int8 ReadByte();
 Color ReadColor();
+double ReadDouble();
 String ReadFileID();
 float ReadFloat();
 int ReadInt();
@@ -11779,6 +11860,7 @@ bool WriteBool(bool);
 bool WriteBoundingBox(const BoundingBox&);
 bool WriteByte(int8);
 bool WriteColor(const Color&);
+bool WriteDouble(double);
 bool WriteFileID(const String&);
 bool WriteFloat(float);
 bool WriteInt(int);
@@ -12293,6 +12375,7 @@ bool GetBool(const String&) const;
 BoundingBox GetBoundingBox() const;
 XMLElement GetChild(const String& = String ( )) const;
 Color GetColor(const String&) const;
+double GetDouble(const String&) const;
 float GetFloat(const String&) const;
 int GetInt(const String&) const;
 Matrix3 GetMatrix3(const String&) const;
@@ -12326,6 +12409,7 @@ bool SetAttribute(const String&, const String&);
 bool SetBool(const String&, bool);
 bool SetBoundingBox(const BoundingBox&);
 bool SetColor(const String&, const Color&);
+bool SetDouble(const String&, double);
 bool SetFloat(const String&, float);
 bool SetInt(const String&, int);
 bool SetMatrix3(const String&, const Matrix3&);
@@ -12614,10 +12698,9 @@ CROWD_AGENT_TARGET_NONE,
 CROWD_AGENT_TARGET_FAILED,
 CROWD_AGENT_TARGET_VALID,
 CROWD_AGENT_TARGET_REQUESTING,
-CROWD_AGENT_TARGET_WAITINGFORPATH,
 CROWD_AGENT_TARGET_WAITINGFORQUEUE,
+CROWD_AGENT_TARGET_WAITINGFORPATH,
 CROWD_AGENT_TARGET_VELOCITY,
-CROWD_AGENT_TARGET_ARRIVED,
 };
 
 enum CubeMapFace
@@ -12733,6 +12816,9 @@ IM_SPLINE,
 enum InterpolationMode
 {
 BEZIER_CURVE,
+CATMULL_ROM_CURVE,
+LINEAR_CURVE,
+CATMULL_ROM_FULL_CURVE,
 };
 
 enum Intersection
@@ -12839,6 +12925,7 @@ enum RayQueryLevel
 RAY_AABB,
 RAY_OBB,
 RAY_TRIANGLE,
+RAY_TRIANGLE_UV,
 };
 
 enum RenderCommandSortMode
@@ -12920,8 +13007,6 @@ enum TextureUnit
 {
 TU_DIFFUSE,
 TU_ALBEDOBUFFER,
-TU_MATALIC,
-TU_ROUGHNESS,
 TU_NORMAL,
 TU_NORMALBUFFER,
 TU_SPECULAR,
@@ -13005,6 +13090,7 @@ VAR_PTR,
 VAR_MATRIX3,
 VAR_MATRIX3X4,
 VAR_MATRIX4,
+VAR_DOUBLE,
 };
 
 enum VerticalAlignment
@@ -13137,6 +13223,7 @@ Engine engine;
 FileSystem fileSystem;
 Graphics graphics;
 Input input;
+Localization localization;
 Log log;
 Network network;
 Node node;

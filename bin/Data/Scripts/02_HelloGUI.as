@@ -33,8 +33,8 @@ void Start()
     // Create and add some controls to the Window
     InitControls();
 
-    // Create a draggable Fish
-    CreateDraggableFish();
+    // Create a draggable Icon
+    CreateDraggableIcon();
 }
 
 void InitControls()
@@ -110,29 +110,29 @@ void InitWindow()
     SubscribeToEvent("UIMouseClick", "HandleControlClicked");
 }
 
-void CreateDraggableFish()
+void CreateDraggableIcon()
 {
-    // Create a draggable Fish button
-    Button@ draggableFish = ui.root.CreateChild("Button", "Fish");
-    draggableFish.texture = cache.GetResource("Texture2D", "Textures/ClockworkDecal.dds"); // Set texture
-    draggableFish.blendMode = BLEND_ADD;
-    draggableFish.SetSize(128, 128);
-    draggableFish.SetPosition((graphics.width - draggableFish.width) / 2, 200);
+    // Create a draggable Icon button
+    Button@ draggableIcon = ui.root.CreateChild("Button", "Icon");
+    draggableIcon.texture = cache.GetResource("Texture2D", "Textures/Editor/NoPreviewAvailable.png"); // Set texture
+    draggableIcon.blendMode = BLEND_ADD;
+    draggableIcon.SetSize(128, 128);
+    draggableIcon.SetPosition((graphics.width - draggableIcon.width) / 2, 200);
 
-    // Add a tooltip to Fish button
-    ToolTip@ toolTip = draggableFish.CreateChild("ToolTip");
-    toolTip.position = IntVector2(draggableFish.width + 5, draggableFish.width/2); // slightly offset from fish
+    // Add a tooltip to Icon button
+    ToolTip@ toolTip = draggableIcon.CreateChild("ToolTip");
+    toolTip.position = IntVector2(draggableIcon.width + 5, draggableIcon.width/2); // slightly offset from Icon
     BorderImage@ textHolder = toolTip.CreateChild("BorderImage");
     textHolder.SetStyle("ToolTipBorderImage");
     Text@ toolTipText = textHolder.CreateChild("Text");
     toolTipText.SetStyle("ToolTipText");
     toolTipText.text = "Please drag me!";
 
-    // Subscribe draggableFish to Drag Events (in order to make it draggable)
+    // Subscribe draggableIcon to Drag Events (in order to make it draggable)
     // See "Event list" in documentation's Main Page for reference on available Events and their eventData
-    SubscribeToEvent(draggableFish, "DragBegin", "HandleDragBegin");
-    SubscribeToEvent(draggableFish, "DragMove", "HandleDragMove");
-    SubscribeToEvent(draggableFish, "DragEnd", "HandleDragEnd");
+    SubscribeToEvent(draggableIcon, "DragBegin", "HandleDragBegin");
+    SubscribeToEvent(draggableIcon, "DragMove", "HandleDragMove");
+    SubscribeToEvent(draggableIcon, "DragEnd", "HandleDragEnd");
 }
 
 void HandleDragBegin(StringHash eventType, VariantMap& eventData)
@@ -144,7 +144,7 @@ void HandleDragBegin(StringHash eventType, VariantMap& eventData)
 void HandleDragMove(StringHash eventType, VariantMap& eventData)
 {
     IntVector2 dragCurrentPosition = IntVector2(eventData["X"].GetInt(), eventData["Y"].GetInt());
-    // Get the element (fish) that is being dragged. GetPtr() returns a RefCounted handle which can be cast implicitly
+    // Get the element (Icon) that is being dragged. GetPtr() returns a RefCounted handle which can be cast implicitly
     UIElement@ draggedElement = eventData["Element"].GetPtr();
     draggedElement.position = dragCurrentPosition - dragBeginPosition;
 }

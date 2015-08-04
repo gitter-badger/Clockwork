@@ -1,3 +1,5 @@
+
+
 # Define target name
 set (TARGET_NAME 35_SignedDistanceFieldText)
 

@@ -54,6 +54,8 @@ inline void SetFPUState(unsigned control)
 
 #endif
 
+#include <SDL/SDL.h>
+
 #include "../DebugNew.h"
 
 namespace Clockwork
@@ -103,11 +105,7 @@ void InitFPU()
 
 void ErrorDialog(const String& title, const String& message)
 {
-#ifdef WIN32
-    MessageBoxW(0, WString(message).CString(), WString(title).CString(), 0);
-#else
-    PrintLine(message, true);
-#endif
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, title.CString(), message.CString(), 0);
 }
 
 void ErrorExit(const String& message, int exitCode)

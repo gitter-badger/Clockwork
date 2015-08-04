@@ -1,5 +1,3 @@
-
-
 #pragma once
 
 #include "Sample.h"
@@ -59,5 +57,3 @@ private:
     /// Handle music volume slider change.
     void HandleMusicVolume(StringHash eventType, VariantMap& eventData);
 };
-
-

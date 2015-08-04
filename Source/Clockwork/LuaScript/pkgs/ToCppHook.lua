@@ -95,12 +95,12 @@ _push_functions['Resource'] = "ToluaPushObject"
 _push_functions['UIElement'] = "ToluaPushObject"
 
 -- Is Clockwork Vector type.
-function clockwork_is_vector(t)
+function clockwork3d_is_vector(t)
     return t:find("Vector<") ~= nil
 end
 
 -- Is Clockwork PODVector type.
-function clockwork_is_podvector(t)
+function clockwork3d_is_podvector(t)
     return t:find("PODVector<") ~= nil
 end
 
@@ -109,11 +109,11 @@ local old_get_to_function = get_to_function
 local old_get_is_function = get_is_function
 
 function get_push_function(t)
-    if not clockwork_is_vector(t) then
+    if not clockwork3d_is_vector(t) then
         return old_get_push_function(t)
     end
     
-    if not clockwork_is_podvector(t) then
+    if not clockwork3d_is_podvector(t) then
         return "ToluaPushVector" .. t:match("<.*>")
     else
         return "ToluaPushPODVector" .. t:match("<.*>")
@@ -121,11 +121,11 @@ function get_push_function(t)
 end
 
 function get_to_function(t)
-    if not clockwork_is_vector(t) then
+    if not clockwork3d_is_vector(t) then
         return old_get_to_function(t)
     end
     
-    if not clockwork_is_podvector(t) then
+    if not clockwork3d_is_podvector(t) then
         return "ToluaToVector" .. t:match("<.*>")
     else
         return "ToluaToPODVector" .. t:match("<.*>")
@@ -133,11 +133,11 @@ function get_to_function(t)
 end
 
 function get_is_function(t)
-    if not clockwork_is_vector(t) then
+    if not clockwork3d_is_vector(t) then
         return old_get_is_function(t)
     end
     
-    if not clockwork_is_podvector(t) then
+    if not clockwork3d_is_podvector(t) then
         return "ToluaIsVector" .. t:match("<.*>")
     else
         return "ToluaIsPODVector" .. t:match("<.*>")

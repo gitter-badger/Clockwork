@@ -42,6 +42,9 @@ inline bool Equals(float lhs, float rhs) { return lhs + M_EPSILON >= rhs && lhs 
 /// Linear interpolation between two float values.
 inline float Lerp(float lhs, float rhs, float t) { return lhs * (1.0f - t) + rhs * t; }
 
+/// Linear interpolation between two double values.
+inline double Lerp(double lhs, double rhs, float t) { return lhs * (1.0f - t) + rhs * t; }
+
 /// Return the smaller of two floats.
 inline float Min(float lhs, float rhs) { return lhs < rhs ? lhs : rhs; }
 
@@ -55,7 +58,7 @@ inline float Abs(float value) { return value >= 0.0f ? value : -value; }
 inline float Sign(float value) { return value > 0.0f ? 1.0f : (value < 0.0f ? -1.0f : 0.0f); }
 
 /// Check whether a floating point value is NaN.
-/// Use a workaround for GCC, see https://github.com/clockwork/Clockwork/issues/655
+/// Use a workaround for GCC, see https://github.com/clockwork3d/Clockwork/issues/655
 #ifndef __GNUC__
 inline bool IsNaN(float value) { return value != value; }
 #else

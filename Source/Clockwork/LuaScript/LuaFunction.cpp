@@ -97,7 +97,7 @@ void LuaFunction::PushString(const String& string)
 {
     ++numArguments_;
 
-    tolua_pushclockworkstring(luaState_, string);
+    tolua_pushclockwork3dstring(luaState_, string);
 }
 
 void LuaFunction::PushUserType(void* userType, const char* typeName)

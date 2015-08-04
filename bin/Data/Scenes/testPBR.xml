@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<scene id="1">
+	<attribute name="Name" value="" />
+	<attribute name="Time Scale" value="1" />
+	<attribute name="Smoothing Constant" value="50" />
+	<attribute name="Snap Threshold" value="5" />
+	<attribute name="Elapsed Time" value="0" />
+	<attribute name="Next Replicated Node ID" value="6" />
+	<attribute name="Next Replicated Component ID" value="7" />
+	<attribute name="Next Local Node ID" value="16777216" />
+	<attribute name="Next Local Component ID" value="16777216" />
+	<attribute name="Variables" />
+	<attribute name="Variable Names" value="" />
+	<component type="Octree" id="1" />
+	<component type="DebugRenderer" id="2" />
+	<node id="2">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="Cerberus_LP" />
+		<attribute name="Position" value="0 -3.94427 7.88854" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="StaticModel" id="3">
+			<attribute name="Model" value="Model;Models/Cerberus_LP.mdl" />
+			<attribute name="Material" value="Material;Materials/test.xml" />
+			<attribute name="Cast Shadows" value="true" />
+		</component>
+	</node>
+	<node id="3">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="" />
+		<attribute name="Position" value="51.9934 7.83027 -7.42717" />
+		<attribute name="Rotation" value="0.886101 0 -0.463491 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="Light" id="4">
+			<attribute name="Light Type" value="Directional" />
+		</component>
+	</node>
+	<node id="4">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="" />
+		<attribute name="Position" value="0 -1.76627 0" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="1 1 1" />
+		<attribute name="Variables" />
+		<component type="Skybox" id="5">
+			<attribute name="Model" value="Model;Models/Dome.mdl" />
+			<attribute name="Material" value="Material;Materials/Skybox.xml" />
+		</component>
+	</node>
+	<node id="5">
+		<attribute name="Is Enabled" value="true" />
+		<attribute name="Name" value="" />
+		<attribute name="Position" value="55.7809 -5.4575 80.671" />
+		<attribute name="Rotation" value="1 0 0 0" />
+		<attribute name="Scale" value="17.1725 4.92422 15.9982" />
+		<attribute name="Variables" />
+		<component type="Zone" id="6">
+			<attribute name="Zone Texture" value="TextureCube;Textures/Skybox.xml" />
+		</component>
+	</node>
+</scene>

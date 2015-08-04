@@ -52,7 +52,7 @@ void CreateScene()
     lightNode.direction = Vector3(-0.6, -1.0, -0.8); // The direction vector does not need to be normalized
     Light@ light = lightNode.CreateComponent("Light");
     light.lightType = LIGHT_DIRECTIONAL;
-    light.color = Color(0.4, 1.0, 0.4);
+    light.color = Color(0.4, 0.6, 1.0);
     light.specularIntensity = 1.5;
     
     // Get the original model and its unmodified vertices, which are used as source data for the animation

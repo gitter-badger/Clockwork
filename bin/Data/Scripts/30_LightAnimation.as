@@ -39,7 +39,7 @@ void CreateScene()
     planeNode.scale = Vector3(100.0f, 1.0f, 100.0f);
     StaticModel@ planeObject = planeNode.CreateComponent("StaticModel");
     planeObject.model = cache.GetResource("Model", "Models/Plane.mdl");
-    planeObject.material = cache.GetResource("Material", "Materials/StoneTiled.xml");
+    planeObject.material = cache.GetResource("Material", "Materials/Grids/GridLight+.xml");
 
     // Create a point light to the world so that we can see something.
     Node@ lightNode = scene_.CreateChild("DirectionalLight");
@@ -92,8 +92,8 @@ void CreateScene()
         mushroomNode.rotation = Quaternion(0.0f, Random(360.0f), 0.0f);
         mushroomNode.SetScale(0.5f + Random(2.0f));
         StaticModel@ mushroomObject = mushroomNode.CreateComponent("StaticModel");
-        mushroomObject.model = cache.GetResource("Model", "Models/Mushroom.mdl");
-        mushroomObject.material = cache.GetResource("Material", "Materials/Mushroom.xml");
+        mushroomObject.model = cache.GetResource("Model", "Models/TeaPot.mdl");
+        mushroomObject.material = cache.GetResource("Material", "Materials/Grids/GridDark+.xml");
     }
 
     // Create a scene node for the camera, which we will move around

@@ -62,7 +62,7 @@ void CreateScene()
         floorNode.scale = Vector3(500.0f, 1.0f, 500.0f);
         StaticModel@ floorObject = floorNode.CreateComponent("StaticModel");
         floorObject.model = cache.GetResource("Model", "Models/Box.mdl");
-        floorObject.material = cache.GetResource("Material", "Materials/StoneTiled.xml");
+        floorObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
 
         // Make the floor physical by adding RigidBody and CollisionShape components
         RigidBody@ body = floorNode.CreateComponent("RigidBody");
@@ -82,8 +82,8 @@ void CreateScene()
             mushroomNode.rotation = Quaternion(0.0f, Random(360.0f), 0.0f);
             mushroomNode.SetScale(5.0f + Random(5.0f));
             StaticModel@ mushroomObject = mushroomNode.CreateComponent("StaticModel");
-            mushroomObject.model = cache.GetResource("Model", "Models/Mushroom.mdl");
-            mushroomObject.material = cache.GetResource("Material", "Materials/Mushroom.xml");
+            mushroomObject.model = cache.GetResource("Model", "Models/TeaPot.mdl");
+            mushroomObject.material = cache.GetResource("Material", "Materials/Grids/GridWhite+.xml");
             mushroomObject.castShadows = true;
 
             RigidBody@ body = mushroomNode.CreateComponent("RigidBody");
@@ -102,7 +102,7 @@ void CreateScene()
             boxNode.position = Vector3(0.0f, i * 2.0f + 100.0f, 0.0f);
             StaticModel@ boxObject = boxNode.CreateComponent("StaticModel");
             boxObject.model = cache.GetResource("Model", "Models/Box.mdl");
-            boxObject.material = cache.GetResource("Material", "Materials/StoneSmall.xml");
+            boxObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefault.xml");
             boxObject.castShadows = true;
 
             // Give the RigidBody mass to make it movable and also adjust friction

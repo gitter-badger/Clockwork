@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #ifndef __SDL_RPIVIDEO_H__
 #define __SDL_RPIVIDEO_H__

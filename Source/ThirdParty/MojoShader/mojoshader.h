@@ -7,7 +7,7 @@
  *  This file written by Ryan C. Gordon.
  */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #ifndef _INCL_MOJOSHADER_H_
 #define _INCL_MOJOSHADER_H_

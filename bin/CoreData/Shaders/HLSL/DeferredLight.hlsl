@@ -3,7 +3,7 @@
 #include "Transform.hlsl"
 #include "ScreenPos.hlsl"
 #include "Lighting.hlsl"
-#include "BRDF.hlsl"
+#include "DeferredGBuffer.hlsl"
 
 void VS(float4 iPos : POSITION,
     #ifdef DIRLIGHT
@@ -45,6 +45,9 @@ void PS(
     #ifdef ORTHO
         float3 iNearRay : TEXCOORD2,
     #endif
+    #ifdef PBR
+        float2 iFragPos : VPOS,
+    #endif
     out float4 oColor : OUTCOLOR0)
 {
     // If rendering a directional light quad, optimize out the w divide
@@ -74,12 +77,27 @@ void PS(
         float4 normalInput = Sample2DProj(NormalBuffer, iScreenPos);
     #endif
     
-    float matalic = 1.0;
+    #ifdef PBR
+        float3 normal = DecodeGBufferNormal(normalInput.xy, iFarRay);
+        const float roughness = normalInput.b;
+        #ifdef DIRLIGHT
+            float3 specColor = 0;
+            float3 albedoColor = 0;
+            DecodeYCoCgElements(iScreenPos.xy, albedoInput, albedoColor, specColor);
+            albedoInput.rgb = albedoColor;
+            albedoInput.a = 1;
+        #else
+            float3 specColor = 0;
+            float3 albedoColor = 0;
+            DecodeYCoCgElements(iScreenPos.xy/iScreenPos.w, albedoInput, albedoColor, specColor);
+            albedoInput.rgb = albedoColor;
+            albedoInput.a = 1;
+        #endif
+        albedoInput.a = 1.0;
+    #else
+        float3 normal = normalize(normalInput.rgb * 2.0 - 1.0);
+    #endif
     
-    float3 diffColor = albedoInput.rgb * (1.0 * matalic);
-    float3 specColor =  lerp(0.25 * float3(1.0, 1.0, 1.0), albedoInput.rgb, matalic);
-    
-    float3 normal = normalize(normalInput.rgb * 2.0 - 1.0);
     float4 projWorldPos = float4(worldPos, 1.0);
     float3 lightColor;
     float3 lightDir;
@@ -99,19 +117,28 @@ void PS(
         lightColor = cLightColor.rgb;
     #endif
 
-    #ifdef SPECULAR
-        float Roughness = 0.2;
-        float3 halfVec = normalize(normalize(-worldPos) + lightDir);
-        float NdotH = dot(normal, halfVec);
-        float NdotV = dot(normal, - worldPos);
-        float NdotL = dot(normal, lightDir);
-        float VdotH = dot(-worldPos , halfVec);
-        float D = GetBRDFDistrabution(Roughness, NdotH, 1);
-        float G = GetBRDFGeometricVisibility(Roughness , NdotV, NdotL, NdotH, 4);
-        float3 F = GetBRDFFresnel(specColor, VdotH , 2);
-        float3 spec = D * G * F;
-        oColor = float4(diffColor * diff +  diff * spec, 0.0); ///* float4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
+    #ifdef PBR          
+        float3 toCamera = normalize(worldPos.xyz - cCameraPosPS);
+        
+        const float3 Hn = normalize(-toCamera + lightDir);
+        const float vdh = abs(dot(toCamera, Hn));
+        const float ndh = saturate(dot(normal, Hn));
+        const float ndl = saturate(dot(normal, lightDir));
+        const float ndv = saturate(dot(normal, -toCamera)) + 1e-5;
+        
+        const float3 diffuseTerm = ndl * lightColor * diff * albedoInput.rgb;
+        const float3 fresnelTerm = SchlickFresnel(specColor, vdh);
+        const float distTerm = GGXDistribution(ndh, roughness);
+        const float visTerm = SchlickVisibility(ndl, ndv, roughness);
+        
+        oColor = float4(diffuseTerm, 1);
+        oColor.rgb += distTerm * visTerm * fresnelTerm * lightColor * diff;
     #else
-        oColor = diff * float4(lightColor * albedoInput.rgb, 0.0);
+        #ifdef SPECULAR
+            float spec = GetSpecular(normal, -worldPos, lightDir, normalInput.a * 255.0);
+            oColor = diff * float4(lightColor * (albedoInput.rgb + spec * cLightColor.a * albedoInput.aaa), 0.0);
+        #else
+            oColor = diff * float4(lightColor * albedoInput.rgb, 0.0);
+        #endif
     #endif
 }

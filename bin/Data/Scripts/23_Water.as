@@ -74,7 +74,7 @@ void CreateScene()
     terrain.spacing = Vector3(2.0f, 0.5f, 2.0f); // Spacing between vertices and vertical resolution of the height map
     terrain.smoothing = true;
     terrain.heightMap = cache.GetResource("Image", "Textures/HeightMap.png");
-    terrain.material = cache.GetResource("Material", "Materials/Terrain.xml");
+    terrain.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
     // The terrain consists of large triangles, which fits well for occlusion rendering, as a hill can occlude all
     // terrain patches and other objects behind it
     terrain.occluder = true;
@@ -92,7 +92,7 @@ void CreateScene()
         objectNode.SetScale(5.0f);
         StaticModel@ object = objectNode.CreateComponent("StaticModel");
         object.model = cache.GetResource("Model", "Models/Box.mdl");
-        object.material = cache.GetResource("Material", "Materials/Stone.xml");
+        object.material = cache.GetResource("Material", "Materials/Grids/GridDark+.xml");
         object.castShadows = true;
     }
 

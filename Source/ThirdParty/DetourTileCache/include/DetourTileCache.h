@@ -1,7 +1,7 @@
 #ifndef DETOURTILECACHE_H
 #define DETOURTILECACHE_H
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #include "DetourStatus.h"
 

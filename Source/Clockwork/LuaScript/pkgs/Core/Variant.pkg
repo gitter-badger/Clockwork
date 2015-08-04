@@ -535,7 +535,7 @@ static int tolua_CoreLuaAPI_VariantMap_SetPtr00(lua_State* tolua_S)
  tolua_Error tolua_err;
  if (
  !tolua_isusertype(tolua_S,1,"VariantMap",0,&tolua_err) ||
- !tolua_isclockworkstring(tolua_S,2,0,&tolua_err) ||
+ !tolua_isclockwork3dstring(tolua_S,2,0,&tolua_err) ||
  !tolua_isuserdata(tolua_S,3,0,&tolua_err) ||
  !tolua_isnoobj(tolua_S,4,&tolua_err)
  )
@@ -544,7 +544,7 @@ static int tolua_CoreLuaAPI_VariantMap_SetPtr00(lua_State* tolua_S)
 #endif
  {
   VariantMap* self = (VariantMap*)  tolua_tousertype(tolua_S,1,0);
-  const String key = ((const String)  tolua_toclockworkstring(tolua_S,2,0));
+  const String key = ((const String)  tolua_toclockwork3dstring(tolua_S,2,0));
   void* value = ((void*) tolua_tousertype(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'VariantMapSetPtr'", NULL);
@@ -568,16 +568,16 @@ static int tolua_CoreLuaAPI_VariantMap_GetPtr00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_Error tolua_err;
  if (!tolua_isusertype(tolua_S,1,"VariantMap",0,&tolua_err) ||
-  !tolua_isclockworkstring(tolua_S,2,0,&tolua_err) ||
-  !tolua_isclockworkstring(tolua_S,3,0,&tolua_err) ||
+  !tolua_isclockwork3dstring(tolua_S,2,0,&tolua_err) ||
+  !tolua_isclockwork3dstring(tolua_S,3,0,&tolua_err) ||
   !tolua_isnoobj(tolua_S,4,&tolua_err))
   goto tolua_lerror;
  else
 #endif
  {
   VariantMap* self = (VariantMap*)  tolua_tousertype(tolua_S,1,0);
-  const String type = ((const String)  tolua_toclockworkstring(tolua_S,2,0));
-  const String key = ((const String)  tolua_toclockworkstring(tolua_S,3,0));
+  const String type = ((const String)  tolua_toclockwork3dstring(tolua_S,2,0));
+  const String key = ((const String)  tolua_toclockwork3dstring(tolua_S,3,0));
 #ifndef TOLUA_RELEASE
   if (!self) tolua_error(tolua_S,"invalid 'self' in function 'VariantMapGetPtr'", NULL);
 #endif

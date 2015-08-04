@@ -18,7 +18,7 @@
 	
 	Idea and code taken from http://randomascii.wordpress.com/2012/02/14/64-bit-made-easy/ */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #ifdef _WIN64
 #include "kNet/64BitAllocDebugger.h"

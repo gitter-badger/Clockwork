@@ -1,5 +1,3 @@
-
-
 #pragma once
 
 #include <Clockwork/Input/Controls.h>
@@ -28,22 +26,22 @@ class Character : public LogicComponent
 public:
     /// Construct.
     Character(Context* context);
-    
+
     /// Register object factory and attributes.
     static void RegisterObject(Context* context);
-    
+
     /// Handle startup. Called by LogicComponent base class.
     virtual void Start();
     /// Handle physics world update. Called by LogicComponent base class.
     virtual void FixedUpdate(float timeStep);
-    
+
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;
-    
+
 private:
     /// Handle physics collision event.
     void HandleNodeCollision(StringHash eventType, VariantMap& eventData);
-    
+
     /// Grounded flag for movement.
     bool onGround_;
     /// Jump flag.

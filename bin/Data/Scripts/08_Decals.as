@@ -39,7 +39,7 @@ void CreateScene()
     planeNode.scale = Vector3(100.0f, 1.0f, 100.0f);
     StaticModel@ planeObject = planeNode.CreateComponent("StaticModel");
     planeObject.model = cache.GetResource("Model", "Models/Plane.mdl");
-    planeObject.material = cache.GetResource("Material", "Materials/StoneTiled.xml");
+    planeObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
 
     // Create a Zone component for ambient lighting & fog control
     Node@ zoneNode = scene_.CreateChild("Zone");
@@ -69,8 +69,8 @@ void CreateScene()
         mushroomNode.rotation = Quaternion(0.0f, Random(360.0f), 0.0f);
         mushroomNode.SetScale(0.5f + Random(2.0f));
         StaticModel@ mushroomObject = mushroomNode.CreateComponent("StaticModel");
-        mushroomObject.model = cache.GetResource("Model", "Models/Mushroom.mdl");
-        mushroomObject.material = cache.GetResource("Material", "Materials/Mushroom.xml");
+        mushroomObject.model = cache.GetResource("Model", "Models/TeaPot.mdl");
+        mushroomObject.material = cache.GetResource("Material", "Materials/Grids/GridWhite+.xml");
         mushroomObject.castShadows = true;
     }
 
@@ -85,7 +85,7 @@ void CreateScene()
         boxNode.SetScale(size);
         StaticModel@ boxObject = boxNode.CreateComponent("StaticModel");
         boxObject.model = cache.GetResource("Model", "Models/Box.mdl");
-        boxObject.material = cache.GetResource("Material", "Materials/Stone.xml");
+        boxObject.material = cache.GetResource("Material", "Materials/Grids/GridOrange.xml");
         boxObject.castShadows = true;
         if (size >= 3.0f)
             boxObject.occluder = true;
@@ -210,7 +210,7 @@ void PaintDecal()
         // use full texture UV's (0,0) to (1,1). Note that if we create several decals to a large object (such as the ground
         // plane) over a large area using just one DecalSet component, the decals will all be culled as one unit. If that is
         // undesirable, it may be necessary to create more than one DecalSet based on the distance
-        decal.AddDecal(hitDrawable, hitPos, cameraNode.rotation, 0.5f, 1.0f, 1.0f, Vector2(0.0f, 0.0f), Vector2(1.0f, 1.0f));
+        decal.AddDecal(hitDrawable, hitPos, cameraNode.rotation, 1.0f, 1.0f, 1.0f, Vector2(0.0f, 0.0f), Vector2(1.0f, 1.0f));
     }
 }
 

@@ -45,6 +45,7 @@ WorkQueue::WorkQueue(Context* context) :
     shutDown_(false),
     pausing_(false),
     paused_(false),
+    completing_(false),
     tolerance_(10),
     lastSize_(0),
     maxNonThreadedWorkMs_(5)
@@ -212,6 +213,8 @@ void WorkQueue::Resume()
 
 void WorkQueue::Complete(unsigned priority)
 {
+    completing_ = true;
+
     if (threads_.Size())
     {
         Resume();
@@ -257,6 +260,7 @@ void WorkQueue::Complete(unsigned priority)
     }
 
     PurgeCompleted(priority);
+    completing_ = false;
 }
 
 bool WorkQueue::IsCompleted(unsigned priority) const

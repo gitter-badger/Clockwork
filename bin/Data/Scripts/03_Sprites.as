@@ -29,8 +29,8 @@ void CreateSprites()
     float width = graphics.width;
     float height = graphics.height;
 
-    // Get the Clockwork fish texture
-    Texture2D@ decalTex = cache.GetResource("Texture2D", "Textures/ClockworkDecal.dds");
+    // Get the Clockwork Icon texture
+    Texture2D@ decalTex = cache.GetResource("Texture2D", "Textures/Editor/NoPreviewAvailable.png");
 
     for (uint i = 0; i < NUM_SPRITES; ++i)
     {

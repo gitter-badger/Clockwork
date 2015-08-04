@@ -1,3 +1,5 @@
+
+
 # Limit the supported build configurations
 set (CLOCKWORK_BUILD_CONFIGURATIONS Release RelWithDebInfo Debug)
 set (DOC_STRING "Specify CMake build configuration (single-configuration generator only), possible values are Release (default), RelWithDebInfo, and Debug")
@@ -71,11 +73,20 @@ cmake_dependent_option (CLOCKWORK_SSE "Enable SSE instruction set" ${CLOCKWORK_D
 if (CMAKE_PROJECT_NAME STREQUAL Clockwork)
     cmake_dependent_option (CLOCKWORK_LUAJIT_AMALG "Enable LuaJIT amalgamated build (LuaJIT only)" FALSE "CLOCKWORK_LUAJIT" FALSE)
     cmake_dependent_option (CLOCKWORK_SAFE_LUA "Enable Lua C++ wrapper safety checks (Lua/LuaJIT only)" FALSE "CLOCKWORK_LUA OR CLOCKWORK_LUAJIT" FALSE)
+
+    if (CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_CONFIGURATION_TYPES)
+        set (CLOCKWORK_DEFAULT_LUA_RAW FALSE)
+    else ()
+        set (CLOCKWORK_DEFAULT_LUA_RAW TRUE)
+    endif ()
+    cmake_dependent_option (CLOCKWORK_LUA_RAW_SCRIPT_LOADER "Prefer loading raw script files from the file system before falling back on Clockwork resource cache. Useful for debugging (e.g. breakpoints), but less performant (Lua/LuaJIT only)" ${CLOCKWORK_DEFAULT_LUA_RAW} "CLOCKWORK_LUA OR CLOCKWORK_LUAJIT" FALSE)
+
     option (CLOCKWORK_SAMPLES "Build sample applications")
     cmake_dependent_option (CLOCKWORK_TOOLS "Build tools (native and RPI only)" TRUE "NOT IOS AND NOT ANDROID AND NOT EMSCRIPTEN" FALSE)
     cmake_dependent_option (CLOCKWORK_EXTRAS "Build extras (native and RPI only)" FALSE "NOT IOS AND NOT ANDROID AND NOT EMSCRIPTEN" FALSE)
     option (CLOCKWORK_DOCS "Generate documentation as part of normal build")
     option (CLOCKWORK_DOCS_QUIET "Generate documentation as part of normal build, suppress generation process from sending anything to stdout")
+    option (CLOCKWORK_PCH "Enable PCH support" TRUE)
     cmake_dependent_option (CLOCKWORK_MINIDUMPS "Enable minidumps on crash (VS only)" TRUE "MSVC" FALSE)
     option (CLOCKWORK_FILEWATCHER "Enable filewatcher support" TRUE)
     if (CPACK_SYSTEM_NAME STREQUAL Linux)
@@ -298,6 +309,9 @@ if (CLOCKWORK_LUA)
         add_definitions (-DTOLUA_RELEASE)
     endif ()
 endif ()
+if (CLOCKWORK_LUA_RAW_SCRIPT_LOADER)
+    add_definitions (-DCLOCKWORK_LUA_RAW_SCRIPT_LOADER)
+endif ()
 
 # Add definition for Navigation
 if (CLOCKWORK_NAVIGATION)
@@ -328,15 +342,10 @@ if (NOT CLOCKWORK_LIB_TYPE STREQUAL SHARED)
     add_definitions (-DCLOCKWORK_STATIC_DEFINE)
 endif ()
 
-# Find DirectX SDK include & library directories for Visual Studio. It is also possible to compile
-# without if a recent Windows SDK is installed. The SDK is not searched for with MinGW as it is
-# incompatible; rather, it is assumed that MinGW itself comes with the necessary headers & libraries.
-# Note that when building for OpenGL, any libraries are not used, but the include directory may
-# be necessary for DirectInput & DirectSound headers, if those are not present in the compiler's own
-# default includes.
-if (WIN32)
-    find_package (Direct3D)
-    if (DIRECT3D_FOUND)
+# Find Direct3D include & library directories in MS Windows SDK or DirectX SDK when not using OpenGL.
+if (WIN32 AND NOT CLOCKWORK_OPENGL)
+    find_package (Direct3D REQUIRED)
+    if (DIRECT3D_INCLUDE_DIRS)
         include_directories (${DIRECT3D_INCLUDE_DIRS})
     endif ()
 endif ()
@@ -470,6 +479,10 @@ else ()
             # Reduce GCC optimization level from -O3 to -O2 for stability in RELEASE build configuration
             set (CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG")
             set (CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
+        else ()
+            # Not Android and not Emscripten and not MinGW derivative
+            set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")     # This will emit '-DREENTRANT' to compiler and '-lpthread' to linker on Linux and Mac OSX platform
+            set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread") # However, it may emit other equivalent compiler define and/or linker flag on other *nix platforms
         endif ()
         set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG -D_DEBUG")
         set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG -D_DEBUG")
@@ -497,6 +510,14 @@ macro (set_output_directories OUTPUT_PATH)
             set (CMAKE_${TYPE}_OUTPUT_DIRECTORY_${CONFIG} ${OUTPUT_PATH})
         endforeach ()
     endforeach ()
+endmacro ()
+
+# Macro for setting runtime output directories for tools
+macro (set_tool_output_directories)
+    set_output_directories (${CMAKE_BINARY_DIR}/bin/tool RUNTIME PDB)
+    if (DEST_RUNTIME_DIR STREQUAL bin)
+        set (DEST_RUNTIME_DIR bin/tool)
+    endif ()
 endmacro ()
 
 # Set common binary output directory for all platforms
@@ -637,9 +658,12 @@ macro (enable_pch HEADER_PATHNAME)
                 # Determine the dependency list
                 execute_process (COMMAND ${CMAKE_CXX_COMPILER} @${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp -MTdeps -MM -o ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.deps ${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_PATHNAME} RESULT_VARIABLE CXX_COMPILER_EXIT_CODE)
                 if (NOT CXX_COMPILER_EXIT_CODE EQUAL 0)
-                    message (FATAL_ERROR "The configured compiler toolchain in the build tree is not able to handle all the compiler flags required to build the project. "
-                        "Please kindly update your compiler toolchain to its latest version. If you are using MinGW then make sure it is MinGW-W64 instead of MinGW-W32 or TDM-GCC (Code::Blocks default). "
-                        "However, if you think there is something wrong with the compiler flags being used then please file a bug report to the project devs.")
+                    message (FATAL_ERROR
+                        "The configured compiler toolchain in the build tree is not able to handle all the compiler flags required to build the project with PCH enabled. "
+                        "Please kindly update your compiler toolchain to its latest version. "
+                        "If you are using MinGW then make sure it is MinGW-W64 instead of MinGW-W32 or TDM-GCC (Code::Blocks default). "
+                        "Or disable the PCH build support by passing the '-DCLOCKWORK_PCH=0' when retrying to configure/generate the build tree. "
+                        "However, if you think there is something wrong with our build system then kindly file a bug report to the project devs.")
                 endif ()
                 file (STRINGS ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.deps DEPS)
                 string (REGEX REPLACE "^deps: *| *\\; +" ";" DEPS ${DEPS})
@@ -799,6 +823,10 @@ macro (setup_executable)
         add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND scp $<TARGET_FILE:${TARGET_NAME}> ${CLOCKWORK_SCP_TO_TARGET} || exit 0
             COMMENT "Scp-ing ${TARGET_NAME} executable to target system")
     endif ()
+    if (DIRECT3D_DLL)
+        # Make a copy of the D3D DLL to the runtime directory in the build tree
+        add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different ${DIRECT3D_DLL} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    endif ()
     # Need to check if the destination variable is defined first because this macro could be called by external project that does not wish to install anything
     if (DEST_RUNTIME_DIR)
         if (EMSCRIPTEN)
@@ -816,6 +844,11 @@ macro (setup_executable)
             install (FILES ${FILES} DESTINATION ${DEST_BUNDLE_DIR} OPTIONAL)    # We get html.map or html.mem depend on the build configuration
         else ()
             install (TARGETS ${TARGET_NAME} RUNTIME DESTINATION ${DEST_RUNTIME_DIR} BUNDLE DESTINATION ${DEST_BUNDLE_DIR})
+            if (DIRECT3D_DLL AND NOT DIRECT3D_DLL_INSTALLED)
+                # Make a copy of the D3D DLL to the runtime directory in the installed location
+                install (FILES ${DIRECT3D_DLL} DESTINATION ${DEST_RUNTIME_DIR})
+                set (DIRECT3D_DLL_INSTALLED TRUE)
+            endif ()
         endif ()
     endif ()
 endmacro ()
@@ -1152,13 +1185,13 @@ macro (define_dependency_libs TARGET)
         if (WIN32)
             list (APPEND LIBS user32 gdi32 winmm imm32 ole32 oleaut32 version uuid)
         elseif (APPLE)
-            list (APPEND LIBS dl pthread)
+            list (APPEND LIBS dl)
         elseif (ANDROID)
             list (APPEND LIBS dl log android)
         else ()
             # Linux
             if (NOT EMSCRIPTEN)
-                list (APPEND LIBS dl pthread rt)
+                list (APPEND LIBS dl rt)
             endif ()
             if (RPI)
                 list (APPEND ABSOLUTE_PATH_LIBS ${BCM_VC_LIBRARIES})
@@ -1170,8 +1203,6 @@ macro (define_dependency_libs TARGET)
     if (${TARGET} MATCHES Civetweb|kNet|Clockwork)
         if (WIN32)
             list (APPEND LIBS ws2_32)
-        elseif (NOT ANDROID AND NOT EMSCRIPTEN)
-            list (APPEND LIBS pthread)
         endif ()
     endif ()
 
@@ -1190,8 +1221,6 @@ macro (define_dependency_libs TARGET)
             if (CLOCKWORK_MINIDUMPS)
                 list (APPEND LIBS dbghelp)
             endif ()
-        elseif (NOT ANDROID AND NOT EMSCRIPTEN)
-            list (APPEND LIBS pthread)
         endif ()
 
         # Graphics
@@ -1203,11 +1232,13 @@ macro (define_dependency_libs TARGET)
             elseif (NOT APPLE AND NOT RPI)
                 list (APPEND LIBS GL)
             endif ()
-        else ()
-            if (DIRECT3D_FOUND)
+        elseif (DIRECT3D_LIBRARIES)
+            # Check if the libs are using absolute path
+            list (GET DIRECT3D_LIBRARIES 0 FIRST_LIB)
+            if (IS_ABSOLUTE ${FIRST_LIB})
                 list (APPEND ABSOLUTE_PATH_LIBS ${DIRECT3D_LIBRARIES})
             else ()
-                # If SDK not found, assume the libraries are found from default directories
+                # Assume the libraries are found from default directories
                 list (APPEND LIBS ${DIRECT3D_LIBRARIES})
             endif ()
         endif ()

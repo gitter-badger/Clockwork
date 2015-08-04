@@ -163,6 +163,8 @@ private:
     bool textDirty_;
     /// Geometry dirty flag.
     bool geometryDirty_;
+    /// Flag for whether currently using SDF shader defines in the generated material.
+    bool usingSDFShader_;
 };
 
 }

@@ -7,15 +7,15 @@
 #include <toluapp/tolua++.h>
 #include "../LuaScript/ToluaUtils.h"
 
-const char* tolua_toclockworkstring(lua_State* L, int narg, const char* str)
+const char* tolua_toclockwork3dstring(lua_State* L, int narg, const char* str)
 {
     const char* s = tolua_tostring(L, narg, str);
     return s ? s : "";
 }
 
-const char* tolua_toclockworkstring(lua_State* L, int narg, const String& str)
+const char* tolua_toclockwork3dstring(lua_State* L, int narg, const String& str)
 {
-    return tolua_toclockworkstring(L, narg, str.CString());
+    return tolua_toclockwork3dstring(L, narg, str.CString());
 }
 
 // Lua state to context mapping
@@ -93,7 +93,7 @@ template <> void* ToluaToVector<String>(lua_State* L, int narg, void* def)
             return 0;
         }
 
-        String string = tolua_toclockworkstring(L, -1, "");
+        String string = tolua_toclockwork3dstring(L, -1, "");
         result.Push(string);
 
         lua_pop(L, 1);
@@ -108,7 +108,7 @@ template <> int ToluaPushVector<String>(lua_State* L, void* data, const char* ty
     lua_newtable(L);
     for (unsigned i = 0; i < vectorstring.Size(); ++i)
     {
-        tolua_pushclockworkstring(L, vectorstring[i]);
+        tolua_pushclockwork3dstring(L, vectorstring[i]);
         lua_rawseti(L, -2, i + 1);
     }
     return 1;
@@ -367,7 +367,7 @@ template <> int ToluaPushPODVector<RigidBody2D*>(lua_State* L, void* data, const
 
 #endif
 
-template <typename T> int tolua_pushclockworkpodvectorusertype(lua_State* L, const PODVector<T>& vector, const char* typeName)
+template <typename T> int tolua_pushclockwork3dpodvectorusertype(lua_State* L, const PODVector<T>& vector, const char* typeName)
 {
     lua_newtable(L);
     for (unsigned i = 0; i < vector.Size(); ++i)
@@ -384,24 +384,24 @@ template <typename T> int tolua_pushclockworkpodvectorusertype(lua_State* L, con
 
 template <> int ToluaPushPODVector<Vector3>(lua_State* L, void* data, const char*)
 {
-    return tolua_pushclockworkpodvectorusertype(L, *((const PODVector<Vector3>*)data), "Vector3");
+    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<Vector3>*)data), "Vector3");
 }
 
 template <> int ToluaPushPODVector<IntVector2>(lua_State* L, void* data, const char*)
 {
-    return tolua_pushclockworkpodvectorusertype(L, *((const PODVector<IntVector2>*)data), "IntVector2");
+    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<IntVector2>*)data), "IntVector2");
 }
 
 template <> int ToluaPushPODVector<OctreeQueryResult>(lua_State* L, void* data, const char*)
 {
-    return tolua_pushclockworkpodvectorusertype(L, *((const PODVector<OctreeQueryResult>*)data), "OctreeQueryResult");
+    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<OctreeQueryResult>*)data), "OctreeQueryResult");
 }
 
 #ifdef CLOCKWORK_PHYSICS
 
 template <> int ToluaPushPODVector<PhysicsRaycastResult>(lua_State* L, void* data, const char*)
 {
-    return tolua_pushclockworkpodvectorusertype(L, *((const PODVector<PhysicsRaycastResult>*)data), "PhysicsRaycastResult");
+    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<PhysicsRaycastResult>*)data), "PhysicsRaycastResult");
 }
 
 #endif
@@ -410,14 +410,14 @@ template <> int ToluaPushPODVector<PhysicsRaycastResult>(lua_State* L, void* dat
 
 template <> int ToluaPushPODVector<PhysicsRaycastResult2D>(lua_State* L, void* data, const char*)
 {
-    return tolua_pushclockworkpodvectorusertype(L, *((const PODVector<PhysicsRaycastResult2D>*)data), "PhysicsRaycastResult2D");
+    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<PhysicsRaycastResult2D>*)data), "PhysicsRaycastResult2D");
 }
 
 #endif
 
 template <> int ToluaPushPODVector<RayQueryResult>(lua_State* L, void* data, const char*)
 {
-    return tolua_pushclockworkpodvectorusertype(L, *((const PODVector<RayQueryResult>*)data), "RayQueryResult");
+    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<RayQueryResult>*)data), "RayQueryResult");
 }
 
 template <> int ToluaPushPODVector<Pass*>(lua_State* L, void* data, const char*)

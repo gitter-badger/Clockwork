@@ -17,14 +17,7 @@ void CreateToolBar()
     toolBar.SetPosition(0, uiMenuBar.height);
     ui.root.AddChild(toolBar);
 
-    UIElement@ runUpdateGroup = CreateGroup("RunUpdateGroup", LM_HORIZONTAL);
-    runUpdateGroup.AddChild(CreateToolBarToggle("RunUpdatePlay"));
-    runUpdateGroup.AddChild(CreateToolBarToggle("RunUpdatePause"));
-    runUpdateGroup.AddChild(CreateToolBarToggle("RevertOnPause"));
-    FinalizeGroupHorizontal(runUpdateGroup, "ToolBarToggle");
-    toolBar.AddChild(runUpdateGroup);
 
-    toolBar.AddChild(CreateToolBarSpacer(4));
     UIElement@ editModeGroup = CreateGroup("EditModeGroup", LM_HORIZONTAL);
     editModeGroup.AddChild(CreateToolBarToggle("EditMove"));
     editModeGroup.AddChild(CreateToolBarToggle("EditRotate"));
@@ -40,10 +33,13 @@ void CreateToolBar()
     toolBar.AddChild(axisModeGroup);
 
     toolBar.AddChild(CreateToolBarSpacer(4));
+    //UIElement@ gizmoModeGroup = CreateGroup("GizmoeGroup", LM_HORIZONTAL);
     toolBar.AddChild(CreateToolBarToggle("MoveSnap"));
     toolBar.AddChild(CreateToolBarToggle("RotateSnap"));
     toolBar.AddChild(CreateToolBarToggle("ScaleSnap"));
+    //toolBar.AddChild(gizmoModeGroup);
 
+    toolBar.AddChild(CreateToolBarSpacer(4));
     UIElement@ snapScaleModeGroup = CreateGroup("SnapScaleModeGroup", LM_HORIZONTAL);
     snapScaleModeGroup.AddChild(CreateToolBarToggle("SnapScaleHalf"));
     snapScaleModeGroup.AddChild(CreateToolBarToggle("SnapScaleQuarter"));
@@ -69,28 +65,12 @@ void CreateToolBar()
     toolBar.AddChild(fillModeGroup);
 
     toolBar.AddChild(CreateToolBarSpacer(4));
-    DropDownList@ viewportModeList = DropDownList();
-    viewportModeList.style = AUTO_STYLE;
-    viewportModeList.SetMaxSize(100, 18);
-    viewportModeList.SetAlignment(HA_LEFT, VA_CENTER);
-    toolBar.AddChild(viewportModeList);
-    viewportModeList.AddItem(CreateViewPortModeText("Single", VIEWPORT_SINGLE));
-    viewportModeList.AddItem(CreateViewPortModeText("Vertical Split", VIEWPORT_LEFT|VIEWPORT_RIGHT));
-    viewportModeList.AddItem(CreateViewPortModeText("Horizontal Split", VIEWPORT_TOP|VIEWPORT_BOTTOM));
-    viewportModeList.AddItem(CreateViewPortModeText("Quad", VIEWPORT_TOP_LEFT|VIEWPORT_TOP_RIGHT|VIEWPORT_BOTTOM_LEFT|VIEWPORT_BOTTOM_RIGHT));
-    viewportModeList.AddItem(CreateViewPortModeText("1 Top / 2 Bottom", VIEWPORT_TOP|VIEWPORT_BOTTOM_LEFT|VIEWPORT_BOTTOM_RIGHT));
-    viewportModeList.AddItem(CreateViewPortModeText("2 Top / 1 Bottom", VIEWPORT_TOP_LEFT|VIEWPORT_TOP_RIGHT|VIEWPORT_BOTTOM));
-    viewportModeList.AddItem(CreateViewPortModeText("1 Left / 2 Right", VIEWPORT_LEFT|VIEWPORT_TOP_RIGHT|VIEWPORT_BOTTOM_RIGHT));
-    viewportModeList.AddItem(CreateViewPortModeText("2 Left / 1 Right", VIEWPORT_TOP_LEFT|VIEWPORT_BOTTOM_LEFT|VIEWPORT_RIGHT));
-    for (uint i = 0; i < viewportModeList.numItems; ++i)
-    {
-        if (viewportModeList.items[i].vars[VIEW_MODE].GetUInt() == viewportMode)
-        {
-            viewportModeList.selection = i;
-            break;
-        }
-    }
-    SubscribeToEvent(viewportModeList, "ItemSelected", "ToolBarSetViewportMode");
+    UIElement@ runUpdateGroup = CreateGroup("RunUpdateGroup", LM_HORIZONTAL);
+    runUpdateGroup.AddChild(CreateToolBarToggle("RunUpdatePlay"));
+    runUpdateGroup.AddChild(CreateToolBarToggle("RunUpdatePause"));
+    runUpdateGroup.AddChild(CreateToolBarToggle("RevertOnPause"));
+    FinalizeGroupHorizontal(runUpdateGroup, "ToolBarToggle");
+    toolBar.AddChild(runUpdateGroup);
 }
 
 Button@ CreateToolBarButton(const String&in title)
@@ -123,6 +103,7 @@ void CreateToolBarIcon(UIElement@ element)
     icon.defaultStyle = iconStyle;
     icon.style = element.name;
     icon.SetFixedSize(30, 30);
+    icon.blendMode = BLEND_ALPHA;
     element.AddChild(icon);
 }
 
@@ -168,6 +149,7 @@ UIElement@ CreateToolTip(UIElement@ parent, const String&in title, const IntVect
 
     Text@ toolTipText = textHolder.CreateChild("Text");
     toolTipText.SetStyle("ToolTipText");
+    toolTipText.autoLocalizable = true;
     toolTipText.text = title;
 
     return toolTip;

@@ -30,13 +30,13 @@ class UIElement;
 using namespace Clockwork;
 
 /// Check is String.
-#define tolua_isclockworkstring tolua_isstring
+#define tolua_isclockwork3dstring tolua_isstring
 /// Push String.
-#define tolua_pushclockworkstring(x, y) tolua_pushstring(x, y.CString())
+#define tolua_pushclockwork3dstring(x, y) tolua_pushstring(x, y.CString())
 /// Convert to String.
-const char* tolua_toclockworkstring(lua_State* L, int narg, const char* str);
+const char* tolua_toclockwork3dstring(lua_State* L, int narg, const char* str);
 /// Convert to String.
-const char* tolua_toclockworkstring(lua_State* L, int narg, const String& str);
+const char* tolua_toclockwork3dstring(lua_State* L, int narg, const String& str);
 
 /// Set context.
 void SetContext(lua_State* L, Context* context);

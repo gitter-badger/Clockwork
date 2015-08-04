@@ -83,7 +83,7 @@ void CreateScene()
     floorNode.scale = Vector3(200.0f, 1.0f, 200.0f);
     StaticModel@ object = floorNode.CreateComponent("StaticModel");
     object.model = cache.GetResource("Model", "Models/Box.mdl");
-    object.material = cache.GetResource("Material", "Materials/Stone.xml");
+    object.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
 
     RigidBody@ body = floorNode.CreateComponent("RigidBody");
     // Use collision layer bit 2 to mark world scenery. This is what we will raycast against to prevent camera from going
@@ -101,8 +101,8 @@ void CreateScene()
         objectNode.rotation = Quaternion(0.0f, Random(360.0f), 0.0f);
         objectNode.SetScale(2.0f + Random(5.0f));
         StaticModel@ object = objectNode.CreateComponent("StaticModel");
-        object.model = cache.GetResource("Model", "Models/Mushroom.mdl");
-        object.material = cache.GetResource("Material", "Materials/Mushroom.xml");
+        object.model = cache.GetResource("Model", "Models/TeaPot.mdl");
+        object.material = cache.GetResource("Material", "Materials/Grids/GridWhite+.xml");
         object.castShadows = true;
 
         RigidBody@ body = objectNode.CreateComponent("RigidBody");
@@ -123,7 +123,7 @@ void CreateScene()
         objectNode.SetScale(scale);
         StaticModel@ object = objectNode.CreateComponent("StaticModel");
         object.model = cache.GetResource("Model", "Models/Box.mdl");
-        object.material = cache.GetResource("Material", "Materials/Stone.xml");
+        object.material = cache.GetResource("Material", "Materials/Grids/GridDark+.xml");
         object.castShadows = true;
 
         RigidBody@ body = objectNode.CreateComponent("RigidBody");
@@ -143,7 +143,7 @@ void CreateCharacter()
     // Create the rendering component + animation controller
     AnimatedModel@ object = characterNode.CreateComponent("AnimatedModel");
     object.model = cache.GetResource("Model", "Models/Jack.mdl");
-    object.material = cache.GetResource("Material", "Materials/Jack.xml");
+    object.material = cache.GetResource("Material", "Materials/Editor/Entities/EntityCharacter.xml");
     object.castShadows = true;
     characterNode.CreateComponent("AnimationController");
 

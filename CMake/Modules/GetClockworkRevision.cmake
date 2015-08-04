@@ -1,3 +1,5 @@
+
+
 # Get Clockwork library revision number
 
 if (DEFINED ENV{TRAVIS_COMMIT})

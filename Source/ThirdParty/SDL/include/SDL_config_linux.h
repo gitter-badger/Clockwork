@@ -20,7 +20,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Joshua Nuttall for Clockwork
 
 #ifndef _SDL_config_linux_h
 #define _SDL_config_linux_h

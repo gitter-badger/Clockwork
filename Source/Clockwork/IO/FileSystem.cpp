@@ -61,7 +61,7 @@ int DoSystemCommand(const String& commandLine, bool redirectToLog, Context* cont
     // Get a platform-agnostic temporary file name for stderr redirection
     String stderrFilename;
     String adjustedCommandLine(commandLine);
-    char* prefPath = SDL_GetPrefPath("clockwork", "temp");
+    char* prefPath = SDL_GetPrefPath("clockwork3d", "temp");
     if (prefPath)
     {
         stderrFilename = String(prefPath) + "command-stderr";

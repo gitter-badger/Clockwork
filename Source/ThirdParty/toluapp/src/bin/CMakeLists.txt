@@ -1,3 +1,5 @@
+
+
 if (NOT CMAKE_PROJECT_NAME STREQUAL Clockwork)
     # Set project name
     project (ExternalProject-tolua++)
@@ -43,11 +45,8 @@ if (NOT MSVC)
 endif ()
 set (INCLUDE_DIRS ../../include ../../../../ThirdParty/Lua${JIT}/src)
 
-# All tools must be natively built and output to bin/tool subdir to differentiate them from platform-specific binaries in the bin directory
-set_output_directories (${CMAKE_BINARY_DIR}/bin/tool RUNTIME PDB)
-if (DEST_RUNTIME_DIR STREQUAL bin)
-    set (DEST_RUNTIME_DIR bin/tool)
-endif ()
+# All tools must be natively built and output to bin/tool subdir to differentiate them from target platfrom binaries in the bin directory
+set_tool_output_directories ()
 
 # Setup target
 if (APPLE)

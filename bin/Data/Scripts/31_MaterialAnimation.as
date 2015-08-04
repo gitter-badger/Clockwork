@@ -39,7 +39,7 @@ void CreateScene()
     planeNode.scale = Vector3(100.0f, 1.0f, 100.0f);
     StaticModel@ planeObject = planeNode.CreateComponent("StaticModel");
     planeObject.model = cache.GetResource("Model", "Models/Plane.mdl");
-    planeObject.material = cache.GetResource("Material", "Materials/StoneTiled.xml");
+    planeObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
 
     // Create a directional light to the world so that we can see something. The light scene node's orientation controls the
     // light direction; we will use the SetDirection() function which calculates the orientation from a forward direction vector.
@@ -55,7 +55,7 @@ void CreateScene()
     // see the model get simpler as it moves further away). Finally, rendering a large number of the same object with the
     // same material allows instancing to be used, if the GPU supports it. This reduces the amount of CPU work in rendering the
     // scene.
-    Material@ mushroomMat = cache.GetResource("Material", "Materials/Mushroom.xml");
+    Material@ mushroomMat = cache.GetResource("Material", "Materials/Grids/GridLight+.xml");
     // Apply shader parameter animation to material
     ValueAnimation@ specColorAnimation = ValueAnimation();
     specColorAnimation.SetKeyFrame(0.0f, Variant(Color(0.1f, 0.1f, 0.1f, 16.0f)));
@@ -74,7 +74,7 @@ void CreateScene()
         mushroomNode.rotation = Quaternion(0.0f, Random(360.0f), 0.0f);
         mushroomNode.SetScale(0.5f + Random(2.0f));
         StaticModel@ mushroomObject = mushroomNode.CreateComponent("StaticModel");
-        mushroomObject.model = cache.GetResource("Model", "Models/Mushroom.mdl");
+        mushroomObject.model = cache.GetResource("Model", "Models/TeaPot.mdl");
         mushroomObject.material = mushroomMat;
     }
 

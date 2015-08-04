@@ -131,7 +131,7 @@ void HandlePlayMusic(StringHash eventType, VariantMap& eventData)
     if (scene_.GetChild("Music") !is null)
         return;
 
-    Sound@ music = cache.GetResource("Sound", "Music/Ninja Gods.ogg");
+    Sound@ music = cache.GetResource("Sound", "Music/Machinimasound.ogg");
     // Set the song to loop
     music.looped = true;
 

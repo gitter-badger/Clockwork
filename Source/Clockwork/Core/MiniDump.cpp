@@ -42,7 +42,7 @@ CLOCKWORK_API int WriteMiniDump(const char* applicationName, void* exceptionPoin
     dateTimeStr.Replace("/", "");
     dateTimeStr.Replace(' ', '_');
     
-    char* pathName = SDL_GetPrefPath("clockwork", "crashdumps");
+    char* pathName = SDL_GetPrefPath("clockwork3d", "crashdumps");
     String miniDumpDir(pathName);
     String miniDumpName = miniDumpDir + String(applicationName) + "_" + dateTimeStr + ".dmp";
     if (pathName)

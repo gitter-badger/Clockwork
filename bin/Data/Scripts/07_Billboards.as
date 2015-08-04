@@ -59,7 +59,7 @@ void CreateScene()
             floorNode.scale = Vector3(20.0f, 1.0f, 20.f);
             StaticModel@ floorObject = floorNode.CreateComponent("StaticModel");
             floorObject.model = cache.GetResource("Model", "Models/Box.mdl");
-            floorObject.material = cache.GetResource("Material", "Materials/Stone.xml");
+            floorObject.material = cache.GetResource("Material", "Materials/Grids/GridWhite+.xml");
         }
     }
 
@@ -80,8 +80,8 @@ void CreateScene()
             mushroomNode.rotation = Quaternion(0.0f, Random() * 360.0f, 0.0f);
             mushroomNode.SetScale(1.0f + Random() * 4.0f);
             StaticModel@ mushroomObject = mushroomNode.CreateComponent("StaticModel");
-            mushroomObject.model = cache.GetResource("Model", "Models/Mushroom.mdl");
-            mushroomObject.material = cache.GetResource("Material", "Materials/Mushroom.xml");
+            mushroomObject.model = cache.GetResource("Model", "Models/TeaPot.mdl");
+            mushroomObject.material = cache.GetResource("Material", "Materials/Editor/CoreDefaultTile2.xml");
             mushroomObject.castShadows = true;
         }
     }

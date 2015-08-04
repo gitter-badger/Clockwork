@@ -55,4 +55,9 @@ EVENT(E_RESOURCEBACKGROUNDLOADED, ResourceBackgroundLoaded)
     PARAM(P_RESOURCE, Resource);                    // Resource pointer
 }
 
+/// Language changed.
+EVENT(E_CHANGELANGUAGE, ChangeLanguage)
+{
+}
+
 }
