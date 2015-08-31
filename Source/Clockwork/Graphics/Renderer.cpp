@@ -1068,6 +1068,7 @@ void Renderer::SetBatchShaders(Batch& batch, Technique* tech, bool allowShadows)
     Pass* pass = batch.pass_;
     Vector<SharedPtr<ShaderVariation> >& vertexShaders = pass->GetVertexShaders();
     Vector<SharedPtr<ShaderVariation> >& pixelShaders = pass->GetPixelShaders();
+    Vector<SharedPtr<ShaderVariation> >& geometryShaders = pass->GetGeometryShaders();
     if (!vertexShaders.Size() || !pixelShaders.Size() || pass->GetShadersLoadedFrameNumber() != shadersChangedFrameNumber_)
     {
         // First release all previous shaders, then load
@@ -1096,6 +1097,7 @@ void Renderer::SetBatchShaders(Batch& batch, Technique* tech, bool allowShadows)
                 // Do not log error, as it would result in a lot of spam
                 batch.vertexShader_ = 0;
                 batch.pixelShader_ = 0;
+                batch.geometryShader_ = 0;
                 return;
             }
 
@@ -1138,6 +1140,7 @@ void Renderer::SetBatchShaders(Batch& batch, Technique* tech, bool allowShadows)
 
             batch.vertexShader_ = vertexShaders[vsi];
             batch.pixelShader_ = pixelShaders[psi];
+            batch.geometryShader_ = geometryShaders.Size() > 0 ? geometryShaders[vsi] : SharedPtr<ShaderVariation>();
         }
         else
         {
@@ -1150,11 +1153,13 @@ void Renderer::SetBatchShaders(Batch& batch, Technique* tech, bool allowShadows)
 
                 unsigned vsi = batch.geometryType_ * MAX_VERTEXLIGHT_VS_VARIATIONS + numVertexLights;
                 batch.vertexShader_ = vertexShaders[vsi];
+                batch.geometryShader_ = geometryShaders.Size() > 0 ? geometryShaders[vsi] : SharedPtr<ShaderVariation>();
             }
             else
             {
                 unsigned vsi = batch.geometryType_;
                 batch.vertexShader_ = vertexShaders[vsi];
+                 batch.geometryShader_ = geometryShaders.Size() > 0 ? geometryShaders[vsi] : SharedPtr<ShaderVariation>();
             }
 
             batch.pixelShader_ = pixelShaders[heightFog ? 1 : 0];
@@ -1220,6 +1225,8 @@ void Renderer::SetLightVolumeBatchShaders(Batch& batch, const String& vsName, co
         batch.pixelShader_ = graphics_->GetShader(PS, psName, deferredLightPSVariations_[psi] + psDefines);
     else
         batch.pixelShader_ = graphics_->GetShader(PS, psName, deferredLightPSVariations_[psi]);
+
+    batch.geometryShader_ = 0;
 }
 
 void Renderer::SetCullMode(CullMode mode, Camera* camera)
@@ -1332,7 +1339,7 @@ void Renderer::OptimizeLightByStencil(Light* light, Camera* camera)
         graphics_->SetColorWrite(false);
         graphics_->SetDepthWrite(false);
         graphics_->SetStencilTest(true, CMP_ALWAYS, OP_REF, OP_KEEP, OP_KEEP, lightStencilValue_);
-        graphics_->SetShaders(graphics_->GetShader(VS, "Stencil"), graphics_->GetShader(PS, "Stencil"));
+        graphics_->SetShaders(graphics_->GetShader(VS, "Stencil"), graphics_->GetShader(PS, "Stencil"), 0);
         graphics_->SetShaderParameter(VSP_VIEWPROJ, projection * view);
         graphics_->SetShaderParameter(VSP_MODEL, light->GetVolumeTransform(camera));
 
@@ -1495,15 +1502,18 @@ void Renderer::LoadPassShaders(Pass* pass)
 
     Vector<SharedPtr<ShaderVariation> >& vertexShaders = pass->GetVertexShaders();
     Vector<SharedPtr<ShaderVariation> >& pixelShaders = pass->GetPixelShaders();
+    Vector<SharedPtr<ShaderVariation> >& geometryShaders = pass->GetGeometryShaders();
 
     // Forget all the old shaders
     vertexShaders.Clear();
     pixelShaders.Clear();
+    geometryShaders.Clear();
 
     if (pass->GetLightingMode() == LIGHTING_PERPIXEL)
     {
         // Load forward pixel lit variations
         vertexShaders.Resize(MAX_GEOMETRYTYPES * MAX_LIGHT_VS_VARIATIONS);
+        geometryShaders.Resize(MAX_GEOMETRYTYPES * MAX_LIGHT_VS_VARIATIONS);
         pixelShaders.Resize(MAX_LIGHT_PS_VARIATIONS * 2);
 
         for (unsigned j = 0; j < MAX_GEOMETRYTYPES * MAX_LIGHT_VS_VARIATIONS; ++j)
@@ -1513,6 +1523,10 @@ void Renderer::LoadPassShaders(Pass* pass)
 
             vertexShaders[j] = graphics_->GetShader(VS, pass->GetVertexShader(),
                 pass->GetVertexShaderDefines() + " " + lightVSVariations[l] + geometryVSVariations[g]);
+
+            if (!pass->GetGeometryShader().Empty())
+                geometryShaders[j] = graphics_->GetShader(GS, pass->GetGeometryShader(), pass->GetGeometryShaderDefines() + " " + lightVSVariations[l] + +geometryVSVariations[g]);
+
         }
         for (unsigned j = 0; j < MAX_LIGHT_PS_VARIATIONS * 2; ++j)
         {
@@ -1536,21 +1550,28 @@ void Renderer::LoadPassShaders(Pass* pass)
         if (pass->GetLightingMode() == LIGHTING_PERVERTEX)
         {
             vertexShaders.Resize(MAX_GEOMETRYTYPES * MAX_VERTEXLIGHT_VS_VARIATIONS);
+            geometryShaders.Resize(MAX_GEOMETRYTYPES * MAX_VERTEXLIGHT_VS_VARIATIONS);
             for (unsigned j = 0; j < MAX_GEOMETRYTYPES * MAX_VERTEXLIGHT_VS_VARIATIONS; ++j)
             {
                 unsigned g = j / MAX_VERTEXLIGHT_VS_VARIATIONS;
                 unsigned l = j % MAX_VERTEXLIGHT_VS_VARIATIONS;
                 vertexShaders[j] = graphics_->GetShader(VS, pass->GetVertexShader(),
                     pass->GetVertexShaderDefines() + " " + vertexLightVSVariations[l] + geometryVSVariations[g]);
+                if (!pass->GetGeometryShader().Empty())
+                    geometryShaders[j] = graphics_->GetShader(GS, pass->GetGeometryShader(), pass->GetGeometryShaderDefines() + " " + vertexLightVSVariations[l] + geometryVSVariations[g]);
             }
         }
         else
         {
             vertexShaders.Resize(MAX_GEOMETRYTYPES);
+            geometryShaders.Resize(MAX_GEOMETRYTYPES);
             for (unsigned j = 0; j < MAX_GEOMETRYTYPES; ++j)
             {
                 vertexShaders[j] = graphics_->GetShader(VS, pass->GetVertexShader(),
                     pass->GetVertexShaderDefines() + " " + geometryVSVariations[j]);
+                if (!pass->GetGeometryShader().Empty())
+                    geometryShaders[j] = graphics_->GetShader(GS, pass->GetGeometryShader(), pass->GetGeometryShaderDefines() + " " + geometryVSVariations[j]);  
+
             }
         }
 

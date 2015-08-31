@@ -1688,7 +1688,7 @@ void View::SetRenderTargets(RenderPathCommand& command)
         }
     }
 
-    // When rendering to the final destination rendertarget, use the actual viewport. Otherwise texture rendertargets should use 
+    // When rendering to the final destination rendertarget, use the actual viewport. Otherwise texture rendertargets should use
     // their full size as the viewport
     IntVector2 rtSizeNow = graphics_->GetRenderTargetDimensions();
     IntRect viewport = (useViewportOutput && currentRenderTarget_ == renderTarget_) ? viewRect_ : IntRect(0, 0, rtSizeNow.x_,
@@ -1753,7 +1753,7 @@ void View::RenderQuad(RenderPathCommand& command)
         command.pixelShaderName_ = String::EMPTY;
 
     // Set shaders & shader parameters and textures
-    graphics_->SetShaders(vs, ps);
+    graphics_->SetShaders(vs, ps, 0);
 
     const HashMap<StringHash, Variant>& parameters = command.shaderParameters_;
     for (HashMap<StringHash, Variant>::ConstIterator k = parameters.Begin(); k != parameters.End(); ++k)
@@ -1892,7 +1892,7 @@ void View::AllocateScreenBuffers()
     // Due to FBO limitations, in OpenGL deferred modes need to render to texture first and then blit to the backbuffer
     // Also, if rendering to a texture with full deferred rendering, it must be RGBA to comply with the rest of the buffers,
     // unless using OpenGL 3
-    if (((deferred_ || hasScenePassToRTs) && !renderTarget_) || (!Graphics::GetGL3Support() && deferredAmbient_ && renderTarget_ 
+    if (((deferred_ || hasScenePassToRTs) && !renderTarget_) || (!Graphics::GetGL3Support() && deferredAmbient_ && renderTarget_
         && renderTarget_->GetParentTexture()->GetFormat() != Graphics::GetRGBAFormat()))
             needSubstitute = true;
     // Also need substitute if rendering to backbuffer using a custom (readable) depth buffer
@@ -2027,7 +2027,7 @@ void View::BlitFramebuffer(Texture* source, RenderSurface* destination, bool dep
     graphics_->SetViewport(destRect);
 
     static const String shaderName("CopyFramebuffer");
-    graphics_->SetShaders(graphics_->GetShader(VS, shaderName), graphics_->GetShader(PS, shaderName));
+    graphics_->SetShaders(graphics_->GetShader(VS, shaderName), graphics_->GetShader(PS, shaderName), 0);
 
     SetGBufferShaderParameters(srcSize, srcRect);
 

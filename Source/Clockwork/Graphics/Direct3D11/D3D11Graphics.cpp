@@ -741,7 +741,7 @@ void Graphics::Clear(unsigned flags, const Color& color, float depth, unsigned s
         SetFillMode(FILL_SOLID);
         SetScissorTest(false);
         SetStencilTest((flags & CLEAR_STENCIL) != 0, CMP_ALWAYS, OP_REF, OP_KEEP, OP_KEEP, stencil);
-        SetShaders(GetShader(VS, "ClearFramebuffer"), GetShader(PS, "ClearFramebuffer"));
+        SetShaders(GetShader(VS, "ClearFramebuffer"), GetShader(PS, "ClearFramebuffer"), 0);
         SetShaderParameter(VSP_MODEL, model);
         SetShaderParameter(VSP_VIEWPROJ, projection);
         SetShaderParameter(PSP_MATDIFFCOLOR, color);
@@ -968,7 +968,7 @@ void Graphics::SetIndexBuffer(IndexBuffer* buffer)
     }
 }
 
-void Graphics::SetShaders(ShaderVariation* vs, ShaderVariation* ps)
+void Graphics::SetShaders(ShaderVariation* vs, ShaderVariation* ps, ShaderVariation* gs)
 {
     // Switch to the clip plane variations if necessary
     /// \todo Causes overhead and string manipulation per drawcall
@@ -980,7 +980,7 @@ void Graphics::SetShaders(ShaderVariation* vs, ShaderVariation* ps)
             ps = ps->GetOwner()->GetVariation(PS, ps->GetDefines() + " CLIPPLANE");
     }
 
-    if (vs == vertexShader_ && ps == pixelShader_)
+    if (vs == vertexShader_ && ps == pixelShader_ & gs == geometryShader_)
         return;
 
     if (vs != vertexShader_)
@@ -1031,21 +1031,46 @@ void Graphics::SetShaders(ShaderVariation* vs, ShaderVariation* ps)
         pixelShader_ = ps;
     }
 
+    if (gs != geometryShader_)
+    {
+        if (gs && !gs->GetGPUObject())
+        {
+            if (gs->GetCompilerOutput().Empty())
+            {
+                PROFILE(CompileGeometryShader);
+
+                bool success = gs->Create();
+                if (!success)
+                {
+                    LOGERROR("Failed to compile geometry shader " + gs->GetFullName() + ":\n" + gs->GetCompilerOutput());
+                    gs = 0;
+                }
+            }
+            else
+                gs = 0;
+        }
+
+        impl_->deviceContext_->GSSetShader((ID3D11GeometryShader*)(gs ? gs->GetGPUObject() : 0), 0, 0);
+        geometryShader_ = gs;
+    }
+
+
     // Update current shader parameters & constant buffers
     if (vertexShader_ && pixelShader_)
     {
-        Pair<ShaderVariation*, ShaderVariation*> key = MakePair(vertexShader_, pixelShader_);
+        ShaderCombinationRecord key = ShaderCombinationRecord(vertexShader_, pixelShader_, geometryShader_);
         ShaderProgramMap::Iterator i = shaderPrograms_.Find(key);
         if (i != shaderPrograms_.End())
             shaderProgram_ = i->second_.Get();
         else
         {
-            ShaderProgram* newProgram = shaderPrograms_[key] = new ShaderProgram(this, vertexShader_, pixelShader_);
+            ShaderProgram* newProgram = shaderPrograms_[key] = new ShaderProgram(this, vertexShader_, pixelShader_, geometryShader_);
             shaderProgram_ = newProgram;
         }
 
         bool vsBuffersChanged = false;
         bool psBuffersChanged = false;
+        bool gsBuffersChanged = false;
 
         for (unsigned i = 0; i < MAX_SHADER_PARAMETER_GROUPS; ++i)
         {
@@ -1066,19 +1091,34 @@ void Graphics::SetShaders(ShaderVariation* vs, ShaderVariation* ps)
                 shaderParameterSources_[i] = (const void*)M_MAX_UNSIGNED;
                 psBuffersChanged = true;
             }
+
+            if (geometryShader_ != 0)
+            {
+                ID3D11Buffer* gsBuffer = shaderProgram_->gsConstantBuffers_[i] ? (ID3D11Buffer*)shaderProgram_->gsConstantBuffers_[i]->
+                    GetGPUObject() : 0;
+                if (gsBuffer != impl_->constantBuffers_[GS][i])
+                {
+                    impl_->constantBuffers_[GS][i] = gsBuffer;
+                    shaderParameterSources_[i] = (const void*)M_MAX_UNSIGNED;
+                    gsBuffersChanged = true;
+                }
+            }
         }
 
         if (vsBuffersChanged)
             impl_->deviceContext_->VSSetConstantBuffers(0, MAX_SHADER_PARAMETER_GROUPS, &impl_->constantBuffers_[VS][0]);
         if (psBuffersChanged)
             impl_->deviceContext_->PSSetConstantBuffers(0, MAX_SHADER_PARAMETER_GROUPS, &impl_->constantBuffers_[PS][0]);
+        if (gsBuffersChanged)
++            impl_->deviceContext_->GSSetConstantBuffers(0, MAX_SHADER_PARAMETER_GROUPS, &impl_->constantBuffers_[GS][0]);
+
     }
     else
         shaderProgram_ = 0;
 
     // Store shader combination if shader dumping in progress
     if (shaderPrecache_)
-        shaderPrecache_->StoreShaders(vertexShader_, pixelShader_);
+        shaderPrecache_->StoreShaders(vertexShader_, pixelShader_, geometryShader_);
 
     // Update clip plane parameter if necessary
     if (useClipPlane_)
@@ -1269,7 +1309,7 @@ bool Graphics::HasShaderParameter(StringHash param)
 
 bool Graphics::HasTextureUnit(TextureUnit unit)
 {
-    return (vertexShader_ && vertexShader_->HasTextureUnit(unit)) || (pixelShader_ && pixelShader_->HasTextureUnit(unit));
+    return pixelShader_ && pixelShader_->HasTextureUnit(unit);
 }
 
 void Graphics::ClearParameterSource(ShaderParameterGroup group)
@@ -2012,13 +2052,13 @@ void Graphics::CleanUpShaderPrograms(ShaderVariation* variation)
 {
     for (ShaderProgramMap::Iterator i = shaderPrograms_.Begin(); i != shaderPrograms_.End();)
     {
-        if (i->first_.first_ == variation || i->first_.second_ == variation)
+        if (i->first_.vs_ == variation || i->first_.ps_ == variation || i->first_.gs_ == variation)
             i = shaderPrograms_.Erase(i);
         else
             ++i;
     }
 
-    if (vertexShader_ == variation || pixelShader_ == variation)
+    if (vertexShader_ == variation || pixelShader_ == variation || geometryShader_ == variation)
         shaderProgram_ = 0;
 }
 
@@ -2420,6 +2460,7 @@ void Graphics::ResetCachedState()
     {
         impl_->constantBuffers_[VS][i] = 0;
         impl_->constantBuffers_[PS][i] = 0;
+        impl_->constantBuffers_[GS][i] = 0;
     }
 
     depthStencil_ = 0;
@@ -2431,6 +2472,7 @@ void Graphics::ResetCachedState()
     primitiveType_ = 0;
     vertexShader_ = 0;
     pixelShader_ = 0;
+    geometryShader_ = 0; 
     shaderProgram_ = 0;
     blendMode_ = BLEND_REPLACE;
     textureAnisotropy_ = 1;

@@ -95,13 +95,20 @@ bool Shader::BeginLoad(Deserializer& source)
     // Comment out the unneeded shader function
     vsSourceCode_ = shaderCode;
     psSourceCode_ = shaderCode;
+    gsSourceCode_ = shaderCode;
     CommentOutFunction(vsSourceCode_, "void PS(");
+    CommentOutFunction(vsSourceCode_, "void GS(");
     CommentOutFunction(psSourceCode_, "void VS(");
+    CommentOutFunction(psSourceCode_, "void GS(");
+    CommentOutFunction(gsSourceCode_, "void VS(");
+    CommentOutFunction(gsSourceCode_, "void PS(");
+
 
     // OpenGL: rename either VS() or PS() to main(), comment out vertex attributes in pixel shaders
 #ifdef CLOCKWORK_OPENGL
     vsSourceCode_.Replace("void VS(", "void main(");
     psSourceCode_.Replace("void PS(", "void main(");
+    gsSourceCode_.Replace("void GS(", "void main(");
     psSourceCode_.Replace("attribute ", "// attribute ");
 #endif
 
@@ -116,6 +123,8 @@ bool Shader::EndLoad()
         i->second_->Release();
     for (HashMap<StringHash, SharedPtr<ShaderVariation> >::Iterator i = psVariations_.Begin(); i != psVariations_.End(); ++i)
         i->second_->Release();
+    for (HashMap<StringHash, SharedPtr<ShaderVariation> >::Iterator i = gsVariations_.Begin(); i != gsVariations_.End(); ++i)
+        i->second_->Release();
 
     return true;
 }
@@ -128,24 +137,31 @@ ShaderVariation* Shader::GetVariation(ShaderType type, const String& defines)
 ShaderVariation* Shader::GetVariation(ShaderType type, const char* defines)
 {
     StringHash definesHash(defines);
-    HashMap<StringHash, SharedPtr<ShaderVariation> >& variations(type == VS ? vsVariations_ : psVariations_);
-    HashMap<StringHash, SharedPtr<ShaderVariation> >::Iterator i = variations.Find(definesHash);
-    if (i == variations.End())
+    HashMap<StringHash, SharedPtr<ShaderVariation> >* variations = 0;
+    if (type == VS)
+        variations = &vsVariations_;
+    else if (type == PS)
+        variations = &psVariations_;
+    else if (type == GS)
+        variations = &gsVariations_;
+
+    HashMap<StringHash, SharedPtr<ShaderVariation> >::Iterator i = variations->Find(definesHash);
+    if (i == variations->End())
     {
         // If shader not found, normalize the defines (to prevent duplicates) and check again. In that case make an alias
         // so that further queries are faster
         String normalizedDefines = NormalizeDefines(defines);
         StringHash normalizedHash(normalizedDefines);
 
-        i = variations.Find(normalizedHash);
-        if (i != variations.End())
-            variations.Insert(MakePair(definesHash, i->second_));
+        i = variations->Find(normalizedHash);
+        if (i != variation->.End())
+            variations->Insert(MakePair(definesHash, i->second_));
         else
         {
             // No shader variation found. Create new
-            i = variations.Insert(MakePair(normalizedHash, SharedPtr<ShaderVariation>(new ShaderVariation(this, type))));
+            i = variations->Insert(MakePair(normalizedHash, SharedPtr<ShaderVariation>(new ShaderVariation(this, type))));
             if (definesHash != normalizedHash)
-                variations.Insert(MakePair(definesHash, i->second_));
+                variations->Insert(MakePair(definesHash, i->second_));
 
             i->second_->SetName(GetFileName(GetName()));
             i->second_->SetDefines(normalizedDefines);

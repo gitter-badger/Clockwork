@@ -60,6 +60,7 @@ GraphicsImpl::GraphicsImpl() :
     {
         constantBuffers_[VS][i] = 0;
         constantBuffers_[PS][i] = 0;
+        constantBuffers_[GS][i] = 0; 
     }
 }
 

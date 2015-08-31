@@ -71,7 +71,12 @@ bool ShaderVariation::Create()
     // Check for up-to-date bytecode on disk
     String path, name, extension;
     SplitPath(owner_->GetName(), path, name, extension);
-    extension = type_ == VS ? ".vs4" : ".ps4";
+    if (type_ == VS)
+        extension = ".vs4";
+    else if (type_ == PS)
+        extension = ".ps4";
+    else if (type_ == GS)
+        extension = ".gs4";
 
     String binaryShaderName = path + "Cache/" + name + "_" + StringHash(defines_).ToString() + extension;
 
@@ -94,13 +99,22 @@ bool ShaderVariation::Create()
         if (!object_)
             compilerOutput_ = "Could not create vertex shader";
     }
-    else
+    else if (type_ == PS)
     {
         if (device && byteCode_.Size())
             device->CreatePixelShader(&byteCode_[0], byteCode_.Size(), 0, (ID3D11PixelShader**)&object_);
         if (!object_)
             compilerOutput_ = "Could not create pixel shader";
     }
+    else if (type_ == GS)
+    {
+        HRESULT code = S_OK;
+        if (device && byteCode_.Size())
+            code = device->CreateGeometryShader(&byteCode_[0], byteCode_.Size(), 0, (ID3D11GeometryShader**)&object_);
+        if (!object_)
+            compilerOutput_ = "Could not create geometry shader: " + String(code);
+    }
+
 
     return object_ != 0;
 }
@@ -117,17 +131,25 @@ void ShaderVariation::Release()
         if (type_ == VS)
         {
             if (graphics_->GetVertexShader() == this)
-                graphics_->SetShaders(0, 0);
+                graphics_->SetShaders(0, 0, 0);
 
             ((ID3D11VertexShader*)object_)->Release();
         }
-        else
+        else if (type_ == PS)
         {
             if (graphics_->GetPixelShader() == this)
-                graphics_->SetShaders(0, 0);
+                graphics_->SetShaders(0, 0, 0);
 
             ((ID3D11PixelShader*)object_)->Release();
         }
+        else if (type_ == GS)
+        {
+            if (graphics_->GetGeometryShader() == this)
+                graphics_->SetShaders(0, 0, 0);
+
+            ((ID3D11GeometryShader*)object_)->Release();
+        }
+
 
         object_ = 0;
     }
@@ -213,8 +235,11 @@ bool ShaderVariation::LoadByteCode(const String& binaryShaderName)
 
         if (type_ == VS)
             LOGDEBUG("Loaded cached vertex shader " + GetFullName());
-        else
+        else if (type_ == PS)
             LOGDEBUG("Loaded cached pixel shader " + GetFullName());
+        else if (type_ == GS)
+            LOGDEBUG("Loaded cached geometry shader " + GetFullName());
+
 
         CalculateConstantBufferSizes();
         return true;
@@ -244,13 +269,20 @@ bool ShaderVariation::Compile()
         defines.Push("COMPILEVS");
         profile = "vs_4_0";
     }
-    else
+    else if (type_ == PS)
     {
         entryPoint = "PS";
         defines.Push("COMPILEPS");
         profile = "ps_4_0";
         flags |= D3DCOMPILE_PREFER_FLOW_CONTROL;
     }
+    else if (type_ == GS)
+    {
+        entryPoint = "GS";
+        defines.Push("COMPILEGS");
+        profile = "gs_4_0";
+    }
+
 
     defines.Push("MAXBONES=" + String(Graphics::GetMaxBones()));
 
@@ -299,8 +331,11 @@ bool ShaderVariation::Compile()
     {
         if (type_ == VS)
             LOGDEBUG("Compiled vertex shader " + GetFullName());
-        else
+        else if (type_ == PS)
             LOGDEBUG("Compiled pixel shader " + GetFullName());
+        else if (type_ == GS)
+            LOGDEBUG("Compiled geometry shader " + GetFullName());
+
 
         unsigned char* bufData = (unsigned char*)shaderCode->GetBufferPointer();
         unsigned bufSize = (unsigned)shaderCode->GetBufferSize();
@@ -366,7 +401,7 @@ void ShaderVariation::ParseParameters(unsigned char* bufData, unsigned bufSize)
         String resourceName(resourceDesc.Name);
         if (resourceDesc.Type == D3D_SIT_CBUFFER)
             cbRegisterMap[resourceName] = resourceDesc.BindPoint;
-        else if (resourceDesc.Type == D3D_SIT_SAMPLER && resourceDesc.BindPoint < MAX_TEXTURE_UNITS)
+        else if (type_ == PS && resourceDesc.Type == D3D_SIT_SAMPLER && resourceDesc.BindPoint < MAX_TEXTURE_UNITS)
             useTextureUnit_[resourceDesc.BindPoint] = true;
     }
 

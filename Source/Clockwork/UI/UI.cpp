@@ -811,7 +811,7 @@ void UI::Render(bool resetRenderTargets, VertexBuffer* buffer, const PODVector<U
                 ps = diffTexturePS;
         }
 
-        graphics_->SetShaders(vs, ps);
+        graphics_->SetShaders(vs, ps, 0);
         if (graphics_->NeedParameterUpdate(SP_OBJECT, this))
             graphics_->SetShaderParameter(VSP_MODEL, Matrix3x4::IDENTITY);
         if (graphics_->NeedParameterUpdate(SP_CAMERA, this))

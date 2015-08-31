@@ -32,6 +32,52 @@ namespace Clockwork
 class Graphics;
 class ShaderVariation;
 
+struct ShaderCombinationRecord
+{
+    ShaderVariation* vs_;
+    ShaderVariation* ps_;
+    ShaderVariation* gs_;
+
+    ShaderCombinationRecord() :
+        vs_(0), ps_(0), gs_(0)
+    {
+
+    }
+
+    ShaderCombinationRecord(const ShaderCombinationRecord& rhs) :
+        vs_(rhs.vs_), ps_(rhs.ps_), gs_(rhs.gs_)
+    {
+
+    }
+
+    ShaderCombinationRecord(ShaderVariation* vs, ShaderVariation* ps, ShaderVariation* gs) :
+        vs_(vs), ps_(ps), gs_(gs)
+    {
+
+    }
+
+    bool operator<(const ShaderCombinationRecord& rhs) const
+    {
+        return vs_ < rhs.vs_ && ps_ < rhs.ps_ && gs_ < rhs.gs_;
+    }
+
+    bool operator>(const ShaderCombinationRecord& rhs) const
+    {
+        return vs_ > rhs.vs_ && ps_ > rhs.ps_ && gs_ > rhs.gs_;
+    }
+
+    bool operator==(const ShaderCombinationRecord& rhs) const
+    {
+        return vs_ == rhs.vs_ && ps_ == rhs.ps_ && gs_ == rhs.gs_;
+    }
+
+    unsigned ToHash() const
+    {
+        return MakeHash(vs_) + (MakeHash(ps_) << 16) + MakeHash(gs_);
+    }
+};
+
+
 /// Utility class for collecting used shader combinations during runtime for precaching.
 class CLOCKWORK_API ShaderPrecache : public Object
 {
@@ -44,7 +90,7 @@ public:
     ~ShaderPrecache();
 
     /// Collect a shader combination. Called by Graphics when shaders have been set.
-    void StoreShaders(ShaderVariation* vs, ShaderVariation* ps);
+    void StoreShaders(ShaderVariation* vs, ShaderVariation* ps, ShaderVariation* gs);
 
     /// Load shaders from an XML file.
     static void LoadShaders(Graphics* graphics, Deserializer& source);
@@ -55,7 +101,7 @@ private:
     /// XML file.
     XMLFile xmlFile_;
     /// Already encountered shader combinations, pointer version for fast queries.
-    HashSet<Pair<ShaderVariation*, ShaderVariation*> > usedPtrCombinations_;
+    HashSet<ShaderCombinationRecord> usedPtrCombinations_; 
     /// Already encountered shader combinations.
     HashSet<String> usedCombinations_;
 };

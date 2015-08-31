@@ -27,6 +27,7 @@
 #include "../../Core/Mutex.h"
 #include "../../Core/Object.h"
 #include "../../Graphics/GraphicsDefs.h"
+#include "../../Graphics/ShaderPrecache.h"
 #include "../../Graphics/ShaderVariation.h"
 #include "../../Math/Color.h"
 #include "../../Math/Plane.h"
@@ -74,7 +75,7 @@ struct ScratchBuffer
     bool reserved_;
 };
 
-typedef HashMap<Pair<ShaderVariation*, ShaderVariation*>, SharedPtr<ShaderProgram> > ShaderProgramMap;
+typedef HashMap<ShaderCombinationRecord, SharedPtr<ShaderProgram> > ShaderProgramMap;
 
 /// %Graphics subsystem. Manages the application window, rendering state and GPU resources.
 class CLOCKWORK_API Graphics : public Object
@@ -140,7 +141,7 @@ public:
     /// Set index buffer.
     void SetIndexBuffer(IndexBuffer* buffer);
     /// Set shaders.
-    void SetShaders(ShaderVariation* vs, ShaderVariation* ps);
+    void SetShaders(ShaderVariation* vs, ShaderVariation* ps, ShaderVariation* gs);
     /// Set shader float constants.
     void SetShaderParameter(StringHash param, const float* data, unsigned count);
     /// Set shader float constant.
@@ -344,6 +345,10 @@ public:
 
     /// Return current pixel shader.
     ShaderVariation* GetPixelShader() const { return pixelShader_; }
+
+    /// Return current geometry shader.
+    ShaderVariation* GetGeometryShader() const { return geometryShader_; }
+
 
     /// Return texture unit index by name.
     TextureUnit GetTextureUnit(const String& name);
@@ -585,6 +590,8 @@ private:
     ShaderVariation* vertexShader_;
     /// Pixel shader in use.
     ShaderVariation* pixelShader_;
+    /// Geometry shader in use.
+    ShaderVariation* geometryShader_;
     /// Textures in use.
     Texture* textures_[MAX_TEXTURE_UNITS];
     /// Texture unit mappings.
