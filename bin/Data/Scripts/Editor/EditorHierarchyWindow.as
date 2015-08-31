@@ -59,9 +59,9 @@ void CreateHierarchyWindow()
     hierarchyWindow = LoadEditorUI("UI/EditorHierarchyWindow.xml");
     hierarchyList = hierarchyWindow.GetChild("HierarchyList");
     ui.root.AddChild(hierarchyWindow);
-    int height = Min(ui.root.height - 60, (ui.root.height/5) * 4 - 45);
-    hierarchyWindow.SetSize(ui.root.width/5, height-111);
-    hierarchyWindow.SetPosition(0, 60);
+    int height = Min(ui.root.height - 60, 460);
+    hierarchyWindow.SetSize(300, height);
+    hierarchyWindow.SetPosition(35, 100);
     hierarchyWindow.opacity = uiMaxOpacity;
     hierarchyWindow.BringToFront();
 
@@ -1404,6 +1404,7 @@ void HandleTemporaryChanged(StringHash eventType, VariantMap& eventData)
     Component@ component = cast<Component>(serializable);
     if (component !is null && component.node !is null && component.node.scene is editorScene)
     {
+        node = component.node;
         if (showTemporaryObject)
             UpdateHierarchyItemText(GetComponentListIndex(component), node.enabled);
         else if (!component.temporary && GetComponentListIndex(component) == NO_ITEM)

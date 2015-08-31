@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #pragma once
 
@@ -28,12 +48,12 @@ public:
     /// Destruct.
     ~LuaScript();
 
-    /// Add a scripted event handler by function.
-    virtual void AddEventHandler(const String& eventName, int functionIndex);
+    /// Add a scripted event handler by function at the given stack index.
+    virtual void AddEventHandler(const String& eventName, int index);
     /// Add a scripted event handler by function name.
     virtual void AddEventHandler(const String& eventName, const String& functionName);
-    /// Add a scripted event handler by function for a specific sender.
-    virtual void AddEventHandler(Object* sender, const String& eventName, int functionIndex);
+    /// Add a scripted event handler by function at the given stack index for a specific sender.
+    virtual void AddEventHandler(Object* sender, const String& eventName, int index);
     /// Add a scripted event handler by function name for a specific sender.
     virtual void AddEventHandler(Object* sender, const String& eventName, const String& functionName);
     /// Remove a scripted event handler.
@@ -57,21 +77,22 @@ public:
     bool ExecuteRawFile(const String& fileName);
     /// Execute script function.
     bool ExecuteFunction(const String& functionName);
-    /// Send event.
-    void SendEvent(const String& eventName, VariantMap& eventData);
     /// Set whether to execute engine console commands as script code.
     void SetExecuteConsoleCommands(bool enable);
 
     /// Return Lua state.
     lua_State* GetState() const { return luaState_; }
 
-    /// Return Lua function by function stack index.
-    LuaFunction* GetFunction(int functionIndex);
+    /// Return Lua function at the given stack index.
+    LuaFunction* GetFunction(int index);
     /// Return Lua function by function name.
-    LuaFunction* GetFunction(const String& functionName, bool silentIfNotfound = false);
+    LuaFunction* GetFunction(const String& functionName, bool silentIfNotFound = false);
 
     /// Return whether is executing engine console commands as script code.
     bool GetExecuteConsoleCommands() const { return executeConsoleCommands_; }
+
+    /// Push Lua function to stack. Return true if is successful. Return false on any error and an error string is pushed instead.
+    static bool PushLuaFunction(lua_State* L, const String& functionName);
 
 private:
     /// Register loader.
@@ -82,8 +103,6 @@ private:
     void HandlePostUpdate(StringHash eventType, VariantMap& eventData);
     /// Handle a console command event.
     void HandleConsoleCommand(StringHash eventType, VariantMap& eventData);
-    /// Push script function.
-    bool PushScriptFunction(const String& functionName, bool silentIfNotfound = false);
 
     /// At panic.
     static int AtPanic(lua_State* L);
@@ -94,7 +113,7 @@ private:
 
     /// Lua state.
     lua_State* luaState_;
-    /// Event invoker.
+    /// Procedural event invoker.
     SharedPtr<LuaScriptEventInvoker> eventInvoker_;
     /// Coroutine update function.
     LuaFunction* coroutineUpdate_;

@@ -70,6 +70,7 @@ A number of build options can be defined when invoking the build scripts or when
 |ANDROID              |0|Configure project using Android cross-compiler toolchain (cmake_generic.bat and cmake_generic.sh only)|
 |RPI                  |0|Configure project using Raspberry Pi cross-compiler toolchain (cmake_generic.sh only)|
 |WIN32                |0|Configure project using MinGW cross-compiler toolchain (cmake_generic.sh only); also applicable when cross-compiling 64-bit Windows platform|
+|CLOCKWORK_C++11         |0|Enable C++11 standard|
 |IOS                  |0|Configure project for targeting iOS platform (cmake_generic.sh and cmake-gui only)|
 |CLOCKWORK_64BIT         |*|Enable 64-bit build, on MSVC default to 0, on other compilers the default is set based on the 64-bit capability of the chosen toolchain on host system|
 |CLOCKWORK_ANGELSCRIPT   |1|Enable AngelScript scripting support|
@@ -88,6 +89,8 @@ A number of build options can be defined when invoking the build scripts or when
 |CLOCKWORK_DOCS          |0|Generate documentation as part of normal build (the 'doc' builtin target can be used to generate documentation regardless of this option's value)|
 |CLOCKWORK_DOCS_QUIET    |0|Generate documentation as part of normal build, suppress generation process from sending anything to stdout|
 |CLOCKWORK_PCH           |1|Enable PCH support|
+|CLOCKWORK_DATABASE_ODBC |0|Enable Database support with ODBC, requires vendor-specific ODBC driver|
+|CLOCKWORK_DATABASE_SQLITE|0|Enable Database support with SQLite embedded|
 |CLOCKWORK_SSE           |1|Enable SSE instruction set|
 |CLOCKWORK_MINIDUMPS     |1|Enable minidumps on crash (VS only)|
 |CLOCKWORK_FILEWATCHER   |1|Enable filewatcher support|
@@ -189,7 +192,7 @@ After the commands finish successfully, the APK should have been generated in th
 
 For a release build, use the "ant release" command instead of "ant debug" and follow the Android SDK instructions on how to sign your APK properly.
 
-By default the Android package for Clockwork is com.googlecode.clockwork3d. For a real application you must replace this with your own package name. The Clockwork activity subclasses the SDLActivity from org.libsdl.app package, whose name (or the JNI code from SDL library) does not have to be changed.
+By default the Android package for Clockwork is com.googlecode.clockwork. For a real application you must replace this with your own package name. The Clockwork activity subclasses the SDLActivity from org.libsdl.app package, whose name (or the JNI code from SDL library) does not have to be changed.
 
 Note that the native code is built by default for armeabi-v7a ABI. To make your program compatible also with old Android devices, build also an armeabi version by reconfiguring the build tree again with the build option "-DANDROID_ABI=armeabi" added, then execute make again in the build directory. Similarly, the native code can be built using 64-bit ABI by changing the value of this build option. See \ref Build_Options for all the possible values. Note that CMake doesn't allow changing of its compiler settings in an existing build tree, so before reconfiguring to use an incompatible ANDROID_ABI most likely you need to clean the CMake cache first.
 
@@ -209,7 +212,7 @@ To run from Xcode on iPhone/iPad Simulator, edit the Product Scheme to set "Run"
 
 For native build on Raspberry Pi itself, use the similar process for \ref Building_Native "Native build process" described above.
 
-For cross-compiling build on an Linux host system, firstly set the RPI_PREFIX environment variable or build option to point to your Raspberry Pi Cross-Compiling tool are located. You can setup the tool using <a href="http://crosstool-ng.org/">crosstool-NG</a> or just download one from https://github.com/raspberrypi/tools. Secondly, set the RPI_SYSROOT environment variable or build option to point to your Raspbian or Pidora system root. You must install the Clockwork prerequisites software development packages for Raspberry Pi (see \ref Building_Prerequisites) in the system root before attempting to do the Clockwork cross-compiling build. You are recommended to download the Raspbian system root with Clockwork prerequisite software installed from https://github.com/clockwork3d/rpi-sysroot. You can just download from the "strip" branch to cut down the download time and size. Alternatively, if you have a fast LAN connection then you can also opt to mount the system root on your actual Raspberry Pi device to your host system via SSHFS and set the RPI_SYSROOT to use the mount point.
+For cross-compiling build on an Linux host system, firstly set the RPI_PREFIX environment variable or build option to point to your Raspberry Pi Cross-Compiling tool are located. You can setup the tool using <a href="http://crosstool-ng.org/">crosstool-NG</a> or just download one from https://github.com/raspberrypi/tools. Secondly, set the RPI_SYSROOT environment variable or build option to point to your Raspbian or Pidora system root. You must install the Clockwork prerequisites software development packages for Raspberry Pi (see \ref Building_Prerequisites) in the system root before attempting to do the Clockwork cross-compiling build. You are recommended to download the Raspbian system root with Clockwork prerequisite software installed from https://github.com/clockwork/rpi-sysroot. You can just download from the "strip" branch to cut down the download time and size. Alternatively, if you have a fast LAN connection then you can also opt to mount the system root on your actual Raspberry Pi device to your host system via SSHFS and set the RPI_SYSROOT to use the mount point.
 
 Execute cmake_raspi.sh then go to the build tree to execute make command. You may pass the optional RPI_ABI build option to specifically target for the Raspberry Pi 2. After the build is complete, the ARM executables can be found in the build tree's "bin" subdirectory.
 
@@ -761,6 +764,7 @@ Ctrl+W             - Cycle through solid, wireframe and point rendering
 Ctrl+Z             - Undo
 Ctrl+Y             - Redo
 Ctrl+Space         - Open quick menu
+Alt+I              - Toggle component debug icons
 Alt+W              - Open color wheel menu
 ESC                - Close the file selector or editor settings window
 DEL                - Delete node or component

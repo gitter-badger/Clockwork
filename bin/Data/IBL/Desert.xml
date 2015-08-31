@@ -1,0 +1,9 @@
+<cubemap>
+    <face name="Desert_right.PNG" />
+    <face name="Desert_left.PNG" />
+    <face name="Desert_top.PNG" />
+    <face name="Desert_bottom.PNG" />
+    <face name="Desert_front.PNG" />
+    <face name="Desert_back.PNG" />
+    <quality low="0" />
+</cubemap>

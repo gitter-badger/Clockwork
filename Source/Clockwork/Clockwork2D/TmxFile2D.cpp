@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
@@ -143,47 +163,52 @@ bool TmxObjectGroup2D::Load(const XMLElement& element, const TileMapInfo2D& info
         if (objectElem.HasAttribute("type"))
             object->type_ = objectElem.GetAttribute("type");
 
-        Vector2 position(objectElem.GetFloat("x"), objectElem.GetFloat("y"));
+        if (objectElem.HasAttribute("gid"))
+            object->objectType_ = OT_TILE;
+        else if (objectElem.HasChild("polygon"))
+            object->objectType_ = OT_POLYGON;
+        else if (objectElem.HasChild("polyline"))
+            object->objectType_ = OT_POLYLINE;
+        else if (objectElem.HasChild("ellipse"))
+            object->objectType_ = OT_ELLIPSE;
+        else
+            object->objectType_ = OT_RECTANGLE;
 
-        if (objectElem.HasAttribute("width") || objectElem.HasAttribute("height"))
-        {
-            if (!objectElem.HasChild("ellipse"))
-                object->objectType_ = OT_RECTANGLE;
-            else
-                object->objectType_ = OT_ELLIPSE;
+        const Vector2 position(objectElem.GetFloat("x"), objectElem.GetFloat("y"));
+        const Vector2 size(objectElem.GetFloat("width"), objectElem.GetFloat("height"));
 
-            Vector2 size(objectElem.GetFloat("width"), objectElem.GetFloat("height"));
-
+        switch (object->objectType_) {
+        case OT_RECTANGLE:
+        case OT_ELLIPSE:
             object->position_ = info.ConvertPosition(Vector2(position.x_, position.y_ + size.y_));
             object->size_ = Vector2(size.x_ * PIXEL_SIZE, size.y_ * PIXEL_SIZE);
-        }
-        else if (objectElem.HasAttribute("gid"))
-        {
-            object->objectType_ = OT_TILE;
+            break;
+
+        case OT_TILE:
             object->position_ = info.ConvertPosition(position);
             object->gid_ = objectElem.GetInt("gid");
             object->sprite_ = tmxFile_->GetTileSprite(object->gid_);
-        }
-        else
+
+            if (objectElem.HasAttribute("width") || objectElem.HasAttribute("height"))
+            {
+                object->size_ = Vector2(size.x_ * PIXEL_SIZE, size.y_ * PIXEL_SIZE);
+            }
+            else if (object->sprite_)
+            {
+                IntVector2 spriteSize = object->sprite_->GetRectangle().Size();
+                object->size_ = Vector2(spriteSize.x_, spriteSize.y_);
+            }
+
+            break;
+
+        case OT_POLYGON:
+        case OT_POLYLINE:
         {
             Vector<String> points;
 
-            if (objectElem.HasChild("polygon"))
-            {
-                object->objectType_ = OT_POLYGON;
-
-                XMLElement polygonElem = objectElem.GetChild("polygon");
-                points = polygonElem.GetAttribute("points").Split(' ');
-            }
-            else if (objectElem.HasChild("polyline"))
-            {
-                object->objectType_ = OT_POLYLINE;
-
-                XMLElement polylineElem = objectElem.GetChild("polyline");
-                points = polylineElem.GetAttribute("points").Split(' ');
-            }
-            else
-                return false;
+            const char *name = object->objectType_ == OT_POLYGON ? "polygon" : "polyline";
+            XMLElement polygonElem = objectElem.GetChild(name);
+            points = polygonElem.GetAttribute("points").Split(' ');
 
             if (points.Size() <= 1)
                 continue;
@@ -196,6 +221,9 @@ bool TmxObjectGroup2D::Load(const XMLElement& element, const TileMapInfo2D& info
                 Vector2 point = position + ToVector2(points[i]);
                 object->points_[i] = info.ConvertPosition(point);
             }
+
+            break;
+        }
         }
 
         if (objectElem.HasChild("properties"))

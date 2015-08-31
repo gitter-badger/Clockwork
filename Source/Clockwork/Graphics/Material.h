@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #pragma once
 
@@ -19,6 +39,8 @@ class Texture;
 class Texture2D;
 class TextureCube;
 class ValueAnimationInfo;
+
+static const unsigned char DEFAULT_RENDER_ORDER = 128;
 
 /// %Material's shader parameter definition.
 struct MaterialShaderParameter
@@ -128,6 +150,8 @@ public:
     void SetFillMode(FillMode mode);
     /// Set depth bias.
     void SetDepthBias(const BiasParameters& parameters);
+    /// Set 8-bit render order within pass. Default 128. Lower values will render earlier and higher values later, taking precedence over e.g. state and distance sorting.
+    void SetRenderOrder(unsigned char order);
     /// Associate the material with a scene to ensure that shader parameter animation happens in sync with scene update, respecting the scene time scale. If no scene is set, the global update events will be used.
     void SetScene(Scene* scene);
     /// Remove shader parameter.
@@ -183,6 +207,9 @@ public:
     /// Return depth bias.
     const BiasParameters& GetDepthBias() const { return depthBias_; }
 
+    /// Return render order.
+    unsigned char GetRenderOrder() const { return renderOrder_; }
+    
     /// Return last auxiliary view rendered frame number.
     unsigned GetAuxViewFrameNumber() const { return auxViewFrameNumber_; }
 
@@ -235,6 +262,8 @@ private:
     FillMode fillMode_;
     /// Depth bias parameters.
     BiasParameters depthBias_;
+    /// Render order value.
+    unsigned char renderOrder_;
     /// Last auxiliary view rendered frame number.
     unsigned auxViewFrameNumber_;
     /// Shader parameter hash value.

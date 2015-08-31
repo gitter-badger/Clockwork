@@ -3,6 +3,7 @@
 #include "Transform.hlsl"
 #include "ScreenPos.hlsl"
 #include "Lighting.hlsl"
+#include "BRDF.hlsl"
 #include "DeferredGBuffer.hlsl"
 
 void VS(float4 iPos : POSITION,
@@ -118,18 +119,26 @@ void PS(
     #endif
 
     #ifdef PBR          
-        float3 toCamera = normalize(worldPos.xyz - cCameraPosPS);
-        
-        const float3 Hn = normalize(-toCamera + lightDir);
-        const float vdh = abs(dot(toCamera, Hn));
+        float3 toCamera = normalize(-worldPos);
+                
+        const float3 Hn = normalize(toCamera + lightDir);
+        const float vdh = saturate(dot(toCamera, Hn));
         const float ndh = saturate(dot(normal, Hn));
         const float ndl = saturate(dot(normal, lightDir));
-        const float ndv = saturate(dot(normal, -toCamera)) + 1e-5;
-        
-        const float3 diffuseTerm = ndl * lightColor * diff * albedoInput.rgb;
-        const float3 fresnelTerm = SchlickFresnel(specColor, vdh);
-        const float distTerm = GGXDistribution(ndh, roughness);
-        const float visTerm = SchlickVisibility(ndl, ndv, roughness);
+        const float ndv = abs(dot(normal, toCamera) + 1e-5);
+
+        #ifdef DIRLIGHT
+            float3 diffuseTerm = Diffuse(diff, roughness, ndv, ndl, vdh) * albedoInput.rgb * ndl * lightColor;
+        #else
+            float3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w;
+            float lightDist = length(lightVec);
+            float3 diffuseTerm = Diffuse(diff, roughness, ndv, ndl, vdh) * albedoInput.rgb * lightColor * rsqrt(Sample2D(LightRampMap, float2(lightDist, 0.0)).r);
+        #endif
+
+        // float3 diffuseTerm = ndl * lightColor * diff * albedoInput.rgb;
+        float3 fresnelTerm = Fresnel(specColor, vdh);
+        float distTerm = Distribution(roughness, ndh);
+        float visTerm = GeometricVisibility(roughness, ndv, ndl, vdh);
         
         oColor = float4(diffuseTerm, 1);
         oColor.rgb += distTerm * visTerm * fresnelTerm * lightColor * diff;

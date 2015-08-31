@@ -1,13 +1,13 @@
 
-* Copy ï¿½Ogreï¿½ and ï¿½Startupï¿½ folders in 3dsmaxFolder\Scripts folder.
-* Open 3ds max and open ï¿½MAXScript -> Run Script...ï¿½ menu item.
-* Select ï¿½initClockworkTools.msï¿½ from ï¿½Startupï¿½ folder and press OK.
+* Copy «Ogre» and «Startup» folders in 3dsmaxFolder\Scripts folder.
+* Open 3ds max and open «MAXScript -> Run Script...» menu item.
+* Select «initClockworkTools.ms» from «Startup» folder and press OK.
 
 Add button
-* Select ï¿½Customize -> Customize User Interfaceï¿½ menu item.
-* Goto ï¿½Toolbarï¿½ tab.
-* From ï¿½Categoryï¿½ list select ï¿½Clockwork toolsï¿½ (Scroll down to see it).
-* Drag ï¿½Clockwork Exporterï¿½ item to toolbar in 3dsmax to create button.
+* Select «Customize -> Customize User Interface» menu item.
+* Goto «Toolbar» tab.
+* From «Category» list select «Clockwork tools» (Scroll down to see it).
+* Drag «Clockwork Exporter» item to toolbar in 3dsmax to create button.
 * Enjoy!
 
 

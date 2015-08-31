@@ -19,14 +19,15 @@
 #include "Scripts/Editor/EditorSoundType.as"
 #include "Scripts/Editor/EditorLayers.as"
 #include "Scripts/Editor/EditorColorWheel.as"
-
+#include "Scripts/Editor/EditorEventsHandlers.as"
+#include "Scripts/Editor/EditorViewDebugIcons.as"
 
 String configFileName;
 
 void Start()
 {
     // Assign the value ASAP because configFileName is needed on exit, including exit on error
-    configFileName = fileSystem.GetAppPreferencesDir("clockwork3d", "Editor") + "Config.xml";
+    configFileName = fileSystem.GetAppPreferencesDir("clockwork", "Editor") + "Config.xml";
     localization.LoadJSONFile("EditorStrings.json");
 
     if (engine.headless)
@@ -71,6 +72,7 @@ void FirstFrame()
     SubscribeToEvent("Update", "HandleUpdate");
     SubscribeToEvent("ReloadFinished", "HandleReloadFinished");
     SubscribeToEvent("ReloadFailed", "HandleReloadFailed");
+    EditorSubscribeToEvents();
 }
 
 void Stop()

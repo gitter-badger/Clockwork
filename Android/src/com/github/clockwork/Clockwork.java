@@ -1,3 +1,25 @@
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
 package com.github.clockwork;
 
 import java.util.ArrayList;
@@ -12,7 +34,7 @@ public class Clockwork extends SDLActivity {
 
     @Override
     protected boolean onLoadLibrary(ArrayList<String> libraryNames) {
-        // Ensure "Clockwork" (in case of Clockwork shared lib type is used) and "ClockworkPlayer" are being sorted to the top of the list
+        // Ensure "Clockwork" (in case of Clockwork shared lib type is used) and "ClockworkPlayer" are being sorted to the top of the list 
         Collections.sort(libraryNames, new Comparator<String>() {
             private String sortName(String name) {
                 return name.startsWith("Clockwork") ? "00_" + name : name;
@@ -24,7 +46,7 @@ public class Clockwork extends SDLActivity {
             }
         });
 
-        // Clockwork shared library must always be loaded if available, so exclude it from return result and all list operations below
+        // Clockwork shared library must always be loaded if available, so exclude it from return result and all list operations below 
         int startIndex = "Clockwork".equals(libraryNames.get(0)) ? 1 : 0;
 
         // Determine the intention
@@ -43,7 +65,7 @@ public class Clockwork extends SDLActivity {
                 return false;
             } else {
                 // There is only one library available, so cancel the intention for obtaining the library name and by not returning any result
-                // However, since we have already started Clockwork activity, let's the activity runs its whole lifecycle by falling through to call the super implementation
+                // However, since we have already started Clockwork activity, let's the activity runs its whole lifecycle by falling through to call the super implementation 
                 setResult(RESULT_CANCELED);
             }
         } else {

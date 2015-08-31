@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include <Clockwork/Clockwork.h>
 
@@ -1920,8 +1940,6 @@ void GetBlendData(OutModel& model, aiMesh* mesh, PODVector<unsigned>& boneMappin
                 unsigned vertex = bone->mWeights[j].mVertexId;
                 blendIndices[vertex].Push(i);
                 blendWeights[vertex].Push(bone->mWeights[j].mWeight);
-                if (blendWeights[vertex].Size() > 4)
-                    ErrorExit("More than 4 bone influences on vertex");
             }
         }
     }
@@ -1939,9 +1957,41 @@ void GetBlendData(OutModel& model, aiMesh* mesh, PODVector<unsigned>& boneMappin
                 unsigned vertex = bone->mWeights[j].mVertexId;
                 blendIndices[vertex].Push(globalIndex);
                 blendWeights[vertex].Push(bone->mWeights[j].mWeight);
-                if (blendWeights[vertex].Size() > 4)
-                    ErrorExit("More than 4 bone influences on vertex");
             }
+        }
+    }
+
+    // Normalize weights now if necessary, also remove too many influences
+    for (unsigned i = 0; i < blendWeights.Size(); ++i)
+    {
+        if (blendWeights[i].Size() > 4)
+        {
+            PrintLine("Warning: more than 4 bone influences in vertex " + String(i));
+
+            while (blendWeights[i].Size() > 4)
+            {
+                unsigned lowestIndex = 0;
+                float lowest = M_INFINITY;
+                for (unsigned j = 0; j < blendWeights[i].Size(); ++j)
+                {
+                    if (blendWeights[i][j] < lowest)
+                    {
+                        lowest = blendWeights[i][j];
+                        lowestIndex = j;
+                    }
+                }
+                blendWeights[i].Erase(lowestIndex);
+                blendIndices[i].Erase(lowestIndex);
+            }
+        }
+
+        float sum = 0.0f;
+        for (unsigned j = 0; j < blendWeights[i].Size(); ++j)
+            sum += blendWeights[i][j];
+        if (sum != 1.0f && sum != 0.0f)
+        {
+            for (unsigned j = 0; j < blendWeights[i].Size(); ++j)
+                blendWeights[i][j] /= sum;
         }
     }
 }

@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
@@ -22,7 +42,9 @@ namespace Clockwork
 
 inline bool CompareBatchesState(Batch* lhs, Batch* rhs)
 {
-    if (lhs->sortKey_ != rhs->sortKey_)
+    if (lhs->renderOrder_ != rhs->renderOrder_)
+        return lhs->renderOrder_ < rhs->renderOrder_;
+    else if (lhs->sortKey_ != rhs->sortKey_)
         return lhs->sortKey_ < rhs->sortKey_;
     else
         return lhs->distance_ < rhs->distance_;
@@ -30,7 +52,9 @@ inline bool CompareBatchesState(Batch* lhs, Batch* rhs)
 
 inline bool CompareBatchesFrontToBack(Batch* lhs, Batch* rhs)
 {
-    if (lhs->distance_ != rhs->distance_)
+    if (lhs->renderOrder_ != rhs->renderOrder_)
+        return lhs->renderOrder_ < rhs->renderOrder_;
+    else if (lhs->distance_ != rhs->distance_)
         return lhs->distance_ < rhs->distance_;
     else
         return lhs->sortKey_ < rhs->sortKey_;
@@ -38,7 +62,9 @@ inline bool CompareBatchesFrontToBack(Batch* lhs, Batch* rhs)
 
 inline bool CompareBatchesBackToFront(Batch* lhs, Batch* rhs)
 {
-    if (lhs->distance_ != rhs->distance_)
+    if (lhs->renderOrder_ != rhs->renderOrder_)
+        return lhs->renderOrder_ < rhs->renderOrder_;
+    else if (lhs->distance_ != rhs->distance_)
         return lhs->distance_ > rhs->distance_;
     else
         return lhs->sortKey_ < rhs->sortKey_;
@@ -47,6 +73,11 @@ inline bool CompareBatchesBackToFront(Batch* lhs, Batch* rhs)
 inline bool CompareInstancesFrontToBack(const InstanceData& lhs, const InstanceData& rhs)
 {
     return lhs.distance_ < rhs.distance_;
+}
+
+inline bool CompareBatchGroupOrder(BatchGroup* lhs, BatchGroup* rhs)
+{
+    return lhs->renderOrder_ < rhs->renderOrder_;
 }
 
 void CalculateShadowMatrix(Matrix4& dest, LightBatchQueue* queue, unsigned split, Renderer* renderer, const Vector3& translation)
@@ -649,7 +680,7 @@ void BatchGroup::Draw(View* view, bool allowDepthWrite) const
 unsigned BatchGroupKey::ToHash() const
 {
     return (unsigned)((size_t)zone_ / sizeof(Zone) + (size_t)lightQueue_ / sizeof(LightBatchQueue) + (size_t)pass_ / sizeof(Pass) +
-                      (size_t)material_ / sizeof(Material) + (size_t)geometry_ / sizeof(Geometry));
+                      (size_t)material_ / sizeof(Material) + (size_t)geometry_ / sizeof(Geometry)) + renderOrder_;
 }
 
 void BatchQueue::Clear(int maxSortedInstances)
@@ -669,12 +700,13 @@ void BatchQueue::SortBackToFront()
 
     Sort(sortedBatches_.Begin(), sortedBatches_.End(), CompareBatchesBackToFront);
 
-    // Do not actually sort batch groups, just list them
     sortedBatchGroups_.Resize(batchGroups_.Size());
-
+    
     unsigned index = 0;
     for (HashMap<BatchGroupKey, BatchGroup>::Iterator i = batchGroups_.Begin(); i != batchGroups_.End(); ++i)
         sortedBatchGroups_[index++] = &i->second_;
+    
+    Sort(sortedBatchGroups_.Begin(), sortedBatchGroups_.End(), CompareBatchGroupOrder);
 }
 
 void BatchQueue::SortFrontToBack()

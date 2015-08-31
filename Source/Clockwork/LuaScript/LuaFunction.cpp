@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
@@ -19,7 +39,8 @@ namespace Clockwork
 LuaFunction::LuaFunction(lua_State* luaState, int functionRef, bool needUnref) :
     luaState_(luaState),
     functionRef_(functionRef),
-    needUnref_(needUnref)
+    needUnref_(needUnref),
+    numArguments_(-1)
 {
 }
 
@@ -34,38 +55,34 @@ bool LuaFunction::IsValid() const
     return functionRef_ != LUA_REFNIL;
 }
 
-bool LuaFunction::BeginCall()
-{
-    if (!IsValid())
-        return false;
-
-    stackTop_ = lua_gettop(luaState_);
-    numArguments_ = 0;
-    lua_rawgeti(luaState_, LUA_REGISTRYINDEX, functionRef_);
-
-    return true;
-}
-
 bool LuaFunction::BeginCall(const LuaScriptInstance* instance)
 {
     if (!IsValid())
         return false;
 
-    stackTop_ = lua_gettop(luaState_);
-    numArguments_ = 1;
     lua_rawgeti(luaState_, LUA_REGISTRYINDEX, functionRef_);
-    lua_rawgeti(luaState_, LUA_REGISTRYINDEX, instance->GetScriptObjectRef());
+    if (instance)
+    {
+        lua_rawgeti(luaState_, LUA_REGISTRYINDEX, instance->GetScriptObjectRef());
+        numArguments_ = 1;
+    }
+    else
+        numArguments_ = 0;
 
     return true;
 }
 
 bool LuaFunction::EndCall(int numReturns)
 {
-    if (lua_pcall(luaState_, numArguments_, numReturns, 0) != 0)
+    assert(numArguments_ >= 0);
+    int numArguments = numArguments_;
+    numArguments_ = -1;
+
+    if (lua_pcall(luaState_, numArguments, numReturns, 0) != 0)
     {
         const char* message = lua_tostring(luaState_, -1);
         LOGERROR("Execute Lua function failed: " + String(message));
-        lua_settop(luaState_, stackTop_);
+        lua_pop(luaState_, 1);
         return false;
     }
 
@@ -74,114 +91,60 @@ bool LuaFunction::EndCall(int numReturns)
 
 void LuaFunction::PushInt(int value)
 {
+    assert(numArguments_ >= 0);
     ++numArguments_;
-
     lua_pushinteger(luaState_, value);
 }
 
 void LuaFunction::PushBool(bool value)
 {
+    assert(numArguments_ >= 0);
     ++numArguments_;
-
     lua_pushboolean(luaState_, value);
 }
 
 void LuaFunction::PushFloat(float value)
 {
+    assert(numArguments_ >= 0);
     ++numArguments_;
+    lua_pushnumber(luaState_, value);
+}
 
+void LuaFunction::PushDouble(double value)
+{
+    assert(numArguments_ >= 0);
+    ++numArguments_;
     lua_pushnumber(luaState_, value);
 }
 
 void LuaFunction::PushString(const String& string)
 {
+    assert(numArguments_ >= 0);
     ++numArguments_;
-
-    tolua_pushclockwork3dstring(luaState_, string);
+    tolua_pushclockworkstring(luaState_, string);
 }
 
 void LuaFunction::PushUserType(void* userType, const char* typeName)
 {
+    assert(numArguments_ >= 0);
     ++numArguments_;
-
     tolua_pushusertype(luaState_, userType, typeName);
 }
 
-bool LuaFunction::PushVariant(const Variant& variant)
+void LuaFunction::PushVariant(const Variant& variant, const char* asType)
 {
-    switch (variant.GetType())
-    {
-    case VAR_INT:
-        PushInt(variant.GetInt());
-        return true;
-
-    case VAR_BOOL:
-        PushBool(variant.GetBool());
-        return true;
-
-    case VAR_FLOAT:
-        PushFloat(variant.GetFloat());
-        return true;
-
-    case VAR_VECTOR2:
-        PushUserType(variant.GetVector2(), "Vector2");
-        return true;
-
-    case VAR_VECTOR3:
-        PushUserType(variant.GetVector3(), "Vector3");
-        return true;
-
-    case VAR_VECTOR4:
-        PushUserType(variant.GetVector4(), "Vector4");
-        return true;
-
-    case VAR_QUATERNION:
-        PushUserType(variant.GetQuaternion(), "Quaternion");
-        return true;
-
-    case VAR_COLOR:
-        PushUserType(variant.GetColor(), "Color");
-        return true;
-
-    case VAR_STRING:
-        PushString(variant.GetString());
-        return true;
-
-    case VAR_BUFFER:
-        {
-            VectorBuffer buffer(variant.GetBuffer());
-            PushUserType(buffer, "VectorBuffer");
-        }
-        return true;
-
-    case VAR_RESOURCEREF:
-        PushUserType(variant.GetResourceRef(), "ResourceRef");
-        return true;
-
-    case VAR_INTRECT:
-        PushUserType(variant.GetIntRect(), "IntRect");
-        return true;
-
-    case VAR_INTVECTOR2:
-        PushUserType(variant.GetIntVector2(), "IntVector2");
-        return true;
-
-    default:
-        return false;
-    }
+    assert(numArguments_ >= 0);
+    ++numArguments_;
+    ToluaPushVariant(luaState_, &variant, asType);
 }
 
-bool LuaFunction::PushLuaTable(const String& tableName)
+void LuaFunction::PushLuaTable(const String& tableName)
 {
+    assert(numArguments_ >= 0);
     ++numArguments_;
-
     lua_getglobal(luaState_, tableName.CString());
     if (!lua_istable(luaState_, -1))
-    {
-        LOGERROR("Could not find lua table " + tableName);
-        return false;
-    }
-    return true;
+        LOGERROR("Could not find lua table " + tableName);      // nil is pushed instead
 }
 
 }

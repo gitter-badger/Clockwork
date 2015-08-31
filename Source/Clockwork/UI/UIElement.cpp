@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
@@ -862,7 +882,8 @@ void UIElement::SetFocusMode(FocusMode mode)
 
 void UIElement::SetFocus(bool enable)
 {
-    if (focusMode_ < FM_FOCUSABLE)
+    // Invisible elements should not receive focus
+    if (focusMode_ < FM_FOCUSABLE || !IsVisibleEffective())
         enable = false;
 
     UI* ui = GetSubsystem<UI>();
@@ -899,6 +920,14 @@ void UIElement::SetVisible(bool enable)
         eventData[P_ELEMENT] = this;
         eventData[P_VISIBLE] = visible_;
         SendEvent(E_VISIBLECHANGED, eventData);
+
+        // If the focus element becomes effectively hidden, clear focus
+        if (!enable)
+        {
+            UIElement* focusElement = GetSubsystem<UI>()->GetFocusElement();
+            if (focusElement && !focusElement->IsVisibleEffective())
+                focusElement->SetFocus(false);
+        }
     }
 }
 
@@ -1397,6 +1426,21 @@ bool UIElement::HasFocus() const
     return GetSubsystem<UI>()->GetFocusElement() == this;
 }
 
+bool UIElement::IsVisibleEffective() const
+{
+    bool visible = visible_;
+    const UIElement* element = parent_;
+    
+    // Traverse the parent chain
+    while (visible && element)
+    {
+        visible &= element->visible_;
+        element = element->parent_;
+    }
+    
+    return visible;
+}
+
 const String& UIElement::GetAppliedStyle() const
 {
     return appliedStyle_ == GetTypeName() ? String::EMPTY : appliedStyle_;
@@ -1833,7 +1877,7 @@ int UIElement::CalculateLayoutParentSize(const PODVector<int>& sizes, int begin,
 void UIElement::CalculateLayout(PODVector<int>& positions, PODVector<int>& sizes, const PODVector<int>& minSizes,
     const PODVector<int>& maxSizes, const PODVector<float>& flexScales, int targetSize, int begin, int end, int spacing)
 {
-    int numChildren = sizes.Size();
+    unsigned numChildren = sizes.Size();
     if (!numChildren)
         return;
     int targetTotalSize = targetSize - begin - end - (numChildren - 1) * spacing;
@@ -1845,7 +1889,7 @@ void UIElement::CalculateLayout(PODVector<int>& positions, PODVector<int>& sizes
     float acc = 0.0f;
 
     // Initial pass
-    for (int i = 0; i < numChildren; ++i)
+    for (unsigned i = 0; i < numChildren; ++i)
     {
         int targetSize = (int)(targetChildSize * flexScales[i]);
         if (remainder)
@@ -1865,7 +1909,7 @@ void UIElement::CalculateLayout(PODVector<int>& positions, PODVector<int>& sizes
     for (;;)
     {
         int actualTotalSize = 0;
-        for (int i = 0; i < numChildren; ++i)
+        for (unsigned i = 0; i < numChildren; ++i)
             actualTotalSize += sizes[i];
         int error = targetTotalSize - actualTotalSize;
         // Break if no error
@@ -1913,7 +1957,7 @@ void UIElement::CalculateLayout(PODVector<int>& positions, PODVector<int>& sizes
     layoutMinSize_ = M_MAX_INT;
     layoutMaxSize_ = 0;
     int position = begin;
-    for (int i = 0; i < numChildren; ++i)
+    for (unsigned i = 0; i < numChildren; ++i)
     {
         positions[i] = position;
         position += sizes[i] + spacing;

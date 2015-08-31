@@ -332,6 +332,8 @@ Notes:
 */
 
 dtCrowd::dtCrowd() :
+	// Clockwork: Add update callback support
+	m_updateCallback(0),
 	m_maxAgents(0),
 	m_agents(0),
 	m_activeAgents(0),
@@ -378,13 +380,15 @@ void dtCrowd::purge()
 	m_navquery = 0;
 }
 
+// Clockwork: Add update callback support
 /// @par
 ///
 /// May be called more than once to purge and re-initialize the crowd.
-bool dtCrowd::init(const int maxAgents, const float maxAgentRadius, dtNavMesh* nav)
+bool dtCrowd::init(const int maxAgents, const float maxAgentRadius, dtNavMesh* nav, dtUpdateCallback cb)
 {
 	purge();
-	
+
+	m_updateCallback = cb;
 	m_maxAgents = maxAgents;
 	m_maxAgentRadius = maxAgentRadius;
 
@@ -1409,6 +1413,9 @@ void dtCrowd::update(const float dt, dtCrowdAgentDebugInfo* debug)
 			ag->partial = false;
 		}
 
+		// Clockwork: Add update callback support
+		if (m_updateCallback)
+			(*m_updateCallback)(ag, dt);
 	}
 	
 	// Update agents using off-mesh connection.

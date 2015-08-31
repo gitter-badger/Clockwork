@@ -123,6 +123,9 @@ class ViewportContext
         camera.fillMode = fillMode;
         soundListener = cameraNode.CreateComponent("SoundListener");
         viewport = Viewport(editorScene, camera, viewRect, renderPath);
+        RenderPath@ effectRenderPath = viewport.renderPath.Clone(); 
+        effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/AutoExposure.xml")); 
+        viewport.renderPath = effectRenderPath;
         index = index_;
         viewportId = viewportId_;
         camera.viewMask = 0xffffffff; // It's easier to only have 1 gizmo active this viewport is shared with the gizmo
@@ -353,7 +356,7 @@ SnapScaleMode snapScaleMode = SNAP_SCALE_FULL;
 
 float viewNearClip = 0.1;
 float viewFarClip = 1000.0;
-float viewFov = 90.0;
+float viewFov = 45.0;
 
 float cameraBaseSpeed = 10;
 float cameraBaseRotationSpeed = 0.2;
@@ -474,15 +477,6 @@ void CreateCamera()
 
     // Note: the camera is not inside the scene, so that it is not listed, and does not get deleted
     ResetCamera();
-
-    SubscribeToEvent("PostRenderUpdate", "HandlePostRenderUpdate");
-    SubscribeToEvent("UIMouseClick", "ViewMouseClick");
-    SubscribeToEvent("MouseMove", "ViewMouseMove");
-    SubscribeToEvent("UIMouseClickEnd", "ViewMouseClickEnd");
-    SubscribeToEvent("BeginViewUpdate", "HandleBeginViewUpdate");
-    SubscribeToEvent("EndViewUpdate", "HandleEndViewUpdate");
-    SubscribeToEvent("BeginViewRender", "HandleBeginViewRender");
-    SubscribeToEvent("EndViewRender", "HandleEndViewRender");
 
     // Set initial renderpath if defined
     SetRenderPath(renderPathName);
@@ -1147,19 +1141,19 @@ void UpdateStats(float timeStep)
     if (hotKeyMode == HOTKEYS_MODE_BLENDER)
         adding = localization.Get("  CameraFlyMode: ") + (cameraFlyMode ? "True" : "False");
     
-    //editorModeText.text = String(
-    //    localization.Get("Mode: ") + localization.Get(editModeText[editMode]) +
-    //    localization.Get("  Axis: ") + localization.Get(axisModeText[axisMode]) +
-    //    localization.Get("  Pick: ") + localization.Get(pickModeText[pickMode]) +
-    //    localization.Get("  Fill: ") + localization.Get(fillModeText[fillMode]) +
-    //    localization.Get("  Updates: ") + (runUpdate ? localization.Get("Running") : localization.Get("Paused") + adding));
+    editorModeText.text = String(
+        localization.Get("Mode: ") + localization.Get(editModeText[editMode]) +
+        localization.Get("  Axis: ") + localization.Get(axisModeText[axisMode]) +
+        localization.Get("  Pick: ") + localization.Get(pickModeText[pickMode]) +
+        localization.Get("  Fill: ") + localization.Get(fillModeText[fillMode]) +
+        localization.Get("  Updates: ") + (runUpdate ? localization.Get("Running") : localization.Get("Paused") + adding));
 
-    //renderStatsText.text = String(
-    //    localization.Get("Tris: ") + renderer.numPrimitives +
-    //    localization.Get("  Batches: ") + renderer.numBatches +
-    //    localization.Get("  Lights: ") + renderer.numLights[true] +
-    //    localization.Get("  Shadowmaps: ") + renderer.numShadowMaps[true] +
-    //    localization.Get("  Occluders: ") + renderer.numOccluders[true]);
+    renderStatsText.text = String(
+        localization.Get("Tris: ") + renderer.numPrimitives +
+        localization.Get("  Batches: ") + renderer.numBatches +
+        localization.Get("  Lights: ") + renderer.numLights[true] +
+        localization.Get("  Shadowmaps: ") + renderer.numShadowMaps[true] +
+        localization.Get("  Occluders: ") + renderer.numOccluders[true]);
 
     editorModeText.size = editorModeText.minSize;
     renderStatsText.size = renderStatsText.minSize;
@@ -1632,6 +1626,7 @@ void HandlePostRenderUpdate()
     }
 
     ViewRaycast(false);
+    UpdateViewDebugIcons();
 }
 
 void DrawNodeDebug(Node@ node, DebugRenderer@ debug, bool drawNode = true)
@@ -2046,7 +2041,7 @@ Drawable@ GetDrawableAtMousePostion()
 
 void HandleBeginViewUpdate(StringHash eventType, VariantMap& eventData)
 {
-    // Hide gizmo and grid from any camera other then active viewport
+    // Hide gizmo, grid and debug icons from any camera other then active viewport
     if (eventData["Camera"].GetPtr() !is camera)
     {
         if (gizmo !is null)
@@ -2054,8 +2049,12 @@ void HandleBeginViewUpdate(StringHash eventType, VariantMap& eventData)
     }
     if (eventData["Camera"].GetPtr() is previewCamera.Get())
     {
+        suppressSceneChanges = true;
         if (grid !is null)
             grid.viewMask = 0;
+        if (debugIconsNode !is null)
+            debugIconsNode.enabled = false;
+        suppressSceneChanges = false;
     }
 }
 
@@ -2069,8 +2068,12 @@ void HandleEndViewUpdate(StringHash eventType, VariantMap& eventData)
     }
     if (eventData["Camera"].GetPtr() is previewCamera.Get())
     {
+        suppressSceneChanges = true;
         if (grid !is null)
             grid.viewMask = 0x80000000;
+        if (debugIconsNode !is null)
+            debugIconsNode.enabled = true;
+        suppressSceneChanges = false;
     }
 }
 

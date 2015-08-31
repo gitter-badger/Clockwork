@@ -1,225 +1,234 @@
+// Physically based shading model
+// parameterized with the below options
 
-//Diffuse
-//1 = Lambert
-//2 = Burley
-//3 = OrenNayar
+// Microfacet specular = D*G*F / (4*NoL*NoV) = D*Vis*F
+// Vis = G / (4*NoL*NoV)
 
-float3 GetLambertDiffuse(float3 DiffuseColor)
+// Diffuse model
+// 0: Lambert
+// 1: Burley
+// 2: Oren-Nayar
+#define PHYSICAL_DIFFUSE    1
+
+// Microfacet distribution function
+// 0: Blinn
+// 1: Beckmann
+// 2: GGX
+#define PHYSICAL_SPEC_D     2 
+
+// Geometric attenuation or shadowing
+// 0: Implicit
+// 1: Neumann
+// 2: Kelemen
+// 3: Schlick
+// 4: Smith (matched to GGX)
+#define PHYSICAL_SPEC_G     3
+
+// Fresnel
+// 0: None
+// 1: Schlick
+// 2: Fresnel
+#define PHYSICAL_SPEC_F     1
+
+
+float3 Diffuse_Lambert( float3 DiffuseColor )
 {
-    return DiffuseColor * (1 / 3.14159265359);
+    return DiffuseColor * (1 / 3.141596);
 }
 
-float3 GetBurleyDiffuse(float3 DiffuseColor, float Roughness, float NdotV, float NdotL, float VdotH)
+// [Burley 2012, "Physically-Based Shading at Disney"]
+// [Lagrade et al. 2014, "Moving Frostbite to Physically Based Rendering"]
+float3 Diffuse_Burley( float3 DiffuseColor, float Roughness, float NoV, float NoL, float VoH )
 {
-    float FD90 = ( 0.5  + 2 * VdotH * VdotH) * Roughness;
+    float FD90 = ( 0.5 + 2 * VoH * VoH ) * Roughness;
     
-    float InvNdotV = 1 - NdotV;
-    float NdotVPow5 = InvNdotV * InvNdotV;
-    NdotVPow5 = NdotVPow5 * NdotVPow5 * InvNdotV;
-    
-    float InvNdotL = 1 - NdotL;
-    float NdotLPow5 = InvNdotL * InvNdotL;
-    NdotLPow5 = NdotLPow5 * NdotLPow5 * InvNdotL;
-    
-    float FdV = 1 + (FD90 - 1) * NdotVPow5;
-    float FdL = 1 + (FD90 - 1) * NdotLPow5;
-    
-    return DiffuseColor * ( 1 / 3.14159 * FdV * FdL ) * ( 1 - 0.3333 * Roughness );
+    float InvNov = 1- NoV;
+    float NoVPow5 = InvNov * InvNov;
+    NoVPow5 = NoVPow5 * NoVPow5 * InvNov;
+
+    float InvNoL = 1 - NoL;
+    float NoLPow5 = InvNoL * InvNoL;
+    NoLPow5 = NoLPow5 * NoLPow5 * InvNoL;
+
+    float FdV = 1 + (FD90 - 1) * NoVPow5;
+    float FdL = 1 + (FD90 - 1) * NoLPow5;
+    return DiffuseColor * (( 1 / 3.141596) * FdV * FdL ) * ( 1 - 0.3333 * Roughness );  // TODO premultiply DiffuseColor
 }
 
-float3 GetOrenNayarDiffuse(float3 DiffuseColor, float Roughness, float NdotV, float NdotL, float VdotH)
+// [Gotanda 2012, "Beyond a Simple Physically Based Blinn-Phong Model in Real-Time"]
+float3 Diffuse_OrenNayar( float3 DiffuseColor, float Roughness, float NoV, float NoL, float VoH )
 {
-    float VoL = 2 * VdotH -1;   
+    float VoL = 2 * VoH - 1;
     float m = Roughness * Roughness;
     float m2 = m * m;
     float C1 = 1 - 0.5 * m2 / (m2 + 0.33);
-	float Cosri = VoL - NdotV * NdotL;
-	float C2 = 0.45 * m2 / (m2 + 0.09) * Cosri * ( Cosri >= 0 ? min( 1, NdotL / NdotV ) : NdotL );
-	return DiffuseColor / 3.14159 * ( NdotL * C1 + C2 );
+    float Cosri = VoL - NoV * NoL;
+    float C2 = 0.45 * m2 / (m2 + 0.09) * Cosri * ( Cosri >= 0 ? min( 1, NoL / NoV ) : NoL );
+    return DiffuseColor / 3.141596 * ( NoL * C1 + C2 );
 }
 
-
-// Distrabution
-//1 = GGX
-//2 = Blinn
-//3 = Beckmann
-
-
-float GetGGXDistrabution(float Roughness, float NdotH)
-{
-    float m = Roughness * Roughness;
-    float m2 = m * m;
-    float d = (NdotH * m2 - NdotH) * NdotH + 1;
-    return m2 / (3.14159  * d * d);
-}
-
-float GetBlinnDistrabution(float Roughness, float NdotH)
+// [Blinn 1977, "Models of light reflection for computer synthesized pictures"]
+float D_Blinn( float Roughness, float NoH )
 {
     float m = Roughness * Roughness;
     float m2 = m * m;
     float n = 2 / m2 - 2;
-    return (n+2) / (2*3.14159) * pow(max(abs(NdotH),0.000001f),n);
+    return (n+2) / (2*3.141596) * pow( NoH, n );      // 1 mad, 1 exp, 1 mul, 1 log
 }
 
-float GetBeckmannDistrabution(float Roughness, float NdotH)
+// [Beckmann 1963, "The scattering of electromagnetic waves from rough surfaces"]
+float D_Beckmann( float Roughness, float NoH )
 {
     float m = Roughness * Roughness;
-	float m2 = m * m;
-	float NdotH2 = NdotH * NdotH;
-	return exp( (NdotH2 - 1) / (m2 * NdotH2) ) / ( 3.14159 * m2 * NdotH2 * NdotH2 );
-	
+    float m2 = m * m;
+    float NoH2 = NoH * NoH;
+    return exp( (NoH2 - 1) / (m2 * NoH2) ) / ( 3.141596 * m2 * NoH2 * NoH2 );
 }
 
-// Geometric 
-// 1: Implicit
-// 2: Neumann
-// 3: Kelemen
-// 4: Schlick
-// 5: Smith (matched to GGX)
+// GGX / Trowbridge-Reitz
+// [Walter et al. 2007, "Microfacet models for refraction through rough surfaces"]
+float D_GGX( float Roughness, float NoH )
+{
+    float m = Roughness * Roughness;
+    float m2 = m * m;
+    float d = ( NoH * m2 - NoH ) * NoH + 1; // 2 mad
+    return m2 / ( 3.141596*d*d );                 // 4 mul, 1 rcp
+}
 
-float GetImplicitGeometric()
+// Anisotropic GGX
+// [Burley 2012, "Physically-Based Shading at Disney"]
+float D_GGXaniso( float RoughnessX, float RoughnessY, float NoH, float3 H, float3 X, float3 Y )
+{
+    float mx = RoughnessX * RoughnessX;
+    float my = RoughnessY * RoughnessY;
+    float XoH = dot( X, H );
+    float YoH = dot( Y, H );
+    float d = XoH*XoH / (mx*mx) + YoH*YoH / (my*my) + NoH*NoH;
+    return 1 / ( 3.141596 * mx*my * d*d );
+}
+
+float Vis_Implicit()
 {
     return 0.25;
 }
 
-float GetNeumannGeometric(float NdotH, float NdotL)
+// [Neumann et al. 1999, "Compact metallic reflectance models"]
+float Vis_Neumann( float NoV, float NoL )
 {
-    return 1 / (4 * max(NdotL, NdotH));
+    return 1 / ( 4 * max( NoL, NoV ) );
 }
 
-float GetKelemenGeometric(float VdotH)
+// [Kelemen 2001, "A microfacet based coupled specular-matte brdf model with importance sampling"]
+float Vis_Kelemen( float VoH )
 {
-    return rcp(4 * VdotH * VdotH);
+    return rcp( 4 * VoH * VoH );
 }
 
-float GetSchlickGeometric(float Roughness, float NdotV, float NdotL)
+// Tuned to match behavior of Vis_Smith
+// [Schlick 1994, "An Inexpensive BRDF Model for Physically-Based Rendering"]
+float Vis_Schlick( float Roughness, float NoV, float NoL )
 {
-    float a = (Roughness * Roughness) * 0.5;
-    float SchlickV = NdotV * (1 - a) + a;
-    float SchlickL = NdotL * (1 - a) + a;
-    return 0.25 / (SchlickV * SchlickL);
+    float k = (Roughness * Roughness) * 0.5;
+    float Vis_SchlickV = NoV * (1 - k) + k;
+    float Vis_SchlickL = NoL * (1 - k) + k;
+    return 0.25 / ( Vis_SchlickV * Vis_SchlickL );
 }
 
-float GetSmithGeometric(float Roughness, float NdotV, float NdotL)
+// Smith term for GGX
+// [Smith 1967, "Geometrical shadowing of a random rough surface"]
+float Vis_Smith( float Roughness, float NoV, float NoL )
 {
-    float m = Roughness * Roughness;
-    float m2 = m * m;
-    
-    float SmithV = NdotV + sqrt( NdotV * (NdotV - NdotV * m2) + m2 );
-	float SmithL = NdotL + sqrt( NdotL * (NdotL - NdotL * m2) + m2 );
-	return rcp( SmithV * SmithL );
+    float a = Roughness * Roughness;
+    float a2 = a*a;
+
+    float Vis_SmithV = NoV + sqrt( NoV * (NoV - NoV * a2) + a2 );
+    float Vis_SmithL = NoL + sqrt( NoL * (NoL - NoL * a2) + a2 );
+    return rcp( Vis_SmithV * Vis_SmithL );
 }
 
-// Fresnel 
-// 1: None
-// 2: Schlick
-// 3: Fresnel
+// Appoximation of joint Smith term for GGX
+// [Heitz 2014, "Understanding the Masking-Shadowing Function in Microfacet-Based BRDFs"]
+float Vis_SmithJointApprox( float Roughness, float NoV, float NoL )
+{
+    float a = Roughness * Roughness;
+    float Vis_SmithV = NoL * ( NoV * ( 1 - a ) + a );
+    float Vis_SmithL = NoV * ( NoL * ( 1 - a ) + a );
+    return 0.5 * rcp( Vis_SmithV + Vis_SmithL );
+}
 
-float3 GetNoneFresnel(float3 SpecularColor)
+float3 F_None( float3 SpecularColor )
 {
     return SpecularColor;
 }
 
-float3 GetSchlickFresnel(float3 SpecularColor, float VoH)
+// [Schlick 1994, "An Inexpensive BRDF Model for Physically-Based Rendering"]
+// [Lagarde 2012, "Spherical Gaussian approximation for Blinn-Phong, Phong and Fresnel"]
+float3 F_Schlick( float3 SpecularColor, float VoH )
 {
-    float Fc = exp2( (-5.55473 * VoH - 6.98316) * VoH );	// 1 mad, 1 mul, 1 exp
-	return Fc + (1 - Fc) * SpecularColor;	
+    float Fc = pow( 1 - VoH, 5 );                           // 1 sub, 3 mul
+    //float Fc = exp2( (-5.55473 * VoH - 6.98316) * VoH );  // 1 mad, 1 mul, 1 exp
+    //return Fc + (1 - Fc) * SpecularColor;                 // 1 add, 3 mad
+    
+    // Anything less than 2% is physically impossible and is instead considered to be shadowing
+    return saturate( 50.0 * SpecularColor.g ) * Fc + (1 - Fc) * SpecularColor;
+    
 }
 
-float3 GetFresnelFresnel(float3 SpecularColor, float VdotH)
+float3 F_Fresnel( float3 SpecularColor, float VoH )
 {
     float3 SpecularColorSqrt = sqrt( clamp( float3(0, 0, 0), float3(0.99, 0.99, 0.99), SpecularColor ) );
-	float3 n = ( 1 + SpecularColorSqrt ) / ( 1 - SpecularColorSqrt );
-	float3 g = sqrt( n*n + VdotH*VdotH - 1 );
-	float3 a = (g - VdotH) / (g + VdotH);
-	float3 a2 = a * a;
-	float3 m = ((g+VdotH)*VdotH - 1) / ((g-VdotH)*VdotH + 1);
-	float3 m2 = m * m;
-	return 0.5 * a2 * ( 1 + m2 );
+    float3 n = ( 1 + SpecularColorSqrt ) / ( 1 - SpecularColorSqrt );
+    float3 g = sqrt( n*n + VoH*VoH - 1 );
+    return 0.5 * (g - VoH) / (g + VoH) * (g - VoH) / (g + VoH) * ( 1 + ((g+VoH)*VoH - 1) / ((g-VoH)*VoH + 1) * ((g+VoH)*VoH - 1) / ((g-VoH)*VoH + 1) );
 }
 
-float3 GetBRDFDiffuse( float3 DiffuseColor, float Roughness, float NdotV, float NdotL, float VdotH, int diff)
+
+float3 Diffuse( float3 DiffuseColor, float Roughness, float NoV, float NoL, float VoH )
 {
-    //Diffuse
-    //1 = Lambert
-    //2 = Burley
-    //3 = OrenNayar
-    
-    [branch] switch(diff)
-    {
-    case 0:
-        return GetLambertDiffuse(DiffuseColor);
-    case 1:
-        return GetLambertDiffuse(DiffuseColor); 
-    case 2:
-        return GetBurleyDiffuse(DiffuseColor, Roughness, NdotV, NdotL, VdotH);
-    default:
-        return GetOrenNayarDiffuse(DiffuseColor, Roughness, NdotV, NdotL, VdotH); 
-    }
+#if   PHYSICAL_DIFFUSE == 0
+    return Diffuse_Lambert( DiffuseColor );
+#elif PHYSICAL_DIFFUSE == 1
+    return Diffuse_Burley( DiffuseColor, Roughness, NoV, NoL, VoH );
+#elif PHYSICAL_DIFFUSE == 2
+    return Diffuse_OrenNayar( DiffuseColor, Roughness, NoV, NoL, VoH );
+#endif
 }
 
-float GetBRDFDistrabution(float Roughness, float NdotH, int dis)
+float Distribution( float Roughness, float NoH )
 {
-    // Distrabution
-    //1 = GGX
-    //2 = Blinn
-    //3 = Beckmann
-    
-    [branch] switch(dis)
-    {
-    case 0:
-        return GetGGXDistrabution(Roughness, NdotH);
-    case 1:
-        return GetGGXDistrabution(Roughness, NdotH);
-    case 2:
-        return GetBlinnDistrabution(Roughness, NdotH);
-    default:
-        return GetBeckmannDistrabution(Roughness, NdotH);
-    }
+#if   PHYSICAL_SPEC_D == 0
+    return D_Blinn( Roughness, NoH );
+#elif PHYSICAL_SPEC_D == 1
+    return D_Beckmann( Roughness, NoH );
+#elif PHYSICAL_SPEC_D == 2
+    return D_GGX( Roughness, NoH );
+#endif
 }
 
-float GetBRDFGeometricVisibility( float Roughness, float NdotV, float NdotL, float VdotH, int geo)
+// Vis = G / (4*NoL*NoV)
+float GeometricVisibility( float Roughness, float NoV, float NoL, float VoH )
 {
-    // Geometric 
-    // 1: Implicit
-    // 2: Neumann
-    // 3: Kelemen
-    // 4: Schlick
-    // 5: Smith (matched to GGX)
-    
-    [branch] switch(geo)
-    {
-    case 0:
-        return GetImplicitGeometric();
-    case 1:
-        return GetImplicitGeometric();
-    case 2:
-        return GetNeumannGeometric(NdotV, NdotL);
-    case 3:
-        return GetKelemenGeometric(VdotH);
-    case 4:
-        return GetSchlickGeometric(Roughness, NdotV, NdotL);
-    default:
-        return GetSmithGeometric(Roughness, NdotV, NdotL);
-    }
+#if   PHYSICAL_SPEC_G == 0
+    return Vis_Implicit();
+#elif PHYSICAL_SPEC_G == 1
+    return Vis_Neumann( NoV, NoL );
+#elif PHYSICAL_SPEC_G == 2
+    return Vis_Kelemen( VoH );
+#elif PHYSICAL_SPEC_G == 3
+    return Vis_Schlick( Roughness, NoV, NoL );
+#elif PHYSICAL_SPEC_G == 4
+    return Vis_Smith( Roughness, NoV, NoL );
+#endif
 }
 
-float3 GetBRDFFresnel( float3 SpecularColor, float VdotH, int fres)
+float3 Fresnel( float3 SpecularColor, float VoH )
 {
-    // Fresnel 
-    // 1: None
-    // 2: Schlick
-    // 3: Fresnel
-    
-    [branch] switch(fres)
-    {
-    case 0:
-        return GetNoneFresnel(SpecularColor);
-    case 1:
-        return GetNoneFresnel(SpecularColor);
-    case 2:
-        return GetSchlickFresnel(SpecularColor, VdotH);
-    default:
-        return GetFresnelFresnel(SpecularColor, VdotH);
-    }
+#if   PHYSICAL_SPEC_F == 0
+    return F_None( SpecularColor );
+#elif PHYSICAL_SPEC_F == 1
+    return F_Schlick( SpecularColor, VoH );
+#elif PHYSICAL_SPEC_F == 2
+    return F_Fresnel( SpecularColor, VoH );
+#endif
 }
+

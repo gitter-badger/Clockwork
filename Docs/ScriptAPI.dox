@@ -25,6 +25,18 @@ namespace Clockwork
 
 ### EndFrame
 
+## %Database events
+
+### DbCursor
+- %DbConnection : DbConnection pointer
+- %ResultImpl : Underlying result object pointer (cannot be used in scripting)
+- %SQL : String
+- %NumCols : unsigned
+- %ColValues : VariantVector
+- %ColHeaders : StringVector
+- %Filter : bool [in]
+- %Abort : bool [in]
+
 ## %Drawable events
 
 ### BoneHierarchyCreated
@@ -238,12 +250,20 @@ namespace Clockwork
 - %BoundsMin : Vector3
 - %BoundsMax : Vector3
 
+### CrowdAgentFormation
+- %Node : Node pointer
+- %CrowdAgent : CrowdAgent pointer
+- %Index : unsigned
+- %Size : unsigned
+- %Position : Vector3 [in/out]
+
 ### CrowdAgentReposition
 - %Node : Node pointer
 - %CrowdAgent : CrowdAgent pointer
 - %Position : Vector3
 - %Velocity : Vector3
 - %Arrived : bool
+- %TimeStep : float
 
 ### CrowdAgentFailure
 - %Node : Node pointer
@@ -758,6 +778,7 @@ namespace Clockwork
 - %Is %Enabled : bool
 - %Layer : int
 - %Order %in %Layer : int
+- %View %Mask : int
 - %Blend %Mode : int
 - %Flip X : bool
 - %Flip Y : bool
@@ -1119,14 +1140,25 @@ namespace Clockwork
 - %Collide %Connected : bool
 
 ### CrowdAgent
+- %Target %Position : Vector3
+- %Target %Velocity : Vector3
+- %Requested %Target %Type : int
+- %Update %Node %Position : bool
 - %Max %Accel : float
 - %Max %Speed : float
 - %Radius : float
 - %Height : float
-- %Target %Position : Vector3
-- %Navigation %Filter : int
+- %Query %Filter %Type : int
+- %Obstacle %Avoidance %Type : int
 - %Navigation %Pushiness : int
 - %Navigation %Quality : int
+
+### CrowdManager
+- %Max %Agents : int
+- %Max %Agent %Radius : float
+- %Navigation %Mesh : int
+- %Filter %Types : VariantVector
+- %Obstacle %Avoidance %Types : VariantVector
 
 ### Cursor
 - %Name : String
@@ -1199,9 +1231,6 @@ namespace Clockwork
 - %Light %Mask : int
 - %Shadow %Mask : int
 - %Zone %Mask : int
-
-### DetourCrowdManager
-- %Max %Agents : int
 
 ### DropDownList
 - %Name : String
@@ -1401,11 +1430,6 @@ namespace Clockwork
 - %Clear %Sel. %On %Defocus : bool
 - %Select %On %Click %End : bool
 
-### LuaScriptInstance
-- %Is %Enabled : bool
-- %Script %File : ResourceRef
-- %Script %Object %Type : String
-
 ### Menu
 - %Name : String
 - %Position : IntVector2
@@ -1532,6 +1556,7 @@ namespace Clockwork
 - %Is %Enabled : bool
 - %Layer : int
 - %Order %in %Layer : int
+- %View %Mask : int
 - %Particle %Effect : ResourceRef
 - %Sprite : ResourceRef
 - %Blend %Mode : int
@@ -1862,6 +1887,7 @@ namespace Clockwork
 - %Is %Enabled : bool
 - %Layer : int
 - %Order %in %Layer : int
+- %View %Mask : int
 - %Sprite : ResourceRef
 - %Blend %Mode : int
 - %Flip X : bool
@@ -1875,6 +1901,7 @@ namespace Clockwork
 - %Material : ResourceRef
 - %Vertex %Spacing : Vector3
 - %Patch %Size : int
+- %Max %LOD %Levels : int
 - %Smooth %Height %Map : bool
 - %Is %Occluder : bool
 - %Can %Be %Occluded : bool
@@ -1887,6 +1914,7 @@ namespace Clockwork
 - %Light %Mask : int
 - %Shadow %Mask : int
 - %Zone %Mask : int
+- %Occlusion %LOD %level : int
 
 ### Text
 - %Name : String
@@ -2210,14 +2238,18 @@ namespace Clockwork
 <a href="#Class_ConstraintWheel2D"><b>ConstraintWheel2D</b></a>
 <a href="#Class_Controls"><b>Controls</b></a>
 <a href="#Class_CrowdAgent"><b>CrowdAgent</b></a>
+<a href="#Class_CrowdManager"><b>CrowdManager</b></a>
+<a href="#Class_CrowdObstacleAvoidanceParams"><b>CrowdObstacleAvoidanceParams</b></a>
 <a href="#Class_Cursor"><b>Cursor</b></a>
 <a href="#Class_CustomGeometry"><b>CustomGeometry</b></a>
 <a href="#Class_CustomGeometryVertex"><b>CustomGeometryVertex</b></a>
+<a href="#Class_Database"><b>Database</b></a>
+<a href="#Class_DbConnection"><b>DbConnection</b></a>
+<a href="#Class_DbResult"><b>DbResult</b></a>
 <a href="#Class_DebugHud"><b>DebugHud</b></a>
 <a href="#Class_DebugRenderer"><b>DebugRenderer</b></a>
 <a href="#Class_DecalSet"><b>DecalSet</b></a>
 <a href="#Class_Deserializer"><b>Deserializer</b></a>
-<a href="#Class_DetourCrowdManager"><b>DetourCrowdManager</b></a>
 <a href="#Class_Dictionary"><b>Dictionary</b></a>
 <a href="#Class_DictionaryValue"><b>DictionaryValue</b></a>
 <a href="#Class_Drawable"><b>Drawable</b></a>
@@ -3116,6 +3148,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -3325,6 +3358,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -3582,6 +3616,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -4162,6 +4197,8 @@ Properties:
 
 - String address // readonly
 - StringHash baseType // readonly
+- float bytesInPerSec // readonly
+- float bytesOutPerSec // readonly
 - String category // readonly
 - bool client // readonly
 - bool connectPending // readonly
@@ -4170,12 +4207,16 @@ Properties:
 - String downloadName // readonly
 - float downloadProgress // readonly
 - VariantMap identity
+- float lastHeardTime // readonly
 - bool logStatistics
 - uint numDownloads // readonly
+- float packetsInPerSec // readonly
+- float packetsOutPerSec // readonly
 - uint16 port // readonly
 - Vector3 position
 - int refs // readonly
 - Quaternion rotation
+- float roundTripTime // readonly
 - Scene@ scene
 - bool sceneLoaded // readonly
 - uint8 timeStamp
@@ -5021,6 +5062,7 @@ Methods:
 - void MarkNetworkUpdate() const
 - void Remove()
 - void RemoveInstanceDefault()
+- void ResetTarget()
 - void ResetToDefault()
 - bool Save(File@) const
 - bool Save(VectorBuffer&) const
@@ -5031,8 +5073,6 @@ Methods:
 - void SetAttributeAnimationSpeed(const String&, float)
 - void SetAttributeAnimationWrapMode(const String&, WrapMode)
 - void SetInterceptNetworkUpdate(const String&, bool)
-- void SetMoveTarget(const Vector3&)
-- void SetMoveVelocity(const Vector3&)
 
 Properties:
 
@@ -5050,24 +5090,122 @@ Properties:
 - bool enabledEffective // readonly
 - float height
 - uint id // readonly
+- bool inCrowd // readonly
 - float maxAccel
 - float maxSpeed
-- uint navigationFilterType
 - NavigationPushiness navigationPushiness
-- NavigationAvoidanceQuality navigationQuality
+- NavigationQuality navigationQuality
 - Node@ node // readonly
 - uint numAttributes // readonly
 - ObjectAnimation@ objectAnimation
+- uint obstacleAvoidanceType
 - Vector3 position // readonly
+- uint queryFilterType
 - float radius
 - int refs // readonly
-- Vector3 targetPosition // readonly
-- CrowdTargetState targetState // readonly
+- bool requestedTarget // readonly
+- CrowdAgentRequestedTarget requestedTargetType // readonly
+- Vector3 targetPosition
+- CrowdAgentTargetState targetState // readonly
+- Vector3 targetVelocity
 - bool temporary
 - StringHash type // readonly
 - String typeName // readonly
 - bool updateNodePosition
 - int weakRefs // readonly
+
+<a name="Class_CrowdManager"></a>
+
+### CrowdManager
+
+Methods:
+
+- void ApplyAttributes()
+- const CrowdObstacleAvoidanceParams& GetObstacleAvoidanceParams(uint)
+- void DrawDebugGeometry(DebugRenderer@, bool)
+- void DrawDebugGeometry(bool)
+- Vector3 FindNearestPoint(const Vector3&, int)
+- CrowdAgent@[]@ GetAgents(Node@ = null, bool = true)
+- float GetAreaCost(uint, uint)
+- Variant GetAttribute(const String&) const
+- ValueAnimation@ GetAttributeAnimation(const String&) const
+- float GetAttributeAnimationSpeed(const String&) const
+- WrapMode GetAttributeAnimationWrapMode(const String&) const
+- Variant GetAttributeDefault(const String&) const
+- float GetDistanceToWall(const Vector3&, float, int)
+- uint16 GetExcludeFlags(uint)
+- uint16 GetIncludeFlags(uint)
+- bool GetInterceptNetworkUpdate(const String&) const
+- Vector3 GetRandomPoint(int)
+- Vector3 GetRandomPointInCircle(const Vector3&, float, int)
+- bool Load(File@, bool = false)
+- bool Load(VectorBuffer&, bool = false)
+- bool LoadXML(const XMLElement&, bool = false)
+- void MarkNetworkUpdate() const
+- Vector3 MoveAlongSurface(const Vector3&, const Vector3&, int, uint = 3)
+- Vector3 Raycast(const Vector3&, const Vector3&, int)
+- void Remove()
+- void RemoveInstanceDefault()
+- void ResetCrowdTarget(Node@ = null)
+- void ResetToDefault()
+- bool Save(File@) const
+- bool Save(VectorBuffer&) const
+- bool SaveXML(XMLElement&) const
+- void SendEvent(const String&, VariantMap& = VariantMap ( ))
+- void SetAreaCost(uint, uint, float)
+- bool SetAttribute(const String&, const Variant&)
+- void SetAttributeAnimation(const String&, ValueAnimation@, WrapMode = WM_LOOP, float = 1.0f)
+- void SetAttributeAnimationSpeed(const String&, float)
+- void SetAttributeAnimationWrapMode(const String&, WrapMode)
+- void SetCrowdTarget(const Vector3&, Node@ = null)
+- void SetCrowdVelocity(const Vector3&, Node@ = null)
+- void SetExcludeFlags(uint, uint16)
+- void SetIncludeFlags(uint, uint16)
+- void SetInterceptNetworkUpdate(const String&, bool)
+- void SetObstacleAvoidanceParams(uint, const CrowdObstacleAvoidanceParams&)
+
+Properties:
+
+- bool animationEnabled
+- Variant[] attributeDefaults // readonly
+- AttributeInfo[] attributeInfos // readonly
+- Variant[] attributes
+- StringHash baseType // readonly
+- String category // readonly
+- bool enabled
+- bool enabledEffective // readonly
+- uint id // readonly
+- float maxAgentRadius
+- int maxAgents
+- NavigationMesh@ navMesh
+- Node@ node // readonly
+- uint[] numAreas // readonly
+- uint numAttributes // readonly
+- uint numObstacleAvoidanceTypes // readonly
+- uint numQueryFilterTypes // readonly
+- ObjectAnimation@ objectAnimation
+- int refs // readonly
+- bool temporary
+- StringHash type // readonly
+- String typeName // readonly
+- int weakRefs // readonly
+
+<a name="Class_CrowdObstacleAvoidanceParams"></a>
+
+### CrowdObstacleAvoidanceParams
+
+Properties:
+
+- uint8 adaptiveDepth
+- uint8 adaptiveDivs
+- uint8 adaptiveRings
+- uint8 gridSize
+- float horizTime
+- float velBias
+- float weightCurVel
+- float weightDesVel
+- float weightSide
+- float weightToi
 
 <a name="Class_Cursor"></a>
 
@@ -5232,6 +5370,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -5328,6 +5467,59 @@ Properties:
 - Vector3 position
 - Vector4 tangent
 - Vector2 texCoord
+
+<a name="Class_Database"></a>
+
+### Database
+
+Methods:
+
+- DbConnection@ Connect(const String&)
+- void Disconnect(DbConnection@)
+- void SendEvent(const String&, VariantMap& = VariantMap ( ))
+
+Properties:
+
+- StringHash baseType // readonly
+- String category // readonly
+- uint poolSize
+- bool pooling // readonly
+- int refs // readonly
+- StringHash type // readonly
+- String typeName // readonly
+- int weakRefs // readonly
+
+<a name="Class_DbConnection"></a>
+
+### DbConnection
+
+Methods:
+
+- DbResult Execute(const String&, bool = false)
+- void SendEvent(const String&, VariantMap& = VariantMap ( ))
+
+Properties:
+
+- StringHash baseType // readonly
+- String category // readonly
+- bool connected // readonly
+- String connectionString // readonly
+- int refs // readonly
+- StringHash type // readonly
+- String typeName // readonly
+- int weakRefs // readonly
+
+<a name="Class_DbResult"></a>
+
+### DbResult
+
+Properties:
+
+- String[]@ columns // readonly
+- int64 numAffectedRows // readonly
+- uint numColumns // readonly
+- uint numRows // readonly
+- Variant[]@[] row // readonly
 
 <a name="Class_DebugHud"></a>
 
@@ -5543,67 +5735,6 @@ Properties:
 - String name // readonly
 - uint position // readonly
 - uint size // readonly
-
-<a name="Class_DetourCrowdManager"></a>
-
-### DetourCrowdManager
-
-Methods:
-
-- void ApplyAttributes()
-- void CreateCrowd()
-- void DrawDebugGeometry(DebugRenderer@, bool)
-- void DrawDebugGeometry(bool)
-- CrowdAgent@[]@ GetActiveAgents()
-- float GetAreaCost(uint, uint)
-- Variant GetAttribute(const String&) const
-- ValueAnimation@ GetAttributeAnimation(const String&) const
-- float GetAttributeAnimationSpeed(const String&) const
-- WrapMode GetAttributeAnimationWrapMode(const String&) const
-- Variant GetAttributeDefault(const String&) const
-- bool GetInterceptNetworkUpdate(const String&) const
-- bool Load(File@, bool = false)
-- bool Load(VectorBuffer&, bool = false)
-- bool LoadXML(const XMLElement&, bool = false)
-- void MarkNetworkUpdate() const
-- void Remove()
-- void RemoveInstanceDefault()
-- void ResetCrowdTarget(int = 0, int = M_MAX_INT)
-- void ResetToDefault()
-- bool Save(File@) const
-- bool Save(VectorBuffer&) const
-- bool SaveXML(XMLElement&) const
-- void SendEvent(const String&, VariantMap& = VariantMap ( ))
-- void SetAreaCost(uint, uint, float)
-- bool SetAttribute(const String&, const Variant&)
-- void SetAttributeAnimation(const String&, ValueAnimation@, WrapMode = WM_LOOP, float = 1.0f)
-- void SetAttributeAnimationSpeed(const String&, float)
-- void SetAttributeAnimationWrapMode(const String&, WrapMode)
-- void SetCrowdTarget(const Vector3&, int = 0, int = M_MAX_INT)
-- void SetCrowdVelocity(const Vector3&, int = 0, int = M_MAX_INT)
-- void SetInterceptNetworkUpdate(const String&, bool)
-
-Properties:
-
-- bool animationEnabled
-- Variant[] attributeDefaults // readonly
-- AttributeInfo[] attributeInfos // readonly
-- Variant[] attributes
-- StringHash baseType // readonly
-- String category // readonly
-- bool enabled
-- bool enabledEffective // readonly
-- uint id // readonly
-- int maxAgents
-- NavigationMesh@ navMesh
-- Node@ node // readonly
-- uint numAttributes // readonly
-- ObjectAnimation@ objectAnimation
-- int refs // readonly
-- bool temporary
-- StringHash type // readonly
-- String typeName // readonly
-- int weakRefs // readonly
 
 <a name="Class_Dictionary"></a>
 
@@ -5949,6 +6080,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -6634,14 +6766,14 @@ Properties:
 
 Methods:
 
-- JSONValue CreateRoot(JSONValueType = JSON_ANY)
-- JSONValue GetRoot(JSONValueType = JSON_ANY)
+- const JSONValue& GetRoot() const
 - bool Load(File@)
 - bool Load(VectorBuffer&)
 - bool Save(File@) const
 - bool Save(File@, const String&) const
 - bool Save(VectorBuffer&) const
 - void SendEvent(const String&, VariantMap& = VariantMap ( ))
+- void SetRoot(const JSONValue&)
 
 Properties:
 
@@ -6661,100 +6793,33 @@ Properties:
 
 Methods:
 
-- void AddBool(bool)
-- void AddColor(const Color&)
-- void AddDouble(double)
-- void AddFloat(float)
-- void AddInt(int)
-- void AddIntRect(const IntRect&)
-- void AddIntVector2(const IntVector2&)
-- void AddMatrix3(const Matrix3&)
-- void AddMatrix3x4(const Matrix3x4&)
-- void AddMatrix4(const Matrix4&)
-- void AddQuaternion(const Quaternion&)
-- void AddResourceRef(const ResourceRef&)
-- void AddResourceRefList(const ResourceRefList&)
-- void AddString(const String)
-- void AddVariant(const Variant&)
-- void AddVariantValue(const Variant&)
-- void AddVector2(const Vector2&)
-- void AddVector3(const Vector3&)
-- void AddVector4(const Vector4&)
-- void AddVectorVariant(const Variant&)
-- JSONValue CreateChild(JSONValueType = JSON_OBJECT)
-- JSONValue CreateChild(const String&, JSONValueType = JSON_OBJECT)
-- bool GetBool(const String&) const
-- bool GetBool(uint) const
-- JSONValue GetChild(const String&, JSONValueType = JSON_ANY) const
-- JSONValue GetChild(uint, JSONValueType = JSON_ANY) const
-- String[]@ GetChildNames() const
-- Color GetColor(const String&) const
-- Color GetColor(uint) const
-- double GetDouble(const String&) const
-- double GetDouble(uint) const
-- float GetFloat(const String&) const
-- float GetFloat(uint) const
-- int GetInt(const String&) const
-- int GetInt(uint) const
-- IntRect GetIntRect(const String&) const
-- IntRect GetIntRect(uint) const
-- IntVector2 GetIntVector2(const String&) const
-- IntVector2 GetIntVector2(uint) const
-- Matrix3 GetMatrix3(const String&) const
-- Matrix3 GetMatrix3(uint) const
-- Matrix3x4 GetMatrix3x4(const String&) const
-- Matrix3x4 GetMatrix3x4(uint) const
-- Matrix4 GetMatrix4(const String&) const
-- Matrix4 GetMatrix4(uint) const
-- Quaternion GetQuaternion(const String&) const
-- Quaternion GetQuaternion(uint) const
-- ResourceRef GetResourceRef(const String&) const
-- ResourceRef GetResourceRef(uint) const
-- ResourceRefList GetResourceRefList(const String&) const
-- ResourceRefList GetResourceRefList(uint) const
-- String GetString(const String&) const
-- String GetString(uint) const
-- String[]@ GetValueNames() const
-- Variant GetVariant(const String&) const
-- Variant GetVariant(uint) const
-- Variant GetVariantValue(const String&, VariantType) const
-- Variant GetVariantValue(uint, VariantType) const
-- Vector2 GetVector2(const String&) const
-- Vector2 GetVector2(uint) const
-- Vector3 GetVector3(const String&) const
-- Vector3 GetVector3(uint) const
-- Vector4 GetVector4(const String&) const
-- Vector4 GetVector4(uint) const
-- Variant GetVectorVariant(const String&) const
-- Variant GetVectorVariant(uint) const
-- void SetBool(const String&, bool)
-- void SetColor(const String&, const Color&)
-- void SetDouble(const String&, double)
-- void SetFloat(const String&, float)
-- void SetInt(const String&, int)
-- void SetIntRect(const String&, const IntRect&)
-- void SetIntVector2(const String&, const IntVector2&)
-- void SetMatrix3(const String&, const Matrix3&)
-- void SetMatrix3x4(const String&, const Matrix3x4&)
-- void SetMatrix4(const String&, const Matrix4&)
-- void SetQuaternion(const String&, const Quaternion&)
-- void SetResourceRef(const String&, const ResourceRef&)
-- void SetResourceRefList(const String&, const ResourceRefList&)
-- void SetString(const String&, const String)
-- void SetVariant(const String&, const Variant&)
-- void SetVariantValue(const String&, const Variant&)
-- void SetVector2(const String&, const Vector2&)
-- void SetVector3(const String&, const Vector3&)
-- void SetVector4(const String&, const Vector4&)
-- void SetVectorVariant(const String&, const Variant&)
+- void Clear()
+- bool Contains(const String&) const
+- void Erase(const String&)
+- void Erase(uint, uint = 1)
+- bool GetBool() const
+- double GetDouble() const
+- float GetFloat() const
+- int GetInt() const
+- uint GetUint() const
+- void Insert(uint, const JSONValue&)
+- const JSONValue& Get(const String&) const
+- void Pop()
+- void Push(const JSONValue&)
+- void Resize(uint)
+- void Set(const String&, const JSONValue&)
+- const String& GetString() const
 
 Properties:
 
 - bool isArray // readonly
+- bool isBool // readonly
 - bool isNull // readonly
+- bool isNumber // readonly
 - bool isObject // readonly
-- bool notNull // readonly
+- bool isString // readonly
 - uint size // readonly
+- JSONValueType type // readonly
 
 <a name="Class_JoystickState"></a>
 
@@ -7029,6 +7094,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -7224,6 +7290,7 @@ Properties:
 - ScrollBar@ verticalScrollBar // readonly
 - IntVector2 viewPosition
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -7322,6 +7389,7 @@ Properties:
 - uint numTechniques
 - bool occlusion // readonly
 - int refs // readonly
+- uint8 renderOrder
 - Scene@ scene
 - String[]@ shaderParameterNames // readonly
 - Variant[] shaderParameters
@@ -7609,6 +7677,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -7973,7 +8042,7 @@ Methods:
 - Node@[]@ GetChildrenWithComponent(const String&, bool = false) const
 - Node@[]@ GetChildrenWithScript(bool = false) const
 - Node@[]@ GetChildrenWithScript(const String&, bool = false) const
-- Component@ GetComponent(const String&) const
+- Component@ GetComponent(const String&, bool = false) const
 - Component@[]@ GetComponents() const
 - Component@[]@ GetComponents(const String&, bool = false) const
 - bool GetInterceptNetworkUpdate(const String&) const
@@ -8656,8 +8725,8 @@ Methods:
 - bool Load(VectorBuffer&, bool = false)
 - bool LoadXML(const XMLElement&, bool = false)
 - void MarkNetworkUpdate() const
-- PhysicsRaycastResult[]@ Raycast(const Ray&, float = M_INFINITY, uint = 0xffff)
-- PhysicsRaycastResult RaycastSingle(const Ray&, float = M_INFINITY, uint = 0xffff)
+- PhysicsRaycastResult[]@ Raycast(const Ray&, float, uint = 0xffff)
+- PhysicsRaycastResult RaycastSingle(const Ray&, float, uint = 0xffff)
 - void Remove()
 - void RemoveCachedGeometry(Model@)
 - void RemoveInstanceDefault()
@@ -8671,7 +8740,7 @@ Methods:
 - void SetAttributeAnimationSpeed(const String&, float)
 - void SetAttributeAnimationWrapMode(const String&, WrapMode)
 - void SetInterceptNetworkUpdate(const String&, bool)
-- PhysicsRaycastResult SphereCast(const Ray&, float, float = M_INFINITY, uint = 0xffff)
+- PhysicsRaycastResult SphereCast(const Ray&, float, float, uint = 0xffff)
 - void Update(float)
 - void UpdateCollisions()
 
@@ -9390,12 +9459,12 @@ Methods:
 - Node@[]@ GetChildrenWithComponent(const String&, bool = false) const
 - Node@[]@ GetChildrenWithScript(bool = false) const
 - Node@[]@ GetChildrenWithScript(const String&, bool = false) const
-- Component@ GetComponent(const String&) const
-- Component@ GetComponent(uint)
+- Component@ GetComponent(const String&, bool = false) const
+- Component@ GetComponent(uint) const
 - Component@[]@ GetComponents() const
 - Component@[]@ GetComponents(const String&, bool = false) const
 - bool GetInterceptNetworkUpdate(const String&) const
-- Node@ GetNode(uint)
+- Node@ GetNode(uint) const
 - Component@ GetOrCreateComponent(const String&, CreateMode = REPLICATED, uint = 0)
 - ScriptObject@ GetScriptObject() const
 - ScriptObject@ GetScriptObject(const String&) const
@@ -9813,6 +9882,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -9978,6 +10048,7 @@ Properties:
 - ScrollBar@ verticalScrollBar // readonly
 - IntVector2 viewPosition
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -10307,6 +10378,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -10812,6 +10884,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -11269,6 +11342,7 @@ Properties:
 - float lodBias
 - Material@ material
 - uint maxLights
+- uint maxLodLevels
 - Node@ node // readonly
 - uint numAttributes // readonly
 - IntVector2 numPatches // readonly
@@ -11276,6 +11350,7 @@ Properties:
 - ObjectAnimation@ objectAnimation
 - bool occludee
 - bool occluder
+- uint occlusionLodLevel
 - int patchSize
 - TerrainPatch@[] patches // readonly
 - int refs // readonly
@@ -11526,6 +11601,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 - bool wordwrap
@@ -12187,6 +12263,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -12401,6 +12478,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -12444,13 +12522,13 @@ Methods:
 - void FromString(VariantType, const String&)
 - void FromString(const String&, const String&)
 - bool GetBool() const
-- VectorBuffer GetBuffer() const
 - double GetDouble() const
 - float GetFloat() const
 - int GetInt() const
 - RefCounted@ GetPtr() const
 - ScriptObject@ GetScriptObject() const
 - StringHash GetStringHash() const
+- String[]@ GetStringVector() const
 - uint GetUInt() const
 - Variant[]@ GetVariantVector() const
 - const IntRect& GetIntRect() const
@@ -12467,6 +12545,7 @@ Methods:
 - const Vector2& GetVector2() const
 - const Vector3& GetVector3() const
 - const Vector4& GetVector4() const
+- const VectorBuffer GetBuffer() const
 
 Properties:
 
@@ -12842,6 +12921,7 @@ Properties:
 - VerticalAlignment verticalAlignment
 - Viewport@ viewport // readonly
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -13043,6 +13123,7 @@ Properties:
 - VariantMap vars // readonly
 - VerticalAlignment verticalAlignment
 - bool visible
+- bool visibleEffective // readonly
 - int weakRefs // readonly
 - int width
 
@@ -13287,8 +13368,8 @@ Properties:
 ### BodyType2D
 
 - BT_STATIC
-- BT_DYNAMIC
 - BT_KINEMATIC
+- BT_DYNAMIC
 
 
 ### CollisionEventMode
@@ -13345,22 +13426,29 @@ Properties:
 - LOCAL
 
 
+### CrowdAgentRequestedTarget
+
+- CA_REQUESTEDTARGET_NONE
+- CA_REQUESTEDTARGET_POSITION
+- CA_REQUESTEDTARGET_VELOCITY
+
+
 ### CrowdAgentState
 
-- CROWD_AGENT_INVALID
-- CROWD_AGENT_READY
-- CROWD_AGENT_TRAVERSINGLINK
+- CA_STATE_INVALID
+- CA_STATE_WALKING
+- CA_STATE_OFFMESH
 
 
-### CrowdTargetState
+### CrowdAgentTargetState
 
-- CROWD_AGENT_TARGET_NONE
-- CROWD_AGENT_TARGET_FAILED
-- CROWD_AGENT_TARGET_VALID
-- CROWD_AGENT_TARGET_REQUESTING
-- CROWD_AGENT_TARGET_WAITINGFORQUEUE
-- CROWD_AGENT_TARGET_WAITINGFORPATH
-- CROWD_AGENT_TARGET_VELOCITY
+- CA_TARGET_NONE
+- CA_TARGET_FAILED
+- CA_TARGET_VALID
+- CA_TARGET_REQUESTING
+- CA_TARGET_WAITINGFORQUEUE
+- CA_TARGET_WAITINGFORPATH
+- CA_TARGET_VELOCITY
 
 
 ### CubeMapFace
@@ -13394,6 +13482,12 @@ Properties:
 - CS_REJECTDROP
 - CS_BUSY
 - CS_BUSY_ARROW
+
+
+### DBAPI
+
+- DBAPI_SQLITE
+- DBAPI_ODBC
 
 
 ### DumpMode
@@ -13490,9 +13584,12 @@ Properties:
 
 ### JSONValueType
 
-- JSON_ANY
-- JSON_OBJECT
+- JSON_NULL
+- JSON_BOOL
+- JSON_NUMBER
+- JSON_STRING
 - JSON_ARRAY
+- JSON_OBJECT
 
 
 ### LayoutMode
@@ -13530,18 +13627,18 @@ Properties:
 - MM_WRAP
 
 
-### NavigationAvoidanceQuality
+### NavigationPushiness
+
+- NAVIGATIONPUSHINESS_LOW
+- NAVIGATIONPUSHINESS_MEDIUM
+- NAVIGATIONPUSHINESS_HIGH
+
+
+### NavigationQuality
 
 - NAVIGATIONQUALITY_LOW
 - NAVIGATIONQUALITY_MEDIUM
 - NAVIGATIONQUALITY_HIGH
-
-
-### NavigationPushiness
-
-- PUSHINESS_LOW
-- PUSHINESS_MEDIUM
-- PUSHINESS_HIGH
 
 
 ### NavmeshPartitionType
@@ -13751,6 +13848,7 @@ Properties:
 - VAR_MATRIX3X4
 - VAR_MATRIX4
 - VAR_DOUBLE
+- VAR_STRINGVECTOR
 
 
 ### VerticalAlignment
@@ -13872,9 +13970,11 @@ Properties:
 - void UnsubscribeFromEvent(const String&)
 - void UnsubscribeFromEvents(Object@)
 \section ScriptAPI_GlobalProperties Global properties
+- DBAPI DBAPI
 - Audio@ audio
 - ResourceCache@ cache
 - Console@ console
+- Database@ database
 - DebugHud@ debugHud
 - DebugRenderer@ debugRenderer
 - Engine@ engine

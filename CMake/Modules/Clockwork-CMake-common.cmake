@@ -1,4 +1,24 @@
-
+#
+# Copyright (c) 2008-2015 the Clockwork project.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
 
 # Limit the supported build configurations
 set (CLOCKWORK_BUILD_CONFIGURATIONS Release RelWithDebInfo Debug)
@@ -23,6 +43,7 @@ endif ()
 
 # Define all supported build options
 include (CMakeDependentOption)
+option (CLOCKWORK_C++11 "Enable C++11 standard")
 cmake_dependent_option (IOS "Setup build for iOS platform" FALSE "XCODE" FALSE)
 if (NOT MSVC AND NOT DEFINED CLOCKWORK_DEFAULT_64BIT)  # Only do this once in the initial configure step
     # On non-MSVC compiler, default to build 64-bit when the host system has a 64-bit build environment
@@ -55,6 +76,7 @@ option (CLOCKWORK_LUA "Enable additional Lua scripting support")
 cmake_dependent_option (CLOCKWORK_LUAJIT "Enable Lua scripting support using LuaJIT (check LuaJIT's CMakeLists.txt for more options)" FALSE "NOT EMSCRIPTEN" FALSE)
 option (CLOCKWORK_NAVIGATION "Enable navigation support" TRUE)
 cmake_dependent_option (CLOCKWORK_NETWORK "Enable networking support" TRUE "NOT EMSCRIPTEN" FALSE)
+cmake_dependent_option (CLOCKWORK_DATABASE_ODBC "Enable Database support with ODBC, requires vendor-specific ODBC driver" FALSE "NOT IOS AND NOT ANDROID AND NOT EMSCRIPTEN" FALSE)
 option (CLOCKWORK_PHYSICS "Enable physics support" TRUE)
 option (CLOCKWORK_CLOCKWORK2D "Enable 2D graphics and physics support" TRUE)
 if (MINGW AND NOT DEFINED CLOCKWORK_SSE)
@@ -73,20 +95,19 @@ cmake_dependent_option (CLOCKWORK_SSE "Enable SSE instruction set" ${CLOCKWORK_D
 if (CMAKE_PROJECT_NAME STREQUAL Clockwork)
     cmake_dependent_option (CLOCKWORK_LUAJIT_AMALG "Enable LuaJIT amalgamated build (LuaJIT only)" FALSE "CLOCKWORK_LUAJIT" FALSE)
     cmake_dependent_option (CLOCKWORK_SAFE_LUA "Enable Lua C++ wrapper safety checks (Lua/LuaJIT only)" FALSE "CLOCKWORK_LUA OR CLOCKWORK_LUAJIT" FALSE)
-
     if (CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_CONFIGURATION_TYPES)
         set (CLOCKWORK_DEFAULT_LUA_RAW FALSE)
     else ()
         set (CLOCKWORK_DEFAULT_LUA_RAW TRUE)
     endif ()
     cmake_dependent_option (CLOCKWORK_LUA_RAW_SCRIPT_LOADER "Prefer loading raw script files from the file system before falling back on Clockwork resource cache. Useful for debugging (e.g. breakpoints), but less performant (Lua/LuaJIT only)" ${CLOCKWORK_DEFAULT_LUA_RAW} "CLOCKWORK_LUA OR CLOCKWORK_LUAJIT" FALSE)
-
     option (CLOCKWORK_SAMPLES "Build sample applications")
     cmake_dependent_option (CLOCKWORK_TOOLS "Build tools (native and RPI only)" TRUE "NOT IOS AND NOT ANDROID AND NOT EMSCRIPTEN" FALSE)
     cmake_dependent_option (CLOCKWORK_EXTRAS "Build extras (native and RPI only)" FALSE "NOT IOS AND NOT ANDROID AND NOT EMSCRIPTEN" FALSE)
     option (CLOCKWORK_DOCS "Generate documentation as part of normal build")
     option (CLOCKWORK_DOCS_QUIET "Generate documentation as part of normal build, suppress generation process from sending anything to stdout")
     option (CLOCKWORK_PCH "Enable PCH support" TRUE)
+    option (CLOCKWORK_DATABASE_SQLITE "Enable Database support with SQLite embedded" FALSE)
     cmake_dependent_option (CLOCKWORK_MINIDUMPS "Enable minidumps on crash (VS only)" TRUE "MSVC" FALSE)
     option (CLOCKWORK_FILEWATCHER "Enable filewatcher support" TRUE)
     if (CPACK_SYSTEM_NAME STREQUAL Linux)
@@ -226,6 +247,11 @@ if (CLOCKWORK_TESTING)
     add_definitions (-DCLOCKWORK_TESTING)
 endif ()
 
+# Enable coverity scan modeling
+if ($ENV{COVERITY_SCAN_BRANCH})
+    add_definitions (-DCOVERITY_SCAN_MODEL)
+endif ()
+
 # Enable SSE instruction set. Requires Pentium III or Athlon XP processor at minimum.
 if (CLOCKWORK_SSE)
     add_definitions (-DCLOCKWORK_SSE)
@@ -333,6 +359,19 @@ if (CLOCKWORK_CLOCKWORK2D)
     add_definitions (-DCLOCKWORK_CLOCKWORK2D)
 endif ()
 
+# Add definition for Database
+if (CLOCKWORK_DATABASE_ODBC)
+    set (CLOCKWORK_DATABASE_SQLITE 0)
+    find_package (ODBC REQUIRED)
+    set (CLOCKWORK_C++11 1)
+    set (CLOCKWORK_DATABASE 1)
+    add_definitions (-DCLOCKWORK_DATABASE -DCLOCKWORK_DATABASE_ODBC)
+endif ()
+if (CLOCKWORK_DATABASE_SQLITE)
+    set (CLOCKWORK_DATABASE 1)
+    add_definitions (-DCLOCKWORK_DATABASE -DCLOCKWORK_DATABASE_SQLITE)
+endif ()
+
 # Default library type is STATIC
 if (CLOCKWORK_LIB_TYPE)
     string (TOUPPER ${CLOCKWORK_LIB_TYPE} CLOCKWORK_LIB_TYPE)
@@ -357,6 +396,29 @@ if (RPI)
 endif ()
 
 # Platform and compiler specific options
+if (CLOCKWORK_C++11)
+    add_definitions (-DCLOCKWORK_CPP11)   # Note the define is NOT 'CLOCKWORK_C++11'!
+    if (CMAKE_CXX_COMPILER_ID MATCHES GNU)
+        # Use gnu++11/gnu++0x instead of c++11/c++0x as the latter does not work as expected when cross compiling
+        foreach (STANDARD gnu++11 gnu++0x)  # Fallback to gnu++0x on older GCC version
+            execute_process (COMMAND echo COMMAND ${CMAKE_CXX_COMPILER} -E - RESULT_VARIABLE GCC_EXIT_CODE OUTPUT_QUIET ERROR_QUIET)
+            if (GCC_EXIT_CODE EQUAL 0)
+                set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=${STANDARD}")
+                break ()
+            endif ()
+        endforeach ()
+        if (NOT GCC_EXIT_CODE EQUAL 0)
+            execute_process (COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION ERROR_QUIET)
+            message (FATAL_ERROR "Your GCC version ${GCC_VERSION} is too old to enable C++11 standard")
+        endif ()
+    elseif (CMAKE_CXX_COMPILER_ID MATCHES Clang)
+        # Cannot set CMAKE_CXX_FLAGS here directly because CMake uses the same flags for both C++ and Object-C languages, the latter does not support c++11 standard
+        # Workaround the problem by setting the compiler flags in the source properties for C++ language only in the setup_target() macro
+        set (CLANG_CXX_FLAGS -std=c++11)
+    elseif (MSVC80)
+        message (FATAL_ERROR "Your MSVC version is too told to enable C++11 standard")
+    endif ()
+endif ()
 if (IOS)
     # IOS-specific setup
     add_definitions (-DIOS)
@@ -384,7 +446,7 @@ endif ()
 if (IOS OR CLOCKWORK_MACOSX_BUNDLE)
     # Common MacOSX and iOS bundle setup
     if (NOT MACOSX_BUNDLE_GUI_IDENTIFIER)
-        set (MACOSX_BUNDLE_GUI_IDENTIFIER com.github.clockwork3d.\${PRODUCT_NAME:bundleIdentifier:lower})
+        set (MACOSX_BUNDLE_GUI_IDENTIFIER com.github.clockwork.\${PRODUCT_NAME:bundleIdentifier:lower})
     endif ()
     if (NOT MACOSX_BUNDLE_BUNDLE_NAME)
         set (MACOSX_BUNDLE_BUNDLE_NAME \${PRODUCT_NAME})
@@ -572,138 +634,163 @@ endmacro ()
 
 include (GenerateExportHeader)
 
-# Macro for precompiling header (On MSVC, the dummy C++ implementation file for precompiling the header file would be generated if not already exists)
+# Macro for precompiling header (On MSVC, the dummy C++ or C implementation file for precompiling the header file would be generated if not already exists)
 # This macro should be called before the CMake target has been added
 # Typically, user should indirectly call this macro by using the 'PCH' option when calling define_source_file() macro
 macro (enable_pch HEADER_PATHNAME)
-    # Determine the precompiled header output filename
-    get_filename_component (HEADER_FILENAME ${HEADER_PATHNAME} NAME)
-    if (CMAKE_COMPILER_IS_GNUCXX)
-        # GNU g++
-        set (PCH_FILENAME ${HEADER_FILENAME}.gch)
-    else ()
-        # Clang or MSVC
-        set (PCH_FILENAME ${HEADER_FILENAME}.pch)
-    endif ()
+    # No op when PCH support is not enabled
+    if (CLOCKWORK_PCH)
+        # Get the optional LANG parameter to indicate whether the header should be treated as C or C++ header, default to C++
+        if ("${ARGN}" STREQUAL C)   # Stringigy as the LANG paramater could be empty
+            set (EXT c)
+            set (LANG C)
+            set (LANG_H c-header)
+        else ()
+            # This is the default
+            set (EXT cpp)
+            set (LANG CXX)
+            set (LANG_H c++-header)
+        endif ()
+        # Relative path is resolved using CMAKE_CURRENT_SOURCE_DIR
+        if (IS_ABSOLUTE ${HEADER_PATHNAME})
+            set (ABS_HEADER_PATHNAME ${HEADER_PATHNAME})
+        else ()
+            set (ABS_HEADER_PATHNAME ${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_PATHNAME})
+        endif ()
+        # Determine the precompiled header output filename
+        get_filename_component (HEADER_FILENAME ${HEADER_PATHNAME} NAME)
+        if (CMAKE_COMPILER_IS_GNUCXX)
+            # GNU g++
+            set (PCH_FILENAME ${HEADER_FILENAME}.gch)
+        else ()
+            # Clang or MSVC
+            set (PCH_FILENAME ${HEADER_FILENAME}.pch)
+        endif ()
 
-    if (MSVC)
-        get_filename_component (NAME_WE ${HEADER_FILENAME} NAME_WE)
-        if (TARGET ${TARGET_NAME})
-            foreach (FILE ${SOURCE_FILES})
-                if (FILE MATCHES \\.cpp$)
-                    if (FILE MATCHES ${NAME_WE}\\.cpp$)
-                        # Precompiling header file
-                        set_property (SOURCE ${FILE} APPEND_STRING PROPERTY COMPILE_FLAGS " /Fp$(IntDir)${PCH_FILENAME} /Yc${HEADER_FILENAME}")     # Need a leading space for appending
-                    else ()
-                        # Using precompiled header file
-                        get_property (NO_PCH SOURCE ${FILE} PROPERTY NO_PCH)
-                        if (NOT NO_PCH)
-                            set_property (SOURCE ${FILE} APPEND_STRING PROPERTY COMPILE_FLAGS " /Fp$(IntDir)${PCH_FILENAME} /Yu${HEADER_FILENAME} /FI${HEADER_FILENAME}")
+        if (MSVC)
+            get_filename_component (NAME_WE ${HEADER_FILENAME} NAME_WE)
+            if (TARGET ${TARGET_NAME})
+                foreach (FILE ${SOURCE_FILES})
+                    if (FILE MATCHES \\.${EXT}$)
+                        if (FILE MATCHES ${NAME_WE}\\.${EXT}$)
+                            # Precompiling header file
+                            set_property (SOURCE ${FILE} APPEND_STRING PROPERTY COMPILE_FLAGS " /Fp$(IntDir)${PCH_FILENAME} /Yc${HEADER_FILENAME}")     # Need a leading space for appending
+                        else ()
+                            # Using precompiled header file
+                            get_property (NO_PCH SOURCE ${FILE} PROPERTY NO_PCH)
+                            if (NOT NO_PCH)
+                                set_property (SOURCE ${FILE} APPEND_STRING PROPERTY COMPILE_FLAGS " /Fp$(IntDir)${PCH_FILENAME} /Yu${HEADER_FILENAME} /FI${HEADER_FILENAME}")
+                            endif ()
                         endif ()
                     endif ()
-                endif ()
-            endforeach ()
-            unset (${TARGET_NAME}_HEADER_PATHNAME)
-        else ()
-            # The target has not been created yet, so set an internal variable to come back here again later
-            set (${TARGET_NAME}_HEADER_PATHNAME ${HEADER_PATHNAME})
-            # But proceed to add the dummy C++ implementation file if necessary
-            set (CXX_FILENAME ${NAME_WE}.cpp)
-            get_filename_component (PATH ${HEADER_PATHNAME} PATH)
-            if (PATH)
-                set (PATH ${PATH}/)
-            endif ()
-            list (FIND SOURCE_FILES ${PATH}${CXX_FILENAME} CXX_FILENAME_FOUND)
-            if (CXX_FILENAME_FOUND STREQUAL -1)
-                file (WRITE ${CMAKE_CURRENT_BINARY_DIR}/${CXX_FILENAME} "// This is a generated file. DO NOT EDIT!\n\n#include \"${HEADER_FILENAME}\"")
-                list (APPEND SOURCE_FILES ${CXX_FILENAME})
-            endif ()
-        endif ()
-    elseif (XCODE)
-        if (TARGET ${TARGET_NAME})
-            # Precompiling and using precompiled header file
-            set_target_properties (${TARGET_NAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER YES XCODE_ATTRIBUTE_GCC_PREFIX_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_PATHNAME})
-            unset (${TARGET_NAME}_HEADER_PATHNAME)
-        else ()
-            # The target has not been created yet, so set an internal variable to come back here again later
-            set (${TARGET_NAME}_HEADER_PATHNAME ${HEADER_PATHNAME})
-        endif ()
-    else ()
-        # GCC or Clang
-        if (TARGET ${TARGET_NAME})
-            # Precompiling header file
-            get_directory_property (COMPILE_DEFINITIONS COMPILE_DEFINITIONS)
-            get_directory_property (INCLUDE_DIRECTORIES INCLUDE_DIRECTORIES)
-            get_target_property (TYPE ${TARGET_NAME} TYPE)
-            if (TYPE MATCHES SHARED)
-                list (APPEND COMPILE_DEFINITIONS ${TARGET_NAME}_EXPORTS)
-                # todo: Reevaluate the replacement of this deprecated function (since CMake 2.8.12) when the CMake minimum required version is set to 2.8.12
-                # At the moment it seems using the function is the "only way" to get the export flags into a CMake variable
-                # Additionally, CMake implementation of 'VISIBILITY_INLINES_HIDDEN' has a bug (tested in 2.8.12.2) that it erroneously sets the flag for C compiler too
-                add_compiler_export_flags (COMPILER_EXPORT_FLAGS)
-                if (NOT ANDROID)    # To cater for Android/CMake toolchain which already adds -fPIC flags into the CMake C and CXX compiler flags
-                    set (COMPILER_EXPORT_FLAGS "${COMPILER_EXPORT_FLAGS} -fPIC")
-                endif ()
-            endif ()
-            string (REPLACE ";" " -D" COMPILE_DEFINITIONS "-D${COMPILE_DEFINITIONS}")
-            string (REPLACE ";" " -I" INCLUDE_DIRECTORIES "-I${INCLUDE_DIRECTORIES}")
-            # Make sure the precompiled headers are not stale by creating custom rules to re-compile the header as necessary
-            file (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PCH_FILENAME})
-            foreach (CONFIG ${CMAKE_CONFIGURATION_TYPES} ${CMAKE_BUILD_TYPE})   # These two vars are mutually exclusive
-                # Generate *.rsp containing configuration specific compiler flags
-                string (TOUPPER ${CONFIG} UPPERCASE_CONFIG)
-                file (WRITE ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp.new "${COMPILE_DEFINITIONS} ${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_${UPPERCASE_CONFIG}} ${COMPILER_EXPORT_FLAGS} ${INCLUDE_DIRECTORIES} -c -x c++-header")
-                execute_process (COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp.new ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp)
-                file (REMOVE ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp.new)
-                # Determine the dependency list
-                execute_process (COMMAND ${CMAKE_CXX_COMPILER} @${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp -MTdeps -MM -o ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.deps ${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_PATHNAME} RESULT_VARIABLE CXX_COMPILER_EXIT_CODE)
-                if (NOT CXX_COMPILER_EXIT_CODE EQUAL 0)
-                    message (FATAL_ERROR
-                        "The configured compiler toolchain in the build tree is not able to handle all the compiler flags required to build the project with PCH enabled. "
-                        "Please kindly update your compiler toolchain to its latest version. "
-                        "If you are using MinGW then make sure it is MinGW-W64 instead of MinGW-W32 or TDM-GCC (Code::Blocks default). "
-                        "Or disable the PCH build support by passing the '-DCLOCKWORK_PCH=0' when retrying to configure/generate the build tree. "
-                        "However, if you think there is something wrong with our build system then kindly file a bug report to the project devs.")
-                endif ()
-                file (STRINGS ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.deps DEPS)
-                string (REGEX REPLACE "^deps: *| *\\; +" ";" DEPS ${DEPS})
-                # Create the rule that depends on the included headers
-                add_custom_command (OUTPUT ${HEADER_FILENAME}.${CONFIG}.pch.trigger
-                    COMMAND ${CMAKE_CXX_COMPILER} @${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp -o ${PCH_FILENAME}/${PCH_FILENAME}.${CONFIG} ${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_PATHNAME}
-                    COMMAND ${CMAKE_COMMAND} -E touch ${HEADER_FILENAME}.${CONFIG}.pch.trigger
-                    DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp ${DEPS}
-                    COMMENT "Precompiling header file '${HEADER_FILENAME}' for ${CONFIG} configuration")
-            endforeach ()
-            # Using precompiled header file
-            if ($ENV{COVERITY_SCAN_BRANCH})
-                # Coverity scan does not support PCH so workaround by including the actual header file
-                set (ABS_PATH_PCH ${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_PATHNAME})
+                endforeach ()
+                unset (${TARGET_NAME}_HEADER_PATHNAME)
             else ()
-                set (ABS_PATH_PCH ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME})
+                # The target has not been created yet, so set an internal variable to come back here again later
+                set (${TARGET_NAME}_HEADER_PATHNAME ${ARGV})
+                # But proceed to add the dummy C++ or C implementation file if necessary
+                set (${LANG}_FILENAME ${NAME_WE}.${EXT})
+                get_filename_component (PATH ${HEADER_PATHNAME} PATH)
+                if (PATH)
+                    set (PATH ${PATH}/)
+                endif ()
+                list (FIND SOURCE_FILES ${PATH}${${LANG}_FILENAME} ${LANG}_FILENAME_FOUND)
+                if (${LANG}_FILENAME_FOUND STREQUAL -1)
+                    file (WRITE ${CMAKE_CURRENT_BINARY_DIR}/${${LANG}_FILENAME} "// This is a generated file. DO NOT EDIT!\n\n#include \"${HEADER_FILENAME}\"")
+                    list (APPEND SOURCE_FILES ${${LANG}_FILENAME})
+                endif ()
             endif ()
-            foreach (FILE ${SOURCE_FILES})
-                if (FILE MATCHES \\.cpp$)
-                    get_property (NO_PCH SOURCE ${FILE} PROPERTY NO_PCH)
-                    if (NOT NO_PCH)
-                        set_property (SOURCE ${FILE} APPEND_STRING PROPERTY COMPILE_FLAGS " -include ${ABS_PATH_PCH}")
+        elseif (XCODE)
+            if (TARGET ${TARGET_NAME})
+                # Precompiling and using precompiled header file
+                set_target_properties (${TARGET_NAME} PROPERTIES XCODE_ATTRIBUTE_GCC_PRECOMPILE_PREFIX_HEADER YES XCODE_ATTRIBUTE_GCC_PREFIX_HEADER ${ABS_HEADER_PATHNAME})
+                unset (${TARGET_NAME}_HEADER_PATHNAME)
+            else ()
+                # The target has not been created yet, so set an internal variable to come back here again later
+                set (${TARGET_NAME}_HEADER_PATHNAME ${ARGV})
+            endif ()
+        else ()
+            # GCC or Clang
+            if (TARGET ${TARGET_NAME})
+                # Precompiling header file
+                get_directory_property (COMPILE_DEFINITIONS COMPILE_DEFINITIONS)
+                get_directory_property (INCLUDE_DIRECTORIES INCLUDE_DIRECTORIES)
+                get_target_property (TYPE ${TARGET_NAME} TYPE)
+                if (TYPE MATCHES SHARED)
+                    list (APPEND COMPILE_DEFINITIONS ${TARGET_NAME}_EXPORTS)
+                    # todo: Reevaluate the replacement of this deprecated function (since CMake 2.8.12) when the CMake minimum required version is set to 2.8.12
+                    # At the moment it seems using the function is the "only way" to get the export flags into a CMake variable
+                    # Additionally, CMake implementation of 'VISIBILITY_INLINES_HIDDEN' has a bug (tested in 2.8.12.2) that it erroneously sets the flag for C compiler too
+                    add_compiler_export_flags (COMPILER_EXPORT_FLAGS)
+                    if (NOT ANDROID)    # To cater for Android/CMake toolchain which already adds -fPIC flags into the CMake C and CXX compiler flags
+                        set (COMPILER_EXPORT_FLAGS "${COMPILER_EXPORT_FLAGS} -fPIC")
+                    endif ()
+                elseif (PROJECT_NAME STREQUAL Clockwork AND NOT ${TARGET_NAME} STREQUAL Clockwork AND CLOCKWORK_LIB_TYPE STREQUAL SHARED)
+                    # If it is one of the Clockwork library dependency then use the same PIC flag as Clockwork library
+                    if (NOT ANDROID)
+                        set (COMPILER_EXPORT_FLAGS -fPIC)
                     endif ()
                 endif ()
-            endforeach ()
-            unset (${TARGET_NAME}_HEADER_PATHNAME)
-        else ()
-            # The target has not been created yet, so set an internal variable to come back here again later
-            set (${TARGET_NAME}_HEADER_PATHNAME ${HEADER_PATHNAME})
-            # But proceed to add the dummy source file(s) to trigger the custom command output rule
-            if (CMAKE_CONFIGURATION_TYPES)
-                # Multi-config, trigger all rules and let the compiler to choose which precompiled header is suitable to use
-                foreach (CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                    list (APPEND TRIGGERS ${HEADER_FILENAME}.${CONFIG}.pch.trigger)
+                string (REPLACE ";" " -D" COMPILE_DEFINITIONS "-D${COMPILE_DEFINITIONS}")
+                string (REPLACE ";" " -I" INCLUDE_DIRECTORIES "-I${INCLUDE_DIRECTORIES}")
+                # Make sure the precompiled headers are not stale by creating custom rules to re-compile the header as necessary
+                file (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${PCH_FILENAME})
+                foreach (CONFIG ${CMAKE_CONFIGURATION_TYPES} ${CMAKE_BUILD_TYPE})   # These two vars are mutually exclusive
+                    # Generate *.rsp containing configuration specific compiler flags
+                    string (TOUPPER ${CONFIG} UPPERCASE_CONFIG)
+                    file (WRITE ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp.new "${COMPILE_DEFINITIONS} ${CLANG_${LANG}_FLAGS} ${CMAKE_${LANG}_FLAGS} ${CMAKE_${LANG}_FLAGS_${UPPERCASE_CONFIG}} ${COMPILER_EXPORT_FLAGS} ${INCLUDE_DIRECTORIES} -c -x ${LANG_H}")
+                    execute_process (COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp.new ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp)
+                    file (REMOVE ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp.new)
+                    # Determine the dependency list
+                    execute_process (COMMAND ${CMAKE_${LANG}_COMPILER} @${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp -MTdeps -MM -o ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.deps ${ABS_HEADER_PATHNAME} RESULT_VARIABLE ${LANG}_COMPILER_EXIT_CODE)
+                    if (NOT ${LANG}_COMPILER_EXIT_CODE EQUAL 0)
+                        message (FATAL_ERROR
+                            "The configured compiler toolchain in the build tree is not able to handle all the compiler flags required to build the project with PCH enabled. "
+                            "Please kindly update your compiler toolchain to its latest version. "
+                            "If you are using MinGW then make sure it is MinGW-W64 instead of MinGW-W32 or TDM-GCC (Code::Blocks default). "
+                            "Or disable the PCH build support by passing the '-DCLOCKWORK_PCH=0' when retrying to configure/generate the build tree. "
+                            "However, if you think there is something wrong with our build system then kindly file a bug report to the project devs.")
+                    endif ()
+                    file (STRINGS ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.deps DEPS)
+                    string (REGEX REPLACE "^deps: *| *\\; +" ";" DEPS ${DEPS})
+                    # Create the rule that depends on the included headers
+                    add_custom_command (OUTPUT ${HEADER_FILENAME}.${CONFIG}.pch.trigger
+                        COMMAND ${CMAKE_${LANG}_COMPILER} @${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp -o ${PCH_FILENAME}/${PCH_FILENAME}.${CONFIG} ${ABS_HEADER_PATHNAME}
+                        COMMAND ${CMAKE_COMMAND} -E touch ${HEADER_FILENAME}.${CONFIG}.pch.trigger
+                        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME}.${CONFIG}.pch.rsp ${DEPS}
+                        COMMENT "Precompiling header file '${HEADER_FILENAME}' for ${CONFIG} configuration")
                 endforeach ()
+                # Using precompiled header file
+                if ($ENV{COVERITY_SCAN_BRANCH})
+                    # Coverity scan does not support PCH so workaround by including the actual header file
+                    set (ABS_PATH_PCH ${ABS_HEADER_PATHNAME})
+                else ()
+                    set (ABS_PATH_PCH ${CMAKE_CURRENT_BINARY_DIR}/${HEADER_FILENAME})
+                endif ()
+                foreach (FILE ${SOURCE_FILES})
+                    if (FILE MATCHES \\.${EXT}$)
+                        get_property (NO_PCH SOURCE ${FILE} PROPERTY NO_PCH)
+                        if (NOT NO_PCH)
+                            set_property (SOURCE ${FILE} APPEND_STRING PROPERTY COMPILE_FLAGS " -include ${ABS_PATH_PCH}")
+                        endif ()
+                    endif ()
+                endforeach ()
+                unset (${TARGET_NAME}_HEADER_PATHNAME)
             else ()
-                # Single-config, just trigger the corresponding rule matching the current build configuration
-                set (TRIGGERS ${HEADER_FILENAME}.${CMAKE_BUILD_TYPE}.pch.trigger)
+                # The target has not been created yet, so set an internal variable to come back here again later
+                set (${TARGET_NAME}_HEADER_PATHNAME ${ARGV})
+                # But proceed to add the dummy source file(s) to trigger the custom command output rule
+                if (CMAKE_CONFIGURATION_TYPES)
+                    # Multi-config, trigger all rules and let the compiler to choose which precompiled header is suitable to use
+                    foreach (CONFIG ${CMAKE_CONFIGURATION_TYPES})
+                        list (APPEND TRIGGERS ${HEADER_FILENAME}.${CONFIG}.pch.trigger)
+                    endforeach ()
+                else ()
+                    # Single-config, just trigger the corresponding rule matching the current build configuration
+                    set (TRIGGERS ${HEADER_FILENAME}.${CMAKE_BUILD_TYPE}.pch.trigger)
+                endif ()
+                list (APPEND SOURCE_FILES ${TRIGGERS})
             endif ()
-            list (APPEND SOURCE_FILES ${TRIGGERS})
         endif ()
     endif ()
 endmacro ()
@@ -745,6 +832,15 @@ macro (setup_target)
             COMMAND mkdir -p ${DIRECTORY} && ln -sf $<TARGET_FILE:${TARGET_NAME}> ${DIRECTORY}/$<TARGET_FILE_NAME:${TARGET_NAME}>
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/build)
     endif ()
+
+    # Workaround CMake problem of sharing CMAKE_CXX_FLAGS for both C++ and Objective-C languages
+    if (CLANG_CXX_FLAGS)
+        foreach (FILE ${SOURCE_FILES})
+            if (FILE MATCHES \\.cpp$|\\.cc$)
+                set_property (SOURCE ${FILE} APPEND_STRING PROPERTY COMPILE_FLAGS " ${CLANG_CXX_FLAGS}")
+            endif ()
+        endforeach ()
+    endif ()
 endmacro ()
 
 # Macro for checking the SOURCE_FILES variable is properly initialized
@@ -782,7 +878,7 @@ macro (setup_library)
         add_compiler_export_flags ()
     endif ()
 
-    if (CMAKE_PROJECT_NAME STREQUAL Clockwork)
+    if (PROJECT_NAME STREQUAL Clockwork)
         if (NOT ${TARGET_NAME} STREQUAL Clockwork)
             # Only interested in static library type, i.e. exclude shared and module library types
             if (LIB_TYPE MATCHES STATIC)
@@ -969,7 +1065,7 @@ macro (setup_main_executable)
             endif ()
         endforeach ()
         # Clockwork project builds the PackageTool as required; external project uses PackageTool found in the Clockwork build tree or Clockwork SDK
-        find_Clockwork3d_tool (PACKAGE_TOOL PackageTool
+        find_Clockwork_tool (PACKAGE_TOOL PackageTool
             HINTS ${CMAKE_BINARY_DIR}/bin/tool ${CLOCKWORK_HOME}/bin/tool
             DOC "Path to PackageTool" MSG_MODE WARNING)
         if (CMAKE_PROJECT_NAME STREQUAL Clockwork)
@@ -1243,6 +1339,11 @@ macro (define_dependency_libs TARGET)
             endif ()
         endif ()
 
+        # Database
+        if (CLOCKWORK_DATABASE_ODBC)
+            list (APPEND LIBS ${ODBC_LIBRARIES})
+        endif ()
+
         # This variable value can either be 'Clockwork' target or an absolute path to an actual static/shared Clockwork library or empty (if we are building the library itself)
         # The former would cause CMake not only to link against the Clockwork library but also to add a dependency to Clockwork target
         if (CLOCKWORK_LIBRARIES)
@@ -1290,13 +1391,13 @@ endmacro ()
 #  EXCLUDE_PATTERNS <list> - Use the provided patterns for excluding matched source files
 #  EXTRA_CPP_FILES <list> - Include the provided list of files into CPP_FILES result
 #  EXTRA_H_FILES <list> - Include the provided list of files into H_FILES result
-#  PCH <value> - Enable precompiled header support on the defined source files using the specified header file
+#  PCH <list> - Enable precompiled header support on the defined source files using the specified header file, the list is "<path/to/header> [C++|C]"
 #  PARENT_SCOPE - Glob source files in current directory but set the result in parent-scope's variable ${DIR}_CPP_FILES and ${DIR}_H_FILES instead
 #  RECURSE - Option to glob recursively
 #  GROUP - Option to group source files based on its relative path to the corresponding parent directory (only works when PARENT_SCOPE option is not in use)
 macro (define_source_files)
     # Parse the arguments
-    cmake_parse_arguments (ARG "PARENT_SCOPE;RECURSE;GROUP" "PCH" "EXTRA_CPP_FILES;EXTRA_H_FILES;GLOB_CPP_PATTERNS;GLOB_H_PATTERNS;EXCLUDE_PATTERNS" ${ARGN})
+    cmake_parse_arguments (ARG "PARENT_SCOPE;RECURSE;GROUP" "" "PCH;EXTRA_CPP_FILES;EXTRA_H_FILES;GLOB_CPP_PATTERNS;GLOB_H_PATTERNS;EXCLUDE_PATTERNS" ${ARGN})
 
     # Source files are defined by globbing source files in current source directory and also by including the extra source files if provided
     if (NOT ARG_GLOB_CPP_PATTERNS)
@@ -1474,7 +1575,7 @@ elseif (EMSCRIPTEN)
     if (NOT EXISTS ${CMAKE_BINARY_DIR}/Source/shell.html)
         file (READ ${EMSCRIPTEN_ROOT_PATH}/src/shell.html SHELL_HTML)
         string (REPLACE "<!doctype html>" "<!-- This is a generated file. DO NOT EDIT!-->\n\n<!doctype html>" SHELL_HTML "${SHELL_HTML}")     # Stringify to preserve semicolons
-        string (REPLACE "<body>" "<body>\n\n<a href=\"http://clockwork3d.github.io\" title=\"Clockwork Homepage\"><img src=\"http://clockwork3d.github.io/assets/images/logo.png\" alt=\"link to http://clockwork3d.github.io\" height=\"80\" width=\"320\" /></a>\n" SHELL_HTML "${SHELL_HTML}")
+        string (REPLACE "<body>" "<body>\n\n<a href=\"http://clockwork.github.io\" title=\"Clockwork Homepage\"><img src=\"http://clockwork.github.io/assets/images/logo.png\" alt=\"link to http://clockwork.github.io\" height=\"80\" width=\"320\" /></a>\n" SHELL_HTML "${SHELL_HTML}")
         file (WRITE ${CMAKE_BINARY_DIR}/Source/shell.html "${SHELL_HTML}")
     endif ()
 elseif (NOT CMAKE_CROSSCOMPILING AND NOT CMAKE_HOST_WIN32 AND "$ENV{USE_CCACHE}")

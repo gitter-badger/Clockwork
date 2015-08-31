@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
@@ -370,6 +390,10 @@ bool Material::Load(const XMLElement& source)
     if (depthBiasElem)
         SetDepthBias(BiasParameters(depthBiasElem.GetFloat("constant"), depthBiasElem.GetFloat("slopescaled")));
 
+    XMLElement renderOrderElem = source.GetChild("renderorder");
+    if (renderOrderElem)
+        SetRenderOrder((unsigned char)renderOrderElem.GetUInt("value"));
+
     RefreshShaderParameterHash();
     RefreshMemoryUse();
     CheckOcclusion();
@@ -447,6 +471,10 @@ bool Material::Save(XMLElement& dest) const
     XMLElement depthBiasElem = dest.CreateChild("depthbias");
     depthBiasElem.SetFloat("constant", depthBias_.constantBias_);
     depthBiasElem.SetFloat("slopescaled", depthBias_.slopeScaledBias_);
+
+    // Write render order
+    XMLElement renderOrderElem = dest.CreateChild("renderorder");
+    renderOrderElem.SetUInt("value", renderOrder_);
 
     return true;
 }
@@ -612,6 +640,11 @@ void Material::SetDepthBias(const BiasParameters& parameters)
     depthBias_.Validate();
 }
 
+void Material::SetRenderOrder(unsigned char order)
+{
+    renderOrder_ = order;
+}
+
 void Material::SetScene(Scene* scene)
 {
     UnsubscribeFromEvent(E_UPDATE);
@@ -656,6 +689,7 @@ SharedPtr<Material> Material::Clone(const String& cloneName) const
     ret->cullMode_ = cullMode_;
     ret->shadowCullMode_ = shadowCullMode_;
     ret->fillMode_ = fillMode_;
+    ret->renderOrder_ = renderOrder_;
     ret->RefreshMemoryUse();
 
     return ret;
@@ -777,6 +811,7 @@ void Material::ResetToDefaults()
     shadowCullMode_ = CULL_CCW;
     fillMode_ = FILL_SOLID;
     depthBias_ = BiasParameters(0.0f, 0.0f);
+    renderOrder_ = DEFAULT_RENDER_ORDER;
 
     RefreshShaderParameterHash();
     RefreshMemoryUse();

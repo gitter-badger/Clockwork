@@ -124,9 +124,9 @@ void CreateAttributeInspectorWindow()
     attributeInspectorWindow = LoadEditorUI("UI/EditorInspectorWindow.xml");
     parentContainer = attributeInspectorWindow.GetChild("ParentContainer");
     ui.root.AddChild(attributeInspectorWindow);
-    int height = Min(ui.root.height - 60, ui.root.height);
-    attributeInspectorWindow.SetSize((ui.root.width/5), height);
-    attributeInspectorWindow.SetPosition(ui.root.width - attributeInspectorWindow.width, 60);
+    int height = Min(ui.root.height - 60, 500);
+    attributeInspectorWindow.SetSize(300, height);
+    attributeInspectorWindow.SetPosition(ui.root.width - 10 - attributeInspectorWindow.width, 100);
     attributeInspectorWindow.opacity = uiMaxOpacity;
     attributeInspectorWindow.BringToFront();
     inspectorLockButton = attributeInspectorWindow.GetChild("LockButton", true);

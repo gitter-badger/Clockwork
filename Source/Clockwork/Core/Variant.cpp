@@ -1,8 +1,29 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
 #include "../Core/StringUtils.h"
+#include "../IO/VectorBuffer.h"
 
 #include <cstring>
 
@@ -15,6 +36,7 @@ const ResourceRef Variant::emptyResourceRef;
 const ResourceRefList Variant::emptyResourceRefList;
 const VariantMap Variant::emptyVariantMap;
 const VariantVector Variant::emptyVariantVector;
+const StringVector Variant::emptyStringVector;
 
 static const char* typeNames[] =
 {
@@ -41,6 +63,7 @@ static const char* typeNames[] =
     "Matrix3x4",
     "Matrix4",
     "Double",
+    "StringVector",
     0
 };
 
@@ -70,6 +93,10 @@ Variant& Variant::operator =(const Variant& rhs)
         *(reinterpret_cast<VariantVector*>(&value_)) = *(reinterpret_cast<const VariantVector*>(&rhs.value_));
         break;
 
+    case VAR_STRINGVECTOR:
+        *(reinterpret_cast<StringVector*>(&value_)) = *(reinterpret_cast<const StringVector*>(&rhs.value_));
+        break;
+
     case VAR_VARIANTMAP:
         *(reinterpret_cast<VariantMap*>(&value_)) = *(reinterpret_cast<const VariantMap*>(&rhs.value_));
         break;
@@ -95,6 +122,13 @@ Variant& Variant::operator =(const Variant& rhs)
         break;
     }
 
+    return *this;
+}
+
+Variant& Variant::operator =(const VectorBuffer& rhs)
+{
+    SetType(VAR_BUFFER);
+    *(reinterpret_cast<PODVector<unsigned char>*>(&value_)) = rhs.GetBuffer();
     return *this;
 }
 
@@ -144,6 +178,9 @@ bool Variant::operator ==(const Variant& rhs) const
     case VAR_VARIANTVECTOR:
         return *(reinterpret_cast<const VariantVector*>(&value_)) == *(reinterpret_cast<const VariantVector*>(&rhs.value_));
 
+    case VAR_STRINGVECTOR:
+        return *(reinterpret_cast<const StringVector*>(&value_)) == *(reinterpret_cast<const StringVector*>(&rhs.value_));
+
     case VAR_VARIANTMAP:
         return *(reinterpret_cast<const VariantMap*>(&value_)) == *(reinterpret_cast<const VariantMap*>(&rhs.value_));
 
@@ -168,6 +205,23 @@ bool Variant::operator ==(const Variant& rhs) const
     default:
         return true;
     }
+}
+
+bool Variant::operator ==(const PODVector<unsigned char>& rhs) const
+{
+    // Use strncmp() instead of PODVector<unsigned char>::operator ==()
+    const PODVector<unsigned char>& buffer = *(reinterpret_cast<const PODVector<unsigned char>*>(&value_));
+    return type_ == VAR_BUFFER && buffer.Size() == rhs.Size() ?
+        strncmp(reinterpret_cast<const char*>(&buffer[0]), reinterpret_cast<const char*>(&rhs[0]), buffer.Size()) == 0 :
+        false;
+}
+
+bool Variant::operator ==(const VectorBuffer& rhs) const
+{
+    const PODVector<unsigned char>& buffer = *(reinterpret_cast<const PODVector<unsigned char>*>(&value_));
+    return type_ == VAR_BUFFER && buffer.Size() == rhs.GetSize() ?
+        strncmp(reinterpret_cast<const char*>(&buffer[0]), reinterpret_cast<const char*>(rhs.GetData()), buffer.Size()) == 0 :
+        false;
 }
 
 void Variant::FromString(const String& type, const String& value)
@@ -240,7 +294,7 @@ void Variant::FromString(VariantType type, const char* value)
 
     case VAR_RESOURCEREF:
     {
-        Vector<String> values = String::Split(value, ';');
+        StringVector values = String::Split(value, ';');
         if (values.Size() == 2)
         {
             SetType(VAR_RESOURCEREF);
@@ -253,7 +307,7 @@ void Variant::FromString(VariantType type, const char* value)
 
     case VAR_RESOURCEREFLIST:
     {
-        Vector<String> values = String::Split(value, ';');
+        StringVector values = String::Split(value, ';');
         if (values.Size() >= 1)
         {
             SetType(VAR_RESOURCEREFLIST);
@@ -290,7 +344,7 @@ void Variant::FromString(VariantType type, const char* value)
     case VAR_MATRIX4:
         *this = ToMatrix4(value);
         break;
-        
+
     case VAR_DOUBLE:
         *this = ToDouble(value);
         break;
@@ -310,6 +364,11 @@ void Variant::SetBuffer(const void* data, unsigned size)
     buffer.Resize(size);
     if (size)
         memcpy(&buffer[0], data, size);
+}
+
+const VectorBuffer Variant::GetVectorBuffer() const
+{
+    return VectorBuffer(type_ == VAR_BUFFER ? *reinterpret_cast<const PODVector<unsigned char>*>(&value_) : emptyBuffer);
 }
 
 String Variant::GetTypeName() const
@@ -349,12 +408,12 @@ String Variant::ToString() const
         return *(reinterpret_cast<const String*>(&value_));
 
     case VAR_BUFFER:
-    {
-        const PODVector<unsigned char>& buffer = *(reinterpret_cast<const PODVector<unsigned char>*>(&value_));
-        String ret;
-        BufferToString(ret, buffer.Begin().ptr_, buffer.Size());
-        return ret;
-    }
+        {
+            const PODVector<unsigned char>& buffer = *(reinterpret_cast<const PODVector<unsigned char>*>(&value_));
+            String ret;
+            BufferToString(ret, buffer.Begin().ptr_, buffer.Size());
+            return ret;
+        }
 
     case VAR_VOIDPTR:
     case VAR_PTR:
@@ -367,12 +426,6 @@ String Variant::ToString() const
     case VAR_INTVECTOR2:
         return (reinterpret_cast<const IntVector2*>(&value_))->ToString();
 
-    default:
-        // VAR_RESOURCEREF, VAR_RESOURCEREFLIST, VAR_VARIANTVECTOR, VAR_VARIANTMAP
-        // Reference string serialization requires typehash-to-name mapping from the context. Can not support here
-        // Also variant map or vector string serialization is not supported. XML or binary save should be used instead
-        return String::EMPTY;
-
     case VAR_MATRIX3:
         return (reinterpret_cast<const Matrix3*>(value_.ptr_))->ToString();
 
@@ -384,6 +437,12 @@ String Variant::ToString() const
 
     case VAR_DOUBLE:
         return String(*reinterpret_cast<const double*>(&value_));
+
+    default:
+        // VAR_RESOURCEREF, VAR_RESOURCEREFLIST, VAR_VARIANTVECTOR, VAR_STRINGVECTOR, VAR_VARIANTMAP
+        // Reference string serialization requires typehash-to-name mapping from the context. Can not support here
+        // Also variant map or vector string serialization is not supported. XML or binary save should be used instead
+        return String::EMPTY;
     }
 }
 
@@ -430,8 +489,8 @@ bool Variant::IsZero() const
 
     case VAR_RESOURCEREFLIST:
     {
-        const Vector<String>& names = reinterpret_cast<const ResourceRefList*>(&value_)->names_;
-        for (Vector<String>::ConstIterator i = names.Begin(); i != names.End(); ++i)
+        const StringVector& names = reinterpret_cast<const ResourceRefList*>(&value_)->names_;
+        for (StringVector::ConstIterator i = names.Begin(); i != names.End(); ++i)
         {
             if (!i->Empty())
                 return false;
@@ -441,6 +500,9 @@ bool Variant::IsZero() const
 
     case VAR_VARIANTVECTOR:
         return reinterpret_cast<const VariantVector*>(&value_)->Empty();
+
+    case VAR_STRINGVECTOR:
+        return reinterpret_cast<const StringVector*>(&value_)->Empty();
 
     case VAR_VARIANTMAP:
         return reinterpret_cast<const VariantMap*>(&value_)->Empty();
@@ -462,7 +524,7 @@ bool Variant::IsZero() const
 
     case VAR_MATRIX4:
         return *reinterpret_cast<const Matrix4*>(value_.ptr_) == Matrix4::IDENTITY;
-        
+
     case VAR_DOUBLE:
         return *reinterpret_cast<const double*>(&value_) == 0.0;
 
@@ -496,6 +558,10 @@ void Variant::SetType(VariantType newType)
 
     case VAR_VARIANTVECTOR:
         (reinterpret_cast<VariantVector*>(&value_))->~VariantVector();
+        break;
+
+    case VAR_STRINGVECTOR:
+        (reinterpret_cast<StringVector*>(&value_))->~StringVector();
         break;
 
     case VAR_VARIANTMAP:
@@ -544,6 +610,10 @@ void Variant::SetType(VariantType newType)
 
     case VAR_VARIANTVECTOR:
         new(reinterpret_cast<VariantVector*>(&value_)) VariantVector();
+        break;
+
+    case VAR_STRINGVECTOR:
+        new(reinterpret_cast<StringVector*>(&value_)) StringVector();
         break;
 
     case VAR_VARIANTMAP:
@@ -684,6 +754,11 @@ template <> ResourceRefList Variant::Get<ResourceRefList>() const
 template <> VariantVector Variant::Get<VariantVector>() const
 {
     return GetVariantVector();
+}
+
+template <> StringVector Variant::Get<StringVector >() const
+{
+    return GetStringVector();
 }
 
 template <> VariantMap Variant::Get<VariantMap>() const

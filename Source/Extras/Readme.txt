@@ -1,3 +1,7 @@
+BlenderExporter
+
+- Has moved to https://github.com/reattiva/Clockwork-Blender
+
 OgreBatchConverter
 
 - Contributed by Carlo Carollo. Converts multiple Ogre .mesh.xml files (also from

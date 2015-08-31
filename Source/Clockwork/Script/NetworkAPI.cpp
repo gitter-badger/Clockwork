@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #ifdef CLOCKWORK_NETWORK
 
@@ -53,6 +73,12 @@ static void RegisterConnection(asIScriptEngine* engine)
     engine->RegisterObjectMethod("Connection", "bool get_sceneLoaded() const", asMETHOD(Connection, IsSceneLoaded), asCALL_THISCALL);
     engine->RegisterObjectMethod("Connection", "String get_address() const", asMETHOD(Connection, GetAddress), asCALL_THISCALL);
     engine->RegisterObjectMethod("Connection", "uint16 get_port() const", asMETHOD(Connection, GetPort), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Connection", "float get_roundTripTime() const", asMETHOD(Connection, GetRoundTripTime), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Connection", "float get_lastHeardTime() const", asMETHOD(Connection, GetLastHeardTime), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Connection", "float get_bytesInPerSec() const", asMETHOD(Connection, GetBytesInPerSec), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Connection", "float get_bytesOutPerSec() const", asMETHOD(Connection, GetBytesOutPerSec), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Connection", "float get_packetsInPerSec() const", asMETHOD(Connection, GetPacketsInPerSec), asCALL_THISCALL);
+    engine->RegisterObjectMethod("Connection", "float get_packetsOutPerSec() const", asMETHOD(Connection, GetPacketsOutPerSec), asCALL_THISCALL);
     engine->RegisterObjectMethod("Connection", "uint get_numDownloads() const", asMETHOD(Connection, GetNumDownloads), asCALL_THISCALL);
     engine->RegisterObjectMethod("Connection", "const String& get_downloadName() const", asMETHOD(Connection, GetDownloadName), asCALL_THISCALL);
     engine->RegisterObjectMethod("Connection", "float get_downloadProgress() const", asMETHOD(Connection, GetDownloadProgress), asCALL_THISCALL);

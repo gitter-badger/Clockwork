@@ -335,9 +335,9 @@
         float SmithGGXVisibility(in float nDotL, in float nDotV, in float roughness)
         {
             float rough2 = roughness * roughness;
-            float viewFactor = nDotV + sqrt(nDotV * (nDotV - nDotV * rough2) + rough2);
-            float lightFactor = nDotL + sqrt(nDotL * (nDotL - nDotL * rough2) + rough2);
-            return 1.0 / (viewFactor * lightFactor);
+            float gSmithV = nDotV + sqrt(nDotV * (nDotV - nDotV * rough2) + rough2);
+            float gSmithL = nDotL + sqrt(nDotL * (nDotL - nDotL * rough2) + rough2);
+            return 1.0 / (gSmithV * gSmithL);
         }
         
         
@@ -389,14 +389,17 @@
             ///     specColor: specular color of the fragment
             ///     roughness: surface roughness
             ///     nDotV: dot product of normal and view vectors
-            float3 EnvBRDFApprox(in float3 specColor, in float roughness, in float nDotV )
-            {            
-                const float4 c0 = float4(-1, -0.0275, -0.572, 0.022 );
-                const float4 c1 = float4(1, 0.0425, 1.04, -0.04 );
-                float4 r = roughness * c0 + c1;
-                float a004 = min( r.x * r.x, exp2( -9.28 * nDotV ) ) * r.x + r.y;
-                float2 AB = float2( -1.04, 1.04 ) * a004 + r.zw;
-                return specColor * AB.x + AB.y;
+            float3 EnvBRDFApprox( half3 SpecularColor, half Roughness, half NoV )
+            {
+                // [ Lazarov 2013, "Getting More Physical in Call of Duty: Black Ops II" ]
+                // Adaptation to fit our G term.
+                const half4 c0 = { -1, -0.0275, -0.572, 0.022 };
+            	const half4 c1 = { 1, 0.0425, 1.04, -0.04 };
+            	half4 r = Roughness * c0 + c1;
+            	half a004 = min( r.x * r.x, exp2( -9.28 * NoV ) ) * r.x + r.y;
+            	half2 AB = half2( -1.04, 1.04 ) * a004 + r.zw;
+
+                return SpecularColor * AB.x + AB.y;
             }
 
             /// Determine reflection vector based on surface roughness, rougher uses closer to the normal and smoother uses closer to the reflection vector
@@ -405,8 +408,8 @@
             ///     roughness: surface roughness
             float3 GetSpecularDominantDir(float3 normal, float3 reflection, float roughness) 
             { 
-                const float smoothness = saturate(1.0 - roughness); 
-                const float lerpFactor = smoothness * (sqrt(smoothness) + roughness); 
+                float smoothness = saturate(1.0 - roughness); 
+                float lerpFactor = smoothness * (sqrt(smoothness) + roughness); 
                 return lerp(normal, reflection, lerpFactor);
             }
             
@@ -418,17 +421,17 @@
             ///     reflectionCubeColor: output of the sampled cubemap color
             float3 ImageBasedLighting(in float3 reflectVec, in float3 wsNormal, in float3 toCamera, in float3 specular, in float roughness, out float3 reflectionCubeColor)
             {    
-                const float ndv = (dot(-toCamera, wsNormal));
+                float ndv = abs(dot(wsNormal, toCamera) + 1e-5);
                 
-                reflectVec = GetSpecularDominantDir(wsNormal, reflectVec, roughness);
+                reflectVec = GetSpecularDominantDir(wsNormal, -reflectVec, roughness);
                 
                 // Mip selection is something to tune to your desired results
                 //const float mipSelect = 9;
                 //const float mipSelect = 7 - 1 + log2(roughness); // Geilfus: https://github.com/simongeilfus/Cinder-Experiments
-                const float mipSelect = roughness * 9;  // Lux-style
+                float mipSelect = roughness  * 8;  // Lux-style
                 
                 reflectionCubeColor.rgb = SampleCubeLOD(ZoneCubeMap, float4(reflectVec, mipSelect)).rgb;
-                const float3 environmentSpecular = EnvBRDFApprox(specular, roughness, ndv);
+                float3 environmentSpecular = EnvBRDFApprox(specular, roughness, ndv);
                 return environmentSpecular *  reflectionCubeColor;
             }
 

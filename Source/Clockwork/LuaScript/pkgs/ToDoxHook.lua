@@ -74,7 +74,7 @@ end
 function classEnumerate:print(ident,close)
   local enumerate = {}
   enumerate.name = self.name
-  
+
   local i = 1
   while self[i] do
     if self[i] ~= "" then
@@ -182,7 +182,7 @@ function classVariable:print(ident,close)
   property.name = self.lname
   property.def  = self.def
   property.ret  = self.ret
-  
+
   if currentClass == nil then
     if property.mod:find("tolua_property__") == nil then
       table.insert(globalConstants, property)
@@ -198,7 +198,7 @@ function classVariable:print(ident,close)
   end
 end
 
-function classVerbatim:print(ident,close)  
+function classVerbatim:print(ident,close)
 end
 
 function sortByName(t)
@@ -476,6 +476,7 @@ function writeTableOfContents(file)
   file:write("\\ref LuaScriptAPI_ClassList \"Class list\"<br>\n")
   file:write("\\ref LuaScriptAPI_Classes \"Classes\"<br>\n")
   file:write("\\ref LuaScriptAPI_Enums \"Enumerations\"<br>\n")
+  file:write("\\ref LuaScriptAPI_toluaFunctions \"tolua functions\"<br>\n")
   file:write("\\ref LuaScriptAPI_GlobalFunctions \"Global functions\"<br>\n")
   file:write("\\ref LuaScriptAPI_GlobalProperties \"Global properties\"<br>\n")
   file:write("\\ref LuaScriptAPI_GlobalConstants \"Global constants\"<br>\n")
@@ -512,7 +513,11 @@ function writeEnumerates(file)
   end
 end
 
-function writeFunction(file, func)  
+function writeFunction(file, func)
+  if func.name:match("^_") then
+    -- Skip internal functions
+    return
+  end
   local line = "- "
   -- construct function
   if func.type == "" and func.ptr == "" then
@@ -536,7 +541,7 @@ function writeFunction(file, func)
 
       if i ~= count then
         line = line .. ", "
-      end      
+      end
     end
   end
 
@@ -558,12 +563,26 @@ function writeGlobalConstants(file)
     file:write(line .. "\n")
   end
 
-  file:write("\n")  
+  file:write("\n")
 end
 
-function writeGlobalFunctions(file)  
+function writeToluaFunctions(file)
+  file:write("\n\\section LuaScriptAPI_toluaFunctions tolua functions\n")
+
+  file:write("- lua_usertype cast(lua_usertype object, const char* typename)\n")
+  file:write("- lua_table getpeer(lua_userdata object)\n")
+  file:write("- void inherit(lua_table table, lua_usertype c_instance)\n")
+  file:write("- bool releaseownership(lua_usertype object)\n")
+  file:write("- void setpeer(lua_userdata object, lua_table table)\n")
+  file:write("- bool takeownership(lua_usertype object)\n")
+  file:write("- const char* type(lua_object object)\n")
+
+  file:write("\n")
+end
+
+function writeGlobalFunctions(file)
   sortByName(globalFunctions)
-  file:write("\n\\section LuaScriptAPI_GlobalFunctions Global functions\n")  
+  file:write("\n\\section LuaScriptAPI_GlobalFunctions Global functions\n")
 
   for i, func in ipairs(globalFunctions) do
     writeFunction(file, func)
@@ -593,7 +612,7 @@ end
 
 function classPackage:print()
   curDir = getCurrentDirectory()
-  
+
   if flags.o == nil then
     print("Invalid output filename");
     return
@@ -619,10 +638,11 @@ function classPackage:print()
   writeClassList(file)
   writeClasses(file)
   writeEnumerates(file)
+  writeToluaFunctions(file)
   writeGlobalFunctions(file)
   writeGlobalProperties(file)
   writeGlobalConstants(file)
-  
+
   file:write("*/\n")
   file:write("\n")
   file:write("}\n")

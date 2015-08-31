@@ -1,6 +1,5 @@
-<technique vs="Unlit" ps="Unlit" vsdefines="NOUV" >
-    <pass name="base" />
-    <pass name="prepass" psdefines="PREPASS" />
-    <pass name="material" />
-    <pass name="deferred" psdefines="DEFERRED" />
+<technique vs="Unlit" ps="Unlit" vsdefines="NOUV" psdefines="NOUV">
+  <pass name="base" />
+  <pass name="pbrdeferred" psdefines="DEFERRED PBR" />
+  <pass name="depth" vs="Depth" ps="Depth" />
 </technique>

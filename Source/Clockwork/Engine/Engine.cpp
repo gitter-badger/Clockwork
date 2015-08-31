@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
@@ -22,6 +42,9 @@
 #endif
 #ifdef CLOCKWORK_NETWORK
 #include "../Network/Network.h"
+#endif
+#ifdef CLOCKWORK_DATABASE
+#include "../Database/Database.h"
 #endif
 #ifdef CLOCKWORK_PHYSICS
 #include "../Physics/PhysicsWorld.h"
@@ -103,6 +126,9 @@ Engine::Engine(Context* context) :
     context_->RegisterSubsystem(new Localization(context_));
 #ifdef CLOCKWORK_NETWORK
     context_->RegisterSubsystem(new Network(context_));
+#endif
+#ifdef CLOCKWORK_DATABASE
+    context_->RegisterSubsystem(new Database(context_));
 #endif
     context_->RegisterSubsystem(new Input(context_));
     context_->RegisterSubsystem(new Audio(context_));
@@ -738,10 +764,8 @@ VariantMap Engine::ParseParameters(const Vector<String>& arguments)
                 ret["SoundInterpolation"] = false;
             else if (argument == "mono")
                 ret["SoundStereo"] = false;
-            else if (argument == "prepass")
-                ret["RenderPath"] = "RenderPaths/Prepass.xml";
             else if (argument == "deferred")
-                ret["RenderPath"] = "RenderPaths/Deferred.xml";
+                ret["RenderPath"] = "RenderPaths/PBR-Deferred.xml";
             else if (argument == "renderpath" && !value.Empty())
             {
                 ret["RenderPath"] = value;

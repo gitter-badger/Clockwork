@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #pragma once
 
@@ -123,7 +143,7 @@ private:
     /// Add new obstacle or remove existing obstacle/agent.
     void AddOrRemoveObject();
     /// Create a "Jack" object at position.
-    void SpawnJack(const Vector3& pos);
+    void SpawnJack(const Vector3& pos, Node* jackGroup);
     /// Create a mushroom object at position.
     void CreateMushroom(const Vector3& pos);
     /// Create an off-mesh connection for each box to make it climbable.
@@ -140,6 +160,8 @@ private:
     void HandleCrowdAgentFailure(StringHash eventType, VariantMap& eventData);
     /// Handle crowd agent reposition.
     void HandleCrowdAgentReposition(StringHash eventType, VariantMap& eventData);
+    /// Handle crowd agent formation.
+    void HandleCrowdAgentFormation(StringHash eventType, VariantMap& eventData);
 
     /// Flag for drawing debug geometry.
     bool drawDebug_;

@@ -1,3 +1,25 @@
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
 #include <Clockwork/Clockwork.h>
 
 #include <Clockwork/Graphics/AnimatedModel.h>
@@ -35,7 +57,7 @@ void CreateRagdoll::HandleNodeCollision(StringHash eventType, VariantMap& eventD
         // We do not need the physics components in the AnimatedModel's root scene node anymore
         node_->RemoveComponent<RigidBody>();
         node_->RemoveComponent<CollisionShape>();
-
+        
         // Create RigidBody & CollisionShape components to bones
         CreateRagdollBone("Bip01_Pelvis", SHAPE_BOX, Vector3(0.3f, 0.2f, 0.25f), Vector3(0.0f, 0.0f, 0.0f),
             Quaternion(0.0f, 0.0f, 0.0f));
@@ -59,7 +81,7 @@ void CreateRagdoll::HandleNodeCollision(StringHash eventType, VariantMap& eventD
             Quaternion(0.0f, 0.0f, 90.0f));
         CreateRagdollBone("Bip01_R_Forearm", SHAPE_CAPSULE, Vector3(0.125f, 0.4f, 0.125f), Vector3(0.2f, 0.0f, 0.0f),
             Quaternion(0.0f, 0.0f, 90.0f));
-
+        
         // Create Constraints between bones
         CreateRagdollConstraint("Bip01_L_Thigh", "Bip01_Pelvis", CONSTRAINT_CONETWIST, Vector3::BACK, Vector3::FORWARD,
             Vector2(45.0f, 45.0f), Vector2::ZERO);
@@ -81,13 +103,13 @@ void CreateRagdoll::HandleNodeCollision(StringHash eventType, VariantMap& eventD
             Vector2(90.0f, 0.0f), Vector2::ZERO);
         CreateRagdollConstraint("Bip01_R_Forearm", "Bip01_R_UpperArm", CONSTRAINT_HINGE, Vector3::BACK, Vector3::BACK,
             Vector2(90.0f, 0.0f), Vector2::ZERO);
-
+        
         // Disable keyframe animation from all bones so that they will not interfere with the ragdoll
         AnimatedModel* model = GetComponent<AnimatedModel>();
         Skeleton& skeleton = model->GetSkeleton();
         for (unsigned i = 0; i < skeleton.GetNumBones(); ++i)
             skeleton.GetBone(i)->animated_ = false;
-
+        
         // Finally remove self from the scene node. Note that this must be the last operation performed in the function
         Remove();
     }
@@ -103,7 +125,7 @@ void CreateRagdoll::CreateRagdollBone(const String& boneName, ShapeType type, co
         LOGWARNING("Could not find bone " + boneName + " for creating ragdoll physics components");
         return;
     }
-
+    
     RigidBody* body = boneNode->CreateComponent<RigidBody>();
     // Set mass to make movable
     body->SetMass(1.0f);
@@ -138,7 +160,7 @@ void CreateRagdoll::CreateRagdollConstraint(const String& boneName, const String
         LOGWARNING("Could not find bone " + parentName + " for creating ragdoll constraint");
         return;
     }
-
+    
     Constraint* constraint = boneNode->CreateComponent<Constraint>();
     constraint->SetConstraintType(type);
     // Most of the constraints in the ragdoll will work better when the connected bodies don't collide against each other

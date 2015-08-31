@@ -1,5 +1,5 @@
 // Common sample initialization as a framework for all samples.
-//    - Create Clockwork logo at screen;
+//    - Create Urho3D logo at screen;
 //    - Set custom window title and icon;
 //    - Create Console and Debug HUD, and use F1 and F2 key to toggle them;
 //    - Toggle rendering options from the keys 1-8;
@@ -103,9 +103,9 @@ void CreateLogo()
 
 void SetWindowTitleAndIcon()
 {
-    Image@ icon = cache.GetResource("Image", "Textures/ClockworkIcon.png");
+    Image@ icon = cache.GetResource("Image", "Textures/UrhoIcon.png");
     graphics.windowIcon = icon;
-    graphics.windowTitle = "Clockwork Sample";
+    graphics.windowTitle = "Urho3D Sample";
 }
 
 void CreateConsoleAndDebugHud()

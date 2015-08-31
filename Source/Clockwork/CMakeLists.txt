@@ -1,9 +1,32 @@
-
+#
+# Copyright (c) 2008-2015 the Clockwork project.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
 
 # Define target name
 set (TARGET_NAME Clockwork)
 
 add_definitions (-DCLOCKWORK_IS_BUILDING)
+if (ODBC_VERSION AND NOT ODBC_VERSION VERSION_LESS 3)
+    add_definitions (-DODBC_3_OR_LATER)
+endif ()
 
 # Windows platform has its own naming convention for library
 set (LIB_NAME ${TARGET_NAME})
@@ -49,7 +72,7 @@ if (CLOCKWORK_LUA)
     # Use the host tool to generate source files for tolua++ API binding
     file (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/LuaScript/generated)
     file (GLOB API_PKG_FILES LuaScript/pkgs/*.pkg)
-    foreach (DIR Navigation Network Physics Clockwork2D)
+    foreach (DIR Navigation Network Database Physics Clockwork2D)
         string (TOUPPER CLOCKWORK_${DIR} OPT)
         if (NOT ${OPT})
             list (REMOVE_ITEM API_PKG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/LuaScript/pkgs/${DIR}LuaAPI.pkg)
@@ -119,6 +142,15 @@ foreach (DIR Navigation Network Physics Clockwork2D)
         list (APPEND EXCLUDED_SOURCE_DIRS ${DIR})
     endif ()
 endforeach ()
+if (CLOCKWORK_DATABASE)
+    if (CLOCKWORK_DATABASE_ODBC)
+        list (APPEND EXCLUDED_SOURCE_DIRS Database/SQLite)
+    else ()
+        list (APPEND EXCLUDED_SOURCE_DIRS Database/ODBC)
+    endif ()
+else ()
+    list (APPEND EXCLUDED_SOURCE_DIRS Database)
+endif ()
 if (CLOCKWORK_OPENGL)
     # Exclude the opposite source directory
     list (APPEND EXCLUDED_SOURCE_DIRS Graphics/Direct3D9 Graphics/Direct3D11)
@@ -134,10 +166,7 @@ if (APPLE AND NOT IOS)
     set (GLOB_OBJC_PATTERN *.m)     # Should only pick up MacFileWatcher.m for MacOSX platform at the moment
 endif ()
 string (REPLACE ";" "/[^;]+;" EXCLUDE_PATTERNS "${EXCLUDED_SOURCE_DIRS};")
-if (CLOCKWORK_PCH)
-    set (PCH PCH Precompiled.h)
-endif ()
-define_source_files (EXCLUDE_PATTERNS ${EXCLUDE_PATTERNS} GLOB_CPP_PATTERNS *.cpp ${GLOB_OBJC_PATTERN} EXTRA_H_FILES librevision.h Clockwork.h RECURSE GROUP ${PCH})
+define_source_files (EXCLUDE_PATTERNS ${EXCLUDE_PATTERNS} GLOB_CPP_PATTERNS *.cpp ${GLOB_OBJC_PATTERN} EXTRA_H_FILES librevision.h Clockwork.h RECURSE GROUP PCH Precompiled.h)
 list (APPEND SOURCE_FILES ${GEN_CPP_FILES} ${ALL_OBJ_FILES})
 
 # Define dependency libs
@@ -148,12 +177,10 @@ if (CLOCKWORK_PHYSICS)
     # This is more practical than patching its header files in many places to make them work with relative path
     list (APPEND INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${DEST_INCLUDE_DIR}/ThirdParty/Bullet)
 endif ()
-
 if (CLOCKWORK_NAVIGATION)
     # DetourTileCache and DetourCrowd libraries depend on Detour's include dir to be added in the header search path
     list (APPEND INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${DEST_INCLUDE_DIR}/ThirdParty/Detour)
 endif ()
-
 if (CLOCKWORK_LUA)
     # Lua/LuaJIT library depends on its own include dir to be added in the header search path
     # This is more practical than patching its header files in many places to make them work with relative path
@@ -304,7 +331,8 @@ install_header_files (FILES ${CMAKE_CURRENT_BINARY_DIR}/librevision.h ${CMAKE_CU
 
 # Generate platform specific pkg-config file for the benefit of Clockwork library users via SDK without CMake
 get_directory_property (CLOCKWORK_COMPILE_DEFINITIONS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} COMPILE_DEFINITIONS)
-list (REMOVE_ITEM CLOCKWORK_COMPILE_DEFINITIONS HAVE_STDINT_H GLEW_STATIC GLEW_NO_GLU)     # Remove those defines that are only used for building the library and not needed by library user
+# Remove those defines that are only used for building the library and not needed by library user
+list (REMOVE_ITEM CLOCKWORK_COMPILE_DEFINITIONS HAVE_STDINT_H GLEW_STATIC GLEW_NO_GLU CLOCKWORK_IS_BUILDING ODBC_3_OR_LATER)
 if (ABSOLUTE_PATH_LIBS)
     string (REPLACE ";" "\" \"" CLOCKWORK_ABS_PATH_LIBS "\"${ABSOLUTE_PATH_LIBS}\"")   # Note: need to always "stringify" a variable in list context for replace to work correctly, besides the list could be empty
     string (REPLACE "${SYSROOT}" "\${pc_sysrootdir}" CLOCKWORK_ABS_PATH_LIBS "${CLOCKWORK_ABS_PATH_LIBS}")

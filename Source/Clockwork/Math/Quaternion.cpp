@@ -1,10 +1,32 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
 #include "../Math/Quaternion.h"
 
 #include <cstdio>
+
+#include "../DebugNew.h"
 
 namespace Clockwork
 {
@@ -128,13 +150,20 @@ void Quaternion::FromRotationMatrix(const Matrix3& matrix)
 
 bool Quaternion::FromLookRotation(const Vector3& direction, const Vector3& upDirection)
 {
-    Vector3 forward = direction.Normalized();
-    Vector3 v = forward.CrossProduct(upDirection).Normalized();
-    Vector3 up = v.CrossProduct(forward);
-    Vector3 right = up.CrossProduct(forward);
-
     Quaternion ret;
-    ret.FromAxes(right, up, forward);
+    Vector3 forward = direction.Normalized();
+
+    Vector3 v = forward.CrossProduct(upDirection);
+    // If direction & upDirection are parallel and crossproduct becomes zero, use FromRotationTo() fallback
+    if (v.LengthSquared() >= M_EPSILON)
+    {
+        v.Normalize();
+        Vector3 up = v.CrossProduct(forward);
+        Vector3 right = up.CrossProduct(forward);
+        ret.FromAxes(right, up, forward);
+    }
+    else
+        ret.FromRotationTo(Vector3::FORWARD, forward);
 
     if (!ret.IsNaN())
     {

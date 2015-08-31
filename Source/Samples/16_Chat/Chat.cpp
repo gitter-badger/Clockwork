@@ -1,3 +1,25 @@
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
 #include <Clockwork/Clockwork.h>
 
 #include <Clockwork/Audio/Audio.h>
@@ -52,7 +74,7 @@ void Chat::Start()
 
     // Create the user interface
     CreateUI();
-
+    
     // Subscribe to UI and network events
     SubscribeToEvents();
 }
@@ -67,19 +89,19 @@ void Chat::CreateUI()
     XMLFile* uiStyle = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
     // Set style to the UI root so that elements will inherit it
     root->SetDefaultStyle(uiStyle);
-
+    
     Font* font = cache->GetResource<Font>("Fonts/Anonymous Pro.ttf");
     chatHistoryText_ = root->CreateChild<Text>();
     chatHistoryText_->SetFont(font, 12);
-
+    
     buttonContainer_ = root->CreateChild<UIElement>();
     buttonContainer_->SetFixedSize(graphics->GetWidth(), 20);
     buttonContainer_->SetPosition(0, graphics->GetHeight() - 20);
     buttonContainer_->SetLayoutMode(LM_HORIZONTAL);
-
+    
     textEdit_ = buttonContainer_->CreateChild<LineEdit>();
     textEdit_->SetStyleAuto();
-
+    
     sendButton_ = CreateButton("Send", 70);
     connectButton_ = CreateButton("Connect", 90);
     disconnectButton_ = CreateButton("Disconnect", 100);
@@ -107,7 +129,7 @@ void Chat::SubscribeToEvents()
 
     // Subscribe to log messages so that we can pipe them to the chat window
     SubscribeToEvent(E_LOGMESSAGE, HANDLER(Chat, HandleLogMessage));
-
+    
     // Subscribe to network events
     SubscribeToEvent(E_NETWORKMESSAGE, HANDLER(Chat, HandleNetworkMessage));
     SubscribeToEvent(E_SERVERCONNECTED, HANDLER(Chat, HandleConnectionStatus));
@@ -119,16 +141,16 @@ Button* Chat::CreateButton(const String& text, int width)
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Font* font = cache->GetResource<Font>("Fonts/Anonymous Pro.ttf");
-
+    
     Button* button = buttonContainer_->CreateChild<Button>();
     button->SetStyleAuto();
     button->SetFixedWidth(width);
-
+    
     Text* buttonText = button->CreateChild<Text>();
     buttonText->SetFont(font, 12);
     buttonText->SetAlignment(HA_CENTER, VA_CENTER);
     buttonText->SetText(text);
-
+    
     return button;
 }
 
@@ -141,7 +163,7 @@ void Chat::ShowChatText(const String& row)
     String allRows;
     for (unsigned i = 0; i < chatHistory_.Size(); ++i)
         allRows += chatHistory_[i] + "\n";
-
+    
     chatHistoryText_->SetText(allRows);
 }
 
@@ -150,7 +172,7 @@ void Chat::UpdateButtons()
     Network* network = GetSubsystem<Network>();
     Connection* serverConnection = network->GetServerConnection();
     bool serverRunning = network->IsServerRunning();
-
+    
     // Show and hide buttons so that eg. Connect and Disconnect are never shown at the same time
     sendButton_->SetVisible(serverConnection != 0);
     connectButton_->SetVisible(!serverConnection && !serverRunning);
@@ -161,7 +183,7 @@ void Chat::UpdateButtons()
 void Chat::HandleLogMessage(StringHash eventType, VariantMap& eventData)
 {
     using namespace LogMessage;
-
+    
     ShowChatText(eventData[P_MESSAGE].GetString());
 }
 
@@ -170,10 +192,10 @@ void Chat::HandleSend(StringHash eventType, VariantMap& eventData)
     String text = textEdit_->GetText();
     if (text.Empty())
         return; // Do not send an empty message
-
+    
     Network* network = GetSubsystem<Network>();
     Connection* serverConnection = network->GetServerConnection();
-
+    
     if (serverConnection)
     {
         // A VectorBuffer object is convenient for constructing a message to send
@@ -194,12 +216,12 @@ void Chat::HandleConnect(StringHash eventType, VariantMap& eventData)
         address = "localhost"; // Use localhost to connect if nothing else specified
     // Empty the text edit after reading the address to connect to
     textEdit_->SetText(String::EMPTY);
-
+    
     // Connect to server, do not specify a client scene as we are not using scene replication, just messages.
     // At connect time we could also send identity parameters (such as username) in a VariantMap, but in this
     // case we skip it for simplicity
     network->Connect(address, CHAT_SERVER_PORT, 0);
-
+    
     UpdateButtons();
 }
 
@@ -213,7 +235,7 @@ void Chat::HandleDisconnect(StringHash eventType, VariantMap& eventData)
     // Or if we were running a server, stop it
     else if (network->IsServerRunning())
         network->StopServer();
-
+    
     UpdateButtons();
 }
 
@@ -221,16 +243,16 @@ void Chat::HandleStartServer(StringHash eventType, VariantMap& eventData)
 {
     Network* network = GetSubsystem<Network>();
     network->StartServer(CHAT_SERVER_PORT);
-
+    
     UpdateButtons();
 }
 
 void Chat::HandleNetworkMessage(StringHash eventType, VariantMap& eventData)
 {
     Network* network = GetSubsystem<Network>();
-
+    
     using namespace NetworkMessage;
-
+    
     int msgID = eventData[P_MESSAGEID].GetInt();
     if (msgID == MSG_CHAT)
     {
@@ -238,21 +260,21 @@ void Chat::HandleNetworkMessage(StringHash eventType, VariantMap& eventData)
         // Use a MemoryBuffer to read the message data so that there is no unnecessary copying
         MemoryBuffer msg(data);
         String text = msg.ReadString();
-
+        
         // If we are the server, prepend the sender's IP address and port and echo to everyone
         // If we are a client, just display the message
         if (network->IsServerRunning())
         {
             Connection* sender = static_cast<Connection*>(eventData[P_CONNECTION].GetPtr());
-
+            
             text = sender->ToString() + " " + text;
-
+            
             VectorBuffer sendMsg;
             sendMsg.WriteString(text);
             // Broadcast as in-order and reliable
             network->BroadcastMessage(MSG_CHAT, true, true, sendMsg);
         }
-
+        
         ShowChatText(text);
     }
 }

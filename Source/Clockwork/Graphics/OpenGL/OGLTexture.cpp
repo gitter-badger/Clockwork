@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../../Precompiled.h"
 
@@ -302,7 +322,7 @@ unsigned Texture::GetRowDataSize(int width) const
 #ifndef GL_ES_VERSION_2_0
     case GL_DEPTH24_STENCIL8_EXT:
     case GL_RG16:
-    case GL_R16F:
+    case GL_RG16F:
     case GL_R32F:
 #endif
         return (unsigned)(width * 4);
@@ -312,12 +332,13 @@ unsigned Texture::GetRowDataSize(int width) const
         return (unsigned)width;
 
     case GL_RG8:
+    case GL_R16F:
         return (unsigned)(width * 2);
 
     case GL_RGBA16:
+    case GL_RGBA16F_ARB:
         return (unsigned)(width * 8);
 
-    case GL_RGBA16F_ARB:
     case GL_RGBA32F_ARB:
         return (unsigned)(width * 16);
 #endif
@@ -386,9 +407,10 @@ unsigned Texture::GetDataType(unsigned format)
         return GL_UNSIGNED_INT_24_8_EXT;
     else if (format == GL_RG16 || format == GL_RGBA16)
         return GL_UNSIGNED_SHORT;
-    else if (format == GL_RGBA16F_ARB || format == GL_RGBA32F_ARB || format == GL_RG16F || format == GL_RG32F ||
-             format == GL_R16F || format == GL_R32F)
+    else if (format == GL_RGBA32F_ARB || format == GL_RG32F || format == GL_R32F)
         return GL_FLOAT;
+    else if (format == GL_RGBA16F_ARB || format == GL_RG16F || format == GL_R16F)
+        return GL_HALF_FLOAT_ARB;
     else
         return GL_UNSIGNED_BYTE;
 #else

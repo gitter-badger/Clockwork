@@ -93,9 +93,6 @@ void CreateUI()
 
     SubscribeToEvent("ScreenMode", "ResizeUI");
     SubscribeToEvent("MenuSelected", "HandleMenuSelected");
-    SubscribeToEvent("KeyDown", "HandleKeyDown");
-    SubscribeToEvent("KeyUp", "UnfadeUI");
-    SubscribeToEvent("MouseButtonUp", "UnfadeUI");
     SubscribeToEvent("ChangeLanguage", "HandleChangeLanguage");
     
     SubscribeToEvent("WheelChangeColor", "HandleWheelChangeColor");
@@ -400,6 +397,7 @@ void CreateMenuBar()
              popup.AddChild(CreateMenuItem("View closer", @ViewCloser, KEY_KP_PERIOD));
         }
         popup.AddChild(CreateMenuItem("Color wheel", @ColorWheelBuildMenuSelectTypeColor, 'W', QUAL_ALT));
+        popup.AddChild(CreateMenuItem("Show components icons", @ViewDebugIcons, 'I', QUAL_ALT));
 
         CreateChildDivider(popup);
         
@@ -1553,6 +1551,8 @@ void HideUI(bool hide = true)
     if (uiHidden == hide)
         return;
 
+    // Note: we could set ui.root.visible = false and it would hide the whole hierarchy.
+    // However in this case we need the editorUIElement to stay visible
     bool visible = !(uiHidden = hide);
     Array<UIElement@> children = ui.root.GetChildren();
     for (uint i = 0; i < children.length; ++i)
@@ -2119,4 +2119,10 @@ void HandleWheelSelectColor(StringHash eventType, VariantMap& eventData)
             }
         }
     }
+}
+
+bool ViewDebugIcons() 
+{
+    debugIconsShow = !debugIconsShow;
+    return true;
 }

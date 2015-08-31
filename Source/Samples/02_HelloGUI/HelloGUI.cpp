@@ -1,3 +1,25 @@
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
 #include <Clockwork/Clockwork.h>
 
 #include <Clockwork/UI/Button.h>
@@ -10,7 +32,7 @@
 #include <Clockwork/UI/LineEdit.h>
 #include <Clockwork/Resource/ResourceCache.h>
 #include <Clockwork/UI/Text.h>
-#include <Clockwork/Graphics/Texture2D.h> 
+#include <Clockwork/Graphics/Texture2D.h>
 #include <Clockwork/UI/ToolTip.h>
 #include <Clockwork/UI/UI.h>
 #include <Clockwork/UI/UIElement.h>
@@ -47,7 +69,7 @@ void HelloGUI::Start()
 
     // Initialize Window
     InitWindow();
-
+    
     // Create and add some controls to the Window
     InitControls();
 
@@ -123,7 +145,7 @@ void HelloGUI::InitWindow()
 
     // Subscribe to buttonClose release (following a 'press') events
     SubscribeToEvent(buttonClose, E_RELEASED, HANDLER(HelloGUI, HandleClosePressed));
-
+    
     // Subscribe also to all UI mouse clicks just to see where we have clicked
     SubscribeToEvent(E_UIMOUSECLICK, HANDLER(HelloGUI, HandleControlClicked));
 }

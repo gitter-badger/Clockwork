@@ -9,6 +9,8 @@ sampler2D sAlbedoBuffer : register(s0);
 sampler2D sNormalMap : register(s1);
 sampler2D sNormalBuffer : register(s1);
 sampler2D sSpecMap : register(s2);
+sampler2D sSpecGlossMap : register(s2); // SpecRGB + A:Glossiness map
+sampler2D sRoughMetalFresnel : register(s2); //R: Roughness, G: Metal, B: fresnel
 sampler2D sEmissiveMap : register(s3);
 sampler2D sEnvMap : register(s4);
 sampler3D sVolumeMap : register(s5);
@@ -28,6 +30,7 @@ sampler3D sZoneVolumeMap : register(s15);
 #define Sample2DProj(tex, uv) tex2Dproj(s##tex, uv)
 #define Sample2DLod0(tex, uv) tex2Dlod(s##tex, float4(uv, 0.0, 0.0))
 #define SampleCube(tex, uv) texCUBE(s##tex, uv)
+#define SampleCubeLOD(tex, uv) texCUBElod(s##tex, uv)
 #define SampleShadow(tex, uv) tex2Dproj(s##tex, uv)
 
 #else
@@ -40,6 +43,8 @@ Texture2D tAlbedoBuffer : register(t0);
 Texture2D tNormalMap : register(t1);
 Texture2D tNormalBuffer : register(t1);
 Texture2D tSpecMap : register(t2);
+Texture2D tSpecGlossMap : register(t2); // SpecRGB + A:Glossiness map
+Texture2D tRoughMetalFresnel : register(t2); //R: Roughness, G: Metal, B: fresnel
 Texture2D tEmissiveMap : register(t3);
 Texture2D tEnvMap : register(t4);
 Texture3D tVolumeMap : register(t5);
@@ -61,6 +66,8 @@ SamplerState sAlbedoBuffer : register(s0);
 SamplerState sNormalMap : register(s1);
 SamplerState sNormalBuffer : register(s1);
 SamplerState sSpecMap : register(s2);
+SamplerState sSpecGlossMap : register(s2); // SpecRGB + A:Glossiness map
+SamplerState sRoughMetalFresnel : register(s2); //R: Roughness, G: Metal, B: fresnel
 SamplerState sEmissiveMap : register(s3);
 SamplerState sEnvMap : register(s4);
 SamplerState sVolumeMap : register(s5);
@@ -80,6 +87,7 @@ SamplerState sZoneVolumeMap : register(s15);
 #define Sample2DProj(tex, uv) t##tex.Sample(s##tex, uv.xy / uv.w)
 #define Sample2DLod0(tex, uv) t##tex.SampleLevel(s##tex, uv, 0.0)
 #define SampleCube(tex, uv) t##tex.Sample(s##tex, uv)
+#define SampleCubeLOD(tex, uv) t##tex.SampleLevel(s##tex, uv.xyz, uv.w)
 #define SampleShadow(tex, uv) t##tex.SampleCmpLevelZero(s##tex, uv.xy, uv.z)
 
 #endif
@@ -92,6 +100,7 @@ float3 DecodeNormal(float4 normalInput)
     normal.z = sqrt(max(1.0 - dot(normal.xy, normal.xy), 0.0));
     return normal;
 #else
+    float r = normalInput.r;
     return normalInput.rgb * 2.0 - 1.0;
 #endif
 }

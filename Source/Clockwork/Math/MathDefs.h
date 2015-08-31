@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #pragma once
 
@@ -58,7 +78,7 @@ inline float Abs(float value) { return value >= 0.0f ? value : -value; }
 inline float Sign(float value) { return value > 0.0f ? 1.0f : (value < 0.0f ? -1.0f : 0.0f); }
 
 /// Check whether a floating point value is NaN.
-/// Use a workaround for GCC, see https://github.com/clockwork3d/Clockwork/issues/655
+/// Use a workaround for GCC, see https://github.com/clockwork/Clockwork/issues/655
 #ifndef __GNUC__
 inline bool IsNaN(float value) { return value != value; }
 #else
@@ -172,12 +192,55 @@ inline float Random(float range) { return Rand() * range / 32767.0f; }
 inline float Random(float min, float max) { return Rand() * (max - min) / 32767.0f + min; }
 
 /// Return a random integer between 0 and range - 1.
-inline int Random(int range) { return (Rand() * (range - 1) + 16384) / 32767; }
+inline int Random(int range) { return (int)(Random() * range); }
 
 /// Return a random integer between min and max - 1.
-inline int Random(int min, int max) { return (Rand() * (max - min - 1) + 16384) / 32767 + min; }
+inline int Random(int min, int max) { float range = (float)(max - min); return (int)(Random() * range) + min; }
 
 /// Return a random normal distributed number with the given mean value and variance.
 inline float RandomNormal(float meanValue, float variance) { return RandStandardNormal() * sqrtf(variance) + meanValue; }
+
+/// Convert float to half float. From https://gist.github.com/martinkallman/5049614
+inline unsigned short FloatToHalf(float value)
+{
+    unsigned inu = *((unsigned*)&value);
+    unsigned t1 = inu & 0x7fffffff;         // Non-sign bits
+    unsigned t2 = inu & 0x80000000;         // Sign bit
+    unsigned t3 = inu & 0x7f800000;         // Exponent
+
+    t1 >>= 13;                              // Align mantissa on MSB
+    t2 >>= 16;                              // Shift sign bit into position
+
+    t1 -= 0x1c000;                          // Adjust bias
+
+    t1 = (t3 < 0x38800000) ? 0 : t1;        // Flush-to-zero
+    t1 = (t3 > 0x47000000) ? 0x7bff : t1;   // Clamp-to-max
+    t1 = (t3 == 0 ? 0 : t1);                // Denormals-as-zero
+
+    t1 |= t2;                               // Re-insert sign bit
+
+    return (unsigned short)t1;
+}
+
+/// Convert half float to float. From https://gist.github.com/martinkallman/5049614
+inline float HalfToFloat(unsigned short value)
+{
+    unsigned t1 = value & 0x7fff;           // Non-sign bits
+    unsigned t2 = value & 0x8000;           // Sign bit
+    unsigned t3 = value & 0x7c00;           // Exponent
+
+    t1 <<= 13;                              // Align mantissa on MSB
+    t2 <<= 16;                              // Shift sign bit into position
+
+    t1 += 0x38000000;                       // Adjust bias
+
+    t1 = (t3 == 0 ? 0 : t1);                // Denormals-as-zero
+
+    t1 |= t2;                               // Re-insert sign bit
+
+    float out;
+    *((unsigned*)&out) = t1;
+    return out;
+}
 
 }

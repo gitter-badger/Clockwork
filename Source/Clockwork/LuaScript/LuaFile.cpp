@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
@@ -27,12 +47,10 @@ LuaFile::LuaFile(Context* context) :
     hasLoaded_(false),
     hasExecuted_(false)
 {
-
 }
 
 LuaFile::~LuaFile()
 {
-
 }
 
 void LuaFile::RegisterObject(Context* context)
@@ -73,28 +91,20 @@ bool LuaFile::LoadChunk(lua_State* luaState)
     if (hasLoaded_)
         return true;
 
-    if (size_ == 0)
+    if (size_ == 0 || !luaState)
         return false;
-
-    if (!luaState)
-        return false;
-
-    int top = lua_gettop(luaState);
 
     // Get file base name
     String name = GetName();
     unsigned extPos = name.FindLast('.');
     if (extPos != String::NPOS)
-    {
         name = name.Substring(0, extPos);
-    }
 
-    int error = luaL_loadbuffer(luaState, data_, size_, name.CString());
-    if (error)
+    if (luaL_loadbuffer(luaState, data_, size_, name.CString()))
     {
         const char* message = lua_tostring(luaState, -1);
-        LOGERROR("Load Buffer failed for " + GetName() + ": " + String(message));
-        lua_settop(luaState, top);
+        LOGERRORF("Load Buffer failed for %s: %s", GetName().CString(), message);
+        lua_pop(luaState, 1);
         return false;
     }
 
@@ -112,16 +122,15 @@ bool LuaFile::LoadAndExecute(lua_State* luaState)
     if (!LoadChunk(luaState))
         return false;
 
-    int top = lua_gettop(luaState);
-
     if (lua_pcall(luaState, 0, 0, 0))
     {
         const char* message = lua_tostring(luaState, -1);
-        LOGERROR("Lua Execute failed for " + GetName() + ": " + String(message));
-        lua_settop(luaState, top);
+        LOGERRORF("Lua Execute failed for %s: %s", GetName().CString(), message);
+        lua_pop(luaState, 1);
         return false;
     }
 
+    LOGINFO("Executed Lua script " + GetName());
     hasExecuted_ = true;
 
     return true;

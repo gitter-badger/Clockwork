@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
@@ -134,38 +154,36 @@ void Localization::Reset()
     strings_.Clear();
 }
 
-void Localization::LoadJSON(const JSONValue &source)
+void Localization::LoadJSON(const JSONValue& source)
 {
-    Vector<String> ids = source.GetChildNames();
-    for (unsigned i = 0; i < ids.Size(); i++)
+    for (JSONObject::ConstIterator i = source.Begin(); i != source.End(); ++i)
     {
-        String id = ids[i];
+        String id = i->first_;
         if (id.Empty())
         {
             LOGWARNING("Localization::LoadJSON(source): string ID is empty");
             continue;
         }
-        JSONValue value = source.GetChild(id);
-        Vector<String> langs = value.GetValueNames();
-        for (unsigned j = 0; j < langs.Size(); j++)
+        const JSONValue& langs = i->second_;
+        for (JSONObject::ConstIterator j = langs.Begin(); j != langs.End(); ++j)
         {
-            String lang = langs[j];
+            const String& lang = j->first_;
             if (lang.Empty())
             {
                 LOGWARNING("Localization::LoadJSON(source): language name is empty, string ID=\"" + id + "\"");
                 continue;
             }
-            String string = value.GetString(lang);
+            const String& string = j->second_.GetString();
             if (string.Empty())
             {
                 LOGWARNING("Localization::LoadJSON(source): translation is empty, string ID=\"" + id +
-                           "\", language=\"" + lang + "\"");
+                    "\", language=\"" + lang + "\"");
                 continue;
             }
             if (strings_[StringHash(lang)][StringHash(id)] != String::EMPTY)
             {
                 LOGWARNING("Localization::LoadJSON(source): override translation, string ID=\"" + id +
-                           "\", language=\"" + lang + "\"");
+                    "\", language=\"" + lang + "\"");
             }
             strings_[StringHash(lang)][StringHash(id)] = string;
             if (!languages_.Contains(lang))

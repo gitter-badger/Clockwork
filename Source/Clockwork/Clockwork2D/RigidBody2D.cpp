@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
@@ -22,18 +42,19 @@ static const BodyType2D DEFAULT_BODYTYPE = BT_STATIC;
 static const char* bodyTypeNames[] =
 {
     "Static",
-    "Dynamic",
     "Kinematic",
+    "Dynamic",
     0
 };
 
 RigidBody2D::RigidBody2D(Context* context) :
     Component(context),
-    massData_(),    // b2MassData structure does not have a constructor so need to zero-initialize all its members
     useFixtureMass_(true),
     body_(0)
 {
-    // Make sure the massData's center is zero-initialized as well
+    // Make sure the massData members are zero-initialized.
+    massData_.mass = 0.0f;
+    massData_.I = 0.0f;
     massData_.center.SetZero();
 }
 
@@ -90,7 +111,13 @@ void RigidBody2D::SetBodyType(BodyType2D type)
     bodyDef_.type = bodyType;
 
     if (body_)
+    {
         body_->SetType(bodyType);
+        // Mass data was reset to keep it legal (e.g. static body should have mass 0.)
+        // If not using fixture mass, reassign our mass data now
+        if (!useFixtureMass_)
+            body_->SetMassData(&massData_);
+    }
 
     MarkNetworkUpdate();
 }
@@ -103,7 +130,7 @@ void RigidBody2D::SetMass(float mass)
 
     massData_.mass = mass;
 
-    if (useFixtureMass_ && body_)
+    if (!useFixtureMass_ && body_)
         body_->SetMassData(&massData_);
 
     MarkNetworkUpdate();
@@ -117,7 +144,7 @@ void RigidBody2D::SetInertia(float inertia)
 
     massData_.I = inertia;
 
-    if (useFixtureMass_ && body_)
+    if (!useFixtureMass_ && body_)
         body_->SetMassData(&massData_);
 
     MarkNetworkUpdate();
@@ -131,7 +158,7 @@ void RigidBody2D::SetMassCenter(const Vector2& center)
 
     massData_.center = b2Center;
 
-    if (useFixtureMass_ && body_)
+    if (!useFixtureMass_ && body_)
         body_->SetMassData(&massData_);
 
     MarkNetworkUpdate();
@@ -146,6 +173,7 @@ void RigidBody2D::SetUseFixtureMass(bool useFixtureMass)
 
     if (body_)
     {
+        body_->m_useFixtureMass = useFixtureMass;
         if (useFixtureMass_)
             body_->ResetMassData();
         else
@@ -202,7 +230,13 @@ void RigidBody2D::SetFixedRotation(bool fixedRotation)
     bodyDef_.fixedRotation = fixedRotation;
 
     if (body_)
+    {
         body_->SetFixedRotation(fixedRotation);
+        // Mass data was reset to keep it legal (e.g. non-rotating body should have inertia 0.)
+        // If not using fixture mass, reassign our mass data now
+        if (!useFixtureMass_)
+            body_->SetMassData(&massData_);
+    }
 
     MarkNetworkUpdate();
 }
@@ -417,24 +451,24 @@ float RigidBody2D::GetMass() const
 {
     if (!useFixtureMass_)
         return massData_.mass;
-
-    return body_ ? body_->GetMass() : 0.0f;
+    else
+        return body_ ? body_->GetMass() : 0.0f;
 }
 
 float RigidBody2D::GetInertia() const
 {
     if (!useFixtureMass_)
         return massData_.I;
-
-    return body_ ? body_->GetInertia() : 0.0f;
+    else
+        return body_ ? body_->GetInertia() : 0.0f;
 }
 
 Vector2 RigidBody2D::GetMassCenter() const
 {
     if (!useFixtureMass_)
         return ToVector2(massData_.center);
-
-    return body_ ? ToVector2(body_->GetLocalCenter()) : Vector2::ZERO;
+    else
+        return body_ ? ToVector2(body_->GetLocalCenter()) : Vector2::ZERO;
 }
 
 bool RigidBody2D::IsAwake() const
@@ -455,7 +489,18 @@ float RigidBody2D::GetAngularVelocity() const
 void RigidBody2D::OnNodeSet(Node* node)
 {
     if (node)
+    {
         node->AddListener(this);
+
+        PODVector<CollisionShape2D*> shapes;
+        node_->GetDerivedComponents<CollisionShape2D>(shapes);
+
+        for (PODVector<CollisionShape2D*>::Iterator i = shapes.Begin(); i != shapes.End(); ++i)
+        {
+            (*i)->CreateFixture();
+            AddCollisionShape2D(*i);
+        }
+    }
 }
 
 void RigidBody2D::OnSceneSet(Scene* scene)

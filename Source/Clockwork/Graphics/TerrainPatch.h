@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #pragma once
 
@@ -51,17 +71,15 @@ public:
     void SetBoundingBox(const BoundingBox& box);
     /// Set patch coordinates.
     void SetCoordinates(const IntVector2& coordinates);
-    /// Set vertical offset for occlusion geometry. Should be negative.
-    void SetOcclusionOffset(float offset);
     /// Reset to LOD level 0.
     void ResetLod();
 
     /// Return visible geometry.
     Geometry* GetGeometry() const;
-    /// Return max LOD geometry.
+    /// Return max LOD geometry. Used for decals.
     Geometry* GetMaxLodGeometry() const;
-    /// Return min LOD geometry.
-    Geometry* GetMinLodGeometry() const;
+    /// Return geometry used for occlusion.
+    Geometry* GetOcclusionGeometry() const;
     /// Return vertex buffer.
     VertexBuffer* GetVertexBuffer() const;
     /// Return owner terrain.
@@ -88,9 +106,6 @@ public:
     /// Return current LOD level.
     unsigned GetLodLevel() const { return lodLevel_; }
 
-    /// Return vertical offset for occlusion geometry..
-    float GetOcclusionOffset() const { return occlusionOffset_; }
-
 protected:
     /// Recalculate the world-space bounding box.
     virtual void OnWorldBoundingBoxUpdate();
@@ -103,8 +118,8 @@ private:
     SharedPtr<Geometry> geometry_;
     /// Geometry that is locked to the max LOD level. Used for decals.
     SharedPtr<Geometry> maxLodGeometry_;
-    /// Geometry that is locked to the minimum LOD level. Used for occlusion.
-    SharedPtr<Geometry> minLodGeometry_;
+    /// Geometry that is used for occlusion.
+    SharedPtr<Geometry> occlusionGeometry_;
     /// Vertex buffer.
     SharedPtr<VertexBuffer> vertexBuffer_;
     /// Parent terrain.
@@ -123,8 +138,6 @@ private:
     IntVector2 coordinates_;
     /// Current LOD level.
     unsigned lodLevel_;
-    /// Vertical offset for occlusion geometry.
-    float occlusionOffset_;
 };
 
 }

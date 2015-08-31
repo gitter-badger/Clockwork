@@ -1,435 +1,382 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #include "../Precompiled.h"
 
-#include "../Core/Object.h"
+#include "../IO/VectorBuffer.h"
 
 #include <toluapp/tolua++.h>
+
 #include "../LuaScript/ToluaUtils.h"
 
-const char* tolua_toclockwork3dstring(lua_State* L, int narg, const char* str)
+const char* tolua_toclockworkstring(lua_State* L, int narg, const char* str)
 {
-    const char* s = tolua_tostring(L, narg, str);
-    return s ? s : "";
+    return tolua_tostring(L, narg, str);
 }
 
-const char* tolua_toclockwork3dstring(lua_State* L, int narg, const String& str)
+const char* tolua_toclockworkstring(lua_State* L, int narg, const String& str)
 {
-    return tolua_toclockwork3dstring(L, narg, str.CString());
+    return tolua_toclockworkstring(L, narg, str.CString());
 }
-
-// Lua state to context mapping
-static HashMap<void*, Context*> contextMapping;
 
 void SetContext(lua_State* L, Context* context)
 {
-    if (context == 0)
-        contextMapping.Erase(L);
-    else
-        contextMapping[L] = context;
+    assert(L && context);
+    tolua_pushusertype(L, static_cast<void*>(context), "Context");
+    lua_setglobal(L, ".context");   // This property is internal, the exposed 'context' property is obtained via GetContext() call
 }
 
 Context* GetContext(lua_State* L)
 {
-    HashMap<void*, Context*>::ConstIterator i = contextMapping.Find(L);
-    if (i == contextMapping.End())
+    lua_getglobal(L, ".context");
+    if (lua_isnil(L, -1))
     {
         lua_State* L1 = lua_getmainthread(L);
         return (L == L1) ? 0 : GetContext(L1);
     }
-
-    return i->second_;
+    tolua_Error error;      // Ensure we are indeed getting a Context object before casting
+    return tolua_isusertype(L, -1, "Context", 0, &error) ? static_cast<Context*>(tolua_tousertype(L, -1, 0)) : 0;
 }
 
-template <> int ToluaIsVector<String>(lua_State* L, int lo, const char* type, int def, tolua_Error* err)
+// Explicit template specialization only required for StringVector
+
+template <> int ToluaIsVector<String>(lua_State* L, int lo, const char* /*type*/, int def, tolua_Error* err)
 {
-    if (lua_istable(L, lo))
-    {
-        size_t length = lua_objlen(L, lo);
-        for (int i = 1; i <= length; ++i)
-        {
-            lua_pushinteger(L, i);
-            lua_gettable(L, lo);
-            if (!lua_isstring(L, -1))
-            {
-                lua_pop(L, 1);
-
-                err->index = lo;
-                err->array = 0;
-                err->type = type;
-
-                return 0;
-            }
-
-            lua_pop(L, 1);
-        }
-
-        return 1;
-    }
-
-    err->index = lo;
-    err->array = 0;
-    err->type = type;
-    return 0;
+    return tolua_isstringarray(L, lo, -1, def, err);
 }
 
-template <> void* ToluaToVector<String>(lua_State* L, int narg, void* def)
+template <> void* ToluaToVector<String>(lua_State* L, int narg, void* /*def*/)
 {
     if (!lua_istable(L, narg))
         return 0;
-
     static Vector<String> result;
     result.Clear();
-
-    size_t length = lua_objlen(L, narg);
-    for (int i = 1; i <= length; ++i)
+    result.Resize((unsigned)lua_objlen(L, narg));
+    for (unsigned i = 0; i < result.Size(); ++i)
     {
-        lua_pushinteger(L, i);
-        lua_gettable(L, narg);
-
-        if (!lua_isstring(L, -1))
-        {
-            lua_pop(L, 1);
-            return 0;
-        }
-
-        String string = tolua_toclockwork3dstring(L, -1, "");
-        result.Push(string);
-
+        lua_rawgeti(L, narg, i + 1);
+        result[i] = tolua_toclockworkstring(L, -1, "");
         lua_pop(L, 1);
     }
-
     return &result;
 }
 
-template <> int ToluaPushVector<String>(lua_State* L, void* data, const char* type)
+template <> int ToluaPushVector<String>(lua_State* L, void* data, const char* /*type*/)
 {
-    const Vector<String>& vectorstring = *((const Vector<String>*)data);
     lua_newtable(L);
-    for (unsigned i = 0; i < vectorstring.Size(); ++i)
-    {
-        tolua_pushclockwork3dstring(L, vectorstring[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
-
-template <> int ToluaPushVector<StringHash>(lua_State* L, void* data, const char* type)
-{
-    Vector<StringHash>& vector = *((Vector<StringHash>*)data);
-    lua_newtable(L);
+    const Vector<String>& vector = *static_cast<const Vector<String>*>(data);
     for (unsigned i = 0; i < vector.Size(); ++i)
     {
-        tolua_pushusertype(L, &vector[i], "StringHash");
+        tolua_pushclockworkstring(L, vector[i]);
         lua_rawseti(L, -2, i + 1);
     }
     return 1;
 }
 
-template <> int ToluaIsPODVector<unsigned>(lua_State* L, int lo, const char* type, int def, tolua_Error* err)
+// Explicit template specialization only required for boolean
+
+template <> int ToluaIsPODVector<bool>(double /*overload*/, lua_State* L, int lo, const char* /*type*/, int def, tolua_Error* err)
 {
-    if (lua_istable(L, lo))
-    {
-        size_t length = lua_objlen(L, lo);
-        for (int i = 1; i <= length; ++i)
-        {
-            lua_pushinteger(L, i);
-            lua_gettable(L, lo);
-            if (!lua_isnumber(L, -1))
-            {
-                lua_pop(L, 1);
-
-                err->index = lo;
-                err->array = 0;
-                err->type = type;
-
-                return 0;
-            }
-
-            lua_pop(L, 1);
-        }
-
-        return 1;
-    }
-
-    err->index = lo;
-    err->array = 0;
-    err->type = type;
-    return 0;
+    return tolua_isbooleanarray(L, lo, -1, def, err);
 }
 
-template <> int ToluaIsPODVector<Vector2>(lua_State* L, int lo, const char* type, int def, tolua_Error* err)
-{
-    if (lua_istable(L, lo))
-    {
-        size_t length = lua_objlen(L, lo);
-        for (int i = 1; i <= length; ++i)
-        {
-            lua_pushinteger(L, i);
-            lua_gettable(L, lo);
-            if (!tolua_isusertype(L, -1, "Vector2", 0, err))
-            {
-                lua_pop(L, 1);
-                return 0;
-            }
-
-            lua_pop(L, 1);
-        }
-
-        return 1;
-    }
-
-    err->index = lo;
-    err->array = 0;
-    err->type = type;
-    return 0;
-}
-
-template <> void* ToluaToPODVector<unsigned>(lua_State* L, int narg, void* def)
+template <> void* ToluaToPODVector<bool>(double /*overload*/, lua_State* L, int narg, void* /*def*/)
 {
     if (!lua_istable(L, narg))
         return 0;
-
-    static PODVector<unsigned> result;
+    static PODVector<bool> result;
     result.Clear();
-
-    size_t length = lua_objlen(L, narg);
-    for (int i = 1; i <= length; ++i)
+    result.Resize((unsigned)lua_objlen(L, narg));
+    for (unsigned i = 0; i < result.Size(); ++i)
     {
-        lua_pushinteger(L, i);
-        lua_gettable(L, narg);
-
-        if (!lua_isnumber(L, -1))
-        {
-            lua_pop(L, 1);
-            return 0;
-        }
-
-        unsigned value = (unsigned)tolua_tonumber(L, -1, 0);
-        result.Push(value);
-
+        lua_rawgeti(L, narg, i + 1);
+        result[i] = (bool)tolua_toboolean(L, -1, 0);
         lua_pop(L, 1);
     }
-
     return &result;
 }
 
-template <> void* ToluaToPODVector<Vector2>(lua_State* L, int narg, void* def)
+template <> int ToluaPushPODVector<bool>(double /*overload*/, lua_State* L, void* data, const char* /*type*/)
 {
-    if (!lua_istable(L, narg))
-        return 0;
-
-    static PODVector<Vector2> result;
-    result.Clear();
-
-    tolua_Error tolua_err;
-
-    size_t length = lua_objlen(L, narg);
-    for (int i = 1; i <= length; ++i)
+    lua_newtable(L);
+    const PODVector<bool>& vector = *static_cast<const PODVector<bool>*>(data);
+    for (unsigned i = 0; i < vector.Size(); ++i)
     {
-        lua_pushinteger(L, i);
-        lua_gettable(L, narg);
+        lua_pushboolean(L, vector[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
 
-        if (!tolua_isusertype(L, -1, "Vector2", 0, &tolua_err))
+namespace Clockwork
+{
+
+template <> const VariantValue* Variant::Get<const VariantValue*>() const
+{
+    return &value_;
+}
+
+}
+
+void ToluaToVariant(lua_State* L, int narg, void* def, Variant& variant)
+{
+    switch (lua_type(L, narg))   // Use the type of lua object to determine the final variant type
+    {
+    case LUA_TNIL:
+        variant = Variant::EMPTY;
+        break;
+
+    case LUA_TBOOLEAN:
+        variant = (bool)lua_toboolean(L, narg);     // Still need to cast to bool as Lua/LuaJIT return it as int
+        break;
+
+    case LUA_TNUMBER:
+        {
+            // Use the original variant type to further determine the final variant type
+            // CAVEAT: if lhs has integral data type and double is desired then lhs needs to be reset first before assigning
+            double value = lua_tonumber(L, narg);
+            switch (variant.GetType())
+            {
+            case VAR_INT:
+                variant = (int)value;
+                break;
+
+            case VAR_BOOL:
+                variant = value != 0.0f;
+                break;
+
+            case VAR_FLOAT:
+                variant = (float)value;
+                break;
+
+            default:
+                variant = value;
+            }
+        }
+        break;
+
+    case LUA_TSTRING:
+        variant = lua_tostring(L, narg);
+        break;
+
+    case LUA_TUSERDATA:
+        {
+            if (lua_getmetatable(L, narg))
+            {
+                lua_rawget(L, LUA_REGISTRYINDEX);     // registry[mt]
+                const char* typeName = lua_tostring(L, -1);
+                lua_pop(L, 1);
+
+                void* value = tolua_tousertype(L, narg, def);
+                switch (Variant::GetTypeFromName(typeName))
+                {
+                case VAR_NONE:
+                    // Handle special cases
+                    if (typeName)
+                    {
+                        tolua_Error error;
+                        if (strcmp(typeName, "Variant") == 0)
+                            variant = *static_cast<Variant*>(value);
+                        else if (strcmp(typeName, "VectorBuffer") == 0)
+                            variant = *static_cast<VectorBuffer*>(value);
+                        else if (tolua_isusertype(L, narg, "RefCounted", 0, &error))
+                            variant = static_cast<RefCounted*>(value);
+                        else
+                            variant = value;    // void*
+                    }
+                    break;
+
+                case VAR_VECTOR2:
+                    variant = *static_cast<Vector2*>(value);
+                    break;
+
+                case VAR_VECTOR3:
+                    variant = *static_cast<Vector3*>(value);
+                    break;
+
+                case VAR_VECTOR4:
+                    variant = *static_cast<Vector4*>(value);
+                    break;
+
+                case VAR_QUATERNION:
+                    variant = *static_cast<Quaternion*>(value);
+                    break;
+
+                case VAR_COLOR:
+                    variant = *static_cast<Color*>(value);
+                    break;
+
+                case VAR_INTRECT:
+                    variant = *static_cast<IntRect*>(value);
+                    break;
+
+                case VAR_INTVECTOR2:
+                    variant = *static_cast<IntVector2*>(value);
+                    break;
+
+                case VAR_MATRIX3:
+                    variant = *static_cast<Matrix3*>(value);
+                    break;
+
+                case VAR_MATRIX3X4:
+                    variant = *static_cast<Matrix3x4*>(value);
+                    break;
+
+                case VAR_MATRIX4:
+                    variant = *static_cast<Matrix4*>(value);
+                    break;
+
+                case VAR_RESOURCEREF:
+                    variant = *static_cast<ResourceRef*>(value);
+                    break;
+
+                case VAR_RESOURCEREFLIST:
+                    variant = *static_cast<ResourceRefList*>(value);
+                    break;
+
+                case VAR_VARIANTMAP:
+                    variant = *static_cast<VariantMap*>(value);
+                    break;
+
+                default: break;
+                }
+            };
+        }
+        break;
+
+    case LUA_TTABLE:
+        {
+            tolua_Error error;
+            if (ToluaIsPODVector<unsigned char>(0.f, L, narg, "unsigned char", 0, &error))
+                variant = *static_cast<PODVector<unsigned char>*>(ToluaToPODVector<unsigned char>(0.f, L, narg, def));
+            else if (ToluaIsVector<Variant>(L, narg, "Variant", 0, &error))
+                variant = *static_cast<VariantVector*>(ToluaToVector<Variant>(L, narg, def));
+            else if (ToluaIsVector<String>(L, narg, "String", 0, &error))
+                variant = *static_cast<StringVector*>(ToluaToVector<String>(L, narg, def));
+        }
+        break;
+
+    default: break;
+    }
+}
+
+void ToluaPushVariant(lua_State* L, const Variant* variant, const char* type)
+{
+    String typeName(type);
+    switch (variant->GetType())
+    {
+    case VAR_INT:
+        if (typeName == "unsigned" || typeName == "unsigned int" || typeName == "UInt" || typeName == "uint")
+            tolua_pushnumber(L, (lua_Number)variant->GetUInt());
+        else if (typeName == "StringHash")
+        {
+            // Make a new local copy
+            tolua_pushusertype(L, Mtolua_new(StringHash(variant->GetStringHash())), "StringHash");
+            tolua_register_gc(L, lua_gettop(L));
+        }
+        else
+            tolua_pushnumber(L, (lua_Number)variant->GetInt());
+        break;
+
+    case VAR_BOOL:
+        tolua_pushboolean(L, (int)variant->GetBool());
+        break;
+
+    case VAR_FLOAT:
+        tolua_pushnumber(L, (lua_Number)variant->GetFloat());
+        break;
+
+    case VAR_DOUBLE:
+        tolua_pushnumber(L, (lua_Number)variant->GetDouble());
+        break;
+
+    case VAR_VECTOR2:
+    case VAR_VECTOR3:
+    case VAR_VECTOR4:
+    case VAR_QUATERNION:
+    case VAR_COLOR:
+    case VAR_RESOURCEREF:
+    case VAR_RESOURCEREFLIST:
+    case VAR_VARIANTMAP:
+    case VAR_INTRECT:
+    case VAR_INTVECTOR2:
+        tolua_pushusertype(L, (void*)variant->Get<const VariantValue*>(), variant->GetTypeName().CString());
+        break;
+
+    case VAR_STRING:
+        tolua_pushclockworkstring(L, variant->GetString());
+        break;
+
+    case VAR_BUFFER:
+        if (typeName == "VectorBuffer")
+        {
+            tolua_pushusertype(L, Mtolua_new(VectorBuffer(variant->GetVectorBuffer())), "VectorBuffer");
+            tolua_register_gc(L, lua_gettop(L));
+        }
+        else
+            ToluaPushPODVector<unsigned char>(0.f, L, (void*)&variant->GetBuffer(), "unsigned char");
+        break;
+
+    case VAR_VOIDPTR:
+        ToluaPushRegisteredUserType(L, static_cast<void*>(variant->GetVoidPtr()), type);
+        break;
+
+    case VAR_PTR:
+        ToluaPushRegisteredUserType(L, static_cast<void*>(variant->GetPtr()), type);
+        break;
+
+    case VAR_VARIANTVECTOR:
+        ToluaPushVector<Variant>(L, (void*)&variant->GetVariantVector(), "Variant");
+        break;
+
+    case VAR_STRINGVECTOR:
+        ToluaPushVector<String>(L, (void*)&variant->GetStringVector(), "String");
+        break;
+
+    case VAR_MATRIX3:
+    case VAR_MATRIX3X4:
+    case VAR_MATRIX4:
+        tolua_pushusertype(L, variant->Get<const VariantValue*>()->ptr_, variant->GetTypeName().CString());
+        break;
+
+    default:
+        lua_pushnil(L);
+        break;
+    }
+}
+
+void ToluaPushRegisteredUserType(lua_State* L, void* data, const char* type)
+{
+    if (type)
+    {
+        luaL_getmetatable(L, type);
+        if (!lua_isnil(L, -1))
         {
             lua_pop(L, 1);
-            return 0;
+            tolua_pushusertype(L, data, type);
         }
-
-        Vector2* value = (Vector2*)tolua_touserdata(L, -1, 0);
-        result.Push(*value);
-
-        lua_pop(L, 1);
     }
-
-    return &result;
-}
-
-template <> int ToluaPushPODVector<int>(lua_State* L, void* data, const char*)
-{
-    const PODVector<int>& vector = *((const PODVector<int>*)data);
-    lua_newtable(L);
-    for (unsigned i = 0; i < vector.Size(); ++i)
-    {
-        lua_pushinteger(L, vector[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
-
-    return 1;
-}
-
-template <> int ToluaPushPODVector<unsigned>(lua_State* L, void* data, const char*)
-{
-    const PODVector<unsigned>& vector = *((const PODVector<unsigned>*)data);
-    lua_newtable(L);
-    for (unsigned i = 0; i < vector.Size(); ++i)
-    {
-        lua_pushinteger(L, vector[i]);
-        lua_rawseti(L, -2, i + 1);
-    }
-
-    return 1;
-}
-
-template <> int ToluaPushPODVector<Component*>(lua_State* L, void* data, const char*)
-{
-    const PODVector<Component*>& vector = *((const PODVector<Component*>*)data);
-    lua_newtable(L);
-    for (unsigned i = 0; i < vector.Size(); ++i)
-    {
-        tolua_pushusertype(L, vector[i], "Component");
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
-
-template <> int ToluaPushPODVector<Node*>(lua_State* L, void* data, const char*)
-{
-    const PODVector<Node*>& vector = *((const PODVector<Node*>*)data);
-    lua_newtable(L);
-    for (unsigned i = 0; i < vector.Size(); ++i)
-    {
-        tolua_pushusertype(L, vector[i], "Node");
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
-
-template <> int ToluaPushPODVector<SoundSource*>(lua_State* L, void* data, const char*)
-{
-    const PODVector<SoundSource*>& vector = *((const PODVector<SoundSource*>*)data);
-    lua_newtable(L);
-    for (unsigned i = 0; i < vector.Size(); ++i)
-    {
-        tolua_pushusertype(L, vector[i], "SoundSource");
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
-
-template <> int ToluaPushPODVector<UIElement*>(lua_State* L, void* data, const char*)
-{
-    const PODVector<UIElement*>& vector = *((const PODVector<UIElement*>*)data);
-    lua_newtable(L);
-    for (unsigned i = 0; i < vector.Size(); ++i)
-    {
-        tolua_pushusertype(L, vector[i], "UIElement");
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
-
-#ifdef CLOCKWORK_NAVIGATION
-
-template <> int ToluaPushPODVector<CrowdAgent*>(lua_State* L, void* data, const char*)
-{
-    const PODVector<CrowdAgent*>& vector = *((const PODVector<CrowdAgent*>*)data);
-    lua_newtable(L);
-    for (unsigned i = 0; i < vector.Size(); ++i)
-    {
-        tolua_pushusertype(L, vector[i], "CrowdAgent");
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
-
-#endif
-
-#ifdef CLOCKWORK_PHYSICS
-
-template <> int ToluaPushPODVector<RigidBody*>(lua_State* L, void* data, const char*)
-{
-    const PODVector<RigidBody*>& vector = *((const PODVector<RigidBody*>*)data);
-    lua_newtable(L);
-    for (unsigned i = 0; i < vector.Size(); ++i)
-    {
-        tolua_pushusertype(L, vector[i], "RigidBody");
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
-
-#endif
-
-#ifdef CLOCKWORK_CLOCKWORK2D
-
-template <> int ToluaPushPODVector<RigidBody2D*>(lua_State* L, void* data, const char*)
-{
-    const PODVector<RigidBody2D*>& vector = *((const PODVector<RigidBody2D*>*)data);
-    lua_newtable(L);
-    for (unsigned i = 0; i < vector.Size(); ++i)
-    {
-        tolua_pushusertype(L, vector[i], "RigidBody2D");
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
-}
-
-#endif
-
-template <typename T> int tolua_pushclockwork3dpodvectorusertype(lua_State* L, const PODVector<T>& vector, const char* typeName)
-{
-    lua_newtable(L);
-    for (unsigned i = 0; i < vector.Size(); ++i)
-    {
-        void* tolua_obj = Mtolua_new((T)(vector[i]));
-        tolua_pushusertype(L, tolua_obj, typeName);
-        tolua_register_gc(L, lua_gettop(L));
-
-        lua_rawseti(L, -2, i + 1);
-    }
-
-    return 1;
-}
-
-template <> int ToluaPushPODVector<Vector3>(lua_State* L, void* data, const char*)
-{
-    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<Vector3>*)data), "Vector3");
-}
-
-template <> int ToluaPushPODVector<IntVector2>(lua_State* L, void* data, const char*)
-{
-    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<IntVector2>*)data), "IntVector2");
-}
-
-template <> int ToluaPushPODVector<OctreeQueryResult>(lua_State* L, void* data, const char*)
-{
-    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<OctreeQueryResult>*)data), "OctreeQueryResult");
-}
-
-#ifdef CLOCKWORK_PHYSICS
-
-template <> int ToluaPushPODVector<PhysicsRaycastResult>(lua_State* L, void* data, const char*)
-{
-    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<PhysicsRaycastResult>*)data), "PhysicsRaycastResult");
-}
-
-#endif
-
-#ifdef CLOCKWORK_CLOCKWORK2D
-
-template <> int ToluaPushPODVector<PhysicsRaycastResult2D>(lua_State* L, void* data, const char*)
-{
-    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<PhysicsRaycastResult2D>*)data), "PhysicsRaycastResult2D");
-}
-
-#endif
-
-template <> int ToluaPushPODVector<RayQueryResult>(lua_State* L, void* data, const char*)
-{
-    return tolua_pushclockwork3dpodvectorusertype(L, *((const PODVector<RayQueryResult>*)data), "RayQueryResult");
-}
-
-template <> int ToluaPushPODVector<Pass*>(lua_State* L, void* data, const char*)
-{
-    const PODVector<Pass*>& vector = *((const PODVector<Pass*>*)data);
-    lua_newtable(L);
-    for (unsigned i = 0; i < vector.Size(); ++i)
-    {
-        tolua_pushusertype(L, vector[i], "Pass");
-        lua_rawseti(L, -2, i + 1);
-    }
-    return 1;
+    else
+        lua_pushnil(L);
 }
 
 void ToluaPushObject(lua_State* L, void* data, const char* type)

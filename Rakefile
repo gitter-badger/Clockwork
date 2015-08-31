@@ -1,9 +1,31 @@
+#
+# Copyright (c) 2008-2015 the Clockwork project.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+
 require 'pathname'
 require 'json'
 require 'yaml'
 
-# Usage: rake sync (only intended to be used in a fork with remote 'upstream' set to dragonCASTjosh/Clockwork)
-desc 'Fetch and merge upstream dragonCASTjosh/Clockwork to a Clockwork fork'
+# Usage: rake sync (only intended to be used in a fork with remote 'upstream' set to clockwork/Clockwork)
+desc 'Fetch and merge upstream clockwork/Clockwork to a Clockwork fork'
 task :sync do
   system "git fetch upstream && git checkout master && git pull && git merge -m 'Sync at #{Time.now.localtime}.' upstream/master && git push && git checkout -" or abort
 end
@@ -19,7 +41,7 @@ task :scaffolding do
   abs_path = Pathname.new(abs_path).realpath
   puts "\nNew project created in #{abs_path}\n\n"
   puts "You may need to first set 'CLOCKWORK_HOME' environment variable or use 'CLOCKWORK_HOME' build option to point to your Clockwork build tree or your custom Clockwork SDK installation location."
-  puts "Please see http://dragonCASTjosh.github.io/documentation/HEAD/_using_library.html for more detail. For example:\n\n"
+  puts "Please see http://clockwork.github.io/documentation/HEAD/_using_library.html for more detail. For example:\n\n"
   if ENV['OS']
     puts "set \"CLOCKWORK_HOME=/path/to/Clockwork/build-tree/or/SDK\"\ncd #{abs_path}\nrake cmake CLOCKWORK_LUAJIT=1\nrake make\n\n"
     puts "Alternatively you can call one of the batch files directly, such as, cmake_generic.bat ../native-Build -DCLOCKWORK_LUAJIT=1 and build using VS IDE"
@@ -139,12 +161,12 @@ task :make do
   system "cd \"#{build_tree}\" && #{ccache_envvar} cmake --build . #{cmake_build_options} -- #{build_options} #{filter}" or abort
 end
 
-# Usage: rake android [parameter='--es pickedLibrary ClockworkPlayer'] [intent=.SampleLauncher] [package=com.github.Clockwork] [success_indicator='Initialized engine'] [payload='sleep 30'] [api=19] [abi=armeabi-v7a] [avd=test_#{api}_#{abi}] [retries=10] [retry_interval=10]
+# Usage: rake android [parameter='--es pickedLibrary ClockworkPlayer'] [intent=.SampleLauncher] [package=com.github.clockwork] [success_indicator='Initialized engine'] [payload='sleep 30'] [api=19] [abi=armeabi-v7a] [avd=test_#{api}_#{abi}] [retries=10] [retry_interval=10]
 desc 'Test run already installed APK in Android (virtual) device, default to Clockwork Samples APK if no parameter is given'
 task :android do
   parameter = ENV['parameter'] || '--es pickedLibrary ClockworkPlayer'
   intent = ENV['intent'] || '.SampleLauncher'
-  package = ENV['package'] || 'com.github.Clockwork'
+  package = ENV['package'] || 'com.github.clockwork'
   success_indicator = ENV['success_indicator'] || 'Initialized engine'
   payload = ENV['payload'] || 'sleep 30'
   api = ENV['api'] || 19
@@ -201,6 +223,7 @@ end
 # Usage: NOT intended to be used manually
 desc 'Setup build cache'
 task :ci_setup_cache do
+  clear = /\[ccache clear\]/ =~ ENV['COMMIT_MESSAGE']
   # Use internal cache store instead of using Travis CI one (this is a workaround for using ccache on Travis CI legacy build infra)
   if ENV['USE_CCACHE'].to_i == 2
     puts 'Setting up build cache'
@@ -210,9 +233,13 @@ task :ci_setup_cache do
     base_mirror = matched ? matched[1] : nil
     # Do not abort even when it fails here
     system "if ! `git clone -q --depth 1 --branch #{ENV['TRAVIS_BRANCH']}#{job_number} https://github.com/#{repo_slug} ~/.ccache 2>/dev/null`; then if ! [ #{base_mirror} ] || ! `git clone -q --depth 1 --branch #{base_mirror}#{job_number} https://github.com/#{repo_slug} ~/.ccache 2>/dev/null`; then git clone -q --depth 1 https://github.com/#{repo_slug} ~/.ccache 2>/dev/null; fi && cd ~/.ccache && git checkout -qf -b #{ENV['TRAVIS_BRANCH']}#{job_number}; fi"
+    # Preserving .git directory before clearing the cache on Linux host system (ccache on Mac OSX does not have this problem)
+    `mv ~/.ccache/.git /tmp` if clear && ENV['OSX'].to_i != 1
   end
   # Clear ccache on demand
-  system "ccache -z -M #{ENV['CCACHE_MAXSIZE']} #{/\[ccache clear\]/ =~ ENV['COMMIT_MESSAGE'] ? '-C' : ''}"
+  system "ccache -z -M #{ENV['CCACHE_MAXSIZE']} #{clear ? '-C' : ''}"
+  # Restoring .git directory if its backup exists
+  `if [ -e /tmp/.git ]; then mv /tmp/.git ~/.ccache; fi`
 end
 
 # Usage: NOT intended to be used manually
@@ -235,9 +262,9 @@ task :ci_site_update do
   # Skip when :ci rake task was skipped
   next unless File.exist?('../Build/CMakeCache.txt')
   # Pull or clone
-  system 'cd ../doc-Build 2>/dev/null && git pull -q -r || git clone --depth 1 -q https://github.com/dragonCASTjosh/Clockwork.github.io.git ../doc-Build' or abort 'Failed to pull/clone'
-  # Update credits from README.md to about.md
-  system "ruby -lne 'BEGIN { credits = false }; puts $_ if credits; credits = true if /bugfixes by:/; credits = false if /^$/' README.md |ruby -i -le 'credits = STDIN.read; puts ARGF.read.gsub(/(?<=bugfixes by\n).*?(?=##)/m, credits)' ../doc-Build/about.md" or abort 'Failed to update credits'
+  system 'cd ../doc-Build 2>/dev/null && git pull -q -r || git clone --depth 1 -q https://github.com/clockwork/clockwork.github.io.git ../doc-Build' or abort 'Failed to pull/clone'
+  # Update credits from README.md to about.yml
+  system "ruby -lne 'BEGIN { credits = false }; puts $_ if credits; credits = true if /bugfixes by:/; credits = false if /^$/' README.md |ruby -i -le 'credits = STDIN.read; puts ARGF.read.gsub(/(?<=contributors:\n).*?\n\n/m, credits)' ../doc-Build/_data/about.yml" or abort 'Failed to update credits'
   # Setup doxygen to use minimal theme
   system "ruby -i -pe 'BEGIN { a = {%q{HTML_HEADER} => %q{minimal-header.html}, %q{HTML_FOOTER} => %q{minimal-footer.html}, %q{HTML_STYLESHEET} => %q{minimal-doxygen.css}, %q{HTML_COLORSTYLE_HUE} => 200, %q{HTML_COLORSTYLE_SAT} => 0, %q{HTML_COLORSTYLE_GAMMA} => 20, %q{DOT_IMAGE_FORMAT} => %q{svg}, %q{INTERACTIVE_SVG} => %q{YES}} }; a.each {|k, v| gsub(/\#{k}\s*?=.*?\n/, %Q{\#{k} = \#{v}\n}) }' ../Build/Docs/Doxyfile" or abort 'Failed to setup doxygen configuration file'
   system 'cp ../doc-Build/_includes/Doxygen/minimal-* ../Build/Docs' or abort 'Failed to copy minimal-themed template'
@@ -249,10 +276,10 @@ task :ci_site_update do
   end
   # Generate and sync doxygen pages
   system "cd ../Build && make -j$NUMJOBS doc >/dev/null 2>&1 && ruby -i -pe 'gsub(/(<\\/?h)3([^>]*?>)/, %q{\\14\\2}); gsub(/(<\\/?h)2([^>]*?>)/, %q{\\13\\2}); gsub(/(<\\/?h)1([^>]*?>)/, %q{\\12\\2})' Docs/html/_*.html && rsync -a --delete Docs/html/ ../doc-Build/documentation/#{release}" or abort 'Failed to generate/rsync doxygen pages'
-  # Supply GIT credentials and push site documentation to dragonCASTjosh/clockwork.github.io.git
-  system "cd ../doc-Build && pwd && git config user.name $GIT_NAME && git config user.email $GIT_EMAIL && git remote set-url --push origin https://$GH_TOKEN@github.com/dragonCASTjosh/clockwork.github.io.git && git add -A . && ( git commit -qm \"Travis CI: site documentation update at #{Time.now.utc}.\n\nCommit: https://github.com/$TRAVIS_REPO_SLUG/commit/$TRAVIS_COMMIT\n\nMessage: $COMMIT_MESSAGE\" || true) && git push -q >/dev/null 2>&1" or abort 'Failed to update site'
+  # Supply GIT credentials and push site documentation to clockwork/clockwork.github.io.git
+  system "cd ../doc-Build && pwd && git config user.name $GIT_NAME && git config user.email $GIT_EMAIL && git remote set-url --push origin https://$GH_TOKEN@github.com/clockwork/clockwork.github.io.git && git add -A . && ( git commit -qm \"Travis CI: site documentation update at #{Time.now.utc}.\n\nCommit: https://github.com/$TRAVIS_REPO_SLUG/commit/$TRAVIS_COMMIT\n\nMessage: $COMMIT_MESSAGE\" || true) && git push -q >/dev/null 2>&1" or abort 'Failed to update site'
   unless ENV['RELEASE_TAG'] || `git fetch -qf origin #{ENV['TRAVIS_BRANCH']}; git log -1 --pretty=format:'%H' FETCH_HEAD` != ENV['TRAVIS_COMMIT']
-    # Supply GIT credentials and push API documentation to dragonCASTjosh/Clockwork.git (only when changes are detected)
+    # Supply GIT credentials and push API documentation to clockwork/Clockwork.git (only when changes are detected)
     system 'pwd && git config user.name $GIT_NAME && git config user.email $GIT_EMAIL && git remote set-url --push origin https://$GH_TOKEN@github.com/$TRAVIS_REPO_SLUG.git && git add Docs/*API*'
     if system("git commit -qm 'Test commit to detect API changes'")
       # Automatically give instruction to do packaging when API has changed, unless the instruction is already given in this commit
@@ -268,13 +295,13 @@ desc 'Update Emscripten HTML5 samples to GitHub Pages'
 task :ci_emscripten_samples_update do
   puts "\nUpdating Emscripten samples in main website..."
   # Pull or clone
-  system 'cd ../doc-Build 2>/dev/null && git pull -q -r || git clone --depth 1 -q https://github.com/dragonCASTjosh/clockwork.github.io.git ../doc-Build' or abort 'Failed to pull/clone'
+  system 'cd ../doc-Build 2>/dev/null && git pull -q -r || git clone --depth 1 -q https://github.com/clockwork/clockwork.github.io.git ../doc-Build' or abort 'Failed to pull/clone'
   # Sync Emscripten samples
   system "rsync -a --delete --exclude tool ../Build/bin/ ../doc-Build/samples" or abort 'Failed to rsync Emscripten samples'
   # Update Emscripten json data file
   update_emscripten_data or abort 'Failed to update Emscripten json data file'
   root_commit, _ = get_root_commit_and_recipients
-  system "cd ../doc-Build && git config user.name $GIT_NAME && git config user.email $GIT_EMAIL && git remote set-url --push origin https://$GH_TOKEN@github.com/dragonCASTjosh/clockwork.github.io.git && git add -A . && ( git commit -qm \"Travis CI: Emscripten samples update at #{Time.now.utc}.\n\nCommit: https://github.com/$TRAVIS_REPO_SLUG/commit/#{root_commit}\n\nMessage: #{`git log --format=%B -n 1 #{root_commit}`}\" || true) && git push -q >/dev/null 2>&1" or abort 'Failed to update Emscripten samples'
+  system "cd ../doc-Build && git config user.name $GIT_NAME && git config user.email $GIT_EMAIL && git remote set-url --push origin https://$GH_TOKEN@github.com/clockwork/clockwork.github.io.git && git add -A . && ( git commit -qm \"Travis CI: Emscripten samples update at #{Time.now.utc}.\n\nCommit: https://github.com/$TRAVIS_REPO_SLUG/commit/#{root_commit}\n\nMessage: #{`git log --format=%B -n 1 #{root_commit}`}\" || true) && git push -q >/dev/null 2>&1" or abort 'Failed to update Emscripten samples'
 end
 
 # Usage: NOT intended to be used manually
@@ -283,8 +310,8 @@ task :ci_create_mirrors do
   # Skip if there are more commits since this one
   abort 'Skipped creating mirror branches due to moving HEAD' unless `git fetch -qf origin #{ENV['TRAVIS_PULL_REQUEST'] == 'false' ? ENV['TRAVIS_BRANCH'] : %Q{+refs/pull/#{ENV['TRAVIS_PULL_REQUEST']}/head'}}; git log -1 --pretty=format:'%H' FETCH_HEAD` == ENV['TRAVIS_COMMIT']
   system 'git config user.name $GIT_NAME && git config user.email $GIT_EMAIL && git remote set-url --push origin https://$GH_TOKEN@github.com/$TRAVIS_REPO_SLUG.git'
-  # Limit the frequency of scanning
-  scan = `ccache -s |grep 'cache miss'`.split.last.to_i >= ENV['COVERITY_SCAN_THRESHOLD'].to_i || /\[ci scan\]/ =~ ENV['COMMIT_MESSAGE']
+  # Limit the scanning to only master branch and limit the frequency of scanning
+  scan = ENV['TRAVIS_BRANCH'] == 'master' && ((/\[ccache clear\]/ !~ ENV['COMMIT_MESSAGE'] && `ccache -s |grep 'cache miss'`.split.last.to_i >= ENV['COVERITY_SCAN_THRESHOLD'].to_i) || /\[ci scan\]/ =~ ENV['COMMIT_MESSAGE'])
   # Determine which CI mirror branches to be auto created
   unless ENV['RELEASE_TAG']
     matched = /\[ci only:(.*?)\]/.match(ENV['COMMIT_MESSAGE'])
@@ -477,7 +504,7 @@ def makefile_ci
     jit = 'JIT'
     amalg = '-DCLOCKWORK_LUAJIT_AMALG=1'
   end
-  system "./cmake_generic.sh ../Build #{$build_options} -DCLOCKWORK_LUA#{jit}=1 #{amalg} -DCLOCKWORK_SAMPLES=1 -DCLOCKWORK_TOOLS=1 -DCLOCKWORK_EXTRAS=1 -DCLOCKWORK_TESTING=#{$testing} -DCMAKE_BUILD_TYPE=#{$configuration}" or abort 'Failed to configure Clockwork library build'
+  system "./cmake_generic.sh ../Build #{$build_options} -DCLOCKWORK_DATABASE_SQLITE=1 -DCLOCKWORK_LUA#{jit}=1 #{amalg} -DCLOCKWORK_SAMPLES=1 -DCLOCKWORK_TOOLS=1 -DCLOCKWORK_EXTRAS=1 -DCLOCKWORK_TESTING=#{$testing} -DCMAKE_BUILD_TYPE=#{$configuration}" or abort 'Failed to configure Clockwork library build'
   if ENV['AVD'] && !ENV['PACKAGE_UPLOAD']   # Skip APK test run when packaging
     android_prepare_device ENV['API'], ENV['ABI'], ENV['AVD'] or abort 'Failed to prepare Android (virtual) device for test run'
   end
@@ -511,7 +538,7 @@ def get_root_commit_and_recipients
   # Root commit is a commit submitted by human
   root_commit = `git show -s --format='%H' #{ENV['TRAVIS_COMMIT']}`.rstrip
   recipients = `git show -s --format='%ae %ce' #{root_commit}`.chomp.split.uniq
-  if recipients.include? 'clockwork3d.travis.ci@gmail.com'
+  if recipients.include? 'clockwork.travis.ci@gmail.com'
     matched = /Commit:.*commit\/(.*?)\n/.match(ENV['COMMIT_MESSAGE'])
     if (matched)
       root_commit = matched[1]
@@ -569,7 +596,7 @@ def android_wait_for_device retries = -1, retry_interval = 10, package = 'androi
   return retries == 0 ? nil : 0
 end
 
-def android_test_run parameter = '--es pickedLibrary ClockworkPlayer', intent = '.SampleLauncher', package = 'com.github.Clockwork', success_indicator = 'Added resource path /apk/CoreData/', payload = 'sleep 30'
+def android_test_run parameter = '--es pickedLibrary ClockworkPlayer', intent = '.SampleLauncher', package = 'com.github.clockwork', success_indicator = 'Added resource path /apk/CoreData/', payload = 'sleep 30'
   # The device should have been found at this point
   return nil unless $specific_device
   # Capture adb's stdout and interpret it because adb neither uses stderr nor returns proper exit code on error
@@ -629,7 +656,7 @@ def xcode_ci
     amalg = '-DCLOCKWORK_LUAJIT_AMALG=1'
     deployment_target = "-DCMAKE_OSX_DEPLOYMENT_TARGET=#{ENV['DEPLOYMENT_TARGET']}"
   end
-  system "./cmake_macosx.sh ../Build -DIOS=$IOS #{deployment_target} #{$build_options} -DCLOCKWORK_LUA#{jit}=1 #{amalg} -DCLOCKWORK_SAMPLES=1 -DCLOCKWORK_TOOLS=1 -DCLOCKWORK_EXTRAS=1 -DCLOCKWORK_TESTING=#{$testing}" or abort 'Failed to configure Clockwork library build'
+  system "./cmake_macosx.sh ../Build -DIOS=$IOS #{deployment_target} #{$build_options} -DCLOCKWORK_DATABASE_SQLITE=1 -DCLOCKWORK_LUA#{jit}=1 #{amalg} -DCLOCKWORK_SAMPLES=1 -DCLOCKWORK_TOOLS=1 -DCLOCKWORK_EXTRAS=1 -DCLOCKWORK_TESTING=#{$testing}" or abort 'Failed to configure Clockwork library build'
   xcode_build(ENV['IOS'], '../Build/Clockwork.xcodeproj') or abort 'Failed to build or test Clockwork library'
   unless ENV['CI'] && ENV['IOS'] && ENV['PACKAGE_UPLOAD']   # Skip scaffolding test when packaging for iOS
     # Create a new project on the fly that uses newly built Clockwork library in the build tree
@@ -656,7 +683,7 @@ def xcode_build ios, project, target = 'ALL_BUILD', extras = ''
   return 0
 end
 
-def append_new_release release, filename = '../doc-Build/_data/Clockwork.json'
+def append_new_release release, filename = '../doc-Build/_data/clockwork.json'
   begin
     clockwork_hash = JSON.parse File.read filename
     unless clockwork_hash['releases'].last == release

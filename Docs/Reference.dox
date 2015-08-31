@@ -67,9 +67,10 @@ The following subsystems are optional, so GetSubsystem() may return null if they
 - Script: Provides the AngelScript execution environment. Needs to be created and registered manually.
 - Console: provides an interactive AngelScript console and log display. Created by calling \ref Engine::CreateConsole "CreateConsole()".
 - DebugHud: displays rendering mode information and statistics and profiling data. Created by calling \ref Engine::CreateDebugHud "CreateDebugHud()".
+- Database: Manages database connections. The build option for the database support needs to be enabled when building the library.
 
 In script, the subsystems are available through the following global properties:
-time, fileSystem, log, cache, network, input, ui, audio, engine, graphics, renderer, script, console, debugHud. Note that WorkQueue and Profiler are not available to script due to their low-level nature.
+time, fileSystem, log, cache, network, input, ui, audio, engine, graphics, renderer, script, console, debugHud, database. Note that WorkQueue and Profiler are not available to script due to their low-level nature.
 
 
 \page Events Events
@@ -371,7 +372,7 @@ The same in script would look like this (note the use of a property instead of a
 healthBar.texture = cache.GetResource("Texture2D", "Textures/HealthBarBorder.png");
 \endcode
 
-Resources can also be created manually and stored to the resource cache as if they had been loaded from disk. 
+Resources can also be created manually and stored to the resource cache as if they had been loaded from disk.
 
 Memory budgets can be set per resource type: if resources consume more memory than allowed, the oldest resources will be removed from the cache if not in use anymore. By default the memory budgets are set to unlimited.
 
@@ -691,15 +692,15 @@ After that, the functions in the script file are available for calling. Use \ref
 
 \subsection LuaScripting_Debugging Debugging script files
 
-Debugging Lua scripts embedded in an application can be done by attaching to a remote debugger, after first injecting a client into the application (for example, see <a href="https://wiki.eclipse.org/LDT/User_Area/User_Guides/User_Guide_1.2#Attach_session">eclipse LDT's remote debugger</a>). 
+Debugging Lua scripts embedded in an application can be done by attaching to a remote debugger, after first injecting a client into the application (for example, see <a href="https://wiki.eclipse.org/LDT/User_Area/User_Guides/User_Guide_1.2#Attach_session">eclipse LDT's remote debugger</a>).
 
 However, Lua script files in Clockwork are loaded into the interpreter via Clockwork's resource cache, which loads the script file into a memory buffer before passing that buffer to the interpreter. This is good for performance and cross platform compatibility, but means that the source file is not available to debuggers and so, for example, breakpoints may not work and the code cannot be meaningfully stepped through.
 
-For a single script that you wish to step through, you can use \ref LuaScript::ExecuteRawFile "ExecuteRawFile()", which will load the script from the file system directly into the Lua interpreter, making the source available to debuggers that rely on it. There are a couple of caveats with this: 
+For a single script that you wish to step through, you can use \ref LuaScript::ExecuteRawFile "ExecuteRawFile()", which will load the script from the file system directly into the Lua interpreter, making the source available to debuggers that rely on it. There are a couple of caveats with this:
 - The file has has to be on the file system, within a resource directory, and not packaged.
-- If the script uses `require()` to import a second script, then that second script will not be available for the debugger in the same way, since internally the second script is passed to Lua via the resource cache.
+- If the script uses require() to import a second script, then that second script will not be available for the debugger in the same way, since internally the second script is passed to Lua via the resource cache.
 
-To get around the second caveat, and avoid changing method calls, use the CMake flag `CLOCKWORK_LUA_RAW_SCRIPT_LOADER`.  This will force Clockwork to attempt to load scripts from the file system by default, before falling back on the resource cache.  You can then use \ref LuaScript::ExecuteFile "ExecuteFile()", as above, and disable the CMake option for production if required.
+To get around the second caveat, and avoid changing method calls, use the CLOCKWORK_LUA_RAW_SCRIPT_LOADER build option.  This will force Clockwork to attempt to load scripts from the file system by default, before falling back on the resource cache.  You can then use \ref LuaScript::ExecuteFile "ExecuteFile()", as above, and disable the CMake option for production if required.
 
 \section LuaScripting_ScriptObjects Script objects
 
@@ -737,12 +738,12 @@ SubscribeToEvent("Update", "HandleUpdate")
 ...
 
 function HandleUpdate(eventType, eventData)
-    local timeStep = eventData:GetFloat("TimeStep")
+    local timeStep = eventData["TimeStep"]:GetFloat()
     ...
 end
 \endcode
 
-When subscribing a script object to receive an event, use the form self:SubscribeToEvent instead. The function to use as the handler is given as "ClassName:FunctionName". For example subscribing to the NodeCollision physics event, and getting the participating other scene node and the contact point VectorBuffer in the handler function. Note that in Lua retrieving an object pointer from a VariantMap requires the object type as the first parameter:
+When subscribing a script object to receive an event, use the form self:SubscribeToEvent() instead. The function to use as the handler is given as "ClassName:FunctionName". For example subscribing to the NodeCollision physics event, and getting the participating other scene node and the contact point VectorBuffer in the handler function. Note that in Lua retrieving an object pointer from a VariantMap requires the object type as the first parameter:
 
 \code
 CollisionDetector = ScriptObject()
@@ -752,8 +753,8 @@ function CollisionDetector:Start()
 end
 
 function CollisionDetector:HandleNodeCollision(eventType, eventData)
-    local otherNode = eventData:GetPtr("Node", "OtherNode")
-    local contacts = eventData:GetBuffer("Contacts")
+    local otherNode = eventData["OtherNode"]:GetPtr("Node")
+    local contacts = eventData["Contacts"]:GetBuffer()
     ...
 end
 \endcode
@@ -762,7 +763,41 @@ end
 
 The binding of Clockwork C++ classes is accomplished with the tolua++ library, which for the most part binds the exact same function parameters as C++. Compared to the AngelScript API, you will always have the classes' Get / Set functions available, but in addition convenience properties also exist.
 
-As seen above from the event handling examples, VariantMap handling has some differences to both C++ and AngelScript. To get a value, supply its key name as a string. To get a pointer to an object, supply first the object type, then the key name.
+As seen above from the event handling examples, VariantMap handling is similar to both C++ and AngelScript. To get a variant object back from a map, index the map by its key as a string. A nil value is returned when the map's key does not exist. Then use one of the variant getter method to return the actual Lua object stored inside the variant object. These getter methods normally do not take any parameter, except GetPtr() and GetVoidPtr() which take a string parameter representing a Lua user type that the method would use to cast the return object into. The GetPtr() is used to get a reference counted object while the GetVoidPtr() is used to get a POD value object.
+
+You can also use the VariantMap as a pseudo Lua table to store any variant value objects in your script. The VariantMap class would try its best to convert any Lua object into a variant object and store the variant object using the provided key as index. The key can be a string or an unsigned integer or even a StringHash object. When a particular data type conversion is not being supported yet, an empty variant object would be stored instead. So, be careful if you are using this feature. You can also use one of the Variant class constructors to construct a %Variant object first before assigning it to the VariantMap, but this operation would be slower than direct conversion. The purpose of using VariantMap in this way is to facilitate objects passing between Lua and C++ as has been shown in the event handling mechanism above. When creating objects on Lua side, you have to make sure they are not garbage collected by Lua while there are still references pointing to them on C++ side, especially when the objects are not reference counted.
+
+\code
+local myMap = VariantMap()
+
+myMap[1] = Spline(LINEAR_CURVE)     -- LINEAR_CURVE = 2
+print(myMap[1].typeName, myMap[1]:GetVoidPtr("Spline").interpolationMode)
+-- output: VoidPtr    2
+
+myMap["I am a table"] = { 100, 200, 255 }
+print(myMap["I am a table"].typeName, myMap["I am a table"]:GetBuffer():ReadByte())
+-- output: Buffer    100
+print(myMap["I am a table"]:GetRawBuffer()[3], myMap["I am a table"]:GetRawBuffer()[2])
+-- output: 255    200
+
+local hash = StringHash("secret key")
+myMap[hash] = Vector2(3, 4)
+print(myMap[hash].typeName, myMap[hash]:GetVector2():Length())
+-- output: Vector2    5
+\endcode
+
+As shown in the above example, you can either use GetRawBuffer() or GetBuffer() to get the unsigned char array stored in a variant object. It also shows that VariantMap is capable of converting a Lua table containing an array of unsigned char to a variant object stored as buffer. You may want to know that it is capable of converting a Lua table containing an array of variant objects or an array of string objects to be stored as VariantVector and StringVector, respectively, as well. It also converts any Lua primitive data types and all Clockwork classes that are exposed to Lua like all the math classes, reference counted classes, POD classes, resource reference class. etc.
+
+Inline with C++ and AngelScript, in Lua you have to call one of the %Variant's getter method to "unbox" the actual object stored inside a %Variant object. However, specifically in Lua, there is a generic Get() method which takes advantage of Lua being type less, so the method can unbox a %Variant object and return the stored object as a type less Lua object. It takes one optional string parameter representing a Lua user type that the method would use to cast the return object into. The parameter is used for cases where a type casting is required when returning object from %Variant object storing a void pointer or a refcounted pointer. The type casting could also be optional such as for the case of requesting a %VectorBuffer to be returned for %Variant object storing an unsigned char buffer or requesting an unsigned or %StringHash to be returned for %Variant object storing an integer value. The parameter is ignored for all other cases. Following up to use the same example above, we can index the map and access the stored objects as so:
+
+\code
+print(myMap[1]:Get("Spline").interpolationMode)
+print(myMap["I am a table"]:Get("VectorBuffer"):ReadByte())
+print(myMap["I am a table"]:Get()[2])
+print(myMap[hash]:Get():Length())
+\endcode
+
+There is also a generic Set() method for %Variant class to cope with Lua does not support assignment operator overload. The Set() method takes a single parameter which can be anything in Lua that is convertible into a %Variant, including nil value which is stored as an empty %Variant. Use this method when you need to assign a value into an existing %Variant object.
 
 For the rest of the functions and classes, see the generated \ref LuaScriptAPI "Lua script API reference". Also, look at the Lua counterparts of the sample applications in the bin/Data/LuaScripts directory and compare them to the C++ and AngelScript versions to familiarize yourself with how things are done on the Lua side.
 
@@ -770,7 +805,7 @@ For the rest of the functions and classes, see the generated \ref LuaScriptAPI "
 
 There are two ways to allocate a C++ object in Lua scripting, which behave differently with respect to Lua's automatic garbage collection:
 
-1) Call object's contructor:
+1) Call class constructor:
 \code
 local scene = Scene()
 \endcode
@@ -778,8 +813,9 @@ tolua++ will register this C++ object with garbage collection, and Lua will coll
 object to an object hierarchy that is kept alive on the C++ side with SharedPtr's, for example child scene nodes or %UI child elements.
 Otherwise the object will be double-deleted, resulting in a crash.
 
+Note that calling class constructor in this way is equivalent to calling class new_local() function.
 
-2) Call the new function:
+2) Call class new() function:
 \code
 local text = Text:new()
 \endcode
@@ -1004,6 +1040,7 @@ A material definition looks like this:
     <shadowcull value="cw|ccw|none" />
     <fill value="solid|wireframe|point" />
     <depthbias constant="x" slopescaled="y" />
+    <renderorder value="x" />
 </material>
 \endcode
 
@@ -1020,6 +1057,8 @@ The techniques for different LOD levels and quality settings must appear in a sp
 %Material shader parameters can be floats or vectors up to 4 components, or matrices.
 
 Default culling mode is counterclockwise. The shadowcull element specifies the culling mode to use in the shadow pass. Note that material's depth bias settings do not apply in the shadow pass; during shadow rendering the light's depth bias is used instead.
+
+Render order is a 8-bit unsigned value that can be used to affect rendering order within a pass, overriding the state or distance sorting. The default value is 128; smaller values will render earlier, and larger values later.
 
 \section Materials_Textures Material textures
 
@@ -1089,7 +1128,7 @@ A technique definition looks like this:
         lighting="unlit|pervertex|perpixel"
         blend="replace|add|multiply|alpha|addalpha|premulalpha|invdestalpha|subtract|subtractalpha"
         depthtest="always|equal|less|lessequal|greater|greaterequal"
-        depthwrite="true|false" 
+        depthwrite="true|false"
         alphamask="true|false" />
     <pass ... />
     <pass ... />
@@ -1210,7 +1249,7 @@ vec3 worldPos = GetWorldPos(modelMatrix);
 gl_Position = GetClipPos(worldPos);
 \endcode
 
-On both Direct3D and OpenGL the vertex and pixel shaders are written into the same file, and the entrypoint functions must be called VS() and PS(). In OpenGL mode one of these is transformed to the main() function required by GLSL behind the scenes. When compiling a vertex shader, the compilation define "COMPILEVS" is always present, and likewise "COMPILEPS" when compiling a pixel shader. These are heavily used in the shader include files to prevent constructs that are illegal for the "wrong" type of shader, and to reduce compilation time.
+On both Direct3D and OpenGL the vertex and pixel shaders are written into the same file, and the entrypoint functions must be called VS() and PS(). In OpenGL mode one of these is transformed behind the scenes to the main() function required by GLSL. When compiling a vertex shader, the compilation define "COMPILEVS" is always present, and likewise "COMPILEPS" when compiling a pixel shader. These are heavily used in the shader include files to prevent constructs that are illegal for the "wrong" type of shader, and to reduce compilation time.
 
 The uniforms must be prefixed in a certain way so that the engine understands them:
 
@@ -1236,7 +1275,8 @@ When HLSL shaders are compiled for Direct3D11, the define D3D11 is present, and 
 
 - Uniforms are organized into constant buffers. See the file Uniforms.hlsl for the built-in uniforms. See TerrainBlend.hlsl for an example of defining your own uniforms into the "custom" constant buffer slot.
 - Both textures and samplers are defined for each texture unit. The macros in Samplers.hlsl (Sample2D, SampleCube etc.) can be used to write code that works on both APIs. These take the texture unit name without the 's' prefix.
-- Vertex shader output position and pixel shader output color need to use the SV_POSITION and SV_TARGET semantics. The macros OUTPOSITION and OUTCOLOR0-3 can be used to select the correct semantic on both APIs. In the vertex shader, the output position should be specified last, as otherwise other interpolator outputs may not function correctly.
+- Vertex shader output position and pixel shader output color need to use the SV_POSITION and SV_TARGET semantics. The macros OUTPOSITION and OUTCOLOR0-3 can be used to select the correct semantic on both APIs. In the vertex shader, the output position should be specified last, as otherwise other output semantics may not function correctly. In general, it is necessary that the output semantics defined by the vertex shader are defined as pixel shader inputs in the same order. Otherwise the Direct3D shader compiler may assign the semantics wrong.
+
 - On Direct3D11 the clip plane coordinate must be calculated manually. This is indicated by the CLIPPLANE compilation define, which is added automatically by the Graphics class. See for example the LitSolid.hlsl shader.
 - Direct3D11 does not support luminance and luminance-alpha texture formats, but rather uses the R and RG channels. Therefore be prepared to perform swizzling in the texture reads as appropriate.
 - Direct3D11 will fail to render if the vertex shader refers to vertex elements that don't exist in the vertex buffers.
@@ -1308,7 +1348,7 @@ For examples of renderpath definitions, see the default forward, deferred and li
 
 Normally needed depth-stencil surfaces are automatically allocated when the render path is executed.
 
-The special "lineardepth" (synonym "depth") format is intended for storing scene depth in deferred rendering. It is not an actual hardware depth-stencil texture, but a 32-bit single channel (R) float rendertarget. (On OpenGL2 it's RGBA instead, due to the limitation of all color buffers having to be the same format. The shader include file Samplers.glsl in bin/CoreData/Shaders/GLSL provides functions to encode and decode linear depth to RGB.) 
+The special "lineardepth" (synonym "depth") format is intended for storing scene depth in deferred rendering. It is not an actual hardware depth-stencil texture, but a 32-bit single channel (R) float rendertarget. (On OpenGL2 it's RGBA instead, due to the limitation of all color buffers having to be the same format. The shader include file Samplers.glsl in bin/CoreData/Shaders/GLSL provides functions to encode and decode linear depth to RGB.)
 
 Writing depth manually to a rendertarget, while using a non-readable depth-stencil surface ensures best compatibility and prevents any conflicts from using both depth test and manual depth sampling at the same time.
 
@@ -1489,7 +1529,7 @@ Like with skeletal animations, there are two ways to play back node animations:
 
 \page Particles Particle systems
 
-The ParticleEmitter class derives from BillboardSet to implement a particle system that updates automatically. 
+The ParticleEmitter class derives from BillboardSet to implement a particle system that updates automatically.
 
 The parameters of the particle system are stored in a ParticleEffect resource class, which uses XML format. Call \ref ParticleEmitter::SetEffect "SetEffect()" to assign the effect resource to the emitter. Most of the parameters can take either a single value, or minimum and maximum values to allow for random variation. See below for all supported parameters:
 
@@ -1522,7 +1562,7 @@ The parameters of the particle system are stored in a ParticleEffect resource cl
 </particleemitter>
 \endcode
 
-Notes: 
+Notes:
 
 - Zero active or inactive time period means infinite.
 - Interval is the reciprocal of emission rate. Either can be used to define the rate at which new particles are emitted.
@@ -1947,7 +1987,7 @@ There are a number of reserved names that are used for the OS defaults:
     - RejectDrop
     - Busy
     - BusyArrow
-	
+
 Cursor Shapes can be define in a number of different ways:
 
 XML:
@@ -1959,13 +1999,13 @@ XML:
 				<variant type="ResourceRef" value="Image;Textures/UI.png" />
 				<variant type="IntRect" value="0 0 12 24" />
 				<variant type="IntVector2" value="0 0" />
-			</variant>  
+			</variant>
 			<variant type="VariantVector" >
 				<variant type="String" value="Custom" />
 				<variant type="ResourceRef" value="Image;Textures/UI.png" />
 				<variant type="IntRect" value="12 0 12 36" />
 				<variant type="IntVector2" value="0 0" />
-			</variant>  
+			</variant>
 		</atrribute>
 	</element>
 \endcode
@@ -1995,7 +2035,7 @@ Angelcode:
 		cursor.DefineShape(CS_NORMAL, image, IntRect(0, 0, 12, 24), IntVector2(0, 0));
 		cursor.DefineShape("Custom", image, IntRect(12, 0, 12, 36), IntVector2(0, 0));
 	}
-		
+
 	ui.SetCursor(cursor);
 \endcode
 
@@ -2485,6 +2525,118 @@ In addition to UDP messaging, the network subsystem allows to make HTTP requests
 
 The Network subsystem can optionally add delay to sending packets, as well as simulate packet loss. See \ref Network::SetSimulatedLatency "SetSimulatedLatency()" and \ref Network::SetSimulatedPacketLoss "SetSimulatedPacketLoss()".
 
+\page Database Database
+
+The Database subsystem is built into the Clockwork library only when one of these two \ref Build_Options "build options" are enabled: CLOCKWORK_DATABASE_ODBC and CLOCKWORK_DATABASE_SQLITE. When both options are enabled then CLOCKWORK_DATABASE_ODBC takes precedence. These build options determine which database API the subsystem will use. The ODBC DB API is more suitable for native application, especially the game server, where it allows the app to establish connection to any ODBC compliant databases like SQLite, MySQL/MariaDB, PostgreSQL, Sybase SQL, Oracle, etc. The SQLite DB API, on the other hand, is suitable for mobile application which embeds the SQLite database and its engine into the app itself. The Database subsystem wraps the underlying DB API using a unified CLOCKWORK API, so no or minimal code changes are required to the library user when switching between these two build options.
+
+Currently the implementation just supports immediate SQL statement execution. Prepared statements and transaction management will be added later when the need arises. The subsystem has a simple database connection pooling capability. This internal database connection pool should not be confused with ODBC connection pool option when ODBC DB API is being used. The internal pooling is enabled by default, except when ODBC DB API is being used and when ODBC driver manager 3.0 or later is being detected in the host system, in which case the ODBC connection pool option should be used instead to manage the database connection pooling.
+
+\section Establish_DbConnection Establishing database connection
+
+A new database connection is established by calling \ref Database::Connect "Connect()" and passing it with a so-called database connection string. The database connection string does not only identify which database to connect to, but also other relevant database connection settings like: database user id, user password, host, and port number, etc. The format of the database connection string is controlled by the underlying DB API. In general the connection string is really the only thing that need to be changed when switching the underlying DB API and when switching the databases to connect to.
+
+When the connection is successfully established, a valid DbConnection object is returned. After done with the database connection, an application should disconnect the database connection by calling the \ref Database::Disconnect "Disconnect()". This is a good practise. When the Clockwork game engine exits, the destructor of the database subsystem automatically disconnects all the still active database connections.
+
+\subsection ODBC_ConnString ODBC connection string
+
+The exact format of the ODBC connection string depends on the ODBC driver for a specific database vendor. Consult the accompanying documentation of the specific ODBC driver on how to construct the database connection string. Both DSN and DSN-less connection string are supported. For the purpose of illustration, this subsection will just explain how to connect to a MySQL/MariaDB database as an example. The MySQL/MariaDB database server is assumed to be running on a localhost on a default port with database name called 'test', and user id & password are "testuser" & "testpassword".
+
+\subsubsection DSN_ConnString DSN connection string
+
+Use the GUI tool provided by host system to define the ODBC data source. It can be user DSN or system DSN. On Linux host system, simply add the new data source entry in the '~/.odbc.ini' or '/etc/odbc.ini', respectively. Create the file if it does not exist yet. The data source entry must at least contains the following information.
+\verbatim
+# These settings assume the host system uses unixODBC as ODBC driver manager
+# Settings for iODBC driver manager would be slightly different
+[testDSN]
+Driver=MariaDB      # This is the name of the ODBC driver installed in the /etc/odbcinst.ini
+Description=MariaDB test database
+Server=localhost
+Port=
+User=testuser
+Password=testpassword
+Database=test
+Option=3
+Socket=
+\endverbatim
+
+To connect to this data source, use the following connection string:
+\verbatim
+DSN=testDSN
+\endverbatim
+
+\subsubsection DSN_less_ConnString DSN-less connection string
+
+To connect to the same database above without pre-configuring it as an ODBC data source, use the connection string like this:
+\verbatim
+Driver=MariaDB;Database=test;User=testuser;Password=testpassword;Option=3
+\endverbatim
+
+\subsection SQLite_ConnString SQLite connection string
+
+The SQLite database is a single disk file. The SQLite connection string is simply a path to the location of that single disk file. Both absolute and relative paths work. When the path is valid but the disk file does not exist yet then SQLite database engine will automatically create the disk file and hence create a new empty database in the process. The drawback with this approach is, there is no way to pass additional database connection settings. In order to do that, SQLite DB API also supports connection string using RFC 3986 URI format. Consult SQLite documentation on [URI format](https://www.sqlite.org/uri.html) for more detail. For illustration purposes, this subsection will assume the SQLite disk file is called 'test.db' located in home directory and current working directory is home directory.
+
+\subsubsection Path_ConnString Path connection string
+
+With the above assumption, the following example connection strings work equally.
+
+Relative path:
+\verbatim
+test.db
+\endverbatim
+
+Or absolute path:
+\verbatim
+/home/testuser/test.db
+\endverbatim
+
+\subsubsection URI_ConnString URI connection string
+
+In this format the additional database connection setting can be passed as query parameters. As an example, to connect to the same database as above but in read-only and shared-cache mode then the connection string can be rewritten as:
+\verbatim
+file:./test.db?mode=ro&cache=shared
+\endverbatim
+
+Or:
+\verbatim
+file:///home/testuser/test.db?mode=ro&cache=shared
+\endverbatim
+
+\section Immediate_Execution Immediate SQL statement execution
+
+Use the \ref DbConnection::Execute() "Execute()" to execute an SQL statement in immediate mode. In immediate mode, the SQL statement is opened, prepared, executed, and finalized in one go. It is a convenient method to perform adhoc query but it may not be good for system performance when a same query is being performed repeatedly. The method returns a DbResult object regardless of whether the query type is DML (Data Manipulation Language) or DDL (Data Definition Language). The %DbResult object only contains the resultset when the SQL statement being executed is a select query. Use the \ref DbResult::GetNumColumns() "GetNumColumns()" and \ref DbResult::GetNumRows() "GetNumRows()" to find out the size of the resultset. Use the \ref DbResult::GetColumns() "GetColumns()" and \ref DbResult::GetRows() "GetRows()" to get the actual column headers data and rows data, respectively. For DML statement, use the \ref DbResult::GetNumAffectedRows() "GetNumAffectedRows()" to find out the number of affected rows.
+
+The number of rows in the %DbResult object may be less than the actual number of rows being fetched from the database. This is because the fetched rows could be instructed to be filtered out by \ref DB_Cursor "E_DBCURSOR" event handler. The whole rows fetching process could also be aborted upon request of E_DBCURSOR event handler.
+
+\section Prepare_Bind_Execution SQL execution using prepared statements and dynamic parameter bindings
+
+Not yet supported at this moment.
+
+\section Transaction_Management Transaction Management
+
+Not yet supported at this moment. Currently all statements are auto-committed unless the database is connected as read-only (in which case DML and DDL statements would cause an error to be logged).
+
+\section DB_Cursor Database cursor event
+
+When executing an SQL statement there is an option to enable the sending of database cursor event. This event is sent on each row in the resultset as it is being fetched. i.e. the events could be sent multiple times before the Execute() method returns. %Application can subscribe to this event to influence how the resultset is being populated in the %DbResult object.
+
+The E_DBCURSOR has input and output parameters.
+
+Output parameters:
+\verbatim
+P_SQL        SQL query string currently being executed (String)
+P_NUMCOLS    Number of columns in the resultset (unsigned)
+P_COLHEADERS Column headers in the resultset (StringVector)
+P_COLVALUES  Row data as it is being fetched (VariantVector)
+\endverbatim
+
+%Input parameters:
+\verbatim
+P_FILTER     Set to true to filter out this row from the DbResult object
+P_ABORT      Set to true to abort further fetching process
+\endverbatim
+
+The P_FILTER could be used for any additional client-side filtering logic that is otherwise difficult to be carried out at the database server-side using WHERE or HAVING clause. The P_ABORT when used does not affect rows that are already populated into %DbResult object.
+
 \page Multithreading Multithreading
 
 Clockwork uses a task-based multithreading model. The WorkQueue subsystem can be supplied with tasks described by the WorkItem structure, by calling \ref WorkQueue::AddWorkItem "AddWorkItem()". These will be executed in background worker threads. The function \ref WorkQueue::Complete "Complete()" will complete all currently pending tasks, and execute them also in the main thread to make them finish faster.
@@ -2521,7 +2673,7 @@ colorAnimation->SetKeyFrame(0.0f, Color::WHITE);
 colorAnimation->SetKeyFrame(2.0f, Color::YELLOW);
 colorAnimation->SetKeyFrame(4.0f, Color::WHITE);
 
-light->SetAttributeAnimation("Color", colorAnimation, WM_LOOP); 
+light->SetAttributeAnimation("Color", colorAnimation, WM_LOOP);
 \endcode
 
 In the above code, we first create an ValueAnimation object call colorAnimation, and set three key frame values to it, then assign it to light's color attribute. (Note here: in order to make animation look correct, the last key frame must equal to the first key frame for loop mode).

@@ -16,6 +16,8 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
+// Modified by Joshua Nuttall for Clockwork
+
 #ifndef DETOURNAVMESHQUERY_H
 #define DETOURNAVMESHQUERY_H
 
@@ -86,12 +88,12 @@ public:
 	/// Returns the traversal cost of the area.
 	///  @param[in]		i		The id of the area.
 	/// @returns The traversal cost of the area.
-	inline float getAreaCost(const int i) const { return m_areaCost[i]; }
+	inline float getAreaCost(const int i) const { return (i >= 0 && i < DT_MAX_AREAS) ? m_areaCost[i] : 1.f; }  // Clockwork: Out of bound check
 
 	/// Sets the traversal cost of the area.
 	///  @param[in]		i		The id of the area.
 	///  @param[in]		cost	The new cost of traversing the area.
-	inline void setAreaCost(const int i, const float cost) { m_areaCost[i] = cost; } 
+	inline void setAreaCost(const int i, const float cost) { if (i >= 0 && i < DT_MAX_AREAS) m_areaCost[i] = cost; }  // Clockwork: Out of bound check
 
 	/// Returns the include flags for the filter.
 	/// Any polygons that include one or more of these flags will be

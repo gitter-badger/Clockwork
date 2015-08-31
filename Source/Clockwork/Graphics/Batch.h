@@ -1,9 +1,30 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #pragma once
 
 #include "../Container/Ptr.h"
 #include "../Graphics/Drawable.h"
+#include "../Graphics/Material.h"
 #include "../Math/MathDefs.h"
 #include "../Math/Matrix3x4.h"
 #include "../Math/Rect.h"
@@ -30,21 +51,22 @@ struct Batch
 {
     /// Construct with defaults.
     Batch() :
-        lightQueue_(0),
-        isBase_(false)
+        isBase_(false),
+        lightQueue_(0)
     {
     }
 
     /// Construct from a drawable's source batch.
     Batch(const SourceBatch& rhs) :
         distance_(rhs.distance_),
+        renderOrder_(rhs.material_ ? rhs.material_->GetRenderOrder() : DEFAULT_RENDER_ORDER),
+        isBase_(false),
         geometry_(rhs.geometry_),
         material_(rhs.material_),
         worldTransform_(rhs.worldTransform_),
         numWorldTransforms_(rhs.numWorldTransforms_),
         lightQueue_(0),
-        geometryType_(rhs.geometryType_),
-        isBase_(false)
+        geometryType_(rhs.geometryType_)
     {
     }
 
@@ -54,11 +76,16 @@ struct Batch
     void Prepare(View* view, bool setModelTransform, bool allowDepthWrite) const;
     /// Prepare and draw.
     void Draw(View* view, bool allowDepthWrite) const;
-
     /// State sorting key.
     unsigned long long sortKey_;
     /// Distance from camera.
     float distance_;
+    /// 8-bit render order modifier from material.
+    unsigned char renderOrder_;
+    /// 8-bit light mask for stencil marking in deferred rendering.
+    unsigned char lightMask_;
+   /// Base batch flag. This tells to draw the object fully without light optimizations.
+    bool isBase_;
     /// Geometry.
     Geometry* geometry_;
     /// Material.
@@ -81,10 +108,6 @@ struct Batch
     ShaderVariation* pixelShader_;
     /// %Geometry type.
     GeometryType geometryType_;
-    /// Base batch flag. This tells to draw the object fully without light optimizations.
-    bool isBase_;
-    /// 8-bit light mask for stencil marking in deferred rendering.
-    unsigned char lightMask_;
 };
 
 /// Data for one geometry instance.
@@ -167,7 +190,8 @@ struct BatchGroupKey
         lightQueue_(batch.lightQueue_),
         pass_(batch.pass_),
         material_(batch.material_),
-        geometry_(batch.geometry_)
+        geometry_(batch.geometry_),
+        renderOrder_(batch.renderOrder_)
     {
     }
 
@@ -181,19 +205,21 @@ struct BatchGroupKey
     Material* material_;
     /// Geometry.
     Geometry* geometry_;
+    /// 8-bit render order modifier from material.
+    unsigned char renderOrder_;
 
     /// Test for equality with another batch group key.
     bool operator ==(const BatchGroupKey& rhs) const
     {
         return zone_ == rhs.zone_ && lightQueue_ == rhs.lightQueue_ && pass_ == rhs.pass_ && material_ == rhs.material_ &&
-               geometry_ == rhs.geometry_;
+               geometry_ == rhs.geometry_ && renderOrder_ == rhs.renderOrder_;
     }
 
     /// Test for inequality with another batch group key.
     bool operator !=(const BatchGroupKey& rhs) const
     {
         return zone_ != rhs.zone_ || lightQueue_ != rhs.lightQueue_ || pass_ != rhs.pass_ || material_ != rhs.material_ ||
-               geometry_ != rhs.geometry_;
+               geometry_ != rhs.geometry_ || renderOrder_ != rhs.renderOrder_;
     }
 
     /// Return hash value.

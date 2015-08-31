@@ -42,11 +42,6 @@ void CreateLayerEditor()
             bits[i].vars["index"] = i;
             SubscribeToEvent(bits[i], "Toggled", "ToggleBits");
     }
-
-    SubscribeToEvent("MouseMove", "HandleHideLayerEditor");  
-    SubscribeToEvent("MouseButtonDown", "HandleHideLayerEditor");  
-    SubscribeToEvent("MouseWheel", "HandleMaskTypeScroll");  
-
 }
 
 bool ShowLayerEditor()
@@ -59,10 +54,8 @@ bool ShowLayerEditor()
     Node@ node = lastSelectedNode.Get(); 
     patternMaskNode = node;
     
-    if (layerWindow.visible == true) 
-
     // just change position if already opened
-    if ( layerWindow.visible == true )
+    if (layerWindow.visible == true)
     {
         HideLayerEditor();
         /*
@@ -86,12 +79,7 @@ bool ShowLayerEditor()
     layerWindowPosition.x += layerWindow.width / 2;
     layerWindow.visible = true;
     layerWindow.BringToFront();
-    
-    // Subscribe while window are visible
-    SubscribeToEvent("MouseMove", "HandleHideLayerEditor");
-    SubscribeToEvent("MouseButtonDown", "HandleHideLayerEditor");
-    SubscribeToEvent("MouseWheel", "HandleMaskTypeScroll");
-     
+
     return true;
 }
 
@@ -143,7 +131,7 @@ void EstablishSelectedNodeBitMaskToPanel()
     }
 }
 
-void SetupBitsPanel( int mask ) 
+void SetupBitsPanel(int mask) 
 {
     for (int i = 0; i < 8; i++) 
     {
@@ -282,7 +270,7 @@ void HandleHideLayerEditor(StringHash eventType, VariantMap& eventData)
             HideLayerEditor();
     } 
     // if user click on scene - close layser window
-    else if ( eventType == eventTypeMouseButtonDown ) 
+    else if (eventType == eventTypeMouseButtonDown) 
     {
         if (ui.focusElement is null) 
         {
@@ -336,5 +324,3 @@ void ToggleBits(StringHash eventType, VariantMap& eventData)
     
     toggleBusy = false;
 }
-
-

@@ -873,6 +873,8 @@ VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
 /* readonly */
+bool visibleEffective;
+/* readonly */
 int weakRefs;
 int width;
 };
@@ -1107,6 +1109,8 @@ bool useDerivedOpacity;
 VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
+/* readonly */
+bool visibleEffective;
 /* readonly */
 int weakRefs;
 int width;
@@ -1403,6 +1407,8 @@ bool useDerivedOpacity;
 VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
+/* readonly */
+bool visibleEffective;
 /* readonly */
 int weakRefs;
 int width;
@@ -2074,6 +2080,10 @@ String address;
 /* readonly */
 StringHash baseType;
 /* readonly */
+float bytesInPerSec;
+/* readonly */
+float bytesOutPerSec;
+/* readonly */
 String category;
 /* readonly */
 bool client;
@@ -2087,15 +2097,23 @@ String downloadName;
 /* readonly */
 float downloadProgress;
 VariantMap identity;
+/* readonly */
+float lastHeardTime;
 bool logStatistics;
 /* readonly */
 uint numDownloads;
+/* readonly */
+float packetsInPerSec;
+/* readonly */
+float packetsOutPerSec;
 /* readonly */
 uint16 port;
 Vector3 position;
 /* readonly */
 int refs;
 Quaternion rotation;
+/* readonly */
+float roundTripTime;
 Scene scene;
 /* readonly */
 bool sceneLoaded;
@@ -3080,6 +3098,7 @@ bool LoadXML(const XMLElement&, bool = false);
 void MarkNetworkUpdate() const;
 void Remove();
 void RemoveInstanceDefault();
+void ResetTarget();
 void ResetToDefault();
 bool Save(File) const;
 bool Save(VectorBuffer&) const;
@@ -3090,8 +3109,6 @@ void SetAttributeAnimation(const String&, ValueAnimation, WrapMode = WM_LOOP, fl
 void SetAttributeAnimationSpeed(const String&, float);
 void SetAttributeAnimationWrapMode(const String&, WrapMode);
 void SetInterceptNetworkUpdate(const String&, bool);
-void SetMoveTarget(const Vector3&);
-void SetMoveVelocity(const Vector3&);
 
 // Properties:
 /* readonly */
@@ -3118,25 +3135,32 @@ bool enabledEffective;
 float height;
 /* readonly */
 uint id;
+/* readonly */
+bool inCrowd;
 float maxAccel;
 float maxSpeed;
-uint navigationFilterType;
 NavigationPushiness navigationPushiness;
-NavigationAvoidanceQuality navigationQuality;
+NavigationQuality navigationQuality;
 /* readonly */
 Node node;
 /* readonly */
 uint numAttributes;
 ObjectAnimation objectAnimation;
+uint obstacleAvoidanceType;
 /* readonly */
 Vector3 position;
+uint queryFilterType;
 float radius;
 /* readonly */
 int refs;
 /* readonly */
+bool requestedTarget;
+/* readonly */
+CrowdAgentRequestedTarget requestedTargetType;
 Vector3 targetPosition;
 /* readonly */
-CrowdTargetState targetState;
+CrowdAgentTargetState targetState;
+Vector3 targetVelocity;
 bool temporary;
 /* readonly */
 StringHash type;
@@ -3145,6 +3169,110 @@ String typeName;
 bool updateNodePosition;
 /* readonly */
 int weakRefs;
+};
+
+class CrowdManager
+{
+// Methods:
+void ApplyAttributes();
+const CrowdObstacleAvoidanceParams& GetObstacleAvoidanceParams(uint);
+void DrawDebugGeometry(DebugRenderer, bool);
+void DrawDebugGeometry(bool);
+Vector3 FindNearestPoint(const Vector3&, int);
+Array<CrowdAgent> GetAgents(Node = null, bool = true);
+float GetAreaCost(uint, uint);
+Variant GetAttribute(const String&) const;
+ValueAnimation GetAttributeAnimation(const String&) const;
+float GetAttributeAnimationSpeed(const String&) const;
+WrapMode GetAttributeAnimationWrapMode(const String&) const;
+Variant GetAttributeDefault(const String&) const;
+float GetDistanceToWall(const Vector3&, float, int);
+uint16 GetExcludeFlags(uint);
+uint16 GetIncludeFlags(uint);
+bool GetInterceptNetworkUpdate(const String&) const;
+Vector3 GetRandomPoint(int);
+Vector3 GetRandomPointInCircle(const Vector3&, float, int);
+bool Load(File, bool = false);
+bool Load(VectorBuffer&, bool = false);
+bool LoadXML(const XMLElement&, bool = false);
+void MarkNetworkUpdate() const;
+Vector3 MoveAlongSurface(const Vector3&, const Vector3&, int, uint = 3);
+Vector3 Raycast(const Vector3&, const Vector3&, int);
+void Remove();
+void RemoveInstanceDefault();
+void ResetCrowdTarget(Node = null);
+void ResetToDefault();
+bool Save(File) const;
+bool Save(VectorBuffer&) const;
+bool SaveXML(XMLElement&) const;
+void SendEvent(const String&, VariantMap& = VariantMap ( ));
+void SetAreaCost(uint, uint, float);
+bool SetAttribute(const String&, const Variant&);
+void SetAttributeAnimation(const String&, ValueAnimation, WrapMode = WM_LOOP, float = 1.0f);
+void SetAttributeAnimationSpeed(const String&, float);
+void SetAttributeAnimationWrapMode(const String&, WrapMode);
+void SetCrowdTarget(const Vector3&, Node = null);
+void SetCrowdVelocity(const Vector3&, Node = null);
+void SetExcludeFlags(uint, uint16);
+void SetIncludeFlags(uint, uint16);
+void SetInterceptNetworkUpdate(const String&, bool);
+void SetObstacleAvoidanceParams(uint, const CrowdObstacleAvoidanceParams&);
+
+// Properties:
+bool animationEnabled;
+/* readonly */
+Array<Variant> attributeDefaults;
+/* readonly */
+Array<AttributeInfo> attributeInfos;
+Array<Variant> attributes;
+/* readonly */
+StringHash baseType;
+/* readonly */
+String category;
+bool enabled;
+/* readonly */
+bool enabledEffective;
+/* readonly */
+uint id;
+float maxAgentRadius;
+int maxAgents;
+NavigationMesh navMesh;
+/* readonly */
+Node node;
+/* readonly */
+Array<uint> numAreas;
+/* readonly */
+uint numAttributes;
+/* readonly */
+uint numObstacleAvoidanceTypes;
+/* readonly */
+uint numQueryFilterTypes;
+ObjectAnimation objectAnimation;
+/* readonly */
+int refs;
+bool temporary;
+/* readonly */
+StringHash type;
+/* readonly */
+String typeName;
+/* readonly */
+int weakRefs;
+};
+
+class CrowdObstacleAvoidanceParams
+{
+
+// Properties:
+uint8 adaptiveDepth;
+uint8 adaptiveDivs;
+uint8 adaptiveRings;
+uint8 gridSize;
+float horizTime;
+float velBias;
+float weightCurVel;
+float weightDesVel;
+float weightSide;
+float weightToi;
 };
 
 class Cursor
@@ -3334,6 +3462,8 @@ VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
 /* readonly */
+bool visibleEffective;
+/* readonly */
 int weakRefs;
 int width;
 };
@@ -3444,6 +3574,72 @@ Vector3 normal;
 Vector3 position;
 Vector4 tangent;
 Vector2 texCoord;
+};
+
+class Database
+{
+// Methods:
+DbConnection Connect(const String&);
+void Disconnect(DbConnection);
+void SendEvent(const String&, VariantMap& = VariantMap ( ));
+
+// Properties:
+/* readonly */
+StringHash baseType;
+/* readonly */
+String category;
+uint poolSize;
+/* readonly */
+bool pooling;
+/* readonly */
+int refs;
+/* readonly */
+StringHash type;
+/* readonly */
+String typeName;
+/* readonly */
+int weakRefs;
+};
+
+class DbConnection
+{
+// Methods:
+DbResult Execute(const String&, bool = false);
+void SendEvent(const String&, VariantMap& = VariantMap ( ));
+
+// Properties:
+/* readonly */
+StringHash baseType;
+/* readonly */
+String category;
+/* readonly */
+bool connected;
+/* readonly */
+String connectionString;
+/* readonly */
+int refs;
+/* readonly */
+StringHash type;
+/* readonly */
+String typeName;
+/* readonly */
+int weakRefs;
+};
+
+class DbResult
+{
+
+// Properties:
+/* readonly */
+Array<String> columns;
+/* readonly */
+int64 numAffectedRows;
+/* readonly */
+uint numColumns;
+/* readonly */
+uint numRows;
+/* readonly */
+Array<Array<Variant>> row;
 };
 
 class DebugHud
@@ -3692,76 +3888,6 @@ String name;
 uint position;
 /* readonly */
 uint size;
-};
-
-class DetourCrowdManager
-{
-// Methods:
-void ApplyAttributes();
-void CreateCrowd();
-void DrawDebugGeometry(DebugRenderer, bool);
-void DrawDebugGeometry(bool);
-Array<CrowdAgent> GetActiveAgents();
-float GetAreaCost(uint, uint);
-Variant GetAttribute(const String&) const;
-ValueAnimation GetAttributeAnimation(const String&) const;
-float GetAttributeAnimationSpeed(const String&) const;
-WrapMode GetAttributeAnimationWrapMode(const String&) const;
-Variant GetAttributeDefault(const String&) const;
-bool GetInterceptNetworkUpdate(const String&) const;
-bool Load(File, bool = false);
-bool Load(VectorBuffer&, bool = false);
-bool LoadXML(const XMLElement&, bool = false);
-void MarkNetworkUpdate() const;
-void Remove();
-void RemoveInstanceDefault();
-void ResetCrowdTarget(int = 0, int = M_MAX_INT);
-void ResetToDefault();
-bool Save(File) const;
-bool Save(VectorBuffer&) const;
-bool SaveXML(XMLElement&) const;
-void SendEvent(const String&, VariantMap& = VariantMap ( ));
-void SetAreaCost(uint, uint, float);
-bool SetAttribute(const String&, const Variant&);
-void SetAttributeAnimation(const String&, ValueAnimation, WrapMode = WM_LOOP, float = 1.0f);
-void SetAttributeAnimationSpeed(const String&, float);
-void SetAttributeAnimationWrapMode(const String&, WrapMode);
-void SetCrowdTarget(const Vector3&, int = 0, int = M_MAX_INT);
-void SetCrowdVelocity(const Vector3&, int = 0, int = M_MAX_INT);
-void SetInterceptNetworkUpdate(const String&, bool);
-
-// Properties:
-bool animationEnabled;
-/* readonly */
-Array<Variant> attributeDefaults;
-/* readonly */
-Array<AttributeInfo> attributeInfos;
-Array<Variant> attributes;
-/* readonly */
-StringHash baseType;
-/* readonly */
-String category;
-bool enabled;
-/* readonly */
-bool enabledEffective;
-/* readonly */
-uint id;
-int maxAgents;
-NavigationMesh navMesh;
-/* readonly */
-Node node;
-/* readonly */
-uint numAttributes;
-ObjectAnimation objectAnimation;
-/* readonly */
-int refs;
-bool temporary;
-/* readonly */
-StringHash type;
-/* readonly */
-String typeName;
-/* readonly */
-int weakRefs;
 };
 
 class Dictionary
@@ -4163,6 +4289,8 @@ bool useDerivedOpacity;
 VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
+/* readonly */
+bool visibleEffective;
 /* readonly */
 int weakRefs;
 int width;
@@ -4990,14 +5118,14 @@ int y;
 class JSONFile
 {
 // Methods:
-JSONValue CreateRoot(JSONValueType = JSON_ANY);
-JSONValue GetRoot(JSONValueType = JSON_ANY);
+const JSONValue& GetRoot() const;
 bool Load(File);
 bool Load(VectorBuffer&);
 bool Save(File) const;
 bool Save(File, const String&) const;
 bool Save(VectorBuffer&) const;
 void SendEvent(const String&, VariantMap& = VariantMap ( ));
+void SetRoot(const JSONValue&);
 
 // Properties:
 /* readonly */
@@ -5022,104 +5150,40 @@ int weakRefs;
 class JSONValue
 {
 // Methods:
-void AddBool(bool);
-void AddColor(const Color&);
-void AddDouble(double);
-void AddFloat(float);
-void AddInt(int);
-void AddIntRect(const IntRect&);
-void AddIntVector2(const IntVector2&);
-void AddMatrix3(const Matrix3&);
-void AddMatrix3x4(const Matrix3x4&);
-void AddMatrix4(const Matrix4&);
-void AddQuaternion(const Quaternion&);
-void AddResourceRef(const ResourceRef&);
-void AddResourceRefList(const ResourceRefList&);
-void AddString(const String);
-void AddVariant(const Variant&);
-void AddVariantValue(const Variant&);
-void AddVector2(const Vector2&);
-void AddVector3(const Vector3&);
-void AddVector4(const Vector4&);
-void AddVectorVariant(const Variant&);
-JSONValue CreateChild(JSONValueType = JSON_OBJECT);
-JSONValue CreateChild(const String&, JSONValueType = JSON_OBJECT);
-bool GetBool(const String&) const;
-bool GetBool(uint) const;
-JSONValue GetChild(const String&, JSONValueType = JSON_ANY) const;
-JSONValue GetChild(uint, JSONValueType = JSON_ANY) const;
-Array<String> GetChildNames() const;
-Color GetColor(const String&) const;
-Color GetColor(uint) const;
-double GetDouble(const String&) const;
-double GetDouble(uint) const;
-float GetFloat(const String&) const;
-float GetFloat(uint) const;
-int GetInt(const String&) const;
-int GetInt(uint) const;
-IntRect GetIntRect(const String&) const;
-IntRect GetIntRect(uint) const;
-IntVector2 GetIntVector2(const String&) const;
-IntVector2 GetIntVector2(uint) const;
-Matrix3 GetMatrix3(const String&) const;
-Matrix3 GetMatrix3(uint) const;
-Matrix3x4 GetMatrix3x4(const String&) const;
-Matrix3x4 GetMatrix3x4(uint) const;
-Matrix4 GetMatrix4(const String&) const;
-Matrix4 GetMatrix4(uint) const;
-Quaternion GetQuaternion(const String&) const;
-Quaternion GetQuaternion(uint) const;
-ResourceRef GetResourceRef(const String&) const;
-ResourceRef GetResourceRef(uint) const;
-ResourceRefList GetResourceRefList(const String&) const;
-ResourceRefList GetResourceRefList(uint) const;
-String GetString(const String&) const;
-String GetString(uint) const;
-Array<String> GetValueNames() const;
-Variant GetVariant(const String&) const;
-Variant GetVariant(uint) const;
-Variant GetVariantValue(const String&, VariantType) const;
-Variant GetVariantValue(uint, VariantType) const;
-Vector2 GetVector2(const String&) const;
-Vector2 GetVector2(uint) const;
-Vector3 GetVector3(const String&) const;
-Vector3 GetVector3(uint) const;
-Vector4 GetVector4(const String&) const;
-Vector4 GetVector4(uint) const;
-Variant GetVectorVariant(const String&) const;
-Variant GetVectorVariant(uint) const;
-void SetBool(const String&, bool);
-void SetColor(const String&, const Color&);
-void SetDouble(const String&, double);
-void SetFloat(const String&, float);
-void SetInt(const String&, int);
-void SetIntRect(const String&, const IntRect&);
-void SetIntVector2(const String&, const IntVector2&);
-void SetMatrix3(const String&, const Matrix3&);
-void SetMatrix3x4(const String&, const Matrix3x4&);
-void SetMatrix4(const String&, const Matrix4&);
-void SetQuaternion(const String&, const Quaternion&);
-void SetResourceRef(const String&, const ResourceRef&);
-void SetResourceRefList(const String&, const ResourceRefList&);
-void SetString(const String&, const String);
-void SetVariant(const String&, const Variant&);
-void SetVariantValue(const String&, const Variant&);
-void SetVector2(const String&, const Vector2&);
-void SetVector3(const String&, const Vector3&);
-void SetVector4(const String&, const Vector4&);
-void SetVectorVariant(const String&, const Variant&);
+void Clear();
+bool Contains(const String&) const;
+void Erase(const String&);
+void Erase(uint, uint = 1);
+bool GetBool() const;
+double GetDouble() const;
+float GetFloat() const;
+int GetInt() const;
+uint GetUint() const;
+void Insert(uint, const JSONValue&);
+const JSONValue& Get(const String&) const;
+void Pop();
+void Push(const JSONValue&);
+void Resize(uint);
+void Set(const String&, const JSONValue&);
+const String& GetString() const;
 
 // Properties:
 /* readonly */
 bool isArray;
 /* readonly */
+bool isBool;
+/* readonly */
 bool isNull;
+/* readonly */
+bool isNumber;
 /* readonly */
 bool isObject;
 /* readonly */
-bool notNull;
+bool isString;
 /* readonly */
 uint size;
+/* readonly */
+JSONValueType type;
 };
 
 class JoystickState
@@ -5445,6 +5509,8 @@ VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
 /* readonly */
+bool visibleEffective;
+/* readonly */
 int weakRefs;
 int width;
 };
@@ -5674,6 +5740,8 @@ ScrollBar verticalScrollBar;
 IntVector2 viewPosition;
 bool visible;
 /* readonly */
+bool visibleEffective;
+/* readonly */
 int weakRefs;
 int width;
 };
@@ -5784,6 +5852,7 @@ uint numTechniques;
 bool occlusion;
 /* readonly */
 int refs;
+uint8 renderOrder;
 Scene scene;
 /* readonly */
 Array<String> shaderParameterNames;
@@ -6096,6 +6165,8 @@ bool useDerivedOpacity;
 VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
+/* readonly */
+bool visibleEffective;
 /* readonly */
 int weakRefs;
 int width;
@@ -6517,7 +6588,7 @@ Array<Node> GetChildren(bool = false) const;
 Array<Node> GetChildrenWithComponent(const String&, bool = false) const;
 Array<Node> GetChildrenWithScript(bool = false) const;
 Array<Node> GetChildrenWithScript(const String&, bool = false) const;
-Component GetComponent(const String&) const;
+Component GetComponent(const String&, bool = false) const;
 Array<Component> GetComponents() const;
 Array<Component> GetComponents(const String&, bool = false) const;
 bool GetInterceptNetworkUpdate(const String&) const;
@@ -7307,8 +7378,8 @@ bool Load(File, bool = false);
 bool Load(VectorBuffer&, bool = false);
 bool LoadXML(const XMLElement&, bool = false);
 void MarkNetworkUpdate() const;
-Array<PhysicsRaycastResult> Raycast(const Ray&, float = M_INFINITY, uint = 0xffff);
-PhysicsRaycastResult RaycastSingle(const Ray&, float = M_INFINITY, uint = 0xffff);
+Array<PhysicsRaycastResult> Raycast(const Ray&, float, uint = 0xffff);
+PhysicsRaycastResult RaycastSingle(const Ray&, float, uint = 0xffff);
 void Remove();
 void RemoveCachedGeometry(Model);
 void RemoveInstanceDefault();
@@ -7322,7 +7393,7 @@ void SetAttributeAnimation(const String&, ValueAnimation, WrapMode = WM_LOOP, fl
 void SetAttributeAnimationSpeed(const String&, float);
 void SetAttributeAnimationWrapMode(const String&, WrapMode);
 void SetInterceptNetworkUpdate(const String&, bool);
-PhysicsRaycastResult SphereCast(const Ray&, float, float = M_INFINITY, uint = 0xffff);
+PhysicsRaycastResult SphereCast(const Ray&, float, float, uint = 0xffff);
 void Update(float);
 void UpdateCollisions();
 
@@ -8101,12 +8172,12 @@ Array<Node> GetChildren(bool = false) const;
 Array<Node> GetChildrenWithComponent(const String&, bool = false) const;
 Array<Node> GetChildrenWithScript(bool = false) const;
 Array<Node> GetChildrenWithScript(const String&, bool = false) const;
-Component GetComponent(const String&) const;
-Component GetComponent(uint);
+Component GetComponent(const String&, bool = false) const;
+Component GetComponent(uint) const;
 Array<Component> GetComponents() const;
 Array<Component> GetComponents(const String&, bool = false) const;
 bool GetInterceptNetworkUpdate(const String&) const;
-Node GetNode(uint);
+Node GetNode(uint) const;
 Component GetOrCreateComponent(const String&, CreateMode = REPLICATED, uint = 0);
 ScriptObject GetScriptObject() const;
 ScriptObject GetScriptObject(const String&) const;
@@ -8604,6 +8675,8 @@ VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
 /* readonly */
+bool visibleEffective;
+/* readonly */
 int weakRefs;
 int width;
 };
@@ -8796,6 +8869,8 @@ VerticalAlignment verticalAlignment;
 ScrollBar verticalScrollBar;
 IntVector2 viewPosition;
 bool visible;
+/* readonly */
+bool visibleEffective;
 /* readonly */
 int weakRefs;
 int width;
@@ -9170,6 +9245,8 @@ float value;
 VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
+/* readonly */
+bool visibleEffective;
 /* readonly */
 int weakRefs;
 int width;
@@ -9752,6 +9829,8 @@ VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
 /* readonly */
+bool visibleEffective;
+/* readonly */
 int weakRefs;
 int width;
 };
@@ -10272,6 +10351,7 @@ uint lightMask;
 float lodBias;
 Material material;
 uint maxLights;
+uint maxLodLevels;
 /* readonly */
 Node node;
 /* readonly */
@@ -10283,6 +10363,7 @@ IntVector2 numVertices;
 ObjectAnimation objectAnimation;
 bool occludee;
 bool occluder;
+uint occlusionLodLevel;
 int patchSize;
 /* readonly */
 Array<TerrainPatch> patches;
@@ -10584,6 +10665,8 @@ bool useDerivedOpacity;
 VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
+/* readonly */
+bool visibleEffective;
 /* readonly */
 int weakRefs;
 int width;
@@ -11400,6 +11483,8 @@ VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
 /* readonly */
+bool visibleEffective;
+/* readonly */
 int weakRefs;
 int width;
 };
@@ -11646,6 +11731,8 @@ VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
 /* readonly */
+bool visibleEffective;
+/* readonly */
 int weakRefs;
 int width;
 };
@@ -11692,13 +11779,13 @@ const Color& GetColor() const;
 void FromString(VariantType, const String&);
 void FromString(const String&, const String&);
 bool GetBool() const;
-VectorBuffer GetBuffer() const;
 double GetDouble() const;
 float GetFloat() const;
 int GetInt() const;
 RefCounted GetPtr() const;
 ScriptObject GetScriptObject() const;
 StringHash GetStringHash() const;
+Array<String> GetStringVector() const;
 uint GetUInt() const;
 Array<Variant> GetVariantVector() const;
 const IntRect& GetIntRect() const;
@@ -11715,6 +11802,7 @@ const VariantMap& GetVariantMap() const;
 const Vector2& GetVector2() const;
 const Vector3& GetVector3() const;
 const Vector4& GetVector4() const;
+const VectorBuffer GetBuffer() const;
 
 // Properties:
 /* readonly */
@@ -12130,6 +12218,8 @@ VerticalAlignment verticalAlignment;
 Viewport viewport;
 bool visible;
 /* readonly */
+bool visibleEffective;
+/* readonly */
 int weakRefs;
 int width;
 };
@@ -12358,6 +12448,8 @@ bool useDerivedOpacity;
 VariantMap vars;
 VerticalAlignment verticalAlignment;
 bool visible;
+/* readonly */
+bool visibleEffective;
 /* readonly */
 int weakRefs;
 int width;
@@ -12627,8 +12719,8 @@ BLEND_SUBTRACTALPHA,
 enum BodyType2D
 {
 BT_STATIC,
-BT_DYNAMIC,
 BT_KINEMATIC,
+BT_DYNAMIC,
 };
 
 enum CollisionEventMode
@@ -12685,22 +12777,29 @@ REPLICATED,
 LOCAL,
 };
 
-enum CrowdAgentState
+enum CrowdAgentRequestedTarget
 {
-CROWD_AGENT_INVALID,
-CROWD_AGENT_READY,
-CROWD_AGENT_TRAVERSINGLINK,
+CA_REQUESTEDTARGET_NONE,
+CA_REQUESTEDTARGET_POSITION,
+CA_REQUESTEDTARGET_VELOCITY,
 };
 
-enum CrowdTargetState
+enum CrowdAgentState
 {
-CROWD_AGENT_TARGET_NONE,
-CROWD_AGENT_TARGET_FAILED,
-CROWD_AGENT_TARGET_VALID,
-CROWD_AGENT_TARGET_REQUESTING,
-CROWD_AGENT_TARGET_WAITINGFORQUEUE,
-CROWD_AGENT_TARGET_WAITINGFORPATH,
-CROWD_AGENT_TARGET_VELOCITY,
+CA_STATE_INVALID,
+CA_STATE_WALKING,
+CA_STATE_OFFMESH,
+};
+
+enum CrowdAgentTargetState
+{
+CA_TARGET_NONE,
+CA_TARGET_FAILED,
+CA_TARGET_VALID,
+CA_TARGET_REQUESTING,
+CA_TARGET_WAITINGFORQUEUE,
+CA_TARGET_WAITINGFORPATH,
+CA_TARGET_VELOCITY,
 };
 
 enum CubeMapFace
@@ -12734,6 +12833,12 @@ CS_ACCEPTDROP,
 CS_REJECTDROP,
 CS_BUSY,
 CS_BUSY_ARROW,
+};
+
+enum DBAPI
+{
+DBAPI_SQLITE,
+DBAPI_ODBC,
 };
 
 enum DumpMode
@@ -12830,9 +12935,12 @@ INSIDE,
 
 enum JSONValueType
 {
-JSON_ANY,
-JSON_OBJECT,
+JSON_NULL,
+JSON_BOOL,
+JSON_NUMBER,
+JSON_STRING,
 JSON_ARRAY,
+JSON_OBJECT,
 };
 
 enum LayoutMode
@@ -12870,18 +12978,18 @@ MM_RELATIVE,
 MM_WRAP,
 };
 
-enum NavigationAvoidanceQuality
+enum NavigationPushiness
+{
+NAVIGATIONPUSHINESS_LOW,
+NAVIGATIONPUSHINESS_MEDIUM,
+NAVIGATIONPUSHINESS_HIGH,
+};
+
+enum NavigationQuality
 {
 NAVIGATIONQUALITY_LOW,
 NAVIGATIONQUALITY_MEDIUM,
 NAVIGATIONQUALITY_HIGH,
-};
-
-enum NavigationPushiness
-{
-PUSHINESS_LOW,
-PUSHINESS_MEDIUM,
-PUSHINESS_HIGH,
 };
 
 enum NavmeshPartitionType
@@ -13091,6 +13199,7 @@ VAR_MATRIX3,
 VAR_MATRIX3X4,
 VAR_MATRIX4,
 VAR_DOUBLE,
+VAR_STRINGVECTOR,
 };
 
 enum VerticalAlignment
@@ -13214,9 +13323,11 @@ void UnsubscribeFromEvent(const String&);
 void UnsubscribeFromEvents(Object);
 
 // Global properties
+DBAPI DBAPI;
 Audio audio;
 ResourceCache cache;
 Console console;
+Database database;
 DebugHud debugHud;
 DebugRenderer debugRenderer;
 Engine engine;

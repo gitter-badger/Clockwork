@@ -1,4 +1,24 @@
-
+//
+// Copyright (c) 2008-2015 the Clockwork project.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
 
 #pragma once
 
@@ -256,7 +276,7 @@ public:
     void SetFocus(bool enable);
     /// Set selected mode. Actual meaning is element dependent, for example constant hover or pressed effect.
     void SetSelected(bool enable);
-    /// Set whether is visible.
+    /// Set whether is visible. Visibility propagates to child elements.
     void SetVisible(bool enable);
     /// Set focus mode.
     void SetFocusMode(FocusMode mode);
@@ -418,8 +438,11 @@ public:
     /// Return whether is selected. Actual meaning is element dependent.
     bool IsSelected() const { return selected_; }
 
-    /// Return whether is visible.
+    /// Return whether element itself should be visible. Elements can be also hidden due to the parent being not visible, use IsVisibleEffective() to check.
     bool IsVisible() const { return visible_; }
+    
+    /// Return whether element is effectively visible (parent element chain is visible.)
+    bool IsVisibleEffective() const;
 
     /// Return whether the cursor is hovering on this element.
     bool IsHovering() const { return hovering_; }
