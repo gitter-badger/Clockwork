@@ -1,9 +1,0 @@
-<cubemap>
-    <face name="Warehouse_right.PNG" />
-    <face name="Warehouse_left.PNG" />
-    <face name="Warehouse_top.PNG" />
-    <face name="Warehouse_bottom.PNG" />
-    <face name="Warehouse_front.PNG" />
-    <face name="Warehouse_back.PNG" />
-    <quality low="0" />
-</cubemap>

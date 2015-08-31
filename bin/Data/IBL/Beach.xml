@@ -1,9 +1,0 @@
-<cubemap>
-    <face name="Beach_right.PNG" />
-    <face name="Beach_left.PNG" />
-    <face name="Beach_top.PNG" />
-    <face name="Beach_bottom.PNG" />
-    <face name="Beach_front.PNG" />
-    <face name="Beach_back.PNG" />
-    <quality low="0" />
-</cubemap>

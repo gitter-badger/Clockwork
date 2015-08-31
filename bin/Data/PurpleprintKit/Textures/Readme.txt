@@ -1,1 +1,0 @@
-Place here a copy of the content from the folder "PurpleprintKit/Content/2D/".
