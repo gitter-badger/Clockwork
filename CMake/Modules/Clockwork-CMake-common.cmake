@@ -1066,7 +1066,7 @@ macro (setup_main_executable)
             endif ()
         endforeach ()
         # Clockwork project builds the PackageTool as required; external project uses PackageTool found in the Clockwork build tree or Clockwork SDK
-        find_Clockwork_tool (PACKAGE_TOOL PackageTool
+        find_Clockwork3d_tool (PACKAGE_TOOL PackageTool
             HINTS ${CMAKE_BINARY_DIR}/bin/tool ${CLOCKWORK_HOME}/bin/tool
             DOC "Path to PackageTool" MSG_MODE WARNING)
         if (CMAKE_PROJECT_NAME STREQUAL Clockwork)

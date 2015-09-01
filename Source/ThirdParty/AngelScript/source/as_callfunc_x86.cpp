@@ -28,7 +28,7 @@
    andreas@angelcode.com
 */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Skrylar for Clockwork
 
 //
 // as_callfunc_x86.cpp

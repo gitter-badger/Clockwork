@@ -9,7 +9,7 @@
 -- the author has no obligation to provide maintenance, support, updates,
 -- enhancements, or modifications.
 
--- Modified by Joshua Nuttall  and Joshua Nuttall  for Clockwork
+-- Modified by Aster Jian and Yao Wei Tjong for Clockwork
 
 -- Variable class
 -- Represents a extern variable or a public member of a class.

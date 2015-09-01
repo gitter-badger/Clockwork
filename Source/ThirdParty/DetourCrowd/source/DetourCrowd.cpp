@@ -16,7 +16,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Lasse Oorni and Yao Wei Tjong for Clockwork
 
 #define _USE_MATH_DEFINES
 #include <string.h>

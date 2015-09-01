@@ -1,4 +1,4 @@
-; Modified by Joshua Nuttall  for Clockwork
+; Modified by Yao Wei Tjong for Clockwork
 
 .code
 ; procedure exec_cpuid

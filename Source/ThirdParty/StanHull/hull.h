@@ -29,7 +29,7 @@
 		THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -----------------------------------------------------------------------*/
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Lasse Oorni for Clockwork
 
 // Clockwork: use a namespace to not clash with Clockwork's inbuilt math types
 namespace StanHull

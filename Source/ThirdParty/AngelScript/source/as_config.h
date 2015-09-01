@@ -28,7 +28,7 @@
    andreas@angelcode.com
 */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Yao Wei Tjong and Skrylar for Clockwork
 
 
 //

@@ -184,7 +184,7 @@
 #
 # ------------------------------------------------------------------------------
 
-# Modified by Joshua Nuttall  for Clockwork
+# Modified by Lasse Oorni and Yao Wei Tjong for Clockwork
 
 cmake_minimum_required( VERSION 2.6.3 )
 

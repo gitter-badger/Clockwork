@@ -1,4 +1,4 @@
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Lasse Oorni for Clockwork
 
 #include "stb_image.h"
 #define STB_IMAGE_IMPLEMENTATION

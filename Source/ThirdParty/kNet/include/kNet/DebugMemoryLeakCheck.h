@@ -16,7 +16,7 @@
 /** @file DebugMemoryLeakCheck.h
 	@brief Provides overloads of operators new and delete for tracking memory leaks. */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Lasse Oorni for Clockwork
 
 // Clockwork: only include on MSVC
 #if defined(_MSC_VER) && defined(_DEBUG) && defined(KNET_MEMORY_LEAK_CHECK)

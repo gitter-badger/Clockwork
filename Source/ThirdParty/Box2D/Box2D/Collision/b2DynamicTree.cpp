@@ -16,7 +16,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Lasse Oorni for Clockwork
 
 #include <Box2D/Collision/b2DynamicTree.h>
 // Clockwork: replaced with cstring include for memcpy to work on Android

@@ -12,7 +12,7 @@
 ** enhancements, or modifications.
 */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Aster Jian for Clockwork
 
 #include "tolua++.h"
 

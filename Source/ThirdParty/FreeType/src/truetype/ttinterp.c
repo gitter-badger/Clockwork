@@ -15,7 +15,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Lasse Oorni for Clockwork
 
 /* Greg Hitchcock from Microsoft has helped a lot in resolving unclear */
 /* issues; many thanks!                                                */

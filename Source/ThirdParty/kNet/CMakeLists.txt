@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-# Modified by Joshua Nuttall  for Clockwork
+# Modified by Lasse Oorni and Yao Wei Tjong for Clockwork
 
 set (TARGET_NAME kNet)
 

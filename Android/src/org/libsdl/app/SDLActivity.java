@@ -1,4 +1,4 @@
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Lasse Oorni and Yao Wei Tjong for Clockwork
 
 package org.libsdl.app;
 

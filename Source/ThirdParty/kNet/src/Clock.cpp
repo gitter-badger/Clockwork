@@ -15,7 +15,7 @@
 /** @file Clock.cpp
 	@brief */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Lasse Oorni for Clockwork
 
 // Clockwork: ensure that kNetBuildConfig.h is included for WinXP compatibility
 #include "kNetBuildConfig.h"

@@ -14,7 +14,7 @@ subject to the following restrictions:
 
 */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Lasse Oorni for Clockwork
 
 #include "BulletCollision/CollisionDispatch/btCompoundCollisionAlgorithm.h"
 #include "BulletCollision/CollisionDispatch/btCollisionObject.h"

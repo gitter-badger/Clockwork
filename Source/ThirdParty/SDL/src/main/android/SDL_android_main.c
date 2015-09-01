@@ -2,7 +2,7 @@
     SDL_android_main.c, placed in the public domain by Sam Lantinga  3/13/14
 */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Lasse Oorni and Yao Wei Tjong for Clockwork
 
 // Clockwork - use SDK include dir
 #include <SDL/SDL_internal.h>

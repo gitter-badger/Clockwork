@@ -191,7 +191,7 @@
 # (To distribute this file outside of CMake, substitute the full
 #  License text for the above reference.)
 
-# Modified by Joshua Nuttall  for Clockwork
+# Modified by Yao Wei Tjong for Clockwork
 
 include(CMakeParseArguments)
 include(CheckCXXCompilerFlag)

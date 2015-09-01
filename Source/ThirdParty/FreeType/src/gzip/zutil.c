@@ -5,7 +5,7 @@
 
 /* @(#) $Id$ */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Yao Wei Tjong for Clockwork
 
 #include "zutil.h"
 

@@ -10857,7 +10857,7 @@ namespace pugi
 	{
 	}
 
-	// Modified by Joshua Nuttall  for Clockwork
+	// Modified by YaoWT for Clockwork
 	PUGI__FN xpath_node::xpath_node(const xpath_node& rhs): _node(rhs._node), _attribute(rhs._attribute)
 	{
 	}

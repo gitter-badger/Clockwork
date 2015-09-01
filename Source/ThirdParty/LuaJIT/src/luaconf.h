@@ -3,7 +3,7 @@
 ** Copyright (C) 2005-2014 Mike Pall. See Copyright Notice in luajit.h
 */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Yao Wei Tjong for Clockwork
 
 #ifndef luaconf_h
 #define luaconf_h

@@ -16,7 +16,7 @@
 /** @file SharedPtr.h
 	@brief SharedPtr, intrusive reference counting for multiple pointer owners. */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Yao Wei Tjong for Clockwork
 
 #include <cstdlib>
 #include <cassert>

@@ -51,7 +51,7 @@ The following people have contributed to the project:
    Ville Saarinen
    Cvetan Stefanovski
    Kari Vatjus-Anttila
-   Joshua Nuttall 
+   Lasse Öörni
 
    
    Links.

@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by OvermindDL1 for Clockwork
 
 /**
  *  \file SDL_keyboard.h

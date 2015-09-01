@@ -11,7 +11,7 @@
 -- the author has no obligation to provide maintenance, support, updates,
 -- enhancements, or modifications.
 
--- Modified by Joshua Nuttall  for Clockwork
+-- Modified by Aster Jian for Clockwork
 
 function parse_extra()
 

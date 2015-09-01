@@ -4,7 +4,7 @@
 ** See Copyright Notice in lua.h
 */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Yao Wei Tjong for Clockwork
 
 #include <ctype.h>
 #include <locale.h>

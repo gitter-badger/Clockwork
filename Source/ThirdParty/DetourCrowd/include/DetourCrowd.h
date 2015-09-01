@@ -16,7 +16,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Yao Wei Tjong for Clockwork
 
 #ifndef DETOURCROWD_H
 #define DETOURCROWD_H

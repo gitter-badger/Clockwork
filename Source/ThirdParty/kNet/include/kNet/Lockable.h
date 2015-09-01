@@ -16,7 +16,7 @@
 /** @file Lockable.h
 	@brief The Lock<T> and Lockable<T> template classes. */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Lasse Oorni for Clockwork
 
 #ifdef KNET_USE_BOOST
 #include <boost/thread/recursive_mutex.hpp>

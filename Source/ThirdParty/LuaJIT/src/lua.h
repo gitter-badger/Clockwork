@@ -5,7 +5,7 @@
 ** See Copyright Notice at the end of this file
 */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by Aster Jian for Clockwork
 
 #ifndef lua_h
 #define lua_h

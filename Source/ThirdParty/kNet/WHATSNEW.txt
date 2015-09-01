@@ -24,7 +24,7 @@ Version 2.5, 2012-01-02
 -----------
 - Fix build on Mac.
 - Performance improvements.
-- Added pthreads support for linux and Mac. Thanks to Joshua Nuttall  for the implementation.
+- Added pthreads support for linux and Mac. Thanks to Lasse Öörni for the implementation.
 - Improved networking statistics window display.
 - Bug fixes.
 

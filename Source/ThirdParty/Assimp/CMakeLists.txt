@@ -6,7 +6,7 @@
 #    source groups and library command)
 #
 
-# Modified by Joshua Nuttall  for Clockwork
+# Modified by Lasse Oorni and Yao Wei Tjong for Clockwork
 
 if (MINGW)
     # The IFCReaderGen.cpp.obj has too many sections in DEBUG configuration build

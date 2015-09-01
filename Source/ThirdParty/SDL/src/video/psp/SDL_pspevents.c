@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Joshua Nuttall  for Clockwork
+// Modified by OvermindDL1 for Clockwork
 
 /* Being a null driver, there's no event stream. We just define stubs for
    most of the API. */

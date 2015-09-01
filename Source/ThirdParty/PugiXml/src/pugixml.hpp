@@ -1189,7 +1189,7 @@ namespace pugi
 	public:
 		// Default constructor; constructs empty XPath node
 		xpath_node();
-		// Modified by Joshua Nuttall  for Clockwork
+		// Modified by YaoWT for Clockwork
 		// Copy constructor from another xpath_node
 		xpath_node(const xpath_node& rhs);
 		

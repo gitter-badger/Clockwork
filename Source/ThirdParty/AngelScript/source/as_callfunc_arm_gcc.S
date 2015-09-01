@@ -34,7 +34,7 @@
 
    Adapted to GNUC by darktemplar216 in September 2009
 
-   Modified by Joshua Nuttall  for 8-byte stack alignment in May 2012
+   Modified by Lasse Oorni for 8-byte stack alignment in May 2012
 
    The assembler routines for Linux were written by Carlos Luna in December 2012
 */
