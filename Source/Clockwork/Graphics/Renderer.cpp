@@ -1445,8 +1445,7 @@ void Renderer::Initialize()
     defaultLightRamp_ = cache->GetResource<Texture2D>("Textures/Ramp.png");
     defaultLightSpot_ = cache->GetResource<Texture2D>("Textures/Spot.png");
     defaultMaterial_ = new Material(context_);
-	defaultMaterial_->SetTechnique(1, cache->GetResource<Technique>("Techniques/Diff.xml"));
-	defaultMaterial_->SetTexture(TextureUnit::TU_DIFFUSE, cache->GetResource<Texture2D>("Textures/coreDefault.png"));
+	defaultMaterial_= cache->GetResource<Material>("Materials/Default.xml");
 
     defaultRenderPath_ = new RenderPath();
     defaultRenderPath_->Load(cache->GetResource<XMLFile>("RenderPaths/PBR-Deferred.xml"));
