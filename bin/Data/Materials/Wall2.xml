@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <material>
-	<technique name="Techniques/PBRRoughNormalSpecIBL.xml" quality="0" loddistance="0" />
+	<technique name="Techniques/DiffNormalSpec.xml" quality="0" loddistance="0" />
 	<texture unit="diffuse" name="Textures/PK_Wall1_Base_Color___id_basecolor__0000.tga" />
 	<texture unit="normal" name="Textures/PK_Wall1_Normal___id_normal__0000.tga" />
 	<texture unit="specular" name="Textures/PK_Wall1_Propities___id_propities__0000.tga" />
