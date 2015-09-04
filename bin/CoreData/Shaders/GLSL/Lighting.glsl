@@ -83,15 +83,16 @@
 #ifdef COMPILEPS
     float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir)
     {
-        #ifdef DIRLIGHT
-            lightDir = cLightDirPS;
-            return max(dot(normal, lightDir), 0.0);
-        #else
-            vec3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w;
-            float lightDist = length(lightVec);
-            lightDir = lightVec / lightDist;
-            return max(dot(normal, lightDir), 0.0) * texture2D(sLightRampMap, vec2(lightDist, 0.0)).r;
-        #endif
+        #ifdef DIRLIGHT 
+            lightDir = cLightDirPS; 
+            return max(dot(normal, lightDir), 0.0); 
+        #else 
+            vec3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w; 
+            float lightDist = length(lightVec); 
+            lightDir = lightVec / lightDist; 
+            return max(dot(normal, lightDir), 0.0) * texture2D(sLightRampMap, vec2(lightDist, 0.0)).r; 
+        #endif 
+
     }
 
     float GetDiffuseVolumetric(vec3 worldPos)
@@ -457,7 +458,7 @@
             {    
                 float ndv = abs(dot(wsNormal, toCamera)) + 1e-5;
                 
-                reflectVec = GetSpecularDominantDir(wsNormal, reflectVec, roughness * roughness);
+                reflectVec = GetSpecularDominantDir(wsNormal, -reflectVec, roughness * roughness);
                 
                 // Mip selection is something to tune to your desired results
                 //float mipSelect = 7.0 - 1.0 + log2(roughness); // Geilfus: https://github.com/simongeilfus/Cinder-Experiments
