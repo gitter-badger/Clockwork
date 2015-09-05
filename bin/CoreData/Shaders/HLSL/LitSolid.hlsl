@@ -4,7 +4,6 @@
 #include "ScreenPos.hlsl"
 #include "Lighting.hlsl"
 #include "Fog.hlsl"
-#include "BRDF.hlsl"
 #include "DeferredGBuffer.hlsl"
 
 void VS(float4 iPos : POSITION,
@@ -206,32 +205,38 @@ void PS(
     #endif
 
     #ifdef PBR
-        #ifdef SPECMAP
-            #ifdef GLOSSY_SPECULAR
+        #ifdef PROPMAP
+            #ifdef SPECMAP // SPECULAR
                 float4 specSample = Sample2D(SpecGlossMap, iTexCoord.xy);
                 float3 specColor = specSample.rgb;
-                float roughness = max(0.04, 1.0 - specSample.a);
-                roughness = roughness * roughness;
+                #ifdef GLOSSINESS
+                    float roughness = max(0.04, 1.0 - specSample.a);
+                    roughness *= roughness;
+                #else
+                    float roughness = max(0.04, specSample.a);
+                #endif
                 specColor *= cMatSpecColor.rgb; // mix in externally defined color
-            #else
+            #else // METALNESS
                 float4 roughMetalSrc = Sample2D(RoughMetalFresnel, iTexCoord.xy);
-                float roughness = max(0.04, 1.0 - roughMetalSrc.r);
-                roughness = roughness * roughness;
+                #ifdef GLOSSINESS
+                    float roughness = max(0.04, 1.0 - roughMetalSrc.r);
+                    roughness *= roughness;
+                #else
+                    float roughness = max(0.04, roughMetalSrc.r);
+                #endif
+                
                 const float metalness = roughMetalSrc.g;
-    
                 float3 specColor = max(diffColor.rgb * metalness, float3(0.08, 0.08, 0.08));
                 specColor *= cMatSpecColor.rgb;
                 diffColor.rgb = diffColor.rgb - diffColor.rgb * metalness; // Modulate down the diffuse
             #endif
-         
         #else
             float roughness = 0.9;
-            roughness = roughness * roughness;
             const float metalness = 0.0;
-    
+            
             float3 specColor = max(diffColor.rgb * metalness, float3(0.08, 0.08, 0.08));
+            specColor *= cMatSpecColor.rgb;
             diffColor.rgb = diffColor.rgb - diffColor.rgb * metalness; // Modulate down the diffuse
-           
         #endif
     // Get material specular albedo
     #elif defined(SPECMAP)
@@ -276,30 +281,26 @@ void PS(
         #endif
     
         #ifdef PBR
-            float3 toCamera = normalize(-worldPos);
-                
-            const float3 Hn = normalize(toCamera + lightDir);
-            const float vdh = max(0.0, dot(toCamera, Hn));
-            const float ndh = max(0.0, dot(normal, Hn));
-            const float ndl = max(0.0, dot(normal, lightDir));
-            const float ndv = max(1e-5, dot(normal, toCamera));   
+            float3 cameraDir = normalize(cCameraPosPS - iWorldPos.xyz);
             
-            #ifdef DIRLIGHT
-            float3 diffuseTerm = Diffuse(diff, roughness, ndv, ndl, vdh) * diffColor.rgb * ndl * lightColor;
-            #else
-                float3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w;
-                float lightDist = length(lightVec);
-                float3 diffuseTerm = Diffuse(diff, roughness, ndv, ndl, vdh) * diffColor.rgb * lightColor * Sample2D(LightRampMap, float2(lightDist, 0.0)).r)
-            #endif
-
-            // float3 diffuseTerm = ndl * lightColor * diff * albedoInput.rgb;
-            float3 fresnelTerm = Fresnel(specColor, vdh);
-            float distTerm = Distribution(roughness, ndh);
-            float visTerm = GeometricVisibility(roughness, ndv, ndl, vdh);
-                
+            const float ndl = saturate(dot(normal, lightDir));
+            const float3 diffuseTerm = ndl * lightColor * diff * diffColor.rgb;
             finalColor = float4(diffuseTerm, 1);
-            finalColor += distTerm * visTerm * fresnelTerm * lightColor * diff;
-            finalColor.rgb = LinearFromSRGB(finalColor.rgb);
+            
+            if (ndl > 0) // Don't compute
+            {
+                const float3 Hn = normalize(cameraDir + lightDir);
+                const float vdh = saturate(dot(cameraDir, Hn));
+                const float ndh = saturate(dot(normal, Hn));
+                const float ndv = saturate(dot(normal, cameraDir));
+                
+                const float3 fresnelTerm = SchlickFresnel(specColor, vdh, roughness);
+                const float distTerm = GGXDistribution(ndh, roughness);
+                const float visTerm = SmithGGXVisibility(ndl, ndv, roughness);
+                
+                finalColor += distTerm * visTerm * fresnelTerm * lightColor * diff;
+                finalColor.rgb = LinearFromSRGB(finalColor.rgb);
+            }
         #else
             #ifdef SPECULAR
                 float spec = GetSpecular(normal, cCameraPosPS - iWorldPos.xyz, lightDir, cMatSpecColor.a);
@@ -345,13 +346,14 @@ void PS(
         #endif
         
         #ifdef IBL
-            float3 reflection = normalize(reflect(toCamera, normal));
+            const float3 reflection = normalize(reflect(-toCamera, normal));
             float3 cubeColor = iVertexLight.rgb;
-            float3 iblColor = ImageBasedLighting(reflection, normal, toCamera, specColor, roughness, cubeColor);
+            float3 iblColor = ImageBasedLighting(reflection, normal, -toCamera, specColor, roughness, cubeColor);
+            float3 iblNeg = 1.0 - iblColor;
             #ifdef AO
-                finalColor = LinearFromSRGB(iVertexLight * ((cubeColor * diffColor * aoFactor) + iblColor * diffColor.rgb * (1 - roughness ) * aoFactor));
-            #else
-                finalColor = LinearFromSRGB(iVertexLight * ((cubeColor * diffColor ) + iblColor * diffColor * (1 - roughness )));
+                finalColor += LinearFromSRGB(iblColor * aoFactor * horizon * cubeColor);
+            #else                            
+                finalColor += LinearFromSRGB(iblColor * horizon * cubeColor);
             #endif
         #endif
         
@@ -397,18 +399,20 @@ void PS(
             finalColor += lightInput.rgb * diffColor.rgb + lightSpecColor - aoFactor * specColor;
         #endif
 
-        #if defined(PBR) || defined(IBL)
-            const float3 toCamera = normalize(cCameraPosPS - iWorldPos.xyz);
-        #endif
-        
-        #ifdef IBL
-            float3 reflection = normalize(reflect(toCamera, normal));
+        #if defined(PBR) && defined(IBL)
+            const float3 toCamera = normalize(iWorldPos.xyz - cCameraPosPS);
+            const float3 reflection = reflect(toCamera, normal);
+            
+            float horizonOcclusion = 1.3;
+            float horizon = saturate(1 + horizonOcclusion * dot(reflection, normal));
+            horizon *= horizon;
+            
             float3 cubeColor = iVertexLight.rgb;
             float3 iblColor = ImageBasedLighting(reflection, normal, toCamera, specColor, roughness, cubeColor);
             #ifdef AO
-                finalColor = LinearFromSRGB(iVertexLight * ((cubeColor * diffColor * aoFactor) + iblColor * diffColor.rgb * (1 - roughness ) * aoFactor));
-            #else
-                finalColor = LinearFromSRGB(iVertexLight * ((cubeColor * diffColor ) + iblColor * diffColor * (1 - roughness )));
+                finalColor += LinearFromSRGB(iblColor * aoFactor * horizon * cubeColor);
+            #else                            
+                finalColor += LinearFromSRGB(iblColor * horizon * cubeColor);
             #endif
         #endif
         #ifdef ENVCUBEMAP

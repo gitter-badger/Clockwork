@@ -1,6 +1,6 @@
 #pragma warning(disable:3571)
 
-#ifdef COMPILEVS
+#if defined(COMPILEVS) || defined(COMPILEGS)
     float3 GetAmbient(float zonePos)
     {
         return cAmbientStartColor + zonePos * cAmbientEndColor;
@@ -312,7 +312,7 @@
         /// Fresnel factor
         ///     specular: Specular color input
         ///     vDotH: dot product of view direction and half-angle
-        float3 SchlickFresnel(in float3 specular, in float vDotH)
+        float3 SchlickFresnel(in float3 specular, in float vDotH, in float roughness)
         {
             return specular + (float3(1.0, 1.0, 1.0) - specular) * pow(1.0 - vDotH, 5.0);
         }
@@ -320,9 +320,10 @@
         /// Fresnel factor, spherical gaussian in Schlick approximation; https://seblagarde.wordpress.com/2012/06/03/spherical-gaussien-approximation-for-blinn-phong-phong-and-fresnel/
         ///     specular: specular color of the surface
         ///     vDotH: dot product of view direction and half-angle
-        float3 SchlickGaussianFresnel(in float3 specular, in float vDotH)
+        float3 SchlickGaussianFresnel(in float3 specular, in float vDotH, in float roughness)
         {
-            float sphericalGaussian = pow(2.0, (-5.55473 * vDotH - 6.98316) * vDotH);
+            float specularPower = exp2(10 * (1 - roughness) + 1);
+            float sphericalGaussian = pow(2, (-5.55473 * vDotH - 6.98316) * vDotH);
             return specular + (float3(1.0, 1.0, 1.0) - specular) * sphericalGaussian;
         }
         
@@ -358,6 +359,12 @@
         
     /// Normal Distributions
         
+        float BlinnPhongDistribution(in float nDotH, in float roughness)
+        {
+            const float specPower = max((2.0 / (roughness * roughness)) - 2.0, 1e-4f); // Calculate specular power from roughness
+            return pow(saturate(nDotH), specPower);
+        }
+        
         /// Beckmann normal distribution
         ///     nDotH: dot-prod of surface normal and half-angle
         ///     roughness: surface roughness
@@ -389,17 +396,14 @@
             ///     specColor: specular color of the fragment
             ///     roughness: surface roughness
             ///     nDotV: dot product of normal and view vectors
-            float3 EnvBRDFApprox( half3 SpecularColor, half Roughness, half NoV )
-            {
-                // [ Lazarov 2013, "Getting More Physical in Call of Duty: Black Ops II" ]
-                // Adaptation to fit our G term.
-                const half4 c0 = { -1, -0.0275, -0.572, 0.022 };
-            	const half4 c1 = { 1, 0.0425, 1.04, -0.04 };
-            	half4 r = Roughness * c0 + c1;
-            	half a004 = min( r.x * r.x, exp2( -9.28 * NoV ) ) * r.x + r.y;
-            	half2 AB = half2( -1.04, 1.04 ) * a004 + r.zw;
-
-                return SpecularColor * AB.x + AB.y;
+            float3 EnvBRDFApprox(in float3 specColor, in float roughness, in float nDotV )
+            {            
+                const float4 c0 = float4(-1, -0.0275, -0.572, 0.022 );
+                const float4 c1 = float4(1, 0.0425, 1.0, -0.04 );
+                float4 r = roughness * c0 + c1;
+                float a004 = min( r.x * r.x, exp2( -9.28 * nDotV ) ) * r.x + r.y;
+                float2 AB = float2( -1.04, 1.04 ) * a004 + r.zw;
+                return specColor * AB.x + AB.y;
             }
 
             /// Determine reflection vector based on surface roughness, rougher uses closer to the normal and smoother uses closer to the reflection vector
@@ -408,8 +412,8 @@
             ///     roughness: surface roughness
             float3 GetSpecularDominantDir(float3 normal, float3 reflection, float roughness) 
             { 
-                float smoothness = saturate(1.0 - roughness); 
-                float lerpFactor = smoothness * (sqrt(smoothness) + roughness); 
+                const float smoothness = 1.0 - roughness; 
+                const float lerpFactor = smoothness * (sqrt(smoothness) + roughness); 
                 return lerp(normal, reflection, lerpFactor);
             }
             
@@ -420,19 +424,22 @@
             ///     roughness: surface roughness
             ///     reflectionCubeColor: output of the sampled cubemap color
             float3 ImageBasedLighting(in float3 reflectVec, in float3 wsNormal, in float3 toCamera, in float3 specular, in float roughness, out float3 reflectionCubeColor)
-            {    
-                float ndv = abs(dot(wsNormal, toCamera) + 1e-5);
-                
-                reflectVec = GetSpecularDominantDir(wsNormal, -reflectVec, roughness);
+            {     
+                reflectVec = GetSpecularDominantDir(wsNormal, reflectVec, roughness);
+                const float3 Hn = normalize(-toCamera + wsNormal);
+                const float vdh = saturate(dot(-toCamera, Hn));
+                const float ndv = saturate(dot(-toCamera, wsNormal));
                 
                 // Mip selection is something to tune to your desired results
                 //const float mipSelect = 9;
-                //const float mipSelect = 7 - 1 + log2(roughness); // Geilfus: https://github.com/simongeilfus/Cinder-Experiments
-                float mipSelect = roughness  * 8;  // Lux-style
+                const float mipSelect = roughness * 9;  // Lux-style
+                //const float mipSelect = 9 + 1 - (4 - log2(roughness));
                 
-                reflectionCubeColor.rgb = SampleCubeLOD(ZoneCubeMap, float4(reflectVec, mipSelect)).rgb;
-                float3 environmentSpecular = EnvBRDFApprox(specular, roughness, ndv);
-                return environmentSpecular *  reflectionCubeColor;
+                float3 cube = SampleCubeLOD(ZoneCubeMap, float4(reflectVec, mipSelect)).rgb;
+                reflectionCubeColor = SampleCubeLOD(ZoneCubeMap, float4(wsNormal, 9)).rgb;
+      
+                const float3 environmentSpecular = EnvBRDFApprox(specular, roughness, ndv);
+                return environmentSpecular * cube;
             }
 
         #endif
