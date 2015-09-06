@@ -3576,72 +3576,6 @@ Vector4 tangent;
 Vector2 texCoord;
 };
 
-class Database
-{
-// Methods:
-DbConnection Connect(const String&);
-void Disconnect(DbConnection);
-void SendEvent(const String&, VariantMap& = VariantMap ( ));
-
-// Properties:
-/* readonly */
-StringHash baseType;
-/* readonly */
-String category;
-uint poolSize;
-/* readonly */
-bool pooling;
-/* readonly */
-int refs;
-/* readonly */
-StringHash type;
-/* readonly */
-String typeName;
-/* readonly */
-int weakRefs;
-};
-
-class DbConnection
-{
-// Methods:
-DbResult Execute(const String&, bool = false);
-void SendEvent(const String&, VariantMap& = VariantMap ( ));
-
-// Properties:
-/* readonly */
-StringHash baseType;
-/* readonly */
-String category;
-/* readonly */
-bool connected;
-/* readonly */
-String connectionString;
-/* readonly */
-int refs;
-/* readonly */
-StringHash type;
-/* readonly */
-String typeName;
-/* readonly */
-int weakRefs;
-};
-
-class DbResult
-{
-
-// Properties:
-/* readonly */
-Array<String> columns;
-/* readonly */
-int64 numAffectedRows;
-/* readonly */
-uint numColumns;
-/* readonly */
-uint numRows;
-/* readonly */
-Array<Array<Variant>> row;
-};
-
 class DebugHud
 {
 // Methods:
@@ -12834,12 +12768,6 @@ CS_BUSY,
 CS_BUSY_ARROW,
 };
 
-enum DBAPI
-{
-DBAPI_SQLITE,
-DBAPI_ODBC,
-};
-
 enum DumpMode
 {
 DOXYGEN,
@@ -13322,11 +13250,9 @@ void UnsubscribeFromEvent(const String&);
 void UnsubscribeFromEvents(Object);
 
 // Global properties
-DBAPI DBAPI;
 Audio audio;
 ResourceCache cache;
 Console console;
-Database database;
 DebugHud debugHud;
 DebugRenderer debugRenderer;
 Engine engine;

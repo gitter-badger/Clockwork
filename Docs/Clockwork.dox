@@ -4,7 +4,7 @@ namespace Clockwork
 /**
 \mainpage Clockwork - cross-platform 2D and 3D game engine
 
-Clockwork (http://clockwork.github.io/) is a free lightweight, cross-platform 2D and 3D game engine implemented in C++ and released under the MIT license. It utilizes either Direct3D9 or OpenGL for rendering (%Shader %Model 2 or OpenGL 2.0 required as minimum.)
+Clockwork (http://clockwork.sunwells.ent) is a lightweight, cross-platform 2D and 3D game engine implemented in C++. It utilizes multiple API's for rendering (%Shader %Model 2 or OpenGL 2.0 required as minimum.)
 
 For getting started, see:
 
@@ -58,69 +58,7 @@ For release history and major changes, see \ref History.
 
 \page Credits Credits
 
-Clockwork development, contributions and bugfixes by:
-- Lasse &Ouml;&ouml;rni (loorni@gmail.com, AgentC at GameDev.net)
-- Wei Tjong Yao
-- Aster Jian
-- Colin Barrett
-- Erik Beran
-- Danny Boisvert
-- Carlo Carollo
-- Pete Chown
-- Christian Clavet
-- Sebastian Delatorre (primitivewaste)
-- Josh Engebretson
-- Chris Friesen
-- Alex Fuller
-- Mika Heinonen
-- Graham King
-- Jason Kinzer
-- Gunnar Kriik
-- Ali K&auml;m&auml;r&auml;inen
-- Pete Leigh
-- Thorbjørn Lindeijer
-- Jonne Nauha
-- Paul Noome
-- David Palacios
-- Alex Parlett
-- Jordan Patterson
-- Vladimir Pobedinsky
-- Nick Royer
-- Jonathan Sandusky
-- Miika Santala
-- James Thomas
-- Joshua Tippetts
-- Daniel Wiberg
-- Steven Zhang
-- AGreatFish
-- Enhex
-- Firegorilla
-- Magic.Lixin
-- Mike3D
-- Modanung
-- MonkeyFirst
-- OvermindDL1
-- Skrylar
-- 1vanK
-- andmar1x
-- amadeus_osa
-- atship
-- att
-- celeron55
-- cosmy1
-- feltech
-- hdunderscore
-- marynate
-- mightyCelu
-- nemerle
-- ninjastone
-- raould
-- rasteron
-- reattiva
-- rifai
-- skaiware
-- szamq
-- thebluefish
+Clockwork is origonally forked from Urho3D (urho3d.github.io)
 
 Clockwork is greatly inspired by OGRE (http://www.ogre3d.org/) and Horde3D (http://www.horde3d.org/). Additional inspiration & research used:
 
@@ -592,13 +530,7 @@ V1.0
 
 Related projects:
 
-- Blender to Clockwork mesh exporter (https://github.com/reattiva/Clockwork-Blender)
-
-- ParticleEditor2D for Clockwork (https://github.com/aster2013/ParticleEditor2D)
-
-- Clockwork Launcher (https://github.com/Hevedy/ClockworkLauncher)
-
-- Clockwork libRocket Integration (https://github.com/realrunner/clockwork-librocket)
+- If you are working on any project involving Clockwork please inform us so we can list you on this page
 
 */
 
