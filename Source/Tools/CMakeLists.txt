@@ -30,6 +30,7 @@ include_directories (${CLOCKWORK_INCLUDE_DIRS})
 # ClockworkPlayer target is rather special, although it is here, it is not a tool because it is built into target platform binary as opposed to host platform
 if (NOT EMSCRIPTEN)
     add_subdirectory (ClockworkPlayer)
+    add_subdirectory (ClockworkLauncher)
     add_subdirectory (ClockworkEditor)
 endif ()
 

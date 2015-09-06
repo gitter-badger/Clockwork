@@ -28,26 +28,29 @@
 
 using namespace Clockwork;
 
-class ClockworkEditor : public Application
+class ClockworkLauncher : public Application
 {
-	OBJECT(ClockworkEditor);
+	OBJECT(ClockworkLauncher);
 public:
-	ClockworkEditor(Context* context);
+	ClockworkLauncher(Context* context);
 
-	/// Editor Setup, runs before the engines initilization
+	/// Launcher Setup, runs before the engines initilization
 	void Setup();
 
-	/// Starts the editor, runs after initilization
+	/// Starts the launcher, runs after initilization
 	void Start();
 
-	/// Stops the editor
+	/// Stops the launcher
 	void Stop();
 private:
 
-	/// Sets the icon and the title for the editor
+	/// Sets the icon and the title for the launcher
 	void SetIconAndTitle();
 
-	/// Handles initial input for the editor
+	/// Create the launcher UI
+	void CreateUI();
+
+	/// Handles initial input for the launcher
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
 
 	/// The UI's root UIElement.

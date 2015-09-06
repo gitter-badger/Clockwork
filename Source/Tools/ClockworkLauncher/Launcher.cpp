@@ -1,4 +1,4 @@
-#include "ClockworkEditor.h"
+#include "Launcher.h"
 
 #include <Clockwork/Clockwork.h>
 #include <Clockwork/Engine/Application.h>
@@ -12,25 +12,28 @@
 #include <Clockwork/UI/UIEvents.h>
 
 
-DEFINE_APPLICATION_MAIN(ClockworkEditor);
+DEFINE_APPLICATION_MAIN(ClockworkLauncher);
 
-ClockworkEditor::ClockworkEditor(Context* context):
+ClockworkLauncher::ClockworkLauncher(Context* context) :
 	Application(context),
 	uiRoot_(GetSubsystem<UI>()->GetRoot())
 {
 
 }
 
-void ClockworkEditor::Setup()
+void ClockworkLauncher::Setup()
 {
 	engineParameters_["WindowTitle"] = "Clockwork Editor";
-	engineParameters_["FullScreen"] = true;
+	engineParameters_["FullScreen"] = false;
 	engineParameters_["Headless"] = false;
-	engineParameters_["WindowResizable"] = true;
-	engineParameters_["Borderless"] = false;
+	engineParameters_["Headless"] = false;
+	engineParameters_["WindowWidth"] = 800;
+	engineParameters_["WindowHeight"] = 600;
+	engineParameters_["WindowResizable"] = false;
+	engineParameters_["Borderless"] = true;
 }
 
-void ClockworkEditor::Start()
+void ClockworkLauncher::Start()
 {
 	// Enable OS cursor
 	GetSubsystem<Input>()->SetMouseVisible(true);
@@ -45,29 +48,29 @@ void ClockworkEditor::Start()
 
 	SetIconAndTitle();
 
-	SubscribeToEvent(E_KEYDOWN, HANDLER(ClockworkEditor, HandleKeyDown));
+	SubscribeToEvent(E_KEYDOWN, HANDLER(ClockworkLauncher, HandleKeyDown));
 }
 
-void ClockworkEditor::Stop()
+void ClockworkLauncher::Stop()
 {
 
 }
 
-void ClockworkEditor::SetIconAndTitle()
+void ClockworkLauncher::SetIconAndTitle()
 {
 	ResourceCache* cache = GetSubsystem<ResourceCache>();
 	Graphics* graphics = GetSubsystem<Graphics>();
-	
+
 	// Load Icon
 	Image* icon = cache->GetResource<Image>("Textures/ClockworkIcon.png");
-	
+
 	//Set Icon and Title
 	graphics->SetWindowIcon(icon);
 	graphics->SetWindowTitle("Clockwork Editor");
-	
+
 }
 
-void ClockworkEditor::HandleKeyDown(StringHash eventType, VariantMap& eventData)
+void ClockworkLauncher::HandleKeyDown(StringHash eventType, VariantMap& eventData)
 {
 	using namespace KeyDown;
 	// Check for pressing ESC. Note the engine_ member variable for convenience access to the Engine object
