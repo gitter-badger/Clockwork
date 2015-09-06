@@ -135,9 +135,9 @@ addons:
     packages: libasound2-dev
   coverity_scan:
     project:
-      name: clockwork/Clockwork
+      name: dragonCASTjosh/Clockwork
       description: Clockwork is a free lightweight, cross-platform 2D and 3D game engine implemented in C++ and released under the MIT license. Greatly inspired by OGRE and Horde3D.
-    notification_email: clockwork.travis.ci@gmail.com
+    notification_email: dragonCASTjosh.travis.ci@gmail.com
     build_command_prepend: rake cmake CLOCKWORK_LUAJIT=1 CLOCKWORK_LUAJIT_AMALG=1 CLOCKWORK_SAMPLES=1 CLOCKWORK_TOOLS=1 CLOCKWORK_EXTRAS=1 CLOCKWORK_DATABASE_SQLITE=1 CLOCKWORK_LIB_TYPE=SHARED
     build_command: rake make numjobs=4
     branch_pattern: .*Coverity-Scan$
@@ -215,7 +215,7 @@ matrix:
     - &cache5
       env: API=19 ABI=armeabi-v7a CLOCKWORK_LIB_TYPE=SHARED AVD=test_19_armeabi-v7a               USE_CCACHE=1
 before_script:
-  - git clone --depth 1 --branch strip https://github.com/clockwork/android-ndk.git && export ANDROID_NDK=$(pwd)/android-ndk && if ([ $AVD ] || [ $PACKAGE_UPLOAD ]) && [ $INSTALL ]; then (while :; do echo 'y'; sleep 1; done) |android update sdk --no-ui --all --filter $INSTALL; fi
+  - git clone --depth 1 --branch strip https://github.com/dragonCASTjosh/android-ndk.git && export ANDROID_NDK=$(pwd)/android-ndk && if ([ $AVD ] || [ $PACKAGE_UPLOAD ]) && [ $INSTALL ]; then (while :; do echo 'y'; sleep 1; done) |android update sdk --no-ui --all --filter $INSTALL; fi
   - export TRAVIS_COMMIT=$TRAVIS_COMMIT~
   - export TAG=$(git describe --exact-match $TRAVIS_COMMIT 2>/dev/null); if [[ $TAG =~ [[:digit:]]+\.[[:digit:]]+ ]]; then export RELEASE_TAG=$TAG; fi
   - export COMMIT_MESSAGE=$(git log --format=%B -n1 $TRAVIS_COMMIT)
@@ -260,7 +260,7 @@ matrix:
     - compiler: gcc-armeabi-v7a-shared
       env: CLOCKWORK_LIB_TYPE=SHARED RPI_ABI=armeabi-v7a
 before_script:
-  - git clone --depth 1 https://github.com/raspberrypi/tools.git rpi-tools && export RPI_PREFIX=$(pwd)/rpi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf && git clone --depth 1 --branch strip https://github.com/clockwork/rpi-sysroot.git && export RPI_SYSROOT=$(pwd)/rpi-sysroot && for f in $RPI_PREFIX-{gcc,g++}; do touch -d "2015-01-01 00:00:00 +0800" $f; done
+  - git clone --depth 1 https://github.com/raspberrypi/tools.git rpi-tools && export RPI_PREFIX=$(pwd)/rpi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf && git clone --depth 1 --branch strip https://github.com/dragonCASTjosh/rpi-sysroot.git && export RPI_SYSROOT=$(pwd)/rpi-sysroot && for f in $RPI_PREFIX-{gcc,g++}; do touch -d "2015-01-01 00:00:00 +0800" $f; done
   - export TRAVIS_COMMIT=$TRAVIS_COMMIT~
   - export TAG=$(git describe --exact-match $TRAVIS_COMMIT 2>/dev/null); if [[ $TAG =~ [[:digit:]]+\.[[:digit:]]+ ]]; then export RELEASE_TAG=$TAG; fi
   - export COMMIT_MESSAGE=$(git log --format=%B -n 1 $TRAVIS_COMMIT)
@@ -345,7 +345,7 @@ before_script:
   - export COMMIT_MESSAGE=$(git log --format=%B -n 1 $TRAVIS_COMMIT)
   - if [ $RELEASE_TAG ] || (! [[ $TRAVIS_BRANCH =~ [^-]+-[^-]+-CI ]] && echo $COMMIT_MESSAGE |grep -cq '\[ci package\]'); then export PACKAGE_UPLOAD=1; fi
   - export DISPLAY=:99.0; bash -e /etc/init.d/xvfb start
-  - git clone --depth 1 https://github.com/clockwork/emscripten-sdk.git && emscripten-sdk/emsdk activate --build=Release sdk-incoming-64bit && source emscripten-sdk/emsdk_env.sh && export EMSCRIPTEN_ROOT_PATH=$EMSCRIPTEN && export EMSCRIPTEN=1
+  - git clone --depth 1 https://github.com/dragonCASTjosh/emscripten-sdk.git && emscripten-sdk/emsdk activate --build=Release sdk-incoming-64bit && source emscripten-sdk/emsdk_env.sh && export EMSCRIPTEN_ROOT_PATH=$EMSCRIPTEN && export EMSCRIPTEN=1
   - export PATH=$(whereis -b ccache |grep -o '\S*lib\S*'):$PATH; for f in $EMSCRIPTEN_ROOT_PATH/{emcc,em++}; do touch -d "2015-01-01 00:00:00 +0800" $f; done
   - rake ci_setup_cache
 script:
