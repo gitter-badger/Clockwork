@@ -25,6 +25,7 @@
 #include <Clockwork/Engine/Application.h>
 #include <Clockwork/UI/UI.h>
 #include <Clockwork/UI/UIElement.h>
+#include <Clockwork/UI/Window.h>
 
 using namespace Clockwork;
 
@@ -43,16 +44,21 @@ public:
 	/// Stops the launcher
 	void Stop();
 private:
-
-	/// Sets the icon and the title for the launcher
 	void SetIconAndTitle();
+	/// Create and initialize a Window control.
+	void InitWindow();
+	/// Create and add various common controls for demonstration purposes.
+	void InitControls();
+	/// Create a list of projects.
+	void InitProjectList();
 
-	/// Create the launcher UI
-	void CreateUI();
+	/// The Window.
+	SharedPtr<Window> window_;
+	/// The UI's root UIElement.
+	SharedPtr<UIElement> uiRoot_;
+	/// Remembered drag begin position.
+	IntVector2 dragBeginPosition_;
 
 	/// Handles initial input for the launcher
 	void HandleKeyDown(StringHash eventType, VariantMap& eventData);
-
-	/// The UI's root UIElement.
-	SharedPtr<UIElement> uiRoot_;
 };
