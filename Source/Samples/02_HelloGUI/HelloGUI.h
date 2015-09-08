@@ -67,7 +67,7 @@ private:
     /// Create and add various common controls for demonstration purposes.
     void InitControls();
     /// Create a draggable fish button.
-    void CreateDraggableFish();
+    void CreateDraggableIcon();
     /// Handle drag begin for the fish button.
     void HandleDragBegin(StringHash eventType, VariantMap& eventData);
     /// Handle drag move for the fish button.

@@ -35,6 +35,7 @@
 #include <Clockwork/UI/Font.h>
 #include <Clockwork/UI/Text.h>
 #include <Clockwork/UI/UI.h>
+#include <Clockwork/Graphics/Zone.h>
 
 #include "StaticScene.h"
 
@@ -69,6 +70,7 @@ void StaticScene::CreateScene()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
+
     scene_ = new Scene(context_);
 
     // Create the Octree component to the scene. This is required before adding any drawable components, or else nothing will
@@ -84,7 +86,7 @@ void StaticScene::CreateScene()
     planeNode->SetScale(Vector3(100.0f, 1.0f, 100.0f));
     StaticModel* planeObject = planeNode->CreateComponent<StaticModel>();
     planeObject->SetModel(cache->GetResource<Model>("Models/Plane.mdl"));
-    planeObject->SetMaterial(cache->GetResource<Material>("Materials/StoneTiled.xml"));
+   // planeObject->SetMaterial(cache->GetResource<Material>("Materials/StoneTiled.xml"));
 
     // Create a directional light to the world so that we can see something. The light scene node's orientation controls the
     // light direction; we will use the SetDirection() function which calculates the orientation from a forward direction vector.
@@ -93,6 +95,17 @@ void StaticScene::CreateScene()
     lightNode->SetDirection(Vector3(0.6f, -1.0f, 0.8f)); // The direction vector does not need to be normalized
     Light* light = lightNode->CreateComponent<Light>();
     light->SetLightType(LIGHT_DIRECTIONAL);
+    light->SetCastShadows(true);
+
+    // Create a zone for use withing the lighting of the scene. We use SetBoundingBox() to set the size of the zone.
+    // We then set the texture of the zone with SetZoneTexture(), this texture is used for image based lighting within the zone
+    // the SetAmbientColor() sets the intensity of the ambient lighting from the zone texture. having either no texture or no color
+    // will cause there to be no ambient lighting within the zone.
+    Node* zoneNode = scene_->CreateChild("Zone");
+    Zone* zone = zoneNode->CreateComponent<Zone>();
+    zone->SetBoundingBox(BoundingBox(Vector3(-1000,-1000, -1000), Vector3(1000,1000,1000)));
+    zone->SetZoneTexture(cache->GetResource<Texture>("Textures/Skybox2.xml"));
+    zone->SetAmbientColor(Color(0.1f, 0.1f, 0.1f));
 
     // Create more StaticModel objects to the scene, randomly positioned, rotated and scaled. For rotation, we construct a
     // quaternion from Euler angles where the Y angle (rotation about the Y axis) is randomized. The mushroom model contains
@@ -106,10 +119,11 @@ void StaticScene::CreateScene()
         Node* mushroomNode = scene_->CreateChild("Mushroom");
         mushroomNode->SetPosition(Vector3(Random(90.0f) - 45.0f, 0.0f, Random(90.0f) - 45.0f));
         mushroomNode->SetRotation(Quaternion(0.0f, Random(360.0f), 0.0f));
-        mushroomNode->SetScale(0.5f + Random(2.0f));
+        mushroomNode->SetScale(0.05f + Random(0.2f));
         StaticModel* mushroomObject = mushroomNode->CreateComponent<StaticModel>();
-        mushroomObject->SetModel(cache->GetResource<Model>("Models/Mushroom.mdl"));
-        mushroomObject->SetMaterial(cache->GetResource<Material>("Materials/Mushroom.xml"));
+        mushroomObject->SetModel(cache->GetResource<Model>("Models/dragon.mdl"));
+        mushroomObject->SetCastShadows(true);
+        //mushroomObject->SetMaterial(cache->GetResource<Material>("Materials/Mushroom.xml"));
     }
 
     // Create a scene node for the camera, which we will move around

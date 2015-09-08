@@ -69,8 +69,8 @@ void HelloGUI::Start()
     // Create and add some controls to the Window
     InitControls();
 
-    // Create a draggable Fish
-    CreateDraggableFish();
+    // Create a draggable Icon
+    CreateDraggableIcon();
 }
 
 void HelloGUI::InitControls()
@@ -146,24 +146,24 @@ void HelloGUI::InitWindow()
     SubscribeToEvent(E_UIMOUSECLICK, HANDLER(HelloGUI, HandleControlClicked));
 }
 
-void HelloGUI::CreateDraggableFish()
+void HelloGUI::CreateDraggableIcon()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Graphics* graphics = GetSubsystem<Graphics>();
 
-    // Create a draggable Fish button
-    Button* draggableFish = new Button(context_);
-    draggableFish->SetTexture(cache->GetResource<Texture2D>("Textures/ClockworkDecal.dds")); // Set texture
-    draggableFish->SetBlendMode(BLEND_ADD);
-    draggableFish->SetSize(128, 128);
-    draggableFish->SetPosition((graphics->GetWidth() - draggableFish->GetWidth()) / 2, 200);
-    draggableFish->SetName("Fish");
-    uiRoot_->AddChild(draggableFish);
+    // Create a draggable icon button
+    Button* draggableIcon = new Button(context_);
+    draggableIcon->SetTexture(cache->GetResource<Texture2D>("Textures/ClockworkDecal.png")); // Set texture
+    draggableIcon->SetBlendMode(BLEND_ADD);
+    draggableIcon->SetSize(128, 128);
+    draggableIcon->SetPosition((graphics->GetWidth() - draggableIcon->GetWidth()) / 2, 200);
+    draggableIcon->SetName("DragableIcon");
+    uiRoot_->AddChild(draggableIcon);
 
-    // Add a tooltip to Fish button
+    // Add a tooltip to Icon button
     ToolTip* toolTip = new ToolTip(context_);
-    draggableFish->AddChild(toolTip);
-    toolTip->SetPosition(IntVector2(draggableFish->GetWidth() + 5, draggableFish->GetWidth() / 2)); // slightly offset from close button
+    draggableIcon->AddChild(toolTip);
+    toolTip->SetPosition(IntVector2(draggableIcon->GetWidth() + 5, draggableIcon->GetWidth() / 2)); // slightly offset from close button
     BorderImage* textHolder = new BorderImage(context_);
     toolTip->AddChild(textHolder);
     textHolder->SetStyle("ToolTipBorderImage");
@@ -172,11 +172,11 @@ void HelloGUI::CreateDraggableFish()
     toolTipText->SetStyle("ToolTipText");
     toolTipText->SetText("Please drag me!");
 
-    // Subscribe draggableFish to Drag Events (in order to make it draggable)
+    // Subscribe draggableIcon to Drag Events (in order to make it draggable)
     // See "Event list" in documentation's Main Page for reference on available Events and their eventData
-    SubscribeToEvent(draggableFish, E_DRAGBEGIN, HANDLER(HelloGUI, HandleDragBegin));
-    SubscribeToEvent(draggableFish, E_DRAGMOVE, HANDLER(HelloGUI, HandleDragMove));
-    SubscribeToEvent(draggableFish, E_DRAGEND, HANDLER(HelloGUI, HandleDragEnd));
+    SubscribeToEvent(draggableIcon, E_DRAGBEGIN, HANDLER(HelloGUI, HandleDragBegin));
+    SubscribeToEvent(draggableIcon, E_DRAGMOVE, HANDLER(HelloGUI, HandleDragMove));
+    SubscribeToEvent(draggableIcon, E_DRAGEND, HANDLER(HelloGUI, HandleDragEnd));
 }
 
 void HelloGUI::HandleDragBegin(StringHash eventType, VariantMap& eventData)

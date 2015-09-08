@@ -312,7 +312,7 @@
         /// Fresnel factor
         ///     specular: Specular color input
         ///     vDotH: dot product of view direction and half-angle
-        float3 SchlickFresnel(in float3 specular, in float vDotH, in float roughness)
+        float3 SchlickFresnel(in float3 specular, in float vDotH)
         {
             return specular + (float3(1.0, 1.0, 1.0) - specular) * pow(1.0 - vDotH, 5.0);
         }

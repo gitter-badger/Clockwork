@@ -205,35 +205,26 @@ void PS(
     #endif
 
     #ifdef PBR
-        #ifdef PROPMAP
-            #ifdef SPECMAP // SPECULAR
-                float4 specSample = Sample2D(SpecGlossMap, iTexCoord.xy);
-                float3 specColor = specSample.rgb;
-                #ifdef GLOSSINESS
-                    float roughness = max(0.04, 1.0 - specSample.a);
-                    roughness *= roughness;
-                #else
-                    float roughness = max(0.04, specSample.a);
-                #endif
-                specColor *= cMatSpecColor.rgb; // mix in externally defined color
-            #else // METALNESS
-                float4 roughMetalSrc = Sample2D(RoughMetalFresnel, iTexCoord.xy);
-                #ifdef GLOSSINESS
-                    float roughness = max(0.04, 1.0 - roughMetalSrc.r);
-                    roughness *= roughness;
-                #else
-                    float roughness = max(0.04, roughMetalSrc.r);
-                #endif
-                
-                const float metalness = roughMetalSrc.g;
-                float3 specColor = max(diffColor.rgb * metalness, float3(0.08, 0.08, 0.08));
-                specColor *= cMatSpecColor.rgb;
-                diffColor.rgb = diffColor.rgb - diffColor.rgb * metalness; // Modulate down the diffuse
+        #ifdef SPECMAP // SPECULAR
+            float4 specSample = Sample2D(SpecGlossMap, iTexCoord.xy);
+            float3 specColor = specSample.rgb;
+            #ifdef GLOSSINESS
+                float roughness = max(0.04, 1.0 - specSample.a);
+                roughness *= roughness;
+            #else
+                float roughness = max(0.04, specSample.a);
             #endif
-        #else
-            float roughness = 0.9;
-            const float metalness = 0.0;
+            specColor *= cMatSpecColor.rgb; // mix in externally defined color
+        #else // METALNESS
+            float4 roughMetalSrc = Sample2D(RoughMetalFresnel, iTexCoord.xy);
+            #ifdef GLOSSINESS
+                float roughness = max(0.04, 1.0 - roughMetalSrc.r);
+                roughness *= roughness;
+            #else
+                float roughness = max(0.04, roughMetalSrc.r);
+            #endif
             
+            const float metalness = roughMetalSrc.g;
             float3 specColor = max(diffColor.rgb * metalness, float3(0.08, 0.08, 0.08));
             specColor *= cMatSpecColor.rgb;
             diffColor.rgb = diffColor.rgb - diffColor.rgb * metalness; // Modulate down the diffuse
@@ -294,11 +285,11 @@ void PS(
                 const float ndh = saturate(dot(normal, Hn));
                 const float ndv = saturate(dot(normal, cameraDir));
                 
-                const float3 fresnelTerm = SchlickFresnel(specColor, vdh, roughness);
+                const float3 fresnelTerm = SchlickFresnel(specColor, vdh);
                 const float distTerm = GGXDistribution(ndh, roughness);
-                const float visTerm = SmithGGXVisibility(ndl, ndv, roughness);
+                const float visTerm = SchlickVisibility(ndl, ndv, roughness);
                 
-                finalColor += distTerm * visTerm * fresnelTerm * lightColor * diff;
+                finalColor = (diffuseTerm + distTerm * visTerm * fresnelTerm * lightColor) * diff;
                 finalColor.rgb = LinearFromSRGB(finalColor.rgb);
             }
         #else
@@ -342,14 +333,18 @@ void PS(
         #endif
         
         #if defined(PBR) || defined(IBL)
-            const float3 toCamera = normalize(cCameraPosPS - iWorldPos.xyz);
+            const float3 toCamera = normalize(iWorldPos.xyz - cCameraPosPS);
         #endif
         
         #ifdef IBL
-            const float3 reflection = normalize(reflect(-toCamera, normal));
+            const float3 reflection = normalize(reflect(toCamera, normal));
             float3 cubeColor = iVertexLight.rgb;
-            float3 iblColor = ImageBasedLighting(reflection, normal, -toCamera, specColor, roughness, cubeColor);
-            float3 iblNeg = 1.0 - iblColor;
+            float3 iblColor = ImageBasedLighting(reflection, normal, toCamera, specColor, roughness, cubeColor);
+            
+            float horizonOcclusion = 1.3;
+            float horizon = saturate(1 + horizonOcclusion * dot(reflection, normal));
+            horizon *= horizon;
+            
             #ifdef AO
                 finalColor += LinearFromSRGB(iblColor * aoFactor * horizon * cubeColor);
             #else                            

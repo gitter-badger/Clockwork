@@ -148,11 +148,11 @@ void PS()
             #endif
         #else
             float roughness = 0.9;
-            const float metalness = 0.0;
-            
+            float metalness = 0;
+
             vec3 specColor = max(diffColor.rgb * metalness, vec3(0.08, 0.08, 0.08));
-            specColor *= cMatSpecColor.rgb;
-            diffColor.rgb = diffColor.rgb - diffColor.rgb * metalness; // Modulate down the diffuse
+                specColor *= cMatSpecColor.rgb;
+                diffColor.rgb = diffColor.rgb - diffColor.rgb * metalness; // Modulate down the diffuse
         #endif
     #elif defined(SPECMAP)
         vec3 specColor = cMatSpecColor.rgb * texture2D(sSpecMap, vTexCoord.xy).rgb;
