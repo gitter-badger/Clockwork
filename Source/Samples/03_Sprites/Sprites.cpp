@@ -67,7 +67,7 @@ void Sprites::CreateSprites()
     float height = (float)graphics->GetHeight();
 
     // Get the Clockwork fish texture
-    Texture2D* decalTex = cache->GetResource<Texture2D>("Textures/ClockworkDecal.dds");
+    Texture2D* decalTex = cache->GetResource<Texture2D>("Textures/ClockworkDecal.png");
 
     for (unsigned i = 0; i < NUM_SPRITES; ++i)
     {

@@ -4,6 +4,7 @@
 #include "ScreenPos.glsl"
 #include "Lighting.glsl"
 #include "DeferredGBuffer.glsl"
+#include "BRDF.glsl"
 
 #ifdef DIRLIGHT
     varying vec2 vScreenPos;
@@ -119,10 +120,10 @@ void PS()
             float ndh = max(0.0, dot(normal, Hn));
             float ndv = max(1e-5, dot(normal, toCamera));
             
-            vec3 diffuseTerm = LambertianDiffuse(albedoInput.rgb, roughness, ndv, ndl, vdh) * lightColor * diff;
-            vec3 fresnelTerm = SchlickFresnel(specColor, vdh);
-            float distTerm = GGXDistribution(ndh, roughness);
-            float visTerm = SchlickVisibility(ndl, ndv, roughness);
+            vec3 diffuseTerm = Diffuse(albedoInput.rgb, roughness, ndv, ndl, vdh) * lightColor * diff;
+            vec3 fresnelTerm = Fresnel(specColor, vdh);
+            float distTerm = Distribution(roughness, ndh);
+            float visTerm = GeometricVisibility(roughness, ndv, ndl, vdh);
             
             gl_FragColor.a = 1;
             gl_FragColor.rgb = LinearFromSRGB(diff * (diffuseTerm + distTerm * visTerm * fresnelTerm * lightColor));

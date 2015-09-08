@@ -57,6 +57,9 @@ void HelloWorld::CreateText()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
+    // Enable OS cursor
+    GetSubsystem<Input>()->SetMouseVisible(true);
+
     // Construct new Text object
     SharedPtr<Text> helloText(new Text(context_));
 
@@ -65,7 +68,7 @@ void HelloWorld::CreateText()
 
     // Set font and text color
     helloText->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 30);
-    helloText->SetColor(Color(0.0f, 1.0f, 0.0f));
+    helloText->SetColor(Color(0.0f, 0.6f, 1.0f));
 
     // Align Text center-screen
     helloText->SetHorizontalAlignment(HA_CENTER);
