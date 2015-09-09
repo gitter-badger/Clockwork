@@ -130,12 +130,13 @@ void ClockworkPlayer::Start()
     {
 #ifdef CLOCKWORK_ANGELSCRIPT
 
+        // Instantiate and register the AngelScript subsystem
+        context_->RegisterSubsystem(new Script(context_));
+        
         // Hold a shared pointer to the script file to make sure it is not unloaded during runtime
         scriptFile_ = GetSubsystem<ResourceCache>()->GetResource<ScriptFile>(scriptFileName_);
 
-        // Instantiate and register the AngelScript subsystem
-        context_->RegisterSubsystem(new Script(context_));
-	
+
         /// \hack If we are running the editor, also instantiate Lua subsystem to enable editing Lua ScriptInstances
 #ifdef CLOCKWORK_LUA
         if (scriptFileName_.Contains("Editor.as", false))
