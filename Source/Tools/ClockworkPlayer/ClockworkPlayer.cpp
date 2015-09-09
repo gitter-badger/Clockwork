@@ -40,7 +40,7 @@
 
 #include <Clockwork/DebugNew.h>
 
-DEFINE_APPLICATION_MAIN(ClockworkPlayer);
+DEFINE_APPLICATION_MAIN(ClockworkPlayer)
 
 ClockworkPlayer::ClockworkPlayer(Context* context) :
     Application(context)
@@ -129,12 +129,13 @@ void ClockworkPlayer::Start()
     if (extension != ".lua" && extension != ".luc")
     {
 #ifdef CLOCKWORK_ANGELSCRIPT
-        // Instantiate and register the AngelScript subsystem
-        context_->RegisterSubsystem(new Script(context_));
 
         // Hold a shared pointer to the script file to make sure it is not unloaded during runtime
         scriptFile_ = GetSubsystem<ResourceCache>()->GetResource<ScriptFile>(scriptFileName_);
 
+        // Instantiate and register the AngelScript subsystem
+        context_->RegisterSubsystem(new Script(context_));
+	
         /// \hack If we are running the editor, also instantiate Lua subsystem to enable editing Lua ScriptInstances
 #ifdef CLOCKWORK_LUA
         if (scriptFileName_.Contains("Editor.as", false))

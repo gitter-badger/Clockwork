@@ -762,12 +762,12 @@ VariantMap Engine::ParseParameters(const Vector<String>& arguments)
                 ret["Sound"] = false;
             else if (argument == "noip")
                 ret["SoundInterpolation"] = false;
-            else if (argument == "mono")
-                ret["SoundStereo"] = false;
-            else if (argument == "prepass")
-                ret["RenderPath"] = "RenderPaths/Prepass.xml";
-            else if (argument == "deferred")
-                ret["RenderPath"] = "RenderPaths/Deferred.xml";
+			else if (argument == "mono")
+				ret["SoundStereo"] = false;
+			else if (argument == "prepass")
+				ret["RenderPath"] = "RenderPaths/PBR-Deferred.xml";
+           else if (argument == "deferred")
+                ret["RenderPath"] = "RenderPaths/PBR-Deferred.xml";
             else if (argument == "renderpath" && !value.Empty())
             {
                 ret["RenderPath"] = value;

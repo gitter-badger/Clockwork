@@ -1447,7 +1447,7 @@ void Renderer::Initialize()
     defaultMaterial_ = new Material(context_);
 
     defaultRenderPath_ = new RenderPath();
-    defaultRenderPath_->Load(cache->GetResource<XMLFile>("RenderPaths/Forward.xml"));
+    defaultRenderPath_->Load(cache->GetResource<XMLFile>("RenderPaths/PBR-Deferred.xml"));
 
     CreateGeometries();
     CreateInstancingBuffer();
