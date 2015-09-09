@@ -83,9 +83,6 @@ if (NOT CMAKE_PROJECT_NAME STREQUAL Clockwork)
         ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Math/Vector4.cpp
     )
 
-    # MSVC does not do cross-compiling at the moment, so only force include using GCC/Clang approach
-    set_property (SOURCE ${MINI_CLOCKWORK_CPP_FILES} APPEND_STRING PROPERTY COMPILE_FLAGS " -include Clockwork.h")  # Need a leading space for appending
-
     # Check existence of stdint.h for LibCpuId
     include (CheckIncludeFiles)
     CHECK_INCLUDE_FILES (stdint.h HAVE_STDINT_H)

@@ -3,7 +3,6 @@ $pfile "Clockwork2D/SpriteSheet2D.pkg"
 $pfile "Clockwork2D/Drawable2D.pkg"
 $pfile "Clockwork2D/StaticSprite2D.pkg"
 
-$pfile "Clockwork2D/Animation2D.pkg"
 $pfile "Clockwork2D/AnimationSet2D.pkg"
 $pfile "Clockwork2D/AnimatedSprite2D.pkg"
 

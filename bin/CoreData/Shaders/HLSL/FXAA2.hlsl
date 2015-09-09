@@ -4,7 +4,7 @@
 
 ============================================================================*/
 
-// Adapted for Clockwork from http://timothylottes.blogspot.com/2011/04/nvidia-fxaa-ii-for-console.html
+// Adapted for Urho3D from http://timothylottes.blogspot.com/2011/04/nvidia-fxaa-ii-for-console.html
 
 #include "Uniforms.hlsl"
 #include "Samplers.hlsl"

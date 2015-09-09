@@ -85,6 +85,11 @@ endif ()
 
 if (CLOCKWORK_CLOCKWORK2D)
     add_subdirectory (ThirdParty/Box2D)
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/ThirdParty/spine)
+        add_subdirectory (ThirdParty/spine)
+        # Add definition for Spine
+        add_definitions (-DCLOCKWORK_SPINE)
+    endif ()
 endif ()
 
 if (CLOCKWORK_PHYSICS)

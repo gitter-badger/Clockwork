@@ -44,7 +44,8 @@ endif ()
 
 # Define generated source files
 if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/librevision.h)
-    execute_process (COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/librevision.h)
+    execute_process (COMMAND ${CMAKE_COMMAND} -DFILENAME=${CMAKE_CURRENT_BINARY_DIR}/librevision.h -P CMake/Modules/GetClockworkRevision.cmake
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} OUTPUT_QUIET ERROR_QUIET)
 endif ()
 add_custom_command (OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/librevision.h
     COMMAND ${CMAKE_COMMAND} -DFILENAME=${CMAKE_CURRENT_BINARY_DIR}/librevision.h -P CMake/Modules/GetClockworkRevision.cmake
@@ -63,7 +64,7 @@ if (CLOCKWORK_LUA)
         endif ()
         ExternalProject_Add (tolua++
             SOURCE_DIR ${CMAKE_SOURCE_DIR}/Source/ThirdParty/toluapp/src/bin
-            CMAKE_ARGS -DCLOCKWORK_LUAJIT=${CLOCKWORK_LUAJIT} -DDEST_RUNTIME_DIR=${CMAKE_BINARY_DIR}/bin/tool -DBAKED_CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR} ${IOS_FIX})
+            CMAKE_ARGS -DCLOCKWORK_NOABI=1 -DCLOCKWORK_LUAJIT=${CLOCKWORK_LUAJIT} -DDEST_RUNTIME_DIR=${CMAKE_BINARY_DIR}/bin/tool -DBAKED_CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR} ${IOS_FIX})
     else ()
         # Otherwise, build it internally as per normal
         add_subdirectory (../ThirdParty/toluapp/src/bin ../ThirdParty/toluapp/src/bin)
@@ -206,6 +207,9 @@ if (NOT ANDROID AND NOT EMSCRIPTEN)
     else ()
         message (FATAL_ERROR "The .soversion file is corrupted. It should contain a version number with this format major(0xFFFF).minor(0xFF).patch-level(0xFF). e.g.: 0.1.2")
     endif ()
+elseif (EMSCRIPTEN)
+    # Emscripten does not support generation of shared library in a conventional sense, it just produces "linked" LLVM bitcode
+    set (CMAKE_SHARED_LIBRARY_SUFFIX ".bc")
 endif ()
 install (TARGETS ${TARGET_NAME} RUNTIME DESTINATION ${DEST_RUNTIME_DIR} LIBRARY DESTINATION ${DEST_LIBRARY_DIR} ARCHIVE DESTINATION ${DEST_LIBRARY_DIR})
 
@@ -238,7 +242,12 @@ foreach (TARGET ${STATIC_LIBRARY_TARGETS})
         if (NOT MSVC)
             set_property (TARGET ${TARGET_NAME} APPEND PROPERTY LINK_LIBRARIES ${FORCE_LOAD} ${ARCHIVE})    # Only works in Apple (Xcode and Makefile) and GCC while building shared library
         endif ()
-        if (XCODE OR MSVC)
+        if (MSVC_VERSION VERSION_EQUAL 1500)
+            if (ARCHIVE MATCHES " ")
+                message (FATAL_ERROR "CMake/VS2008 generator does not support spaces in the source and/or build tree path")
+            endif ()
+            set_property (TARGET ${TARGET_NAME} APPEND_STRING PROPERTY STATIC_LIBRARY_FLAGS " ${ARCHIVE}")  # Fallback for VS2008
+        elseif (XCODE OR MSVC)
             set_property (TARGET ${TARGET_NAME} APPEND_STRING PROPERTY STATIC_LIBRARY_FLAGS " \"${ARCHIVE}\"")  # Only works in Apple (Xcode only) and MSVC while building static library
         else ()
             list (APPEND ARCHIVES ${ARCHIVE})
