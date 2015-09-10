@@ -85,7 +85,12 @@ class EditorCubeCapture : ScriptObject // script object in order to get events
         camNode_ = scene.CreateChild("RenderCamera");
         camera_ = camNode_.GetOrCreateComponent("Camera");
         camera_.fov = 90.0f;
+        camera_.nearClip = 0.0001f;
+        //camera_.orthographic = true;
+        camera_.aspectRatio = 1.0f;
         camNode_.worldPosition = forZone.node.worldPosition;
+        camNode_.worldRotation = forZone.node.worldRotation;
+        camNode_.worldDirection = forZone.node.worldDirection;
         
         viewport_ = Viewport(scene, camera_);
         viewport_.renderPath = renderer.viewports[0].renderPath;
@@ -109,6 +114,13 @@ class EditorCubeCapture : ScriptObject // script object in order to get events
     {
         SubscribeToEvent("BeginFrame", "HandlePreRender");
         SubscribeToEvent("EndFrame", "HandlePostRender");
+        
+        // Hide grid and debugIcons until bake 
+        if (grid !is null)
+            grid.viewMask = 0;
+        if (debugIconsNode !is null)
+            debugIconsNode.enabled = false;
+        
     }
     
     private void Stop()
@@ -129,6 +141,12 @@ class EditorCubeCapture : ScriptObject // script object in order to get events
             UnprepareZonesForCubeRendering();
         else
             activeCubeCapture[0].Start();
+            
+        // Show grid and debug icons    
+        if (grid !is null)
+            grid.viewMask = 0x80000000;
+        if (debugIconsNode !is null)
+            debugIconsNode.enabled = true;
     }
     
     // Position camera accordingly
@@ -136,12 +154,16 @@ class EditorCubeCapture : ScriptObject // script object in order to get events
     {
         if (camNode_ !is null)
         {
-            ++updateCycle_;
-        
-            if (updateCycle_ < 7)
-                camNode_.rotation = RotationOf(GetFaceForCycle(updateCycle_));
+            if (updateCycle_ <= 5) 
+            {
+                camNode_.worldRotation = target_.node.worldRotation;
+                camNode_.worldDirection = target_.node.worldDirection;
+                camNode_.worldRotation = RotationOf(GetFaceForCycle(updateCycle_));
+            }
             else
                 Stop();
+                
+            updateCycle_++;
         }
     }
     
@@ -166,22 +188,22 @@ class EditorCubeCapture : ScriptObject // script object in order to get events
         XMLElement rootElem = file.CreateRoot("cubemap");
         
         XMLElement posXElem = rootElem.CreateChild("face");
-        posXElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceName(FACE_POSITIVE_X) + ".png");
+        posXElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceFileName(FACE_POSITIVE_X) + ".png");
         
         XMLElement negXElem = rootElem.CreateChild("face");
-        negXElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceName(FACE_NEGATIVE_X) + ".png");
+        negXElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceFileName(FACE_NEGATIVE_X) + ".png");
         
         XMLElement posYElem = rootElem.CreateChild("face");
-        posYElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceName(FACE_POSITIVE_Y) + ".png");
+        posYElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceFileName(FACE_POSITIVE_Y) + ".png");
         
         XMLElement negYElem = rootElem.CreateChild("face");
-        negYElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceName(FACE_NEGATIVE_Y) + ".png");
+        negYElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceFileName(FACE_NEGATIVE_Y) + ".png");
         
         XMLElement posZElem = rootElem.CreateChild("face");
-        posZElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceName(FACE_POSITIVE_Z) + ".png");
+        posZElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceFileName(FACE_POSITIVE_Z) + ".png");
         
         XMLElement negZElem = rootElem.CreateChild("face");
-        negZElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceName(FACE_NEGATIVE_Z) + ".png");
+        negZElem.SetAttribute("name", basePath + "/" + cubeName + String(target_.id) + "_" + GetFaceFileName(FACE_NEGATIVE_Z) + ".png");
         
         file.Save(File(xmlPath, FILE_WRITE), "    ");
         
@@ -193,19 +215,19 @@ class EditorCubeCapture : ScriptObject // script object in order to get events
     
     private CubeMapFace GetFaceForCycle(int cycle)
     {
-        switch (updateCycle_)
+        switch (cycle)
         {
-        case 1:
+        case 0:
             return FACE_POSITIVE_X;
-        case 2:                                                
+        case 1:                                                
             return FACE_POSITIVE_Y;                                   
-        case 3:                                                
+        case 2:                                                
             return FACE_POSITIVE_Z;
-        case 4:
+        case 3:
             return FACE_NEGATIVE_X;
-        case 5:
+        case 4:
             return FACE_NEGATIVE_Y;
-        case 6:
+        case 5:
             return FACE_NEGATIVE_Z;
         }
         return FACE_POSITIVE_X;
@@ -213,22 +235,42 @@ class EditorCubeCapture : ScriptObject // script object in order to get events
     
     private String GetFaceName(CubeMapFace face)
     {
-        switch (updateCycle_)
+        switch (face)
         {
-        case 1:
+        case 0:
             return "PosX";
-        case 2:                                  
+        case 1:                                  
             return "PosY";                                   
-        case 3:                                  
+        case 2:                                  
             return "PosZ";
-        case 4:
+        case 3:
             return "NegX";
-        case 5:
+        case 4:
             return "NegY";
-        case 6:
+        case 5:
             return "NegZ";
         }
-        return "PosX";
+        return "None";
+    }
+    
+    private String GetFaceFileName(CubeMapFace face)
+    {
+        switch (face)
+        {
+        case 0:
+            return "PosX";
+        case 1:                                  
+            return "NegX";                                   
+        case 2:                                  
+            return "PosY";
+        case 3:
+            return "NegY";
+        case 4:
+            return "PosZ";
+        case 5:
+            return "NegZ";
+        }
+        return "None";
     }
     
     private Quaternion RotationOf(CubeMapFace face)
@@ -238,22 +280,22 @@ class EditorCubeCapture : ScriptObject // script object in order to get events
         {
             //  Rotate camera according to probe rotation
             case FACE_POSITIVE_X:
-                result = Quaternion(0, 90, 0);
+                result = Quaternion(0.0f, 0.0f, 0.0f);
                 break;
             case FACE_NEGATIVE_X:
-                result = Quaternion(0, -90, 0);
+                result = Quaternion(0.0f, -90.0f, 0.0f); 
                 break;
             case FACE_POSITIVE_Y:
-                result = Quaternion(-90, 0, 0);
+                result = Quaternion(90.0f, 0.0f, 0.0f); 
                 break;
             case FACE_NEGATIVE_Y:
-                result = Quaternion(90, 0, 0);
+                result = Quaternion(0.0f, 180.0f, 0.0f); 
                 break;
             case FACE_POSITIVE_Z:
-                result = Quaternion(0, 0, 0);
+                result = Quaternion(-90.0f, 0.0f, 0.0f);
                 break;
             case FACE_NEGATIVE_Z:
-                result = Quaternion(0, 180, 0);
+                result = Quaternion(0.0f, 90.0f, 0.0f); 
                 break;
         }
         return result;
