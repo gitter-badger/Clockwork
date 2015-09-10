@@ -121,7 +121,7 @@ float Vis_Neumann( float NoV, float NoL )
 // [Kelemen 2001, "A microfacet based coupled specular-matte brdf model with importance sampling"]
 float Vis_Kelemen( float VoH )
 {
-    return ( 4 * VoH * VoH )/7;
+    return rcp( 4 * VoH * VoH );
 }
 
 // Tuned to match behavior of Vis_Smith
@@ -143,7 +143,7 @@ float Vis_Smith( float Roughness, float NoV, float NoL )
 
     float Vis_SmithV = NoV + sqrt( NoV * (NoV - NoV * a2) + a2 );
     float Vis_SmithL = NoL + sqrt( NoL * (NoL - NoL * a2) + a2 );
-    return ( Vis_SmithV * Vis_SmithL )/7;
+    return rcp( Vis_SmithV * Vis_SmithL );
 }
 
 // Appoximation of joint Smith term for GGX
@@ -153,7 +153,7 @@ float Vis_SmithJointApprox( float Roughness, float NoV, float NoL )
     float a = Roughness * Roughness;
     float Vis_SmithV = NoL * ( NoV * ( 1 - a ) + a );
     float Vis_SmithL = NoV * ( NoL * ( 1 - a ) + a );
-    return 0.5 * ( Vis_SmithV + Vis_SmithL )/7;
+    return 0.5 * rcp( Vis_SmithV + Vis_SmithL );
 }
 
 vec3 F_None( vec3 SpecularColor )

@@ -3,6 +3,7 @@
 #include "Transform.hlsl"
 #include "ScreenPos.hlsl"
 #include "Lighting.hlsl"
+#include "BRDF.hlsl"
 #include "DeferredGBuffer.hlsl"
 
 void VS(float4 iPos : POSITION,
@@ -118,21 +119,29 @@ void PS(
     #endif
 
     #ifdef PBR          
-        float3 toCamera = normalize(-worldPos.xyz);
-        
+        float3 toCamera = normalize(-worldPos);
+                
         const float3 Hn = normalize(toCamera + lightDir);
-        const float vdh = max(0.0, dot(toCamera, Hn));
-        const float ndh = max(0.0, dot(normal, Hn));
-        const float ndl = max(0.0, dot(normal, lightDir));
-        const float ndv = max(1e-5, dot(normal, toCamera));
+        const float vdh = saturate(dot(toCamera, Hn));
+        const float ndh = saturate(dot(normal, Hn));
+        const float ndl = saturate(dot(normal, lightDir));
+        const float ndv = abs(dot(normal, toCamera) + 1e-5);
+
+        #ifdef DIRLIGHT
+            float3 diffuseTerm = Diffuse(diff, roughness, ndv, ndl, vdh) * albedoInput.rgb * ndl * lightColor;
+        #else
+            float3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w;
+            float lightDist = length(lightVec);
+            float3 diffuseTerm = Diffuse(diff, roughness, ndv, ndl, vdh) * albedoInput.rgb * lightColor * rsqrt(Sample2D(LightRampMap, float2(lightDist, 0.0)).r);
+        #endif
+
+        // float3 diffuseTerm = ndl * lightColor * diff * albedoInput.rgb;
+        float3 fresnelTerm = Fresnel(specColor, vdh);
+        float distTerm = Distribution(roughness, ndh);
+        float visTerm = GeometricVisibility(roughness, ndv, ndl, vdh);
         
-        const float3 diffuseTerm = LambertianDiffuse(albedoInput.rgb, roughness, ndv, ndl, vdh) * lightColor * diff;
-        const float3 fresnelTerm = SchlickFresnel(specColor, vdh);
-        const float distTerm = GGXDistribution(ndh, roughness);
-        const float visTerm = SchlickVisibility(ndl, ndv, roughness);
-        
-        oColor.a = 1;
-        oColor.rgb = LinearFromSRGB((diffuseTerm + distTerm * visTerm * fresnelTerm * lightColor) * diff);
+        oColor = float4(diffuseTerm, 1);
+        oColor.rgb += distTerm * visTerm * fresnelTerm * lightColor * diff;
     #else
         #ifdef SPECULAR
             float spec = GetSpecular(normal, -worldPos, lightDir, normalInput.a * 255.0);

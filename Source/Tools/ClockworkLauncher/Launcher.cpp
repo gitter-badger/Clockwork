@@ -16,7 +16,6 @@
 #include <Clockwork/UI/LineEdit.h>
 #include <Clockwork/Graphics/Texture2D.h>
 #include <Clockwork/UI/ListView.h>
-#include <Clockwork/>
 
 
 DEFINE_APPLICATION_MAIN(ClockworkLauncher);

@@ -83,15 +83,16 @@
 #ifdef COMPILEPS
     float GetDiffuse(vec3 normal, vec3 worldPos, out vec3 lightDir)
     {
-        #ifdef DIRLIGHT
-            lightDir = cLightDirPS;
-            return max(dot(normal, lightDir), 0.0);
-        #else
-            vec3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w;
-            float lightDist = length(lightVec);
-            lightDir = lightVec / lightDist;
-            return max(dot(normal, lightDir), 0.0) * texture2D(sLightRampMap, vec2(lightDist, 0.0)).r;
-        #endif
+        #ifdef DIRLIGHT 
+            lightDir = cLightDirPS; 
+            return max(dot(normal, lightDir), 0.0); 
+        #else 
+            vec3 lightVec = (cLightPosPS.xyz - worldPos) * cLightPosPS.w; 
+            float lightDist = length(lightVec); 
+            lightDir = lightVec / lightDist; 
+            return max(dot(normal, lightDir), 0.0) * texture2D(sLightRampMap, vec2(lightDist, 0.0)).r; 
+        #endif 
+
     }
 
     float GetDiffuseVolumetric(vec3 worldPos)
@@ -429,7 +430,7 @@
             vec3 EnvBRDFApprox(in vec3 specColor, in float roughness, in float nDotV )
             {            
                 vec4 c0 = vec4(-1.0, -0.0275, -0.572, 0.022);
-                vec4 c1 = vec4(1.0, 0.0425, 1.0, -0.04 );
+                vec4 c1 = vec4(1.0, 0.0425, 1.04, -0.04 );
                 vec4 r = roughness * c0 + c1;
                 float a004 = min( r.x * r.x, exp2( -9.28 * nDotV)) * r.x + r.y;
                 vec2 AB = vec2( -1.04, 1.04) * a004 + r.zw;
@@ -442,7 +443,7 @@
             ///     roughness: surface roughness
             vec3 GetSpecularDominantDir(vec3 normal, vec3 reflection, float roughness) 
             { 
-                float smoothness = 1.0 - roughness; 
+                float smoothness = clamp(1.0 - roughness, 0.0, 1.0); 
                 float lerpFactor = smoothness * (sqrt(smoothness) + roughness); 
                 return mix(normal, reflection, lerpFactor);
             }
@@ -455,17 +456,17 @@
             ///     ambientOcclusion: ambient occlusion
             vec3 ImageBasedLighting(in vec3 reflectVec, in vec3 wsNormal, in vec3 toCamera, in vec3 specular, in float roughness, out vec3 reflectionCubeColor)
             {    
-                reflectVec = GetSpecularDominantDir(wsNormal, reflectVec, roughness);
-                float ndv = abs(dot(wsNormal, toCamera));
+                float ndv = abs(dot(wsNormal, toCamera)) + 1e-5;
+                
+                reflectVec = GetSpecularDominantDir(wsNormal, -reflectVec, roughness * roughness);
                 
                 // Mip selection is something to tune to your desired results
                 //float mipSelect = 7.0 - 1.0 + log2(roughness); // Geilfus: https://github.com/simongeilfus/Cinder-Experiments
-                float mipSelect = roughness * 9.0;  // Lux-style
+                float mipSelect = roughness * 8.0;  // Lux-style
                 
-                reflectionCubeColor.rgb = textureCube(sZoneCubeMap, reflectVec, 9).rgb;
-                vec3 specularCube = textureCube(sZoneCubeMap, reflectVec, mipSelect).rgb;
+                reflectionCubeColor.rgb = textureCube(sZoneCubeMap, reflectVec, mipSelect).rgb;
                 vec3 environmentSpecular = EnvBRDFApprox(specular, roughness, ndv);
-                return specularCube * environmentSpecular;
+                return reflectionCubeColor * environmentSpecular;
             }
 
         #endif
