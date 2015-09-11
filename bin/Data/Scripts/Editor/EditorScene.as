@@ -1207,6 +1207,7 @@ bool SceneRenderZoneCubemaps()
 {  
     bool success = false;  
     Array<Zone@> capturedThisCall;  
+    bool alreadyCapturing = activeCubeCapture.length > 0; // May have managed to quickly queue up a second round of zones to render 
       
     for (int i = 0; i < selectedNodes.length; ++i)  
     {  
@@ -1235,7 +1236,7 @@ bool SceneRenderZoneCubemaps()
         }  
     }  
       
-    if (activeCubeCapture.length > 0)  
+    if (activeCubeCapture.length > 0 && !alreadyCapturing)   
         activeCubeCapture[0].Start();  
   
     if (capturedThisCall.length <= 0)  
