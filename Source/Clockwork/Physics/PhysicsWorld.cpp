@@ -35,6 +35,7 @@
 #include "../Physics/PhysicsUtils.h"
 #include "../Physics/PhysicsWorld.h"
 #include "../Physics/RigidBody.h"
+#include "../Physics/SoftBody.h"
 #include "../Scene/Scene.h"
 #include "../Scene/SceneEvents.h"
 
@@ -45,6 +46,12 @@
 #include <Bullet/BulletCollision/CollisionShapes/btSphereShape.h>
 #include <Bullet/BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h>
 #include <Bullet/BulletDynamics/Dynamics/btDiscreteDynamicsWorld.h>
+#include <Bullet/BulletSoftBody/btSoftBody.h>
+#include <Bullet/BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h>
+#include <Bullet/BulletSoftBody/btSoftRigidDynamicsWorld.h>
+#include <Bullet/BulletSoftBody/btSoftBodyHelpers.h>
+#include <Bullet/BulletSoftBody/btDefaultSoftBodySolver.h>
+
 
 extern ContactAddedCallback gContactAddedCallback;
 
@@ -120,7 +127,9 @@ PhysicsWorld::PhysicsWorld(Context* context) :
     collisionDispatcher_(0),
     broadphase_(0),
     solver_(0),
+	softBodySolver_(0),
     world_(0),
+	softBodyWorldInfo_(0),
     fps_(DEFAULT_FPS),
     maxSubSteps_(0),
     timeAcc_(0.0f),
@@ -133,11 +142,14 @@ PhysicsWorld::PhysicsWorld(Context* context) :
 {
     gContactAddedCallback = CustomMaterialCombinerCallback;
 
-    collisionConfiguration_ = new btDefaultCollisionConfiguration();
+    collisionConfiguration_ = new btSoftBodyRigidBodyCollisionConfiguration();
     collisionDispatcher_ = new btCollisionDispatcher(collisionConfiguration_);
     broadphase_ = new btDbvtBroadphase();
     solver_ = new btSequentialImpulseConstraintSolver();
-    world_ = new btDiscreteDynamicsWorld(collisionDispatcher_, broadphase_, solver_, collisionConfiguration_);
+	softBodySolver_ = new btDefaultSoftBodySolver();
+	softBodySolver_->setNumberOfPositionIterations(10);
+	softBodySolver_->setNumberOfVelocityIterations(10);
+	world_ = new btSoftRigidDynamicsWorld(collisionDispatcher_, broadphase_, solver_, collisionConfiguration_, softBodySolver_);
 
     world_->setGravity(ToBtVector3(DEFAULT_GRAVITY));
     world_->getDispatchInfo().m_useContinuous = true;
@@ -145,6 +157,16 @@ PhysicsWorld::PhysicsWorld(Context* context) :
     world_->setDebugDrawer(this);
     world_->setInternalTickCallback(InternalPreTickCallback, static_cast<void*>(this), true);
     world_->setInternalTickCallback(InternalTickCallback, static_cast<void*>(this), false);
+
+	softBodyWorldInfo_ = &((btSoftRigidDynamicsWorld*)world_)->getWorldInfo();
+	softBodyWorldInfo_->m_dispatcher = collisionDispatcher_;
+	softBodyWorldInfo_->m_broadphase = broadphase_;
+	softBodyWorldInfo_->air_density = (btScalar)1.0;
+	softBodyWorldInfo_->water_density = 0;
+	softBodyWorldInfo_->water_offset = 0;
+	softBodyWorldInfo_->water_normal = btVector3(0, 0, 0);
+	softBodyWorldInfo_->m_gravity = ToBtVector3(DEFAULT_GRAVITY);
+	softBodyWorldInfo_->m_sparsesdf.Initialize();
 }
 
 PhysicsWorld::~PhysicsWorld()
@@ -158,6 +180,9 @@ PhysicsWorld::~PhysicsWorld()
         for (PODVector<RigidBody*>::Iterator i = rigidBodies_.Begin(); i != rigidBodies_.End(); ++i)
             (*i)->ReleaseBody();
 
+		for (PODVector<SoftBody*>::Iterator i = softBodies_.Begin(); i != softBodies_.End(); ++i)
+			(*i)->ReleaseBody();
+
         for (PODVector<CollisionShape*>::Iterator i = collisionShapes_.Begin(); i != collisionShapes_.End(); ++i)
             (*i)->ReleaseShape();
     }
@@ -167,6 +192,9 @@ PhysicsWorld::~PhysicsWorld()
 
     delete solver_;
     solver_ = 0;
+
+	delete softBodySolver_;
+	softBodySolver_ = 0;
 
     delete broadphase_;
     broadphase_ = 0;
@@ -249,6 +277,8 @@ void PhysicsWorld::Update(float timeStep)
 
     delayedWorldTransforms_.Clear();
 
+	delayedWorldTransformsSoftBody_.Clear();
+
     if (interpolation_)
         world_->stepSimulation(timeStep, maxSubSteps, internalTimeStep);
     else
@@ -278,6 +308,22 @@ void PhysicsWorld::Update(float timeStep)
             }
         }
     }
+
+	while (!delayedWorldTransformsSoftBody_.Empty())
+	{
+		for (HashMap<SoftBody*, DelayedWorldTransformSoftBody>::Iterator i = delayedWorldTransformsSoftBody_.Begin();
+		i != delayedWorldTransformsSoftBody_.End(); ++i)
+		{
+			const DelayedWorldTransformSoftBody& transform = i->second_;
+			
+			// If parent's transform has already been assigned, can proceed
+			if (!delayedWorldTransformsSoftBody_.Contains(transform.parentSoftBody_))
+			{
+				transform.softBody_->ApplyWorldTransform(transform.worldPosition_, transform.worldRotation_);
+				delayedWorldTransformsSoftBody_.Erase(i);
+				}
+			}
+		}
 }
 
 void PhysicsWorld::UpdateCollisions()
@@ -611,11 +657,23 @@ void PhysicsWorld::AddRigidBody(RigidBody* body)
     rigidBodies_.Push(body);
 }
 
+void PhysicsWorld::AddSoftBody(SoftBody* body)
+{
+	softBodies_.Push(body);
+}
+
 void PhysicsWorld::RemoveRigidBody(RigidBody* body)
 {
     rigidBodies_.Remove(body);
     // Remove possible dangling pointer from the delayedWorldTransforms structure
     delayedWorldTransforms_.Erase(body);
+}
+
+void PhysicsWorld::RemoveSoftBody(SoftBody* body)
+{
+	softBodies_.Remove(body);
+	// Remove possible dangling pointer from the delayedWorldTransforms structure
+	delayedWorldTransformsSoftBody_.Erase(body);
 }
 
 void PhysicsWorld::AddCollisionShape(CollisionShape* shape)
@@ -641,6 +699,11 @@ void PhysicsWorld::RemoveConstraint(Constraint* constraint)
 void PhysicsWorld::AddDelayedWorldTransform(const DelayedWorldTransform& transform)
 {
     delayedWorldTransforms_[transform.rigidBody_] = transform;
+}
+
+void PhysicsWorld::AddDelayedWorldTransformSoftBody(const DelayedWorldTransformSoftBody& transform)
+{
+	delayedWorldTransformsSoftBody_[transform.softBody_] = transform;
 }
 
 void PhysicsWorld::DrawDebugGeometry(bool depthTest)
@@ -947,6 +1010,7 @@ void RegisterPhysicsLibrary(Context* context)
 {
     CollisionShape::RegisterObject(context);
     RigidBody::RegisterObject(context);
+	SoftBody::RegisterObject(context);
     Constraint::RegisterObject(context);
     PhysicsWorld::RegisterObject(context);
 }

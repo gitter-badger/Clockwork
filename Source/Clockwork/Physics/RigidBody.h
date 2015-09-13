@@ -30,6 +30,15 @@
 class btCompoundShape;
 class btRigidBody;
 
+
+/// Rigid body collision event signaling mode.
+enum CollisionEventMode
+{
+	COLLISION_NEVER = 0,
+	COLLISION_ACTIVE,
+	COLLISION_ALWAYS
+};
+
 namespace Clockwork
 {
 
@@ -37,14 +46,6 @@ class CollisionShape;
 class Constraint;
 class PhysicsWorld;
 class SmoothedTransform;
-
-/// Rigid body collision event signaling mode.
-enum CollisionEventMode
-{
-    COLLISION_NEVER = 0,
-    COLLISION_ACTIVE,
-    COLLISION_ALWAYS
-};
 
 /// Physics rigid body component.
 class CLOCKWORK_API RigidBody : public Component, public btMotionState

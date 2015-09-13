@@ -39,6 +39,10 @@ class btDiscreteDynamicsWorld;
 class btDispatcher;
 class btDynamicsWorld;
 class btPersistentManifold;
+class btSoftBody;
+class btSoftBodySolver;
+class btSoftRigidDynamicsWorld;
+struct btSoftBodyWorldInfo;
 
 namespace Clockwork
 {
@@ -50,6 +54,7 @@ class Model;
 class Node;
 class Ray;
 class RigidBody;
+class SoftBody;
 class Scene;
 class Serializer;
 class XMLElement;
@@ -92,6 +97,18 @@ struct DelayedWorldTransform
     Vector3 worldPosition_;
     /// New world rotation.
     Quaternion worldRotation_;
+};
+
+struct DelayedWorldTransformSoftBody
+{
+	/// Soft body.
+	SoftBody* softBody_;
+	/// Parent Soft body.
+	SoftBody* parentSoftBody_;
+	/// New world position.
+	Vector3 worldPosition_;
+	/// New world rotation.
+	Quaternion worldRotation_;
 };
 
 static const float DEFAULT_MAX_NETWORK_ANGULAR_VELOCITY = 100.0f;
@@ -204,6 +221,10 @@ public:
     void AddRigidBody(RigidBody* body);
     /// Remove a rigid body. Called by RigidBody.
     void RemoveRigidBody(RigidBody* body);
+	/// Add a soft body to keep track of. Called by SoftBody.
+	void AddSoftBody(SoftBody* body);
+	/// Remove a soft body. Called by SoftBody.
+	void RemoveSoftBody(SoftBody* body);
     /// Add a collision shape to keep track of. Called by CollisionShape.
     void AddCollisionShape(CollisionShape* shape);
     /// Remove a collision shape. Called by CollisionShape.
@@ -214,6 +235,8 @@ public:
     void RemoveConstraint(Constraint* joint);
     /// Add a delayed world transform assignment. Called by RigidBody.
     void AddDelayedWorldTransform(const DelayedWorldTransform& transform);
+	/// Add a delayed world transform assignment. Called by SoftBody.
+	void AddDelayedWorldTransformSoftBody(const DelayedWorldTransformSoftBody& transform);
     /// Add debug geometry to the debug renderer.
     void DrawDebugGeometry(bool depthTest);
     /// Set debug renderer to use. Called both by PhysicsWorld itself and physics components.
@@ -223,6 +246,8 @@ public:
 
     /// Return the Bullet physics world.
     btDiscreteDynamicsWorld* GetWorld() { return world_; }
+	/// Return the Bullet physics softbody world info.
+	btSoftBodyWorldInfo* GetSoftBodyWorld() { return softBodyWorldInfo_; }
 
     /// Clean up the geometry cache.
     void CleanupGeometryCache();
@@ -263,6 +288,10 @@ private:
     btConstraintSolver* solver_;
     /// Bullet physics world.
     btDiscreteDynamicsWorld* world_;
+	/// Soft bodies in the world.
+	PODVector<SoftBody*> softBodies_;
+	btSoftBodyWorldInfo* softBodyWorldInfo_;
+	btSoftBodySolver* softBodySolver_;
     /// Extra weak pointer to scene to allow for cleanup in case the world is destroyed before other components.
     WeakPtr<Scene> scene_;
     /// Rigid bodies in the world.
@@ -277,6 +306,8 @@ private:
     HashMap<Pair<WeakPtr<RigidBody>, WeakPtr<RigidBody> >, btPersistentManifold*> previousCollisions_;
     /// Delayed (parented) world transform assignments.
     HashMap<RigidBody*, DelayedWorldTransform> delayedWorldTransforms_;
+	/// Delayed (parented) world transform assignments.
+	HashMap<SoftBody*, DelayedWorldTransformSoftBody> delayedWorldTransformsSoftBody_;
     /// Cache for trimesh geometry data by model and LOD level.
     HashMap<Pair<Model*, unsigned>, SharedPtr<CollisionGeometryData> > triMeshCache_;
     /// Cache for convex geometry data by model and LOD level.
