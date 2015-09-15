@@ -5,10 +5,10 @@
 	<attribute name="Smoothing Constant" value="50" />
 	<attribute name="Snap Threshold" value="5" />
 	<attribute name="Elapsed Time" value="0" />
-	<attribute name="Next Replicated Node ID" value="23" />
-	<attribute name="Next Replicated Component ID" value="21" />
-	<attribute name="Next Local Node ID" value="16777223" />
-	<attribute name="Next Local Component ID" value="16777300" />
+	<attribute name="Next Replicated Node ID" value="25" />
+	<attribute name="Next Replicated Component ID" value="25" />
+	<attribute name="Next Local Node ID" value="16777224" />
+	<attribute name="Next Local Component ID" value="16777312" />
 	<attribute name="Variables" />
 	<attribute name="Variable Names" value="" />
 	<component type="Octree" id="1" />
@@ -28,20 +28,19 @@
 	<node id="3">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Box" />
-		<attribute name="Position" value="1.32267 0.594299 -1.57271" />
+		<attribute name="Position" value="1.32267 0.570659 -1.57271" />
 		<attribute name="Rotation" value="0.92388 0 0.382683 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="StaticModel" id="4">
 			<attribute name="Model" value="Model;Models/Box.mdl" />
 			<attribute name="Material" value="Material;Materials/GreenTransparent.xml" />
-			<attribute name="Cast Shadows" value="true" />
 		</component>
 	</node>
 	<node id="4">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Box" />
-		<attribute name="Position" value="-1.30641 0.594299 -1.3801" />
+		<attribute name="Position" value="-1.30641 0.570659 -1.3801" />
 		<attribute name="Rotation" value="0.966853 0 -0.255333 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -54,14 +53,13 @@
 	<node id="5">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Light1" />
-		<attribute name="Position" value="0.127367 2.69504 -4.73094" />
+		<attribute name="Position" value="0.127367 2.69504 -5.34013" />
 		<attribute name="Rotation" value="0.977701 0.21 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="Light" id="6">
 			<attribute name="Light Type" value="Spot" />
 			<attribute name="Color" value="1 0.5 0.5 1" />
-			<attribute name="Brightness Multiplier" value="5" />
 			<attribute name="Spot FOV" value="60" />
 			<attribute name="Cast Shadows" value="true" />
 			<attribute name="Depth Constant Bias" value="0.0001" />
@@ -70,7 +68,7 @@
 	<node id="6">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Box" />
-		<attribute name="Position" value="0.055109 0.594299 0.653738" />
+		<attribute name="Position" value="0.055109 0.570659 0.653738" />
 		<attribute name="Rotation" value="0.999947 0 0.0103017 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
@@ -83,14 +81,13 @@
 	<node id="7">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="Light2" />
-		<attribute name="Position" value="-2.55712 2.11839 4.03673" />
+		<attribute name="Position" value="-4.34554 2.11839 4.03673" />
 		<attribute name="Rotation" value="0.35066 0.0199293 0.899918 -0.258432" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="Light" id="8">
 			<attribute name="Light Type" value="Spot" />
 			<attribute name="Color" value="0.5 0.5 1 1" />
-			<attribute name="Brightness Multiplier" value="5" />
 			<attribute name="Spot FOV" value="60" />
 			<attribute name="Cast Shadows" value="true" />
 			<attribute name="Depth Constant Bias" value="0.0001" />
@@ -14194,12 +14191,12 @@
 	<node id="9">
 		<attribute name="Is Enabled" value="true" />
 		<attribute name="Name" value="" />
-		<attribute name="Position" value="-0.60482 2.29138 0.111191" />
+		<attribute name="Position" value="0.0975884 0.691917 -0.65433" />
 		<attribute name="Rotation" value="1 0 0 0" />
 		<attribute name="Scale" value="1 1 1" />
 		<attribute name="Variables" />
 		<component type="Zone" id="11">
-			<attribute name="Zone Texture" value="TextureCube;Textures/Skybox2.xml" />
+			<attribute name="Zone Texture" value="TextureCube;Textures/Cubemaps/11.xml" />
 		</component>
 	</node>
 </scene>

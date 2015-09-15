@@ -502,7 +502,7 @@
                     accumulatedColor += (sampledColor * SchlickFresnel(specular, ndh) * SmithGGXVisibility(ndl, ndv, roughness) * ndl);
                 }
                 
-                return accumulatedColor / IMPORTANCE_SAMPLES;
+                return accumulatedColor / IMPORTANCE_SAMPLES; 
             }
             
             /// Calculate IBL contributation

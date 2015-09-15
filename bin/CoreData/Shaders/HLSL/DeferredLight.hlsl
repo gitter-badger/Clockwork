@@ -4,6 +4,7 @@
 #include "ScreenPos.hlsl"
 #include "Lighting.hlsl"
 #include "DeferredGBuffer.hlsl"
+#include "BRDF.hlsl"
 
 void VS(float4 iPos : POSITION,
     #ifdef DIRLIGHT
@@ -126,10 +127,10 @@ void PS(
         const float ndl = max(0.0, dot(normal, lightDir));
         const float ndv = max(1e-5, dot(normal, toCamera));
         
-        const float3 diffuseTerm = LambertianDiffuse(albedoInput.rgb, roughness, ndv, ndl, vdh) * lightColor * diff;
-        const float3 fresnelTerm = SchlickFresnel(specColor, vdh);
-        const float distTerm = GGXDistribution(ndh, roughness);
-        const float visTerm = SchlickVisibility(ndl, ndv, roughness);
+        const float3 diffuseTerm = Diffuse(albedoInput.rgb, roughness, ndv, ndl, vdh) * lightColor * diff;
+        const float3 fresnelTerm = Fresnel(specColor, vdh);
+        const float distTerm = Distribution(roughness, ndh);
+        const float visTerm = GeometricVisibility(roughness, ndv, ndl, vdh);
         
         oColor.a = 1;
         oColor.rgb = LinearFromSRGB((diffuseTerm + distTerm * visTerm * fresnelTerm * lightColor) * diff);
