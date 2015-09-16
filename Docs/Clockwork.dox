@@ -27,7 +27,6 @@ For further reference, see:
 \ref Resources "Resources" <br>
 \ref Localization "Localization" <br>
 \ref Scripting "Scripting" <br>
-\ref LuaScripting "Lua scripting" <br>
 \ref Rendering "Rendering" <br>
 \ref Input "Input" <br>
 \ref Audio "Audio" <br>
@@ -46,7 +45,6 @@ For further reference, see:
 \ref CodingConventions "Coding conventions" <br>
 \ref ContributionChecklist "Contribution checklist" <br>
 \ref ScriptAPI "Scripting API (generated)" <br>
-\ref LuaScriptAPI "Lua scripting API (generated)" <br>
 \ref EventList "Event list (generated)" <br>
 \ref AttributeList "Attribute list (generated)" <br>
 
@@ -83,8 +81,6 @@ Clockwork uses the following third-party libraries:
 - jo_jpeg 1.52 (http://www.jonolick.com/uploads/7/9/2/1/7921194/jo_jpeg.cpp)
 - kNet (https://github.com/juj/kNet)
 - libcpuid 0.2.0 (http://libcpuid.sourceforge.net/)
-- Lua 5.1 (http://www.lua.org)
-- LuaJIT 2.0.3 (http://www.luajit.org)
 - LZ4 (http://code.google.com/p/lz4/)
 - MojoShader (http://icculus.org/mojoshader/)
 - Open Asset Import Library (http://assimp.sourceforge.net/)
@@ -96,7 +92,6 @@ Clockwork uses the following third-party libraries:
 - stb_image 2.05 (http://nothings.org/)
 - stb_image_write 0.98 (http://nothings.org/)
 - stb_vorbis 1.05 (http://nothings.org/)
-- tolua++ 1.0.93 (http://www.codenix.com/~tolua)
 
 DXT / ETC1 / PVRTC decompression code based on the Squish library and the Oolong %Engine.<br>
 Jack and mushroom models from the realXtend project. (http://www.realxtend.org)<br>

@@ -42,8 +42,6 @@ Clockwork uses the following third-party libraries:
 - jo_jpeg 1.52 (http://www.jonolick.com/uploads/7/9/2/1/7921194/jo_jpeg.cpp)
 - kNet (https://github.com/juj/kNet)
 - libcpuid 0.2.0 (http://libcpuid.sourceforge.net/)
-- Lua 5.1 (http://www.lua.org)
-- LuaJIT 2.0.3 (http://www.luajit.org)
 - LZ4 (http://code.google.com/p/lz4/)
 - MojoShader (http://icculus.org/mojoshader/)
 - nanodbc 2.2.2 (http://lexicalunit.github.io/nanodbc/)
@@ -58,7 +56,6 @@ Clockwork uses the following third-party libraries:
 - stb_image_write 0.98 (http://nothings.org/)
 - stb_vorbis 1.05 (http://nothings.org/)
 - SQLite 3.8.10.2 (https://www.sqlite.org/)
-- tolua++ 1.0.93 (http://www.codenix.com/~tolua)
 
 DXT / ETC1 / PVRTC decompression code based on the Squish library and the Oolong
 Engine.

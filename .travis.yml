@@ -138,7 +138,7 @@ addons:
       name: dragonCASTjosh/Clockwork
       description: Clockwork is a free lightweight, cross-platform 2D and 3D game engine implemented in C++ and released under the MIT license. Greatly inspired by OGRE and Horde3D.
     notification_email: dragonCASTjosh.travis.ci@gmail.com
-    build_command_prepend: rake cmake CLOCKWORK_LUAJIT=1 CLOCKWORK_LUAJIT_AMALG=1 CLOCKWORK_SAMPLES=1 CLOCKWORK_TOOLS=1 CLOCKWORK_EXTRAS=1 CLOCKWORK_DATABASE_SQLITE=1 CLOCKWORK_LIB_TYPE=SHARED
+    build_command_prepend: rake cmake CLOCKWORK_SAMPLES=1 CLOCKWORK_TOOLS=1 CLOCKWORK_EXTRAS=1 CLOCKWORK_DATABASE_SQLITE=1 CLOCKWORK_LIB_TYPE=SHARED
     build_command: rake make numjobs=4
     branch_pattern: .*Coverity-Scan$
 env:

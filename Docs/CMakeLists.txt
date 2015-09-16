@@ -53,10 +53,10 @@ if (DOXYGEN_FOUND)
         configure_file (${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
     endif ()
 
-    # Dump AngelScript and LuaScript API to Doxygen file if the tool is available
+    # Dump AngelScript API to Doxygen file if the tool is available
     # CMake's custom command output is intentionally set to mismatch with the tool's output file location to achieve two desired side-effect results:
-    # 1) 'make clean' does not remove the generated ScriptAPI.dox and LuaScriptAPI.dox in the 'Docs' subdirectory
-    # 2) ScriptAPI.dox and LuaScriptAPI.dox always get refreshed first before the 'doc' target is being built (similar to VS-only PRE_BUILD custom command)
+    # 1) 'make clean' does not remove the generated ScriptAPI.dox in the 'Docs' subdirectory
+    # 2) ScriptAPI.dox always get refreshed first before the 'doc' target is being built (similar to VS-only PRE_BUILD custom command)
     if (TARGET ScriptCompiler AND NOT CMAKE_CROSSCOMPILING)
         add_custom_command (OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/ScriptAPI.dox
             COMMAND ${CMAKE_BINARY_DIR}/bin/tool/ScriptCompiler -dumpapi ${CMAKE_SOURCE_DIR} ScriptAPI.dox AngelScriptAPI.h
@@ -65,22 +65,6 @@ if (DOXYGEN_FOUND)
             COMMENT "Dumping AngelScript API to ScriptAPI.dox")
     else ()
         add_custom_command (OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/ScriptAPI.dox COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/ScriptAPI.dox)
-    endif ()
-    if (TARGET tolua++ AND NOT CMAKE_CROSSCOMPILING)
-        file (GLOB PKGS RELATIVE ${CMAKE_SOURCE_DIR}/Source/Clockwork/LuaScript/pkgs ${CMAKE_SOURCE_DIR}/Source/Clockwork/LuaScript/pkgs/*.pkg)
-        list (SORT PKGS)
-        set (PKGLIST "// This is a generated file. DO NOT EDIT!\n\n")
-        foreach (PKG ${PKGS})
-            set (PKGLIST "${PKGLIST}$pfile \"${PKG}\"\n")
-        endforeach ()
-        file (WRITE ${CMAKE_BINARY_DIR}/bin/tool/LuaPkgToDox.txt ${PKGLIST})
-        add_custom_command (OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/LuaScriptAPI.dox
-            COMMAND ${CMAKE_BINARY_DIR}/bin/tool/tolua++ -L ToDoxHook.lua -P -o ${CMAKE_CURRENT_SOURCE_DIR}/LuaScriptAPI.dox ${CMAKE_BINARY_DIR}/bin/tool/LuaPkgToDox.txt
-            DEPENDS Clockwork tolua++
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/Source/Clockwork/LuaScript/pkgs
-            COMMENT "Dumping LuaScript API to LuaScriptAPI.dox")
-    else ()
-        add_custom_command (OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/LuaScriptAPI.dox COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/LuaScriptAPI.dox)
     endif ()
 
     # If CLOCKWORK_DOCS build option is set then add the custom 'doc' target into the default 'all' target, i.e. a normal build would not only build the software but also the documentation
@@ -99,7 +83,7 @@ if (DOXYGEN_FOUND)
     # Add custom 'doc' target for generating Clockwork documentation
     add_custom_target (doc ${ALL}
         COMMAND ${DOXYGEN_EXECUTABLE} Doxyfile ${REDIRECT_STDOUT}
-        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/ScriptAPI.dox ${CMAKE_CURRENT_BINARY_DIR}/LuaScriptAPI.dox   # Note: these two dependencies need to be made explicit or otherwise CMake would not automatically 'refresh' them with provided custom command
+        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/ScriptAPI.dox   # Note: this dependency need to be made explicit or otherwise CMake would not automatically 'refresh' it with provided custom command
         COMMENT "Generating documentation with Doxygen")
 endif ()
 

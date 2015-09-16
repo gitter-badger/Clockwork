@@ -1,5 +1,0 @@
-$#include "Clockwork2D/TmxFile2D.h"
-
-class TmxFile2D : Resource
-{
-};

@@ -664,167 +664,6 @@ In unmodified AngelScript, this would have to be written as:
 \endcode
 
 
-\page LuaScripting Lua scripting
-
-Lua scripting in Clockwork has its dedicated LuaScript subsystem that must be instantiated before the scripting capabilities can be used. Lua support is not compiled in by default but must be enabled by the CMake
-build option -DCLOCKWORK_LUA=1. For more details see \ref Build_Options "Build options". Instantiating the subsystem is done like this:
-
-\code
-context_->RegisterSubsystem(new LuaScript(context_));
-\endcode
-
-Like AngelScript, Lua scripting supports immediate compiling and execution of single script lines, loading script files and executing procedural functions from them, and instantiating script objects
-to scene nodes using the LuaScriptInstance component.
-
-\section LuaScripting_Immediate Immediate execution
-
-Use \ref LuaScript::ExecuteString "ExecuteString()" to compile and run a line of Lua script. This should not be used for performance-critical operations.
-
-\section LuaScripting_ScriptFiles Script files and functions
-
-In contrast to AngelScript modules, which exist as separate entities and do not share functions or variables unless explicitly marked shared, in the Lua subsystem everything is loaded and executed in one Lua state, so scripts can naturally access everything  loaded so far. To load and execute a Lua script file, call \ref LuaScript::ExecuteFile "ExecuteFile()".
-
-After that, the functions in the script file are available for calling. Use \ref LuaScript::GetFunction "GetFunction()" to get a Lua function by name. This returns a LuaFunction object, on which you should call \ref LuaFunction::BeginCall "BeginCall()" first, followed by pushing the function parameters if any, and finally execute the function with \ref LuaFunction::EndCall "EndCall()".
-
-\subsection LuaScripting_Debugging Debugging script files
-
-Debugging Lua scripts embedded in an application can be done by attaching to a remote debugger, after first injecting a client into the application (for example, see <a href="https://wiki.eclipse.org/LDT/User_Area/User_Guides/User_Guide_1.2#Attach_session">eclipse LDT's remote debugger</a>).
-
-However, Lua script files in Clockwork are loaded into the interpreter via Clockwork's resource cache, which loads the script file into a memory buffer before passing that buffer to the interpreter. This is good for performance and cross platform compatibility, but means that the source file is not available to debuggers and so, for example, breakpoints may not work and the code cannot be meaningfully stepped through.
-
-For a single script that you wish to step through, you can use \ref LuaScript::ExecuteRawFile "ExecuteRawFile()", which will load the script from the file system directly into the Lua interpreter, making the source available to debuggers that rely on it. There are a couple of caveats with this:
-- The file has has to be on the file system, within a resource directory, and not packaged.
-- If the script uses require() to import a second script, then that second script will not be available for the debugger in the same way, since internally the second script is passed to Lua via the resource cache.
-
-To get around the second caveat, and avoid changing method calls, use the CLOCKWORK_LUA_RAW_SCRIPT_LOADER build option.  This will force Clockwork to attempt to load scripts from the file system by default, before falling back on the resource cache.  You can then use \ref LuaScript::ExecuteFile "ExecuteFile()", as above, and disable the CMake option for production if required.
-
-\section LuaScripting_ScriptObjects Script objects
-
-By using the LuaScriptInstance component, Lua script objects can be added to scene nodes. After the component has been created, there are two ways to specify the object to instantiate: either specifying both the script file name and the object class name, in which case the script file is loaded and executed first, or specifying only the class name, in which case the Lua code containing the class definition must already have been executed. An example of creating a script object in C++ from the LuaIntegration sample, where a class called Rotator is instantiated from the script file Rotator.lua:
-
-\code
-LuaScriptInstance* instance = node->CreateComponent<LuaScriptInstance>();
-instance->CreateObject("LuaScripts/Rotator.lua", "Rotator");
-\endcode
-
-After instantiation, use \ref LuaScriptInstance::GetScriptObjectFunction "GetScriptObjectFunction()" to get the object's functions by name; calling happens like above.
-
-Like their AngelScript counterparts, script object classes can define functions which are automatically called by LuaScriptInstance for operations like initialization, scene update, or load/save. These functions are listed below. Refer to the \ref Scripting "AngelScript scripting" page for details.
-
-- Start()
-- Stop()
-- Update(timeStep)
-- PostUpdate(timeStep)
-- FixedUpdate(timeStep)
-- FixedPostUpdate(timeStep)
-- Save(serializer)
-- Load(deserializer)
-- WriteNetworkUpdate(serializer)
-- ReadNetworkUpdate(deserializer)
-- ApplyAttributes()
-- TransformChanged()
-
-\section LuaScripting_Events Event handling
-
-Like in AngelScript, both procedural and object event handling is supported. In procedural event handling the LuaScript subsystem acts as the event receiver on the C++ side, and forwards the event to a Lua function. Use SubscribeToEvent and give the event name and the function to use as the handler. Optionally a specific sender object can be given as the first argument instead. For example, subscribing to the application-wide Update event, and getting its timestep parameter in the event handler function.
-
-\code
-SubscribeToEvent("Update", "HandleUpdate")
-
-...
-
-function HandleUpdate(eventType, eventData)
-    local timeStep = eventData["TimeStep"]:GetFloat()
-    ...
-end
-\endcode
-
-When subscribing a script object to receive an event, use the form self:SubscribeToEvent() instead. The function to use as the handler is given as "ClassName:FunctionName". For example subscribing to the NodeCollision physics event, and getting the participating other scene node and the contact point VectorBuffer in the handler function. Note that in Lua retrieving an object pointer from a VariantMap requires the object type as the first parameter:
-
-\code
-CollisionDetector = ScriptObject()
-
-function CollisionDetector:Start()
-    self:SubscribeToEvent(self.node, "NodeCollision", "CollisionDetector:HandleNodeCollision")
-end
-
-function CollisionDetector:HandleNodeCollision(eventType, eventData)
-    local otherNode = eventData["OtherNode"]:GetPtr("Node")
-    local contacts = eventData["Contacts"]:GetBuffer()
-    ...
-end
-\endcode
-
-\section LuaScripting_API The script API
-
-The binding of Clockwork C++ classes is accomplished with the tolua++ library, which for the most part binds the exact same function parameters as C++. Compared to the AngelScript API, you will always have the classes' Get / Set functions available, but in addition convenience properties also exist.
-
-As seen above from the event handling examples, VariantMap handling is similar to both C++ and AngelScript. To get a variant object back from a map, index the map by its key as a string. A nil value is returned when the map's key does not exist. Then use one of the variant getter method to return the actual Lua object stored inside the variant object. These getter methods normally do not take any parameter, except GetPtr() and GetVoidPtr() which take a string parameter representing a Lua user type that the method would use to cast the return object into. The GetPtr() is used to get a reference counted object while the GetVoidPtr() is used to get a POD value object.
-
-You can also use the VariantMap as a pseudo Lua table to store any variant value objects in your script. The VariantMap class would try its best to convert any Lua object into a variant object and store the variant object using the provided key as index. The key can be a string or an unsigned integer or even a StringHash object. When a particular data type conversion is not being supported yet, an empty variant object would be stored instead. So, be careful if you are using this feature. You can also use one of the Variant class constructors to construct a %Variant object first before assigning it to the VariantMap, but this operation would be slower than direct conversion. The purpose of using VariantMap in this way is to facilitate objects passing between Lua and C++ as has been shown in the event handling mechanism above. When creating objects on Lua side, you have to make sure they are not garbage collected by Lua while there are still references pointing to them on C++ side, especially when the objects are not reference counted.
-
-\code
-local myMap = VariantMap()
-
-myMap[1] = Spline(LINEAR_CURVE)     -- LINEAR_CURVE = 2
-print(myMap[1].typeName, myMap[1]:GetVoidPtr("Spline").interpolationMode)
--- output: VoidPtr    2
-
-myMap["I am a table"] = { 100, 200, 255 }
-print(myMap["I am a table"].typeName, myMap["I am a table"]:GetBuffer():ReadByte())
--- output: Buffer    100
-print(myMap["I am a table"]:GetRawBuffer()[3], myMap["I am a table"]:GetRawBuffer()[2])
--- output: 255    200
-
-local hash = StringHash("secret key")
-myMap[hash] = Vector2(3, 4)
-print(myMap[hash].typeName, myMap[hash]:GetVector2():Length())
--- output: Vector2    5
-\endcode
-
-As shown in the above example, you can either use GetRawBuffer() or GetBuffer() to get the unsigned char array stored in a variant object. It also shows that VariantMap is capable of converting a Lua table containing an array of unsigned char to a variant object stored as buffer. You may want to know that it is capable of converting a Lua table containing an array of variant objects or an array of string objects to be stored as VariantVector and StringVector, respectively, as well. It also converts any Lua primitive data types and all Clockwork classes that are exposed to Lua like all the math classes, reference counted classes, POD classes, resource reference class. etc.
-
-Inline with C++ and AngelScript, in Lua you have to call one of the %Variant's getter method to "unbox" the actual object stored inside a %Variant object. However, specifically in Lua, there is a generic Get() method which takes advantage of Lua being type less, so the method can unbox a %Variant object and return the stored object as a type less Lua object. It takes one optional string parameter representing a Lua user type that the method would use to cast the return object into. The parameter is used for cases where a type casting is required when returning object from %Variant object storing a void pointer or a refcounted pointer. The type casting could also be optional such as for the case of requesting a %VectorBuffer to be returned for %Variant object storing an unsigned char buffer or requesting an unsigned or %StringHash to be returned for %Variant object storing an integer value. The parameter is ignored for all other cases. Following up to use the same example above, we can index the map and access the stored objects as so:
-
-\code
-print(myMap[1]:Get("Spline").interpolationMode)
-print(myMap["I am a table"]:Get("VectorBuffer"):ReadByte())
-print(myMap["I am a table"]:Get()[2])
-print(myMap[hash]:Get():Length())
-\endcode
-
-There is also a generic Set() method for %Variant class to cope with Lua does not support assignment operator overload. The Set() method takes a single parameter which can be anything in Lua that is convertible into a %Variant, including nil value which is stored as an empty %Variant. Use this method when you need to assign a value into an existing %Variant object.
-
-For the rest of the functions and classes, see the generated \ref LuaScriptAPI "Lua script API reference". Also, look at the Lua counterparts of the sample applications in the bin/Data/LuaScripts directory and compare them to the C++ and AngelScript versions to familiarize yourself with how things are done on the Lua side.
-
-One more thing to note about our Lua scripting implementation is its two-way conversion between C++ collection containers (Vector and PODVector) and Lua arrays (table of non-POD and table of POD objects, respectively). The conversion is done automatically when the collection crosses the C++/Lua boundary. The generated \ref LuaScriptAPI "Lua script API reference" page does not reflect this fact correctly. When obtaining a collection of objects using the Lua script API, you should treat it as a Lua table despite the documentation page stated a Vector or PODVector user type is being returned.
-
-\section LuaScripting_Allocation Object allocation & Lua garbage collection
-
-There are two ways to allocate a C++ object in Lua scripting, which behave differently with respect to Lua's automatic garbage collection:
-
-1) Call class constructor:
-\code
-local scene = Scene()
-\endcode
-tolua++ will register this C++ object with garbage collection, and Lua will collect it eventually. Do not use this form if you will add the
-object to an object hierarchy that is kept alive on the C++ side with SharedPtr's, for example child scene nodes or %UI child elements.
-Otherwise the object will be double-deleted, resulting in a crash.
-
-Note that calling class constructor in this way is equivalent to calling class new_local() function.
-
-2) Call class new() function:
-\code
-local text = Text:new()
-\endcode
-When using this form the object will not collected by Lua, so it is safe to pass into C++ object hierarchies.
-Otherwise, to prevent memory leaks it needs to be deleted manually by calling the delete function on it:
-\code
-text:delete()
-\endcode
-
-When you call the \ref ResourceCache::GetFile "GetFile()" function of ResourceCache from Lua, the file you receive must also be manually deleted like described above once you are done with it.
-
 \page Rendering Rendering
 
 Much of the rendering functionality in Clockwork is built on two subsystems, Graphics and Renderer.
@@ -2064,14 +1903,6 @@ AngelScript:
     camera.orthoSize = graphics.height * PIXEL_SIZE; // Set camera ortho size (the value of PIXEL_SIZE is 0.01)
 \endcode
 
-Lua:
-\code
-    cameraNode = scene_:CreateChild("Camera") -- Create camera node
-    local camera = cameraNode:CreateComponent("Camera") -- Create camera
-    camera.orthographic = true -- Set camera orthographic
-    camera.orthoSize = graphics.height * PIXEL_SIZE -- Set camera ortho size (the value of PIXEL_SIZE is 0.01)
-\endcode
-
 To zoom in/out, use \ref Camera::SetZoom "SetZoom()".
 
 \section Clockwork2D_Sprites Sprites
@@ -2287,13 +2118,6 @@ AngelScript:
 Node@ tileMapNode = scene_.CreateChild("TileMap"); // Create a standard Clockwork node
 TileMap2D@ tileMap = tileMapNode.CreateComponent("TileMap2D"); // Create the TileMap2D component
 tileMap.tmxFile = cache.GetResource("TmxFile2D", "Clockwork2D/isometric_grass_and_water.tmx"); // Assign the tmx resource file to component
-\endcode
-
-Lua:
-\code
-local tileMapNode = scene_:CreateChild("TileMap") -- Create a standard Clockwork node
-local tileMap = tileMapNode:CreateComponent("TileMap2D") -- Create the TileMap2D component
-tileMap.tmxFile = cache:GetResource("TmxFile2D", "Clockwork2D/isometric_grass_and_water.tmx") -- Assign tmx resource file to component
 \endcode
 
 Note that:
@@ -3127,11 +2951,11 @@ Second, you need to agree that code is released under the MIT license with the c
 
 Third, there are requirements for new code that come from Clockwork striving to be a cohesive, easy-to-use package where features like events, serialization and script bindings integrate tightly. Check all that apply:
 
-- For all code (classes, functions) for which it makes sense, both AngelScript and Lua bindings should exist. Refer to the existing bindings and the scripting documentation for specific conventions, for example the use of properties in AngelScript instead of setters / getters where possible, or Lua bindings providing both functions and properties.
+- For all code (classes, functions) for which it makes sense, AngelScript binding should exist. Refer to the existing bindings and the scripting documentation for specific conventions, for example the use of properties in AngelScript instead of setters / getters where possible.
 
 - %Script bindings do not need to be made for low-level functionality that only makes sense to be called from C++, such as thread handling or byte-level access to GPU resources, or for internal but public functions that are only accessed by subsystems and are not needed when using the classes.
 
-- Unless impossible due to missing bindings (see above) new examples should be implemented in all of C++, AngelScript and Lua.
+- Unless impossible due to missing bindings (see above) new examples should be implemented in all of C++ and AngelScript.
 
 - For new Component or UIElement subclasses, \ref Serialization "attributes" should exist for serialization, network replication and editing. The classes should be possible to create from within the editor; check the component category and supply icons for them as necessary (see the files bin/Data/Textures/EditorIcons.png and bin/Data/UI/EditorIcons.xml.)
 

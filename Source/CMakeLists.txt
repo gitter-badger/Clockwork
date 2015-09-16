@@ -59,11 +59,6 @@ if (CLOCKWORK_ANGELSCRIPT)
     add_subdirectory (ThirdParty/AngelScript)
 endif ()
 
-if (CLOCKWORK_LUA)
-    add_subdirectory (ThirdParty/Lua${JIT})
-    add_subdirectory (ThirdParty/toluapp/src/lib)
-endif ()
-
 if (CLOCKWORK_NETWORK)
     add_subdirectory (ThirdParty/Civetweb)
     add_subdirectory (ThirdParty/kNet)

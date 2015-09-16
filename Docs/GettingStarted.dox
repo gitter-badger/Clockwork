@@ -74,11 +74,6 @@ A number of build options can be defined when invoking the build scripts or when
 |IOS                  |0|Configure project for targeting iOS platform (cmake_generic.sh and cmake-gui only)|
 |CLOCKWORK_64BIT         |*|Enable 64-bit build, on MSVC default to 0, on other compilers the default is set based on the 64-bit capability of the chosen toolchain on host system|
 |CLOCKWORK_ANGELSCRIPT   |1|Enable AngelScript scripting support|
-|CLOCKWORK_LUA           |0|Enable Lua scripting support|
-|CLOCKWORK_LUAJIT        |0|Enable Lua scripting support using LuaJIT (check LuaJIT's CMakeLists.txt for more options)|
-|CLOCKWORK_LUAJIT_AMALG  |0|Enable LuaJIT amalgamated build (LuaJIT only)|
-|CLOCKWORK_SAFE_LUA      |0|Enable Lua C++ wrapper safety checks (Lua/LuaJIT only)|
-|CLOCKWORK_LUA_RAW_SCRIPT_LOADER  |0|Prefer loading raw script files from the file system before falling back on Clockwork resource cache. Useful for debugging (e.g. breakpoints), but less performant (Lua/LuaJIT only)|
 |CLOCKWORK_NETWORK       |1|Enable Networking support|
 |CLOCKWORK_PHYSICS       |1|Enable Physics support|
 |CLOCKWORK_NAVIGATION    |1|Enable Navigation support|
@@ -238,7 +233,7 @@ This section assumes you have already updated, installed, and activated the late
 
 Set the EMSCRIPTEN_ROOT_PATH environment variable or build option to point to the root path of Emscripten cross-compiler tools. The Emscripten sysroot path will be derived from the root path, usually from 'system' subdir relative to the root path. However, you can optionally set the EMSCRIPTEN_SYSROOT environment variable or build option to point to another system root path.
 
-On Windows host, execute cmake_emscripten.bat. On OS X or Linux host, execute cmake_emscripten.sh. Then go to the build tree and execute the 'make' command to start the build as usual. You may want to set the CLOCKWORK_SAMPLES build option to build all the samples. You may also optionally set the CLOCKWORK_LUA build option to enable Lua scripting support. If you encounter "Too many open files" warning when archiving the Clockwork static library, follow by "Unresolved symbol" errors on OS X then you have to increase the soft-limit in your host system before rebuilding the library and all the main targets.
+On Windows host, execute cmake_emscripten.bat. On OS X or Linux host, execute cmake_emscripten.sh. Then go to the build tree and execute the 'make' command to start the build as usual. You may want to set the CLOCKWORK_SAMPLES build option to build all the samples. If you encounter "Too many open files" warning when archiving the Clockwork static library, follow by "Unresolved symbol" errors on OS X then you have to increase the soft-limit in your host system before rebuilding the library and all the main targets.
 
 For example, to double the limit (which normally defaults to 256 on OS X):
 \verbatim
@@ -280,7 +275,7 @@ Clockwork should be built as a shared library if your application consists of mu
 
 If "CLOCKWORK_DOCS" build option is set then a normal build would not only build Clockwork binaries but also Clockwork documentation automatically. If the option is not set then the documentation can still be built by manually invoking 'make doc' command or using its equivalent built-in target in IDE.
 
-The prerequisites are Doxygen and Graphviz. Tools to dump the \ref ScriptAPI "AngelScript API" for the default \ref Script "scripting" subsystem and the \ref LuaScriptAPI "LuaScript API" (when the LuaScript subsystem is also enabled) are being built at the same time when all the native tools are built.
+The prerequisites are Doxygen and Graphviz. Tools to dump the \ref ScriptAPI "AngelScript API" for the default \ref Script "scripting" subsystem.
 
 \section Building_Shaders Compiling Direct3D shaders
 
@@ -335,8 +330,6 @@ ClockworkPlayer <scriptfilename> [options]
 \endverbatim
 
 The scripting language supported by default is AngelScript (http://www.angelcode.com/angelscript); the script files have .as extension and need to be placed under either the bin/Data or bin/CoreData subdirectories so that ClockworkPlayer can find them. An application script is required to have the function void Start(), which will be executed before starting the engine main loop. It is this function's responsibility to initialize the application and to hook up to any necessary \ref Events "events", such as the update that happens every frame.
-
-Lua language support can optionally be built in, see \ref Build_Options.
 
 If ClockworkPlayer is given no command line arguments at all, it will read the command line from the file bin/Data/CommandLine.txt. This is primarily intended for mobile platforms, where the command line can not be entered. By default the NinjaSnowWar example will be run.
 
@@ -405,7 +398,7 @@ The last command resets the launch service database and rebuilds it, so the chan
 
 \page Examples Examples
 
-The examples included with Clockwork consist of two larger applications built in AngelScript, and a set of smaller sample applications provided in both C++, AngelScript and Lua, which demonstrate a specific engine feature.
+The examples included with Clockwork consist of two larger applications built in AngelScript, and a set of smaller sample applications provided in both C++ and AngelScript, which demonstrate a specific engine feature.
 
 \section Examples_NinjaSnowWar NinjaSnowWar
 
@@ -438,7 +431,7 @@ For details on how to use the editor, see \ref EditorInstructions.
 
 The sample applications start from the very simple (a "Hello World" program) and progress to demonstrate more complex engine features. The code is heavily commented and should be easy to follow for learning. The applications display on-screen instructions when run.
 
-The AngelScript and Lua versions reside in the bin/Data/Scripts and bin/Data/LuaScripts directories. %Batch files to run each of them are not provided due to their large amount: instead run the player application with the script file name as the parameter, for example ClockworkPlayer Scripts/01_HelloWorld.as
+The AngelScript reside in the bin/Data/Scripts directory. %Batch files to run each of them are not provided due to their large amount: instead run the player application with the script file name as the parameter, for example ClockworkPlayer Scripts/01_HelloWorld.as
 
 The C++ versions need to be explicitly enabled in the build with the CMake option -DCLOCKWORK_SAMPLES=1. When enabled, the executables will be produced into the bin directory and can be run from there. Their source code is in the Source/Samples directory.
 
@@ -611,8 +604,8 @@ Use the 'build_tree' option to set the path to the desired build tree location. 
 
 \code
 export native_build_tree=~/custom-native-Build rpi_build_tree=~/custom-rpi-Build
-rake cmake CLOCKWORK_LUAJIT=1 && rake make
-rake cmake rpi CLOCKWORK_LUAJIT=1 && rake make rpi
+rake cmake && rake make
+rake cmake rpi && rake make rpi
 \endcode
 
 You can in fact set and export any other key/value pair build options as environment variables to avoid repeating yourself when invoking any of our Rake tasks.
@@ -663,7 +656,6 @@ The third-party libraries used by Clockwork and their purposes are:
 - GLEW: OpenGL extensions handling
 - kNet: UDP networking
 - libcpuid: CPU properties detection
-- Lua, LuaJIT, tolua+: Lua scripting implementation and bindings
 - LZ4: data compression for package files
 - MojoShader: HLSL shader reflection after compiling
 - Open Asset Import Library: reading various 3D file formats

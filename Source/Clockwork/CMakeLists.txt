@@ -53,48 +53,6 @@ add_custom_command (OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/librevision.h
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     COMMENT "Generating GIT revision number (tag + last commit SHA-1)")
 
-if (CLOCKWORK_LUA)
-    # The host tool must be built natively
-    if (CMAKE_CROSSCOMPILING OR IOS)
-        # When cross-compiling, build the host tool as external project
-        include (ExternalProject)
-        if (IOS)
-            # For iOS target, ensure the host environment is cleared first; Also workaround a known CMake/Xcode generator bug which prevents it from installing binaries correctly
-            set (IOS_FIX CMAKE_COMMAND /usr/bin/env -i PATH=$ENV{PATH} ${CMAKE_COMMAND} BUILD_COMMAND bash -c "sed -i '' 's/EFFECTIVE_PLATFORM_NAME//g' CMakeScripts/install_postBuildPhase.make*")
-        endif ()
-        ExternalProject_Add (tolua++
-            SOURCE_DIR ${CMAKE_SOURCE_DIR}/Source/ThirdParty/toluapp/src/bin
-            CMAKE_ARGS -DCLOCKWORK_NOABI=1 -DCLOCKWORK_LUAJIT=${CLOCKWORK_LUAJIT} -DDEST_RUNTIME_DIR=${CMAKE_BINARY_DIR}/bin/tool -DBAKED_CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR} ${IOS_FIX})
-    else ()
-        # Otherwise, build it internally as per normal
-        add_subdirectory (../ThirdParty/toluapp/src/bin ../ThirdParty/toluapp/src/bin)
-    endif ()
-
-    # Use the host tool to generate source files for tolua++ API binding
-    file (MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/LuaScript/generated)
-    file (GLOB API_PKG_FILES LuaScript/pkgs/*.pkg)
-    foreach (DIR Navigation Network Database Physics Clockwork2D)
-        string (TOUPPER CLOCKWORK_${DIR} OPT)
-        if (NOT ${OPT})
-            list (REMOVE_ITEM API_PKG_FILES ${CMAKE_CURRENT_SOURCE_DIR}/LuaScript/pkgs/${DIR}LuaAPI.pkg)
-        endif ()
-    endforeach ()
-    foreach (API_PKG_FILE ${API_PKG_FILES})
-        get_filename_component (NAME ${API_PKG_FILE} NAME)
-        string (REGEX REPLACE LuaAPI\\.pkg$ "" DIR ${NAME})
-        set (GEN_CPP_FILE LuaScript/generated/${DIR}LuaAPI.cpp)
-        list (APPEND GEN_CPP_FILES ${GEN_CPP_FILE})
-        file (GLOB PKG_FILES LuaScript/pkgs/${DIR}/*.pkg)
-        add_custom_command (OUTPUT ${GEN_CPP_FILE}
-            COMMAND ${CMAKE_BINARY_DIR}/bin/tool/tolua++ -E ${CMAKE_PROJECT_NAME} -L ToCppHook.lua -o ${CMAKE_CURRENT_BINARY_DIR}/${GEN_CPP_FILE} ${NAME}
-            DEPENDS tolua++ ${API_PKG_FILE} ${PKG_FILES} LuaScript/pkgs/ToCppHook.lua
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/LuaScript/pkgs
-            COMMENT "Generating tolua++ API binding on the fly for ${DIR}")
-    endforeach ()
-else ()
-    list (APPEND EXCLUDED_SOURCE_DIRS LuaScript)
-endif ()
-
 # Generate platform specific export header file
 if (MSVC)
     set (PRE_EXPORT_HEADER "\n#pragma warning(disable: 4251)\n#pragma warning(disable: 4275)\n")
@@ -181,11 +139,6 @@ endif ()
 if (CLOCKWORK_NAVIGATION)
     # DetourTileCache and DetourCrowd libraries depend on Detour's include dir to be added in the header search path
     list (APPEND INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${DEST_INCLUDE_DIR}/ThirdParty/Detour)
-endif ()
-if (CLOCKWORK_LUA)
-    # Lua/LuaJIT library depends on its own include dir to be added in the header search path
-    # This is more practical than patching its header files in many places to make them work with relative path
-    list (APPEND INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${DEST_INCLUDE_DIR}/ThirdParty/Lua${JIT})
 endif ()
 
 # Setup library output path
@@ -369,10 +322,6 @@ if (CLOCKWORK_PHYSICS)
     # Bullet library depends on its own include dir to be added in the header search path
     # This is more practical than patching its header files in many places to make them work with relative path
     set (ENGINE_INCLUDE_DIRS "${ENGINE_INCLUDE_DIRS} ${DASH}I\"\${includedir}/${PATH_SUFFIX}/ThirdParty/Bullet\"")
-endif ()
-if (CLOCKWORK_LUA)
-    # ditto for Lua/LuaJIT
-    set (ENGINE_INCLUDE_DIRS "${ENGINE_INCLUDE_DIRS} ${DASH}I\"\${includedir}/${PATH_SUFFIX}/ThirdParty/Lua${JIT}\"")
 endif ()
 # todo: Reevaluate the command below when the CMake minimum required version is set to 2.8.12 (and remove only when the deprected add_compiler_export_flags() is not used anymore)
 string (REGEX REPLACE " -fvisibility[^ ]+" "" CLEANED_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})   # Remove visibility compiler options that are only used for building the library

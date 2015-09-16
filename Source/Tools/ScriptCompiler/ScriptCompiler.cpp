@@ -30,10 +30,6 @@
 #include <Clockwork/Script/Script.h>
 #include <Clockwork/Script/ScriptFile.h>
 
-#ifdef CLOCKWORK_LUA
-#include <Clockwork/LuaScript/LuaScript.h>
-#endif
-
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -80,7 +76,7 @@ int main(int argc, char** argv)
     SharedPtr<Engine> engine(new Engine(context));
     context->RegisterSubsystem(new Script(context));
 
-    // In API dumping mode initialize the engine and instantiate LuaScript system if available so that we
+    // In API dumping mode initialize the engine so that we
     // can dump attributes from as many classes as possible
     if (dumpApiMode)
     {
@@ -91,9 +87,6 @@ int main(int argc, char** argv)
         engineParameters["ResourcePaths"] = String::EMPTY;
         engineParameters["AutoloadPaths"] = String::EMPTY;
         engine->Initialize(engineParameters);
-    #ifdef CLOCKWORK_LUA
-        context->RegisterSubsystem(new LuaScript(context));
-    #endif
     }
 
     Log* log = context->GetSubsystem<Log>();

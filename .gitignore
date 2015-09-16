@@ -14,7 +14,6 @@ generated/
 
 # Output files
 /Source/**/*.a
-/Source/ThirdParty/LuaJIT/src/host/buildvm_arch.h
 /Source/Clockwork/Clockwork.h
 /Source/Clockwork/Clockwork.pc
 /Source/Clockwork/librevision.h
@@ -28,9 +27,6 @@ generated/
 
 # Compiled AngelScript
 *.asc
-
-# Compiled Lua script
-*.luc
 
 # Generated documentation
 /Docs/html/

@@ -43,21 +43,21 @@ task :scaffolding do
   puts "You may need to first set 'CLOCKWORK_HOME' environment variable or use 'CLOCKWORK_HOME' build option to point to your Clockwork build tree or your custom Clockwork SDK installation location."
   puts "Please see http://clockwork.github.io/documentation/HEAD/_using_library.html for more detail. For example:\n\n"
   if ENV['OS']
-    puts "set \"CLOCKWORK_HOME=/path/to/Clockwork/build-tree/or/SDK\"\ncd #{abs_path}\nrake cmake CLOCKWORK_LUAJIT=1\nrake make\n\n"
-    puts "Alternatively you can call one of the batch files directly, such as, cmake_generic.bat ../native-Build -DCLOCKWORK_LUAJIT=1 and build using VS IDE"
+    puts "set \"CLOCKWORK_HOME=/path/to/Clockwork/build-tree/or/SDK\"\ncd #{abs_path}\nrake cmake\nrake make\n\n"
+    puts "Alternatively you can call one of the batch files directly, such as, cmake_generic.bat ../native-Build and build using VS IDE"
   else
-    puts "export CLOCKWORK_HOME=/path/to/Clockwork/build-tree/or/SDK\ncd #{abs_path}\nrake cmake CLOCKWORK_LUAJIT=1\nrake make\n\n"
-    puts "Alternatively you can call one of the shell scripts directly, such as, ./cmake_generic.sh ../native-Build -DCLOCKWORK_LUAJIT=1 && cd ../native-Build && make"
+    puts "export CLOCKWORK_HOME=/path/to/Clockwork/build-tree/or/SDK\ncd #{abs_path}\nrake cmake\nrake make\n\n"
+    puts "Alternatively you can call one of the shell scripts directly, such as, ./cmake_generic.sh ../native-Build && cd ../native-Build && make"
   end
   puts "to get a similar result as the last two rake tasks above.\n\n"
 end
 
 # Usage: rake cmake [<generator>] [<platform>] [<option>=<value> [<option>=<value>]] [[<platform>_]build_tree=/path/to/build-tree] [fix_scm]
-# e.g.: rake cmake clean android; or rake cmake android CLOCKWORK_LIB_TYPE=SHARED; or rake cmake ios CLOCKWORK_LUA=1 build_tree=~/ios-Build
+# e.g.: rake cmake clean android; or rake cmake android CLOCKWORK_LIB_TYPE=SHARED; or rake cmake ios build_tree=~/ios-Build
 #
 # To avoid repeating the customized build tree locations, you can set and export them as environment variables.
 # e.g.: export native_build_tree=~/custom-native-Build android_build_tree=~/custom-android-Build mingw_build_tree=~/custom-mingw-Build rpi_build_tree=~/custom-rpi-Build
-#       rake cmake rpi CLOCKWORK_LUAJIT=1 CLOCKWORK_LUAJIT_AMALG=1 && rake make rpi
+#       rake cmake rpi && rake make rpi
 #       The RPI build tree will be generated in the ~/custom-rpi-Build and then build from there
 desc 'Invoke one of the build scripts with the build tree location predetermined based on the target platform'
 task :cmake do
@@ -480,9 +480,6 @@ setup_main_executable ()
 if (CLOCKWORK_ANGELSCRIPT)
     setup_test (NAME ExternalLibAS OPTIONS Scripts/12_PhysicsStressTest.as -w)
 endif ()
-if (CLOCKWORK_LUA)
-    setup_test (NAME ExternalLibLua OPTIONS LuaScripts/12_PhysicsStressTest.lua -w)
-endif ()
 EOF
   # TODO: Rewrite in pure Ruby when it supports symlink creation on Windows platform
   if ENV['OS']
@@ -493,18 +490,9 @@ EOF
 end
 
 def makefile_ci
-  if (ENV['WINDOWS'] && ENV['CI']) || (ENV['ANDROID'] && ENV['ABI'] == 'arm64-v8a') || ENV['EMSCRIPTEN']
-    # LuaJIT on MinGW build is not possible on Ubuntu 12.04 LTS as its GCC cross-compiler version is too old
-    # The upstream LuaJIT library does not support Android arm64-v8a ABI at the moment
-    # LuaJIT on Emscripten is not possible
-    # Fallback to use Lua library instead
-    jit = ''
-    amalg = ''
-  else
-    jit = 'JIT'
-    amalg = '-DCLOCKWORK_LUAJIT_AMALG=1'
-  end
-  system "./cmake_generic.sh ../Build #{$build_options} -DCLOCKWORK_DATABASE_SQLITE=1 -DCLOCKWORK_LUA#{jit}=1 #{amalg} -DCLOCKWORK_SAMPLES=1 -DCLOCKWORK_TOOLS=1 -DCLOCKWORK_EXTRAS=1 -DCLOCKWORK_TESTING=#{$testing} -DCMAKE_BUILD_TYPE=#{$configuration}" or abort 'Failed to configure Clockwork library build'
+  jit = ''
+  amalg = ''  
+  system "./cmake_generic.sh ../Build #{$build_options} -DCLOCKWORK_DATABASE_SQLITE=1 -DCLOCKWORK_SAMPLES=1 -DCLOCKWORK_TOOLS=1 -DCLOCKWORK_EXTRAS=1 -DCLOCKWORK_TESTING=#{$testing} -DCMAKE_BUILD_TYPE=#{$configuration}" or abort 'Failed to configure Clockwork library build'
   if ENV['AVD'] && !ENV['PACKAGE_UPLOAD']   # Skip APK test run when packaging
     android_prepare_device ENV['API'], ENV['ABI'], ENV['AVD'] or abort 'Failed to prepare Android (virtual) device for test run'
   end
@@ -514,13 +502,13 @@ def makefile_ci
   unless ENV['CI'] && ENV['EMSCRIPTEN'] && ENV['PACKAGE_UPLOAD']  # For Emscripten, skip scaffolding test when packaging
     # Create a new project on the fly that uses newly built Clockwork library in the build tree
     scaffolding "../Build/generated/UsingBuildTree"
-    system "cd ../Build/generated/UsingBuildTree && echo '\nExternal project referencing Clockwork library in its build tree' && ./cmake_generic.sh . #{$build_options} -DCLOCKWORK_HOME=../.. -DCLOCKWORK_LUA#{jit}=1 -DCLOCKWORK_TESTING=#{$testing} -DCMAKE_BUILD_TYPE=#{$configuration} && make -j$NUMJOBS #{test}" or abort 'Failed to configure/build/test temporary project using Clockwork as external library'
+    system "cd ../Build/generated/UsingBuildTree && echo '\nExternal project referencing Clockwork library in its build tree' && ./cmake_generic.sh . #{$build_options} -DCLOCKWORK_HOME=../.. -DCLOCKWORK_TESTING=#{$testing} -DCMAKE_BUILD_TYPE=#{$configuration} && make -j$NUMJOBS #{test}" or abort 'Failed to configure/build/test temporary project using Clockwork as external library'
     ENV['DESTDIR'] = ENV['HOME'] || Dir.home
     puts "\nInstalling Clockwork SDK to #{ENV['DESTDIR']}/usr/local...\n"  # The default CMAKE_INSTALL_PREFIX is /usr/local
     system 'cd ../Build && make -j$NUMJOBS install >/dev/null' or abort 'Failed to install Clockwork SDK'
     # Create a new project on the fly that uses newly installed Clockwork SDK
     scaffolding "../Build/generated/UsingSDK"
-    system "export CLOCKWORK_HOME=~/usr/local && cd ../Build/generated/UsingSDK && echo '\nExternal project referencing Clockwork SDK' && ./cmake_generic.sh . #{$build_options} -DCLOCKWORK_LUA#{jit}=1 -DCLOCKWORK_TESTING=#{$testing} -DCMAKE_BUILD_TYPE=#{$configuration} && make -j$NUMJOBS #{test}" or abort 'Failed to configure/build/test temporary project using Clockwork as external library'
+    system "export CLOCKWORK_HOME=~/usr/local && cd ../Build/generated/UsingSDK && echo '\nExternal project referencing Clockwork SDK' && ./cmake_generic.sh . #{$build_options} -DCLOCKWORK_TESTING=#{$testing} -DCMAKE_BUILD_TYPE=#{$configuration} && make -j$NUMJOBS #{test}" or abort 'Failed to configure/build/test temporary project using Clockwork as external library'
   end
   # Make, deploy, and test run Android APK in an Android (virtual) device
   if ENV['AVD'] && !ENV['PACKAGE_UPLOAD']
@@ -646,28 +634,25 @@ def wait_for_block comment = '', retries = -1, retry_interval = 60, exit_code_sy
 end
 
 def xcode_ci
+  jit = ''
+  amalg = '' 
   if ENV['IOS']
-    # IOS platform does not support LuaJIT
-    jit = ''
-    amalg = ''
     deployment_target = "-DIPHONEOS_DEPLOYMENT_TARGET=#{ENV['DEPLOYMENT_TARGET']}"
   else
-    jit = 'JIT'
-    amalg = '-DCLOCKWORK_LUAJIT_AMALG=1'
     deployment_target = "-DCMAKE_OSX_DEPLOYMENT_TARGET=#{ENV['DEPLOYMENT_TARGET']}"
   end
-  system "./cmake_macosx.sh ../Build -DIOS=$IOS #{deployment_target} #{$build_options} -DCLOCKWORK_DATABASE_SQLITE=1 -DCLOCKWORK_LUA#{jit}=1 #{amalg} -DCLOCKWORK_SAMPLES=1 -DCLOCKWORK_TOOLS=1 -DCLOCKWORK_EXTRAS=1 -DCLOCKWORK_TESTING=#{$testing}" or abort 'Failed to configure Clockwork library build'
+  system "./cmake_macosx.sh ../Build -DIOS=$IOS #{deployment_target} #{$build_options} -DCLOCKWORK_DATABASE_SQLITE=1 -DCLOCKWORK_SAMPLES=1 -DCLOCKWORK_TOOLS=1 -DCLOCKWORK_EXTRAS=1 -DCLOCKWORK_TESTING=#{$testing}" or abort 'Failed to configure Clockwork library build'
   xcode_build(ENV['IOS'], '../Build/Clockwork.xcodeproj') or abort 'Failed to build or test Clockwork library'
   unless ENV['CI'] && ENV['IOS'] && ENV['PACKAGE_UPLOAD']   # Skip scaffolding test when packaging for iOS
     # Create a new project on the fly that uses newly built Clockwork library in the build tree
     scaffolding "../Build/generated/UsingBuildTree"
-    system "cd ../Build/generated/UsingBuildTree && echo '\nExternal project referencing Clockwork library in its build tree' && ./cmake_macosx.sh . -DIOS=$IOS #{deployment_target} #{$build_options} -DCLOCKWORK_HOME=../.. -DCLOCKWORK_LUA#{jit}=1 -DCLOCKWORK_TESTING=#{$testing}" or abort 'Failed to configure temporary project using Clockwork as external library'
+    system "cd ../Build/generated/UsingBuildTree && echo '\nExternal project referencing Clockwork library in its build tree' && ./cmake_macosx.sh . -DIOS=$IOS #{deployment_target} #{$build_options} -DCLOCKWORK_HOME=../.. -DCLOCKWORK_TESTING=#{$testing}" or abort 'Failed to configure temporary project using Clockwork as external library'
     xcode_build(ENV['IOS'], '../Build/generated/UsingBuildTree/Scaffolding.xcodeproj') or abort 'Failed to build/test temporary project using Clockwork as external library'
     ENV['DESTDIR'] = ENV['HOME'] || Dir.home
     wait_for_block("\nInstalling Clockwork SDK to #{ENV['DESTDIR']}/usr/local...") { Thread.current[:exit_code] = xcode_build(ENV['IOS'], '../Build/Clockwork.xcodeproj', 'install', '>/dev/null') } or abort 'Failed to install Clockwork SDK'
     # Create a new project on the fly that uses newly installed Clockwork SDK
     scaffolding "../Build/generated/UsingSDK"
-    system "export CLOCKWORK_HOME=~/usr/local && cd ../Build/generated/UsingSDK && echo '\nExternal project referencing Clockwork SDK' && ./cmake_macosx.sh . -DIOS=$IOS #{deployment_target} #{$build_options} -DCLOCKWORK_LUA#{jit}=1 -DCLOCKWORK_TESTING=#{$testing}" or abort 'Failed to configure temporary project using Clockwork as external library'
+    system "export CLOCKWORK_HOME=~/usr/local && cd ../Build/generated/UsingSDK && echo '\nExternal project referencing Clockwork SDK' && ./cmake_macosx.sh . -DIOS=$IOS #{deployment_target} #{$build_options} -DCLOCKWORK_TESTING=#{$testing}" or abort 'Failed to configure temporary project using Clockwork as external library'
     xcode_build(ENV['IOS'], '../Build/generated/UsingSDK/Scaffolding.xcodeproj') or abort 'Failed to build/test temporary project using Clockwork as external library'
   end
 end
