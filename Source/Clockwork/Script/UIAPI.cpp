@@ -39,6 +39,7 @@
 #include "../UI/ToolTip.h"
 #include "../UI/UI.h"
 #include "../UI/View3D.h"
+#include"../UI/TabedWindow.h"
 
 #include "../DebugNew.h"
 
@@ -536,6 +537,12 @@ static void RegisterWindow(asIScriptEngine* engine)
 {
     RegisterWindow<Window>(engine, "Window");
 }
+
+
+//static void RegisterTabedWindow(asIScriptEngine* engine)
+//{
+//	RegisterTabedWindow<TabedWindow>(engine, "tabedWindow");
+//}
 
 static void RegisterView3D(asIScriptEngine* engine)
 {

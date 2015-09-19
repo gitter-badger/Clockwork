@@ -1215,6 +1215,37 @@ template <class T> void RegisterWindow(asIScriptEngine* engine, const char* clas
     engine->RegisterObjectMethod(className, "void set_fixedHeightResizing(bool)", asMETHOD(T, SetFixedHeightResizing), asCALL_THISCALL);
     engine->RegisterObjectMethod(className, "bool get_fixedHeightResizing() const", asMETHOD(T, GetFixedHeightResizing), asCALL_THISCALL);
 }
+//
+///// Template function for registering a class derived from Tabed Window.
+//template <class T> void RegisterTabedWindow(asIScriptEngine* engine, const char* className)
+//{
+//	RegisterUIElement<T>(engine, className);
+//	engine->RegisterObjectMethod(className, "unsigned AddTab(String,  UIElement@+)", asMETHOD(T, AddTab), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void RemoveTab(unsigned)", asMETHOD(T, RemoveTab), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void RemoveTab(String)", asMETHOD(T, RemoveTab), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "bool set_activeTab(String)", asMETHOD(T, RemoveTab), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "bool set_activeTab(String)", asMETHOD(T, RemoveTab), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void set_movable(bool)", asMETHOD(T, SetMovable), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "bool get_movable() const", asMETHOD(T, IsMovable), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void set_resizable(bool)", asMETHOD(T, SetResizable), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "bool get_resizable() const", asMETHOD(T, IsResizable), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void set_resizeBorder(const IntRect&in)", asMETHODPR(T, SetResizeBorder, (const IntRect&), void), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "const IntRect& get_resizeBorder() const", asMETHOD(T, GetResizeBorder), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void set_modal(bool)", asMETHOD(T, SetModal), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "bool get_modal() const", asMETHOD(T, IsModal), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void set_modalShadeColor(const Color&in)", asMETHOD(T, SetModalShadeColor), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "const Color& get_modalShadeColor() const", asMETHOD(T, GetModalShadeColor), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void set_modalFrameColor(const Color&in)", asMETHOD(T, SetModalFrameColor), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "const Color& get_modalFrameColor() const", asMETHOD(T, GetModalFrameColor), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void set_modalFrameSize(const IntVector2&in)", asMETHOD(T, SetModalFrameSize), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "const IntVector2& get_modalFrameSize() const", asMETHOD(T, GetModalFrameSize), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void set_modalAutoDismiss(bool)", asMETHOD(T, SetModalAutoDismiss), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "bool get_modalAutoDismiss() const", asMETHOD(T, GetModalAutoDismiss), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void set_fixedWidthResizing(bool)", asMETHOD(T, SetFixedWidthResizing), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "bool get_fixedWidthResizing() const", asMETHOD(T, GetFixedWidthResizing), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "void set_fixedHeightResizing(bool)", asMETHOD(T, SetFixedHeightResizing), asCALL_THISCALL);
+//	engine->RegisterObjectMethod(className, "bool get_fixedHeightResizing() const", asMETHOD(T, GetFixedHeightResizing), asCALL_THISCALL);
+//}
 
 /// Template function for registering a class derived from Button.
 template <class T> void RegisterButton(asIScriptEngine* engine, const char* className)
