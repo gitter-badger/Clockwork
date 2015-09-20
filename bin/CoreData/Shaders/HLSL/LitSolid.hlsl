@@ -226,13 +226,17 @@ void PS(
                 #endif
                 
                 const float metalness = roughMetalSrc.g;
+				// Apply user configurable metalness control
+				metalness *= cMetalicControl.y > 0 ? cMetalicControl.y : 1.0;
+				metalness += cMetalicControl.x;
+
                 float3 specColor = max(diffColor.rgb * metalness, float3(0.08, 0.08, 0.08));
                 specColor *= cMatSpecColor.rgb;
                 diffColor.rgb = diffColor.rgb - diffColor.rgb * metalness; // Modulate down the diffuse
             #endif
         #else
             float roughness = 0.0;
-            float metalness = 0.0;
+            float metalness = cMetalicControl.x;
             
             float3 specColor = max(diffColor.rgb * metalness, float3(0.08, 0.08, 0.08));
             specColor *= cMatSpecColor.rgb;
@@ -289,8 +293,6 @@ void PS(
             float3 cameraDir = normalize(cCameraPosPS - iWorldPos.xyz);
             
             const float ndl = saturate(dot(normal, lightDir));
-            const float3 diffuseTerm = ndl * lightColor * diff * diffColor.rgb;
-            finalColor = float4(diffuseTerm, 1);
             
             if (ndl > 0) // Don't compute
             {
@@ -299,7 +301,10 @@ void PS(
                 const float ndh = saturate(dot(normal, Hn));
                 const float ndv = saturate(dot(normal, cameraDir));
                 
-                const float3 fresnelTerm = SchlickFresnel(specColor, vdh);
+				const float3 diffuseTerm = Diffuse(albedoInput.rgb, roughness, ndv, ndl, vdh) * lightColor * diff;
+				finalColor = float4(diffuseTerm, 1);
+
+				const float3 fresnelTerm = SchlickFresnel(specColor, vdh);
                 const float distTerm = GGXDistribution(ndh, roughness);
                 const float visTerm = SchlickVisibility(ndl, ndv, roughness);
                 

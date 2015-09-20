@@ -307,7 +307,7 @@ bool FileSystem::SetCurrentDir(const String& pathName)
         LOGERROR("Failed to change directory to " + pathName);
         return false;
     }
-#endif
+#endif 
 
     return true;
 }
@@ -319,6 +319,14 @@ bool FileSystem::CreateDir(const String& pathName)
         LOGERROR("Access denied to " + pathName);
         return false;
     }
+
+	// Create each of the parents if necessary
+	String parentPath = GetParentPath(pathName);
+	if (parentPath.Length() > 1 && !DirExists(parentPath))
+	{
+		if (!CreateDir(parentPath))
+		 return false;	
+	}
 
 #ifdef WIN32
     bool success = (CreateDirectoryW(GetWideNativePath(RemoveTrailingSlash(pathName)).CString(), 0) == TRUE) ||

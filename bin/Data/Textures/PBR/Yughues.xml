@@ -4,13 +4,14 @@
 	<texture unit="diffuse" name="Textures/PBR/MetalPlates_Diffuse.tga" />
 	<texture unit="normal" name="Textures/PBR/MetalPlates_Normal_07.tga" />
 	<texture unit="specular" name="Textures/PBR/Yughues_metallic.tga" />
-	<parameter name="UOffset" value="4 0 0 0" />
-	<parameter name="VOffset" value="0 4 0 0" />
+	<parameter name="UOffset" value="30 0 0 0" />
+	<parameter name="VOffset" value="0 30 0 0" />
 	<parameter name="MatDiffColor" value="1 1 1 1" />
 	<parameter name="MatEmissiveColor" value="0 0 0" />
 	<parameter name="MatEnvMapColor" value="1 1 1" />
 	<parameter name="MatSpecColor" value="1 1 1 1" />
-	<parameter name="RoughnessControl" value="0.1 0" />
+	<parameter name="RoughnessControl" value="0.7 0" />
+	<parameter name="MetalicControl" value="0.2 0" />
 	<cull value="ccw" />
 	<shadowcull value="ccw" />
 	<fill value="solid" />

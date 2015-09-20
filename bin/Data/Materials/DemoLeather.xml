@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<material>
+	<technique name="Techniques/DiffNormalSpec.xml" quality="0" loddistance="0" />
+	<texture unit="diffuse" name="Textures/PBR/padded_wall_baseColor.tga" />
+	<texture unit="normal" name="Textures/PBR/padded_wall_normal.tga" />
+	<texture unit="specular" name="Textures/PBR/padded_wall_diffuse_roughness.png" />
+	<parameter name="UOffset" value="4 0 0 0" />
+	<parameter name="VOffset" value="0 4 0 0" />
+	<parameter name="MatDiffColor" value="1 1 1 1" />
+	<parameter name="MatEmissiveColor" value="0 0 0" />
+	<parameter name="MatEnvMapColor" value="1 1 1" />
+	<parameter name="MatSpecColor" value="1 1 1 1" />
+	<parameter name="RoughnessControl" value="0.44 0" />
+	<parameter name="MetalicControl" value="0 0" />
+	<cull value="ccw" />
+	<shadowcull value="ccw" />
+	<fill value="solid" />
+	<depthbias constant="0" slopescaled="0" />
+	<renderorder value="128" />
+</material>

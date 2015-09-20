@@ -132,8 +132,12 @@ void PS(
         const float distTerm = Distribution(roughness, ndh);
         const float visTerm = GeometricVisibility(roughness, ndv, ndl, vdh);
         
-        oColor.a = 1;
-        oColor.rgb = LinearFromSRGB((diffuseTerm + distTerm * visTerm * fresnelTerm * lightColor) * diff);
+        oColor.a = 0;
+		#ifdef SPECULAR
+			oColor.rgb = LinearFromSRGB((diffuseTerm + distTerm * visTerm * fresnelTerm * lightColor) * diff);
+		#else
+			oColor.rgb = LinearFromSRGB(diffuseTerm);
+		#endif
     #else
         #ifdef SPECULAR
             float spec = GetSpecular(normal, -worldPos, lightDir, normalInput.a * 255.0);

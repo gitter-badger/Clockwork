@@ -121,33 +121,46 @@ void PS()
     
     // Get material specular albedo
     #ifdef PBR
-        #ifdef SPECMAP
-            vec4 specSample = texture2D(sSpecMap, vTexCoord.xy);
-            vec3 specColor = specSample.rgb;
-            specColor *= cMatSpecColor.rgb; // mix in externally defined color
-            #ifdef ROUGHNESS
-                float roughness = max(0.004, specSample.a);
-            #else
-                float roughness = max(0.004, 1.0 - specSample.a);
-                roughness *= roughness;
-            #endif
-        #else
-            vec4 roughMetalSrc = texture2D(sSpecMap, vTexCoord.xy);
-            float metalness = roughMetalSrc.g;
-            #ifdef ROUGHNESS
-                float roughness = max(0.004, roughMetalSrc.r);
-            #else
-                float roughness = max(0.004, 1.0 - roughMetalSrc.r);
-                roughness *= roughness;
-            #endif
+		#ifdef PROPMAP
+			#ifdef SPECMAP
+				vec4 specSample = texture2D(sSpecMap, vTexCoord.xy);
+				vec3 specColor = specSample.rgb;
+				specColor *= cMatSpecColor.rgb; // mix in externally defined color
+				#ifdef ROUGHNESS
+					float roughness = max(0.004, specSample.a);
+				#else
+					float roughness = max(0.004, 1.0 - specSample.a);
+					roughness *= roughness;
+				#endif
+			#else
+				vec4 roughMetalSrc = texture2D(sSpecMap, vTexCoord.xy);
+				float metalness = roughMetalSrc.g;
+				// Apply user configurable metalness control
+				metalness *= cMetalicControl.y > 0 ? cMetalicControl.y : 1.0;
+				metalness += cMetalicControl.x;
 
+				#ifdef ROUGHNESS
+					float roughness = max(0.004, roughMetalSrc.r);
+				#else
+					float roughness = max(0.004, 1.0 - roughMetalSrc.r);
+					roughness *= roughness;
+				#endif
+
+				vec3 specColor = max(diffColor.rgb * metalness, vec3(0.08, 0.08, 0.08));
+				specColor *= cMatSpecColor.rgb;
+				diffColor.rgb = diffColor.rgb - diffColor.rgb * metalness; // Modulate down the diffuse
+			#endif
+		#else
+			float roughness = 0.0;
+            float metalness = cMetalicControl.x;
+            
             vec3 specColor = max(diffColor.rgb * metalness, vec3(0.08, 0.08, 0.08));
             specColor *= cMatSpecColor.rgb;
             diffColor.rgb = diffColor.rgb - diffColor.rgb * metalness; // Modulate down the diffuse
-        #endif
+		#endif
         
         // Apply user configurable roughness control
-        roughness *= cRoughnessControl.y > 0 ? cRoughnessControl.y : 1.0;
+         *= cRoughnessControl.y > 0 ? cRoughnessControl.y : 1.0;
         roughness += cRoughnessControl.x;
         
     #elif defined(SPECMAP)

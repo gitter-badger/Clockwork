@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<cubemap>
+    <face name="Textures/Cubemaps/97_PosX.png" />
+    <face name="Textures/Cubemaps/97_NegX.png" />
+    <face name="Textures/Cubemaps/97_PosY.png" />
+    <face name="Textures/Cubemaps/97_NegY.png" />
+    <face name="Textures/Cubemaps/97_PosZ.png" />
+    <face name="Textures/Cubemaps/97_NegZ.png" />
+</cubemap>

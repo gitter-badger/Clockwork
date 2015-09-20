@@ -20,7 +20,6 @@
 // THE SOFTWARE.
 //
 
-#include "../Clockwork.h"
 #include "../Core/Context.h"
 #include "TabedWindow.h"
 #include "Cursor.h"
