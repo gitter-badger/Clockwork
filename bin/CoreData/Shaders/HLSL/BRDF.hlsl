@@ -8,7 +8,7 @@
 // 0: Lambert
 // 1: Burley
 // 2: Oren-Nayar
-#define PHYSICAL_DIFFUSE    1
+#define PHYSICAL_DIFFUSE    0
 
 // Microfacet distribution function
 // 0: Blinn

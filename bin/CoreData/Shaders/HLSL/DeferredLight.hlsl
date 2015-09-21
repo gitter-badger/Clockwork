@@ -79,8 +79,8 @@ void PS(
     #endif
     
     #ifdef PBR
-        float3 normal = DecodeGBufferNormal(normalInput.xy, iFarRay);
-        const float roughness = normalInput.b;
+        float3 normal = normalize(normalInput.rgb);//DecodeGBufferNormal(normalInput.xy, worldPos);
+        const float roughness = normalInput.w;
         #ifdef DIRLIGHT
             float3 specColor = 0;
             float3 albedoColor = 0;
@@ -132,12 +132,8 @@ void PS(
         const float distTerm = Distribution(roughness, ndh);
         const float visTerm = GeometricVisibility(roughness, ndv, ndl, vdh);
         
-        oColor.a = 0;
-		#ifdef SPECULAR
-			oColor.rgb = LinearFromSRGB((diffuseTerm + distTerm * visTerm * fresnelTerm * lightColor) * diff);
-		#else
-			oColor.rgb = LinearFromSRGB(diffuseTerm);
-		#endif
+        oColor.a = 1;
+        oColor.rgb = LinearFromSRGB((diffuseTerm + distTerm * visTerm * fresnelTerm * lightColor) * diff);
     #else
         #ifdef SPECULAR
             float spec = GetSpecular(normal, -worldPos, lightDir, normalInput.a * 255.0);

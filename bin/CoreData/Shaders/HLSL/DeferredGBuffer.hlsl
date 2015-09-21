@@ -34,7 +34,7 @@
     ///     viewDir: viewing direction vector of the camera
     float2 EncodeNormal(in float3 normal, in float3 viewDir)
     {    
-        float2 enc = normalize(normal.xy) * sqrt(-normal.z * 0.5 + 0.5);
+		float2 enc = normalize(normal.xy) * sqrt(-normal.z * 0.5 + 0.5);
         return enc * 0.5 + 0.5;
     }
    
@@ -43,8 +43,8 @@
     ///     viewDir: viewing direction vector of the camera
     float3 DecodeGBufferNormal(in float2 screenNormal, in float3 viewDir)
     {            
-        float4 nn = float4(screenNormal, 0, 0) * float4(2,2,0,0) + float4(-1,-1,1,-1);
-        float l = dot(nn.xyz,-nn.xyw);
+		float4 nn = float4(screenNormal, 0, 0) * float4(2, 2, 0, 0) + float4(-1, -1, 1, -1);
+		float l = dot(nn.xyz, -nn.xyw);
         nn.z = l;
         nn.xy *= sqrt(l);
         return normalize(nn.xyz * 2 + float3(0,0,-1));
@@ -60,9 +60,9 @@
     void WriteGBuffer(out float4 oAlbedo, out float4 oNormal, out float4 oDepth, in float3 viewDir, in float2 screenPos, in float4 albedo, in float3 specular, in float3 wsNormals, in float depth, in float roughness)
     {        
         // 2 channel normal
-        oNormal.xy = EncodeNormal(wsNormals.xyz, viewDir);
-        oNormal.z = roughness;
-        oNormal.w = 0;
+        oNormal.xyz = wsNormals;
+       // oNormal.z = roughness;
+        oNormal.w = roughness;
         
         // Interleave Co/Cg in a checkboard pattern        
         const float3 ycocgSpec = YCoCg_FromRGB(specular);
