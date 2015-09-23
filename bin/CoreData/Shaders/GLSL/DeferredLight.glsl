@@ -68,7 +68,7 @@ void PS()
     #endif
     
     #ifdef PBR
-        vec3 normal = DecodeGBufferNormal(normalInput.xy, vFarRay);
+        vec3 normal = normalInput.xyz;
         float roughness = normalInput.b;
         #ifdef DIRLIGHT
             vec3 specColor = vec3(0,0,0);

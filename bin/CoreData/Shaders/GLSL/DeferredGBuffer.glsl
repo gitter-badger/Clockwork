@@ -60,9 +60,8 @@
     void WriteGBuffer(in vec3 viewDir, in vec2 screenPos, in vec4 albedo, in vec3 specular, in vec3 wsNormals, in float roughness)
     {        
         // 2 channel normal
-        gl_FragData[2].xy = EncodeNormal(wsNormals.xyz, viewDir);
-        gl_FragData[2].z = roughness;
-        gl_FragData[2].w = 1;
+        gl_FragData[2].xyz = wsNormals;
+        gl_FragData[2].w = roughness;
         
         // Interleave Co/Cg in a checkboard pattern        
         vec3 ycocgSpec = YCoCg_FromRGB(specular);

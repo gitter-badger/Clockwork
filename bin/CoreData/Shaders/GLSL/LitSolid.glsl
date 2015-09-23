@@ -125,26 +125,26 @@ void PS()
 			#ifdef SPECMAP
 				vec4 specSample = texture2D(sSpecMap, vTexCoord.xy);
 				vec3 specColor = specSample.rgb;
+                #ifdef ROUGHNESS
+                    float roughness = max(0.04, specSample.a);
+                #else
+                    float roughness = max(0.04, 1.0 - specSample.a);
+                    roughness *= roughness;
+                #endif
 				specColor *= cMatSpecColor.rgb; // mix in externally defined color
-				#ifdef ROUGHNESS
-					float roughness = max(0.004, specSample.a);
-				#else
-					float roughness = max(0.004, 1.0 - specSample.a);
-					roughness *= roughness;
-				#endif
 			#else
 				vec4 roughMetalSrc = texture2D(sSpecMap, vTexCoord.xy);
+                #ifdef ROUGHNESS
+                    float roughness = max(0.04, roughMetalSrc.r);
+                #else
+                    float roughness = max(0.04, 1.0 - roughMetalSrc.r);
+                    roughness *= roughness;
+                #endif
+
 				float metalness = roughMetalSrc.g;
 				// Apply user configurable metalness control
 				metalness *= cMetalicControl.y > 0 ? cMetalicControl.y : 1.0;
 				metalness += cMetalicControl.x;
-
-				#ifdef ROUGHNESS
-					float roughness = max(0.004, roughMetalSrc.r);
-				#else
-					float roughness = max(0.004, 1.0 - roughMetalSrc.r);
-					roughness *= roughness;
-				#endif
 
 				vec3 specColor = max(diffColor.rgb * metalness, vec3(0.08, 0.08, 0.08));
 				specColor *= cMatSpecColor.rgb;
@@ -160,7 +160,7 @@ void PS()
 		#endif
         
         // Apply user configurable roughness control
-         *= cRoughnessControl.y > 0 ? cRoughnessControl.y : 1.0;
+        roughness *= cRoughnessControl.y > 0 ? cRoughnessControl.y : 1.0;
         roughness += cRoughnessControl.x;
         
     #elif defined(SPECMAP)
@@ -207,20 +207,24 @@ void PS()
         #ifdef PBR
             vec3 cameraDir = normalize(cCameraPosPS - vWorldPos.xyz);
             
-            vec3 Hn = normalize(cameraDir + lightDir);
-            float vdh = clamp(dot(cameraDir, Hn), 0.0, 1.0);
-            float ndh = clamp(dot(normal, Hn), 0.0, 1.0);
             float ndl = clamp(dot(normal, lightDir), 0.0, 1.0);
-            float ndv = clamp(dot(normal, cameraDir), 0.0, 1.0);
             
-            vec3 diffuseTerm = LambertianDiffuse(diffColor.rgb, roughness, ndv, ndl, vdh) * diff * lightColor.rgb;
-            vec3 fresnelTerm = SchlickFresnel(specColor, vdh);
-            float distTerm = GGXDistribution(ndh, roughness);
-            float visTerm = SchlickVisibility(ndl, ndv, roughness);
-            
-            finalColor = diffuseTerm;
-            finalColor += distTerm * visTerm * fresnelTerm * lightColor * diff;
-            finalColor.rgb = LinearFromSRGB(finalColor);
+            if(ndl > 0)
+            {
+                vec3 Hn = normalize(cameraDir + lightDir);
+                float vdh = clamp(dot(cameraDir, Hn), 0.0, 1.0);
+                float ndh = clamp(dot(normal, Hn), 0.0, 1.0);
+                float ndv = clamp(dot(normal, cameraDir), 0.0, 1.0);
+                
+                vec3 diffuseTerm = LambertianDiffuse(diffColor.rgb, roughness, ndv, ndl, vdh) * diff * lightColor.rgb;
+                vec3 fresnelTerm = SchlickFresnel(specColor, vdh);
+                float distTerm = GGXDistribution(ndh, roughness);
+                float visTerm = SchlickVisibility(ndl, ndv, roughness);
+                
+                finalColor = diffuseTerm;
+                finalColor += distTerm * visTerm * fresnelTerm * lightColor * diff;
+                finalColor.rgb = LinearFromSRGB(finalColor);
+            }
         #else
             #ifdef SPECULAR
                 float spec = GetSpecular(normal, cCameraPosPS - vWorldPos.xyz, lightDir, cMatSpecColor.a);
@@ -263,18 +267,18 @@ void PS()
         #endif
         
         #ifdef IBL
-            vec3 reflection = normalize(reflect(vWorldPos.xyz - cCameraPosPS, normal));
+            vec3 reflection = normalize(reflect(-toCamera, normal));
             vec3 cubeColor = vVertexLight.rgb;
-            vec3 iblColor = ImageBasedLighting(reflection, normal, -toCamera, specColor, roughness, cubeColor);
+            vec3 iblColor = ImageBasedLighting(reflection, normal, toCamera, specColor, roughness, cubeColor);
             
             float horizonOcclusion = 1.3;
             float horizon = clamp(1 + horizonOcclusion * dot(reflection, normal), 0.0, 1.0);
             horizon *= horizon;
             
             #ifdef AO
-                finalColor.rgb = LinearFromSRGB(vVertexLight.rgb * ((diffColor.rgb * aoFactor) + iblColor * aoFactor));
+                finalColor.rgb = LinearFromSRGB(iblColor * aoFactor * horizon * cubeColor);
             #else
-                finalColor.rgb = LinearFromSRGB(vVertexLight.rgb * (diffColor.rgb + iblColor));
+                finalColor.rgb = LinearFromSRGB(iblColor * horizon * cubeColor);
             #endif
         #endif
 

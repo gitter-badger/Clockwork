@@ -9,7 +9,6 @@
 #include <Clockwork/Resource/ResourceCache.h>
 #include <Clockwork/Resource/Image.h>
 #include <Clockwork/UI/UI.h>
-#include <Clockwork/UI/UIEvents.h>
 #include <Clockwork/UI/Window.h>
 #include <Clockwork/UI/Text.h>
 #include <Clockwork/UI/Button.h>

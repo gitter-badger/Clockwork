@@ -9,7 +9,7 @@
         <output index="2" name="normal" />
         <output index="3" name="depth" />
     </command>
-    <command type="lightvolumes" vs="DeferredLight" ps="DeferredLight" psdefines="DEFERRED PBR" vsdefines="PBR">
+    <command type="lightvolumes" vs="DeferredLight" ps="DeferredLight" psdefines="DEFERRED PBR IMPORTANCESAMPLE_HQ" vsdefines="PBR">
         <texture unit="albedo" name="albedo" />
         <texture unit="normal" name="normal" />
         <texture unit="depth" name="depth" />
