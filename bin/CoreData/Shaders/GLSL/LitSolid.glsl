@@ -38,6 +38,9 @@ varying vec4 vWorldPos;
     #endif
 #endif
 
+varying vec3 vZoneMin;
+varying vec3 vZoneMax;
+
 void VS()
 {
     mat4 modelMatrix = iModelMatrix;
@@ -99,6 +102,9 @@ void VS()
             vReflectionVec = worldPos - cCameraPos;
         #endif
     #endif
+
+    vZoneMin = cZoneMin;
+    vZoneMax = cZoneMax;
 }
 
 void PS()
@@ -252,7 +258,7 @@ void PS()
         float specIntensity = specColor.g;
         float specPower = cMatSpecColor.a / 255.0;
 
-        vec3 finalColor = vVertexLight * diffColor.rgb;
+        vec3 finalColor = vVertexLight.rgb * diffColor.rgb;
         #ifdef AO
             #ifdef IBL
                 float aoFactor = Sample2D(EmissiveMap, iTexCoord).r;
@@ -263,11 +269,11 @@ void PS()
         #endif
         
         #if defined(PBR) || defined(IBL)
-            vec3 toCamera = normalize(cCameraPosPS - vWorldPos.xyz);
+            vec3 toCamera = normalize(vWorldPos.xyz - cCameraPosPS);
         #endif
         
         #ifdef IBL
-            vec3 reflection = normalize(reflect(-toCamera, normal));
+            vec3 reflection = normalize(reflect(toCamera, normal));
             vec3 cubeColor = vVertexLight.rgb;
             vec3 iblColor = ImageBasedLighting(reflection, normal, toCamera, specColor, roughness, cubeColor);
             

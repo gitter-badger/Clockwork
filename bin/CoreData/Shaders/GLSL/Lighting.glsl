@@ -458,6 +458,8 @@
                 reflectVec = GetSpecularDominantDir(wsNormal, reflectVec, roughness);
                 float ndv = abs(dot(wsNormal, toCamera));
                 
+                
+                
                 // Mip selection is something to tune to your desired results
                 //float mipSelect = 7.0 - 1.0 + log2(roughness); // Geilfus: https://github.com/simongeilfus/Cinder-Experiments
                 float mipSelect = roughness * 9.0;  // Lux-style

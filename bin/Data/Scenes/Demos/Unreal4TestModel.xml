@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<node id="148">
+	<attribute name="Is Enabled" value="true" />
+	<attribute name="Name" value="SM_MatPreviewMesh_02" />
+	<attribute name="Position" value="-71 2.7341 13.029" />
+	<attribute name="Rotation" value="0.459229 0.459229 0.537688 -0.537688" />
+	<attribute name="Scale" value="0.01 0.01 0.01" />
+	<attribute name="Variables" />
+	<component type="StaticModel" id="315">
+		<attribute name="Model" value="Model;Models/SM_MatPreviewMesh_02.mdl" />
+		<attribute name="Material" value="Material;Materials/M_MaterialSphere_Plain.xml;Materials/M_MaterialSphere.xml" />
+	</component>
+</node>

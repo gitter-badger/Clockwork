@@ -109,6 +109,8 @@ uniform ZoneVS
     vec3 cAmbientStartColor;
     vec3 cAmbientEndColor;
     mat4 cZone;
+    vec3 cZoneMin;
+    vec3 cZoneMax
 };
 
 uniform LightVS

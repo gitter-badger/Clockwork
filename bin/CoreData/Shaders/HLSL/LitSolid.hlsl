@@ -79,6 +79,7 @@ void VS(float4 iPos : POSITION,
     oNormal = GetWorldNormal(modelMatrix);
     oWorldPos = float4(worldPos, GetDepth(oPos));
 
+
     #if defined(D3D11) && defined(CLIPPLANE)
         oClip = dot(oPos, cClipPlane);
     #endif
@@ -130,6 +131,7 @@ void VS(float4 iPos : POSITION,
         #endif
         
         oScreenPos = GetScreenPos(oPos);
+
 
         #if defined(ENVCUBEMAP) || defined(IBL)
             oReflectionVec = worldPos - cCameraPos;
@@ -356,9 +358,10 @@ void PS(
         #endif
         
         #ifdef IBL
-            const float3 reflection = normalize(reflect(toCamera, normal));
+            float3 reflection = (reflect(toCamera, normal));
+
             float3 cubeColor = iVertexLight.rgb;
-            float3 iblColor = ImageBasedLighting(reflection, normal, toCamera, specColor, roughness, cubeColor);
+            float3 iblColor = ImageBasedLighting(reflection, normal, iWorldPos.xyz, cCameraPosPS, specColor, roughness, cubeColor);
             
             float horizonOcclusion = 1.3;
             float horizon = saturate(1 + horizonOcclusion * dot(reflection, normal));

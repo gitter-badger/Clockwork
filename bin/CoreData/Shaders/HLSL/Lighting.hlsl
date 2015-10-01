@@ -511,16 +511,29 @@
             ///     toCamera: normalized direction from surface point to camera
             ///     roughness: surface roughness
             ///     reflectionCubeColor: output of the sampled cubemap color
-            float3 ImageBasedLighting(in float3 reflectVec, in float3 wsNormal, in float3 toCamera, in float3 specular, in float roughness, out float3 reflectionCubeColor)
+            float3 ImageBasedLighting(in float3 reflectVec, in float3 wsNormal, in float3 worsPos, in float3 cameraDir, in float3 specular, in float roughness, out float3 reflectionCubeColor)
             {
                 #if defined(IMPORTANCESAMPLE_HQ) || defined(IMPORTANCESAMPLE)
                     ImportanceSampling(reflectVec, wsNormal, toCamera, specular, roughness, reflectionCubeColor);
                 #else
+                    float3 toCamera = normalize(worsPos - cameraDir);
                     reflectVec = GetSpecularDominantDir(wsNormal, reflectVec, roughness);
                     const float3 Hn = normalize(-toCamera + wsNormal);
                     const float vdh = saturate(dot(-toCamera, Hn));
                     const float ndv = saturate(dot(-toCamera, wsNormal));
                     
+
+                    // float3 FirstPlaneIntersect = (zoneMin - worsPos) / reflectVec;
+                    // float3 SecondPlaneIntersect = (zoneMax - worsPos) / reflectVec;
+
+                    // float3 FurthestPlane = max(FirstPlaneIntersect, SecondPlaneIntersect);
+
+                    // float Distance = min(min(FurthestPlane.x, FurthestPlane.y), FurthestPlane.z);
+
+                    // float3 IntersectPositionWS = worsPos + reflectVec * Distance;
+                    // reflectVec = (IntersectPositionWS - zonePos);
+
+
                     // Mip selection is something to tune to your desired results
                     //const float mipSelect = 9;
                     const float mipSelect = roughness * 9;  // Lux-style
