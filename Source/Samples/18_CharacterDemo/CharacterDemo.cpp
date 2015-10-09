@@ -76,9 +76,6 @@ void CharacterDemo::Start()
     // Create the controllable character
     CreateCharacter();
 
-    // Create the UI content
-    CreateInstructions();
-
     // Subscribe to necessary events
     SubscribeToEvents();
 }
@@ -88,93 +85,16 @@ void CharacterDemo::CreateScene()
     ResourceCache* cache = GetSubsystem<ResourceCache>();
 
     scene_ = new Scene(context_);
-
-    // Create scene subsystem components
-    scene_->CreateComponent<Octree>();
-    scene_->CreateComponent<PhysicsWorld>();
+	
+	SharedPtr<File> file = cache->GetFile("Scenes/Thoughts.xml");
+	scene_->LoadXML(*file);
 
     // Create camera and define viewport. We will be doing load / save, so it's convenient to create the camera outside the scene,
     // so that it won't be destroyed and recreated, and we don't have to redefine the viewport on load
-    cameraNode_ = new Node(context_);
-    Camera* camera = cameraNode_->CreateComponent<Camera>();
+    cameraNode_ = scene_->GetNode(1017);
+    Camera* camera = cameraNode_->GetComponent<Camera>();
     camera->SetFarClip(300.0f);
     GetSubsystem<Renderer>()->SetViewport(0, new Viewport(context_, scene_, camera));
-
-    // Create static scene content. First create a zone for ambient lighting and fog control
-    Node* zoneNode = scene_->CreateChild("Zone");
-    Zone* zone = zoneNode->CreateComponent<Zone>();
-    zone->SetAmbientColor(Color(0.15f, 0.15f, 0.15f));
-    zone->SetFogColor(Color(0.5f, 0.5f, 0.7f));
-    zone->SetFogStart(100.0f);
-    zone->SetFogEnd(300.0f);
-    zone->SetBoundingBox(BoundingBox(-1000.0f, 1000.0f));
-
-    // Create a directional light with cascaded shadow mapping
-    Node* lightNode = scene_->CreateChild("DirectionalLight");
-    lightNode->SetDirection(Vector3(0.3f, -0.5f, 0.425f));
-    Light* light = lightNode->CreateComponent<Light>();
-    light->SetLightType(LIGHT_DIRECTIONAL);
-    light->SetCastShadows(true);
-    light->SetShadowBias(BiasParameters(0.00025f, 0.5f));
-    light->SetShadowCascade(CascadeParameters(10.0f, 50.0f, 200.0f, 0.0f, 0.8f));
-    light->SetSpecularIntensity(0.5f);
-
-    // Create the floor object
-    Node* floorNode = scene_->CreateChild("Floor");
-    floorNode->SetPosition(Vector3(0.0f, -0.5f, 0.0f));
-    floorNode->SetScale(Vector3(200.0f, 1.0f, 200.0f));
-    StaticModel* object = floorNode->CreateComponent<StaticModel>();
-    object->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-    object->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
-
-    RigidBody* body = floorNode->CreateComponent<RigidBody>();
-    // Use collision layer bit 2 to mark world scenery. This is what we will raycast against to prevent camera from going
-    // inside geometry
-    body->SetCollisionLayer(2);
-    CollisionShape* shape = floorNode->CreateComponent<CollisionShape>();
-    shape->SetBox(Vector3::ONE);
-
-    // Create mushrooms of varying sizes
-    const unsigned NUM_MUSHROOMS = 60;
-    for (unsigned i = 0; i < NUM_MUSHROOMS; ++i)
-    {
-        Node* objectNode = scene_->CreateChild("Mushroom");
-        objectNode->SetPosition(Vector3(Random(180.0f) - 90.0f, 0.0f, Random(180.0f) - 90.0f));
-        objectNode->SetRotation(Quaternion(0.0f, Random(360.0f), 0.0f));
-        objectNode->SetScale(2.0f + Random(5.0f));
-        StaticModel* object = objectNode->CreateComponent<StaticModel>();
-        object->SetModel(cache->GetResource<Model>("Models/Mushroom.mdl"));
-        object->SetMaterial(cache->GetResource<Material>("Materials/Mushroom.xml"));
-        object->SetCastShadows(true);
-
-        RigidBody* body = objectNode->CreateComponent<RigidBody>();
-        body->SetCollisionLayer(2);
-        CollisionShape* shape = objectNode->CreateComponent<CollisionShape>();
-        shape->SetTriangleMesh(object->GetModel(), 0);
-    }
-
-    // Create movable boxes. Let them fall from the sky at first
-    const unsigned NUM_BOXES = 100;
-    for (unsigned i = 0; i < NUM_BOXES; ++i)
-    {
-        float scale = Random(2.0f) + 0.5f;
-
-        Node* objectNode = scene_->CreateChild("Box");
-        objectNode->SetPosition(Vector3(Random(180.0f) - 90.0f, Random(10.0f) + 10.0f, Random(180.0f) - 90.0f));
-        objectNode->SetRotation(Quaternion(Random(360.0f), Random(360.0f), Random(360.0f)));
-        objectNode->SetScale(scale);
-        StaticModel* object = objectNode->CreateComponent<StaticModel>();
-        object->SetModel(cache->GetResource<Model>("Models/Box.mdl"));
-        object->SetMaterial(cache->GetResource<Material>("Materials/Stone.xml"));
-        object->SetCastShadows(true);
-
-        RigidBody* body = objectNode->CreateComponent<RigidBody>();
-        body->SetCollisionLayer(2);
-        // Bigger boxes will be heavier and harder to move
-        body->SetMass(scale * 2.0f);
-        CollisionShape* shape = objectNode->CreateComponent<CollisionShape>();
-        shape->SetBox(Vector3::ONE);
-    }
 }
 
 void CharacterDemo::CreateCharacter()
@@ -214,28 +134,6 @@ void CharacterDemo::CreateCharacter()
     // Remember it so that we can set the controls. Use a WeakPtr because the scene hierarchy already owns it
     // and keeps it alive as long as it's not removed from the hierarchy
     character_ = objectNode->CreateComponent<Character>();
-}
-
-void CharacterDemo::CreateInstructions()
-{
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    UI* ui = GetSubsystem<UI>();
-
-    // Construct new Text object, set string to display and font to use
-    Text* instructionText = ui->GetRoot()->CreateChild<Text>();
-    instructionText->SetText(
-        "Use WASD keys and mouse/touch to move\n"
-        "Space to jump, F to toggle 1st/3rd person\n"
-        "F5 to save scene, F7 to load"
-    );
-    instructionText->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 15);
-    // The text has multiple rows. Center them in relation to each other
-    instructionText->SetTextAlignment(HA_CENTER);
-
-    // Position the text relative to the screen center
-    instructionText->SetHorizontalAlignment(HA_CENTER);
-    instructionText->SetVerticalAlignment(VA_CENTER);
-    instructionText->SetPosition(0, ui->GetRoot()->GetHeight() / 4);
 }
 
 void CharacterDemo::SubscribeToEvents()
