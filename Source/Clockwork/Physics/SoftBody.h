@@ -195,11 +195,12 @@ namespace Clockwork
 		VertexBuffer* vb_;
 		BoundingBox bb;
 		WeakPtr<Model> bbmodel;
-
+		/*
 		int *mDupVertices;
 		int *mNewIndexes;
 		int mDupVerticesCount;
-		PODVector<btVector3> vertices;
+		PODVector<btVector3> vertices;*/
+		float* vertices;
 		PODVector<int> indexes;
 	};
 	

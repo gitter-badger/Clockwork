@@ -77,9 +77,9 @@ namespace Clockwork
 		readdBody_(false),
 		inWorld_(false),
 		enableMassUpdate_(true),
-		vb_(0),
-		mDupVertices(0),
-		mNewIndexes(0)
+		vb_(0)
+		//mDupVertices(0),
+		//mNewIndexes(0)
 	{
 		// constructor
 	}
@@ -91,8 +91,8 @@ namespace Clockwork
 		if (physicsWorld_)
 			physicsWorld_->RemoveSoftBody(this);
 		
-		if (mDupVertices) delete[] mDupVertices;
-		if (mNewIndexes) delete[] mNewIndexes;
+		//if (mDupVertices) delete[] mDupVertices;
+		//if (mNewIndexes) delete[] mNewIndexes;
 	}
 	
 	void SoftBody::RegisterObject(Context* context)
@@ -393,7 +393,6 @@ namespace Clockwork
 		
 		if (mass_ > 0.0f)
 			body_->setTotalMass(mass_, true);
-		
 	}
 	
 	void SoftBody::UpdateGravity()
@@ -506,6 +505,8 @@ namespace Clockwork
 			body_->setUserPointer(this);
 		}*/
 		
+		UpdateSoftBodyFromStaticModel();
+		
 		if (!body_) return;
 		UpdateMass();
 		UpdateGravity();
@@ -517,8 +518,8 @@ namespace Clockwork
 		if (!IsEnabledEffective())
 			return;
 		
-		btSoftRigidDynamicsWorld* world = (btSoftRigidDynamicsWorld*)physicsWorld_->GetWorld();
-		world->addSoftBody(body_, (short)collisionLayer_, (short)collisionMask_);
+		//btSoftRigidDynamicsWorld* world = (btSoftRigidDynamicsWorld*)physicsWorld_->GetWorld();
+		//world->addSoftBody(body_, (short)collisionLayer_, (short)collisionMask_);
 		inWorld_ = true;
 		readdBody_ = false;
 		
@@ -590,7 +591,7 @@ namespace Clockwork
 					UpdateGravity();
 					//body_->forceActivationState(DISABLE_DEACTIVATION);
 					//body_->activate(true);
-					body_->setMass(0, 0);
+					body_->setMass(1, 0);
 				}
 			}
 		}
@@ -753,9 +754,9 @@ namespace Clockwork
 			const unsigned numIndexes = ib->GetIndexCount();
 			const unsigned indexSize = ib->GetIndexSize();
 			
-			mDupVertices = new int[numVertices];
-			mNewIndexes = new int[numIndexes];
-			mDupVerticesCount = 0;
+			//mDupVertices = new int[numVertices];
+			//mNewIndexes = new int[numIndexes];
+			//mDupVerticesCount = 0;
 			
 			int i;
 			int j;
@@ -774,7 +775,6 @@ namespace Clockwork
 				}
 				vb->Unlock();
 			}
-			
 			
 			PODVector<int> indexBuffer;
 			indexBuffer.Resize(numIndexes);
@@ -801,7 +801,7 @@ namespace Clockwork
 				}
 				ib->Unlock();
 			}
-			
+			/*
 			// Find duplicates		
 			for (i = 0; i < numVertices; i++)
 			{
@@ -815,43 +815,52 @@ namespace Clockwork
 					{
 						mDupVertices[i] = j;
 						mDupVerticesCount++;
+						break;
 					}
 				}
-			}
+			}*/
 			
 			// Build array vertexes w/o dup
-			const int newVertexCount = numVertices - mDupVerticesCount;
+			//const int newVertexCount = numVertices - mDupVerticesCount;
 			//PODVector<btVector3> vertices;
-			vertices.Resize(newVertexCount);
+			//vertices.Resize(newVertexCount);
+			vertices = new float[numVertices * 3];
 			for (i = 0, j = 0; i < numVertices; i++)
 			{
+				Vector3 v = vertexBuffer[i];
+				vertices[j] = v.x_;
+				vertices[j + 1] = v.y_;
+				vertices[j + 2] = v.z_;
+				j += 3;
+				/*
 				if (mDupVertices[i] == -1) 
 				{
 					Vector3 v = vertexBuffer[i];
-					vertices[j++] = ToBtVector3(v);
-					
-				}
+					//vertices[j++] = ToBtVector3(v);
+				}*/
 			}
-			
+
 			//PODVector<int> indexes(numIndexes);
 			indexes.Resize(numIndexes);
 			int idx;
 			for (i = 0; i < numIndexes; i++)
 			{
-				idx = indexBuffer[i];
-				int idxDup = mDupVertices[idx];
-				indexes[i] = mNewIndexes[idxDup == -1 ? idx : idxDup];
+				//idx = indexBuffer[i];
+				//int idxDup = mDupVertices[idx];
+				//indexes[i] = mNewIndexes[idxDup == -1 ? idx : idxDup];
+				indexes[i] = indexBuffer[i];
 			}
 			int ntriangles = numIndexes / 3;
 			
-			btSoftBodyWorldInfo* softBodyWorldInfo_ = GetPhysicsWorld()->GetSoftBodyWorld();
-			body_ = btSoftBodyHelpers::CreateFromTriMesh(*softBodyWorldInfo_, vertices[0], &indexes[0], ntriangles);
 			
+			btSoftBodyWorldInfo* softBodyWorldInfo_ = GetPhysicsWorld()->GetSoftBodyWorld();
+			body_ = btSoftBodyHelpers::CreateFromTriMesh(*softBodyWorldInfo_, vertices/*vertices[0]*/, &indexes[0], ntriangles);
+			/*
 			btTransform	transforms;
 			transforms.setIdentity();
 			transforms.setOrigin(ToBtVector3(node_->GetWorldPosition()));
 			transforms.setRotation(ToBtQuaternion(node_->GetWorldRotation()));
-			body_->transform(transforms);
+			body_->transform(transforms);*/
 			body_->setUserPointer(this);
 			
 			body_->generateBendingConstraints(2);
@@ -894,6 +903,7 @@ namespace Clockwork
 			
 			bConstructed = true;
 			SubscribeToEvent(E_POSTUPDATE, HANDLER(SoftBody, HandlePostUpdate));
+			
 		}
 		
 		return bConstructed;
