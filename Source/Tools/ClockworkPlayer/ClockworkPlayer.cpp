@@ -32,8 +32,8 @@
 #include <Clockwork/Script/Script.h>
 #endif
 
-#ifdef CLOCKWORK_LUA
-#include <Clockwork/LuaScript/LuaScript.h>
+#ifdef CLOCKWORK_RCCPP
+#include <Clockwork/RCCpp/RCCpp.h>
 #endif
 
 #include "ClockworkPlayer.h"
@@ -126,7 +126,7 @@ void ClockworkPlayer::Setup()
 void ClockworkPlayer::Start()
 {
     String extension = GetExtension(scriptFileName_);
-    if (extension != ".lua" && extension != ".luc")
+    if extension != ".cpp" && extension != ".so" && extension != ".dll")
     {
 #ifdef CLOCKWORK_ANGELSCRIPT
 
@@ -136,12 +136,6 @@ void ClockworkPlayer::Start()
         // Hold a shared pointer to the script file to make sure it is not unloaded during runtime
         scriptFile_ = GetSubsystem<ResourceCache>()->GetResource<ScriptFile>(scriptFileName_);
 
-
-        /// \hack If we are running the editor, also instantiate Lua subsystem to enable editing Lua ScriptInstances
-#ifdef CLOCKWORK_LUA
-        if (scriptFileName_.Contains("Editor.as", false))
-            context_->RegisterSubsystem(new LuaScript(context_));
-#endif
         // If script loading is successful, proceed to main loop
         if (scriptFile_ && scriptFile_->Execute("void Start()"))
         {
@@ -153,6 +147,33 @@ void ClockworkPlayer::Start()
         }
 #else
         ErrorExit("AngelScript is not enabled!");
+        return;
+#endif
+    }
+    else if (extension == ".cpp" || extension == ".so" || extension == ".dll")
+    {
+#ifdef CLOCKWORK_RCCPP
+        RCCpp* rcCpp = new RCCpp(context_);
+        context_->RegisterSubsystem(rcCpp);
+
+        if (extension == ".cpp")
+        {
+            if (rcCpp->ExecuteFile(scriptFileName_))
+            {
+                rcCpp->Start();
+                return;
+            }
+        }
+        else
+        {
+            if (rcCpp->LoadLib(scriptFileName_))
+            {
+                rcCpp->Start();
+                return;
+            }
+        }
+#else
+        ErrorExit("RCCpp is not enabled!");
         return;
 #endif
     }
@@ -188,9 +209,19 @@ void ClockworkPlayer::Stop()
         if (scriptFile_->GetFunction("void Stop()"))
             scriptFile_->Execute("void Stop()");
     }
-#else
+#endif
+    
     if (false)
     {
+    }
+#ifdef URHO3D_RCCPP
+    else if (GetExtension(scriptFileName_) == ".cpp")
+    {
+        RCCpp* rcCpp = GetSubsystem<RCCpp>();
+        if (rcCpp != NULL)
+        {
+            rcCpp->Stop();
+        }
     }
 #endif
 

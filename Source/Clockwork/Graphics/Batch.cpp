@@ -279,6 +279,13 @@ void Batch::Prepare(View* view, bool setModelTransform, bool allowDepthWrite) co
         Matrix3x4 zoneTransform = adjust * zone_->GetInverseWorldTransform();
         graphics->SetShaderParameter(VSP_ZONE, zoneTransform);
 
+		if (zone_->GetNode())
+		{
+			const BoundingBox& transBox = box.Transformed(zone_->GetNode()->GetWorldTransform());
+			graphics->SetShaderParameter(PSP_ZONEMIN, transBox.min_);
+			graphics->SetShaderParameter(PSP_ZONEMAX, transBox.max_);
+		}
+
         graphics->SetShaderParameter(PSP_AMBIENTCOLOR, zone_->GetAmbientColor());
         graphics->SetShaderParameter(PSP_FOGCOLOR, overrideFogColorToBlack ? Color::BLACK : zone_->GetFogColor());
 

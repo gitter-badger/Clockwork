@@ -126,6 +126,10 @@ class ViewportContext
         viewport = Viewport(editorScene, camera, viewRect, renderPath);
         RenderPath@ effectRenderPath = viewport.renderPath.Clone(); 
         effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/AutoExposure.xml")); 
+        effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/FXAA3.xml"));         
+        effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/ColorCorrection.xml")); 
+        effectRenderPath.Append(cache.GetResource("XMLFile", "PostProcess/Tonemap.xml")); 
+        viewport.renderPath = effectRenderPath;
         viewport.renderPath = effectRenderPath;
         index = index_;
         viewportId = viewportId_;
@@ -159,7 +163,7 @@ class ViewportContext
 
         statusBar = BorderImage("ToolBar");
         statusBar.style = "EditorToolBar";
-        viewportContextUI.AddChild(statusBar);
+        //viewportContextUI.AddChild(statusBar);
 
         statusBar.SetLayout(LM_HORIZONTAL);
         statusBar.SetAlignment(HA_LEFT, VA_BOTTOM);
@@ -180,7 +184,7 @@ class ViewportContext
         settingsWindow = LoadEditorUI("UI/EditorViewport.xml");
         settingsWindow.opacity = uiMaxOpacity;
         settingsWindow.visible = false;
-        viewportContextUI.AddChild(settingsWindow);
+       // viewportContextUI.AddChild(settingsWindow);
 
         cameraPosX = settingsWindow.GetChild("PositionX", true);
         cameraPosY = settingsWindow.GetChild("PositionY", true);

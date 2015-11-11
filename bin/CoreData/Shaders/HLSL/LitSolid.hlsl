@@ -225,10 +225,8 @@ void PS(
                     roughness *= roughness;
                 #endif
                 
-                const float metalness = roughMetalSrc.g;
-				// Apply user configurable metalness control
-				metalness *= cMetalicControl.y > 0 ? cMetalicControl.y : 1.0;
-				metalness += cMetalicControl.x;
+                const float metalness = roughMetalSrc.g + cMetalicControl.x;
+                // Apply user configurable metalness control
 
                 float3 specColor = max(diffColor.rgb * metalness, float3(0.08, 0.08, 0.08));
                 specColor *= cMatSpecColor.rgb;
@@ -301,10 +299,10 @@ void PS(
                 const float ndh = saturate(dot(normal, Hn));
                 const float ndv = saturate(dot(normal, cameraDir));
                 
-				const float3 diffuseTerm = Diffuse(albedoInput.rgb, roughness, ndv, ndl, vdh) * lightColor * diff;
-				finalColor = float4(diffuseTerm, 1);
+                const float3 diffuseTerm = Diffuse(albedoInput.rgb, roughness, ndv, ndl, vdh) * lightColor * diff;
+                finalColor = float4(diffuseTerm, 1);
 
-				const float3 fresnelTerm = SchlickFresnel(specColor, vdh);
+                const float3 fresnelTerm = SchlickFresnel(specColor, vdh);
                 const float distTerm = GGXDistribution(ndh, roughness);
                 const float visTerm = SchlickVisibility(ndl, ndv, roughness);
                 
@@ -352,11 +350,11 @@ void PS(
         #endif
         
         #if defined(PBR) || defined(IBL)
-            const float3 toCamera = normalize(iWorldPos.xyz - cCameraPosPS);
+            const float3 toCamera = normalize(cCameraPosPS - iWorldPos.xyz);
         #endif
         
         #ifdef IBL
-            const float3 reflection = normalize(reflect(toCamera, normal));
+            float3 reflection = ParallaxCorrectReflection(cZoneMin, cZoneMax, iWorldPos.xyz - cCameraPosPS, iWorldPos.xyz, normal);
             float3 cubeColor = iVertexLight.rgb;
             float3 iblColor = ImageBasedLighting(reflection, normal, toCamera, specColor, roughness, cubeColor);
             
