@@ -79,8 +79,6 @@ extern CLOCKWORK_API const StringHash PSP_SHADOWINTENSITY("ShadowIntensity");
 extern CLOCKWORK_API const StringHash PSP_SHADOWMAPINVSIZE("ShadowMapInvSize");
 extern CLOCKWORK_API const StringHash PSP_SHADOWSPLITS("ShadowSplits");
 extern CLOCKWORK_API const StringHash PSP_LIGHTMATRICES("LightMatricesPS");
-extern CLOCKWORK_API const StringHash PSP_ZONEMIN("ZoneMin");
-extern CLOCKWORK_API const StringHash PSP_ZONEMAX("ZoneMax");
 
 extern CLOCKWORK_API const Vector3 DOT_SCALE(1 / 3.0f, 1 / 3.0f, 1 / 3.0f);
 

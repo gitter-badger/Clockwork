@@ -391,24 +391,6 @@
         
         #ifdef IBL      /// Image based lighting shading
 
-			/// Parallax correct cubemap projections, per Lagarde's "Local Image-based Lighting With Parallax corrected-cubemap" presentation from SigGraph 2012
-		    ///     zoneMin: minimum values of the zone's bounds
-			///     zoneMax: maximum values of the zone's bounds
-			///     viewDir: viewing vector
-			///     worldPos: position of the fragment
-			///     worldNormal: normal of the fragment in worldspace
-			float3 ParallaxCorrectReflection(in float3 zoneMin, in float3 zoneMax, in float3 viewDir, in float3 worldPos, in float3 worldNormal)
-			{
-				float3 reflectedWS = reflect(viewDir, worldNormal);
-				float3 firstIntersection = (zoneMax - worldPos) / reflectedWS;
-				float3 secondIntersection = (zoneMin - worldPos) / reflectedWS;
-
-				float3 furthestPlane = max(firstIntersection, secondIntersection);
-				float distance = min(min(furthestPlane.x, furthestPlane.y), furthestPlane.z);
-				float3 intersectPointWS = worldPos + reflectedWS * distance;
-				return intersectPointWS - (zoneMin + (zoneMax - zoneMin) * 0.5);
-			}
-
             /// Epic's approximation, convenient outside of mobile as well - very tolerant of 'lazy' IBL such as unfiltered mips
             /// https://www.unrealengine.com/blog/physically-based-shading-on-mobile
             ///     specColor: specular color of the fragment

@@ -1,2 +1,0 @@
-Materials/FrontColor.xml
-Materials/FrontColor.xml

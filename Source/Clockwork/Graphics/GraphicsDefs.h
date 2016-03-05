@@ -321,8 +321,6 @@ extern CLOCKWORK_API const StringHash PSP_SHADOWINTENSITY;
 extern CLOCKWORK_API const StringHash PSP_SHADOWMAPINVSIZE;
 extern CLOCKWORK_API const StringHash PSP_SHADOWSPLITS;
 extern CLOCKWORK_API const StringHash PSP_LIGHTMATRICES;
-extern CLOCKWORK_API const StringHash PSP_ZONEMIN;
-extern CLOCKWORK_API const StringHash PSP_ZONEMAX;
 
 // Scale calculation from bounding box diagonal.
 extern CLOCKWORK_API const Vector3 DOT_SCALE;

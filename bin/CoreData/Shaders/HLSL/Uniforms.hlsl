@@ -26,7 +26,6 @@ uniform float4x4 cViewProj;
 uniform float4 cUOffset;
 uniform float4 cVOffset;
 uniform float4x3 cZone;
-
 #ifdef SKINNED
     uniform float4x3 cSkinMatrices[MAXBONES];
 #endif
@@ -63,11 +62,8 @@ uniform float2 cShadowIntensity;
 uniform float2 cShadowMapInvSize;
 uniform float4 cShadowSplits;
 uniform float4x4 cLightMatricesPS[4];
-uniform float3 cZoneMin;
-uniform float3 cZoneMax;
 uniform float2 cRoughnessControl; //x = add, y = multiply if > 0
 uniform float2 cMetalicControl; //x = add, y = multiply if > 0
-uniform float2 cParallaxControl; //x = scale, y = bias
 #endif
 
 #else
@@ -157,8 +153,6 @@ cbuffer ZonePS : register(b2)
     float3 cAmbientColor;
     float4 cFogParams;
     float3 cFogColor;
-	float3 cZoneMin;
-	float3 cZoneMax;
 }
 
 cbuffer LightPS : register(b3)
@@ -183,7 +177,6 @@ cbuffer MaterialPS : register(b4)
     float4 cMatSpecColor;
     float2 cRoughnessControl; //x = add, y = multiply if > 0
 	float2 cMetalicControl; //x = add, y = multiply if > 0
-    float2 cParallaxControl; //x = scale, y = bias
 }
 #endif
 

@@ -72,7 +72,6 @@ else ()
     option (CLOCKWORK_64BIT "Enable 64-bit build, on MSVC default to 0, on other compilers the default is set based on the 64-bit capability of the chosen toolchain on host system" ${CLOCKWORK_DEFAULT_64BIT})
 endif ()
 cmake_dependent_option (CLOCKWORK_ANGELSCRIPT "Enable AngelScript scripting support" TRUE "NOT EMSCRIPTEN" FALSE)
-cmake_dependent_option (CLOCKWORK_RCCPP "Enable Runtime-compiled C++ support" TRUE "CLOCKWORK_FILEWATCHER" OFF)
 option (CLOCKWORK_NAVIGATION "Enable navigation support" TRUE)
 cmake_dependent_option (CLOCKWORK_NETWORK "Enable networking support" TRUE "NOT EMSCRIPTEN" FALSE)
 cmake_dependent_option (CLOCKWORK_DATABASE_ODBC "Enable Database support with ODBC, requires vendor-specific ODBC driver" FALSE "NOT IOS AND NOT ANDROID AND NOT EMSCRIPTEN" FALSE)
@@ -311,16 +310,6 @@ endif ()
 if (CLOCKWORK_ANGELSCRIPT)
     add_definitions (-DCLOCKWORK_ANGELSCRIPT)
 endif ()
-
-# Add definition for RCCpp
-if (CLOCKWORK_RCCPP)
-    message("Compiling with RCCpp support. Copying example files into the Bin/Data/RCCpp folder")
-    add_definitions (-DCLOCKWORK_RCCPP)
-    file(COPY Source/Samples/ DESTINATION ../Bin/Data/RCCpp/)
-else()
-    message(WARNING "Compiling without RCCpp support. Please define CLOCKWORK_RCCPP to compile it supporting RCCpp")
-endif ()
-
 
 # Add definition for Navigation
 if (CLOCKWORK_NAVIGATION)
