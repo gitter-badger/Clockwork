@@ -4,8 +4,8 @@
 	<texture unit="diffuse" name="Textures/PBR/metal_aircraft_interior_rusty_basecolor.png" />
 	<texture unit="normal" name="Textures/PBR/metal_aircraft_interior_rusty_normal.tga" />
 	<texture unit="specular" name="Textures/PBR/metal_aircraft_interior_rusty_prop.png" />
-	<parameter name="UOffset" value="30 0 0 0" />
-	<parameter name="VOffset" value="0 30 0 0" />
+	<parameter name="UOffset" value="4 0 0 0" />
+	<parameter name="VOffset" value="0 4 0 0" />
 	<parameter name="MatDiffColor" value="1 1 1 1" />
 	<parameter name="MatEmissiveColor" value="0 0 0" />
 	<parameter name="MatEnvMapColor" value="1 1 1" />

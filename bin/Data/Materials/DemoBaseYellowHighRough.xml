@@ -8,8 +8,12 @@
 	<parameter name="MatEmissiveColor" value="0 0 0" />
 	<parameter name="MatEnvMapColor" value="1 1 1" />
 	<parameter name="MatSpecColor" value="1 1 1 1" />
+<<<<<<< HEAD
 	<parameter name="RoughnessControl" value="1 0" />
 	<parameter name="MetalicControl" value="0 0" />
+=======
+	<parameter name="RoughnessControl" value="0.9 0" />
+>>>>>>> parent of a062f56... Fixed Artifacts on PBR renderer
 	<cull value="ccw" />
 	<shadowcull value="ccw" />
 	<fill value="solid" />

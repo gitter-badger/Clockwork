@@ -384,7 +384,7 @@ void PS(
         #endif
 
         #if defined(PBR)
-            WriteGBuffer(oAlbedo, oNormal, oDepth, -iWorldPos.xyz, iFragPos.xy, diffColor, specColor, normal, iWorldPos.w, roughness);
+            WriteGBuffer(oAlbedo, oNormal, oDepth, toCamera, iFragPos.xy, diffColor, specColor, normal, iWorldPos.w, roughness);
             oColor = float4(GetFog(finalColor, fogFactor), 1.0);
         #else
             oColor = float4(GetFog(finalColor, fogFactor), 1.0);
