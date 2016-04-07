@@ -1,0 +1,47 @@
+[Thu Apr  7 02:28:40 2016] INFO: Opened log file Clockwork.log
+[Thu Apr  7 02:28:40 2016] INFO: Created 7 worker threads
+[Thu Apr  7 02:28:40 2016] INFO: Initialized engine
+[Thu Apr  7 02:28:40 2016] INFO: Loading Package
+[Thu Apr  7 02:28:40 2016] INFO: Loading Package: F:\Clockwork\Clockwork/Script/Packages/WebView/
+[Thu Apr  7 02:28:40 2016] INFO: Loading Package: F:\Clockwork\Clockwork/Script/Packages/Clockwork/
+[Thu Apr  7 02:28:40 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Container.json
+[Thu Apr  7 02:28:40 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Math.json
+[Thu Apr  7 02:28:40 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Core.json
+[Thu Apr  7 02:28:40 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Scene.json
+[Thu Apr  7 02:28:40 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Graphics.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Clockwork3D.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Clockwork2D.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Audio.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Physics.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Navigation.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Input.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/UI.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Resource.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Network.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/IO.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Engine.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Script.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Javascript.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Environment.json
+[Thu Apr  7 02:28:41 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/Clockwork/Web.json
+[Thu Apr  7 02:28:42 2016] INFO: Warning: Octree baseclass Octant not in bindings
+[Thu Apr  7 02:28:42 2016] INFO: Warning: ShaderVariation baseclass GPUObject not in bindings
+[Thu Apr  7 02:28:42 2016] INFO: Warning: Texture baseclass GPUObject not in bindings
+[Thu Apr  7 02:28:42 2016] INFO: Warning: PhysicsWorld2D baseclass b2ContactListener not in bindings
+[Thu Apr  7 02:28:42 2016] INFO: Warning: PhysicsWorld2D baseclass b2Draw not in bindings
+[Thu Apr  7 02:28:42 2016] INFO: Warning: PhysicsWorld baseclass btIDebugDraw not in bindings
+[Thu Apr  7 02:28:42 2016] INFO: Warning: RigidBody baseclass btMotionState not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Warning: UI baseclass tb::TBWidgetListener not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Warning: UIWidget baseclass tb::TBWidgetDelegate not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Warning: HttpRequest baseclass Deserializer not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Warning: HttpRequest baseclass Thread not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Warning: Network baseclass kNet::IMessageHandler not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Warning: Network baseclass kNet::INetworkServerListener not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Warning: BufferQueue baseclass Deserializer not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Warning: BufferQueue baseclass Serializer not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Warning: File baseclass Deserializer not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Warning: File baseclass Serializer not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Warning: FileWatcher baseclass Thread not in bindings
+[Thu Apr  7 02:28:43 2016] INFO: Loading Module: F:\Clockwork\Clockwork/Script/Packages/WebView/WebView.json
+[Thu Apr  7 02:28:43 2016] INFO: Generating JS Bindings
+[Thu Apr  7 02:28:43 2016] INFO: Generating C# Bindings

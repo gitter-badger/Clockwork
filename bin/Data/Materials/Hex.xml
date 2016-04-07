@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<material>
+	<technique name="Techniques/DiffNormalSpec.xml" quality="0" loddistance="0" />
+	<texture unit="diffuse" name="Textures/Hex_Base_Color___id_basecolor_.tga" />
+	<texture unit="normal" name="Textures/Hex_Normal___id_normal_.tga" />
+	<texture unit="specular" name="Textures/Hex_Metallic___id_metallic_.tga" />
+	<parameter name="UOffset" value="2 0 0 0" />
+	<parameter name="VOffset" value="0 2 0 0" />
+	<parameter name="MatDiffColor" value="1 1 1 1" />
+	<parameter name="MatEmissiveColor" value="0 0 0" />
+	<parameter name="MatEnvMapColor" value="1 1 1" />
+	<parameter name="MatSpecColor" value="1 1 1 1" />
+	<parameter name="RoughnessControl" value="0.5 0" />
+	<cull value="ccw" />
+	<shadowcull value="ccw" />
+	<fill value="solid" />
+	<depthbias constant="0" slopescaled="0" />
+	<renderorder value="128" />
+</material>

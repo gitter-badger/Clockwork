@@ -1,0 +1,349 @@
+#
+# Copyright (c) 2008-2015 the Clockwork project.
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+
+# Define target name
+set (TARGET_NAME Clockwork)
+
+add_definitions (-DCLOCKWORK_IS_BUILDING)
+if (ODBC_VERSION AND NOT ODBC_VERSION VERSION_LESS 3)
+    add_definitions (-DODBC_3_OR_LATER)
+endif ()
+
+# Windows platform has its own naming convention for library
+set (LIB_NAME ${TARGET_NAME})
+if (WIN32)
+    set (CMAKE_DEBUG_POSTFIX _d)
+    if (CMAKE_BUILD_TYPE STREQUAL Debug)
+        set (LIB_NAME ${LIB_NAME}_d)
+    endif ()
+    if (CLOCKWORK_LIB_TYPE STREQUAL SHARED)
+        set (LIB_NAME ${LIB_NAME}.dll)
+        # When building shared library, a copy of the library must be available in the tool directory for the tools to work correctly as there is no RPATH for Windows platform
+        create_symlink (${CMAKE_BINARY_DIR}/bin/${LIB_NAME} ${CMAKE_BINARY_DIR}/bin/tool/${LIB_NAME} FALLBACK_TO_COPY)
+    endif ()
+endif ()
+
+# Define generated source files
+if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/librevision.h)
+    execute_process (COMMAND ${CMAKE_COMMAND} -DFILENAME=${CMAKE_CURRENT_BINARY_DIR}/librevision.h -P CMake/Modules/GetClockworkRevision.cmake
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} OUTPUT_QUIET ERROR_QUIET)
+endif ()
+add_custom_command (OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/librevision.h
+    COMMAND ${CMAKE_COMMAND} -DFILENAME=${CMAKE_CURRENT_BINARY_DIR}/librevision.h -P CMake/Modules/GetClockworkRevision.cmake
+    DEPENDS ${STATIC_LIBRARY_TARGETS} ${CMAKE_SOURCE_DIR}/CMake/Modules/GetClockworkRevision.cmake
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "Generating GIT revision number (tag + last commit SHA-1)")
+
+# Generate platform specific export header file
+if (MSVC)
+    set (PRE_EXPORT_HEADER "\n#pragma warning(disable: 4251)\n#pragma warning(disable: 4275)\n")
+endif ()
+generate_export_header (${TARGET_NAME} ${CLOCKWORK_LIB_TYPE} EXPORT_MACRO_NAME CLOCKWORK_API EXPORT_FILE_NAME Clockwork.h.new)
+execute_process (COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/Clockwork.h.new ${CMAKE_CURRENT_BINARY_DIR}/Clockwork.h)
+file (REMOVE ${CMAKE_CURRENT_BINARY_DIR}/Clockwork.h.new)
+
+# Define generated object files
+# This is a hack as it relies on internal working of CMake
+if (MSVC AND CLOCKWORK_LIB_TYPE STREQUAL SHARED)   # MSVC linker does not have force_load/whole_archive equivalent
+    foreach (TARGET ${STATIC_LIBRARY_TARGETS})
+        get_target_property (SOURCES ${TARGET} SOURCES)
+        get_target_property (INT_DIR ${TARGET} LOCATION)
+        if (INT_DIR)
+            get_filename_component (INT_DIR ${INT_DIR} PATH)
+            if (CMAKE_GENERATOR MATCHES 2008)
+                string (REPLACE /$(OutDir) /${TARGET}.dir/$(ConfigurationName) INT_DIR ${INT_DIR})
+            else ()
+                string (REPLACE /$(Configuration) /${TARGET}.dir/$(ConfigurationName) INT_DIR ${INT_DIR})
+            endif ()
+            foreach (SOURCE ${SOURCES})
+                get_filename_component (NAME ${SOURCE} NAME)
+                if (NAME MATCHES \\.c.*$|\\.mm?$|\\.S$|\\.s$)
+                    string (REGEX REPLACE \\.c.*$|\\.mm?$|\\.S$|\\.s$ "" NAME ${NAME})
+                    list (APPEND OBJ_FILES ${INT_DIR}/${NAME}.obj)
+                elseif (NAME MATCHES \\.o.*$)
+                    list (APPEND OBJ_FILES ${SOURCE})
+                endif ()
+            endforeach ()
+            source_group ("Object Files\\${TARGET}" FILES ${OBJ_FILES})
+            list (APPEND ALL_OBJ_FILES ${OBJ_FILES})
+            unset (OBJ_FILES)
+        endif ()
+    endforeach ()
+    set_source_files_properties (${ALL_OBJ_FILES} PROPERTIES GENERATED TRUE)
+endif ()
+
+# Define source files
+if (NOT CLOCKWORK_ANGELSCRIPT)
+    list (APPEND EXCLUDED_SOURCE_DIRS Script)
+endif ()
+foreach (DIR Navigation Network Physics Clockwork2D)
+    string (TOUPPER CLOCKWORK_${DIR} OPT)
+    if (NOT ${OPT})
+        list (APPEND EXCLUDED_SOURCE_DIRS ${DIR})
+    endif ()
+endforeach ()
+if (CLOCKWORK_DATABASE)
+    if (CLOCKWORK_DATABASE_ODBC)
+        list (APPEND EXCLUDED_SOURCE_DIRS Database/SQLite)
+    else ()
+        list (APPEND EXCLUDED_SOURCE_DIRS Database/ODBC)
+    endif ()
+else ()
+    list (APPEND EXCLUDED_SOURCE_DIRS Database)
+endif ()
+if (CLOCKWORK_OPENGL)
+    # Exclude the opposite source directory
+    list (APPEND EXCLUDED_SOURCE_DIRS Graphics/Direct3D9 Graphics/Direct3D11)
+else ()
+    list (APPEND EXCLUDED_SOURCE_DIRS Graphics/OpenGL)
+    if (CLOCKWORK_D3D11)
+        list (APPEND EXCLUDED_SOURCE_DIRS Graphics/Direct3D9)
+    else ()
+        list (APPEND EXCLUDED_SOURCE_DIRS Graphics/Direct3D11)
+    endif ()
+endif ()
+if (APPLE AND NOT IOS)
+    set (GLOB_OBJC_PATTERN *.m)     # Should only pick up MacFileWatcher.m for MacOSX platform at the moment
+endif ()
+string (REPLACE ";" "/[^;]+;" EXCLUDE_PATTERNS "${EXCLUDED_SOURCE_DIRS};")
+define_source_files (EXCLUDE_PATTERNS ${EXCLUDE_PATTERNS} GLOB_CPP_PATTERNS *.cpp ${GLOB_OBJC_PATTERN} EXTRA_H_FILES librevision.h Clockwork.h RECURSE GROUP PCH Precompiled.h)
+list (APPEND SOURCE_FILES ${GEN_CPP_FILES} ${ALL_OBJ_FILES})
+
+# Define dependency libs
+# Add include directories to find the precompiled header, export header, and installed headers from thirdparty libs
+set (INCLUDE_DIRS ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_BINARY_DIR}/${DEST_INCLUDE_DIR}/ThirdParty)
+if (CLOCKWORK_PHYSICS)
+    # Bullet library depends on its own include dir to be added in the header search path
+    # This is more practical than patching its header files in many places to make them work with relative path
+    list (APPEND INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${DEST_INCLUDE_DIR}/ThirdParty/Bullet)
+endif ()
+if (CLOCKWORK_NAVIGATION)
+    # DetourTileCache and DetourCrowd libraries depend on Detour's include dir to be added in the header search path
+    list (APPEND INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${DEST_INCLUDE_DIR}/ThirdParty/Detour)
+endif ()
+
+# Setup library output path
+if (ANDROID)
+    set (OUTPUT_PATH ${ANDROID_LIBRARY_OUTPUT_PATH})
+else ()
+    set (OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib)
+endif ()
+set_output_directories (${OUTPUT_PATH} ARCHIVE LIBRARY)
+
+# Setup target
+setup_library (${CLOCKWORK_LIB_TYPE})
+if (NOT ANDROID AND NOT EMSCRIPTEN)
+    file (READ .soversion SOVERSION)
+    string (STRIP ${SOVERSION} SOVERSION)
+    string (REGEX MATCH "([^.]+)\\.([^.]+)\\.(.+)" MATCHED ${SOVERSION})
+    if (MATCHED)
+        set_target_properties (${TARGET_NAME} PROPERTIES VERSION ${MATCHED} SOVERSION ${CMAKE_MATCH_1})
+    else ()
+        message (FATAL_ERROR "The .soversion file is corrupted. It should contain a version number with this format major(0xFFFF).minor(0xFF).patch-level(0xFF). e.g.: 0.1.2")
+    endif ()
+elseif (EMSCRIPTEN)
+    # Emscripten does not support generation of shared library in a conventional sense, it just produces "linked" LLVM bitcode
+    set (CMAKE_SHARED_LIBRARY_SUFFIX ".bc")
+endif ()
+install (TARGETS ${TARGET_NAME} RUNTIME DESTINATION ${DEST_RUNTIME_DIR} LIBRARY DESTINATION ${DEST_LIBRARY_DIR} ARCHIVE DESTINATION ${DEST_LIBRARY_DIR})
+
+# Setup dependency frameworks and libraries
+if (APPLE)
+    if (IOS)
+        setup_ios_linker_flags (LINKER_FLAGS)
+        # Add a custom target to build Mach-O universal binary consisting of iphoneos (universal ARM archs including 'arm64' if 64-bit is enabled) and iphonesimulator (i386 arch and also x86_64 arch if 64-bit is enabled)
+        add_custom_target (${TARGET_NAME}_universal
+            COMMAND lipo -info $<TARGET_FILE:${TARGET_NAME}> |egrep -v 'i386.+armv7' && xcodebuild -target ${TARGET_NAME} -configuration $(CONFIGURATION) -sdk iphonesimulator && mv $<TARGET_FILE:${TARGET_NAME}>{,.iphonesimulator} && xcodebuild -target ${TARGET_NAME} -configuration $(CONFIGURATION) -sdk iphoneos && mv $<TARGET_FILE:${TARGET_NAME}>{,.iphoneos} && lipo -create -output $<TARGET_FILE:${TARGET_NAME}>{,.iphonesimulator,.iphoneos} && rm $<TARGET_FILE:${TARGET_NAME}>{.iphonesimulator,.iphoneos} || echo $<TARGET_FILE:${TARGET_NAME}> is already a Mach-O universal binary consisting of both iphoneos and iphonesimulator archs
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMENT "Creating Mach-O universal binary library consisting of both iphoneos and iphonesimulator archs")
+    else ()
+        # Intentionally use built-in CMAKE_EXE_LINKER_FLAGS here although CMake does not use it when building library, but the variable would be used later when configuring Clockwork.pc for MacOSX platform
+        setup_macosx_linker_flags (CMAKE_EXE_LINKER_FLAGS)
+        # LuaJIT 64-bit specific - replace EXE linker flags with flags for building shared library (adapted from LuaJIT's original Makefile)
+        string (REPLACE "-pagezero_size 10000 -image_base 100000000" "-image_base 7fff04c4a000" LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
+    endif ()
+    set_target_properties (${TARGET_NAME} PROPERTIES LINK_FLAGS ${LINKER_FLAGS})
+    set (FORCE_LOAD -force_load)
+elseif (NOT MSVC)
+    set_property (TARGET ${TARGET_NAME} APPEND PROPERTY LINK_LIBRARIES -Wl,--whole-archive)
+    if (WIN32 AND CLOCKWORK_LIB_TYPE STREQUAL SHARED)
+        set_target_properties (${TARGET_NAME} PROPERTIES PREFIX "")
+    endif ()
+endif ()
+foreach (TARGET ${STATIC_LIBRARY_TARGETS})
+    get_target_property (ARCHIVE ${TARGET} LOCATION)
+    if (ARCHIVE)
+        if (NOT MSVC)
+            set_property (TARGET ${TARGET_NAME} APPEND PROPERTY LINK_LIBRARIES ${FORCE_LOAD} ${ARCHIVE})    # Only works in Apple (Xcode and Makefile) and GCC while building shared library
+        endif ()
+        if (MSVC_VERSION VERSION_EQUAL 1500)
+            if (ARCHIVE MATCHES " ")
+                message (FATAL_ERROR "CMake/VS2008 generator does not support spaces in the source and/or build tree path")
+            endif ()
+            set_property (TARGET ${TARGET_NAME} APPEND_STRING PROPERTY STATIC_LIBRARY_FLAGS " ${ARCHIVE}")  # Fallback for VS2008
+        elseif (XCODE OR MSVC)
+            set_property (TARGET ${TARGET_NAME} APPEND_STRING PROPERTY STATIC_LIBRARY_FLAGS " \"${ARCHIVE}\"")  # Only works in Apple (Xcode only) and MSVC while building static library
+        else ()
+            list (APPEND ARCHIVES ${ARCHIVE})
+        endif ()
+    endif ()
+endforeach ()
+if (NOT XCODE AND NOT MSVC)
+    if (NOT APPLE)
+        set_property (TARGET ${TARGET_NAME} APPEND PROPERTY LINK_LIBRARIES -Wl,--no-whole-archive)
+    endif ()
+    if (NOT CLOCKWORK_LIB_TYPE STREQUAL SHARED)
+        if (APPLE)
+            # Apple libtool takes archives directly as input
+            add_custom_command (TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND mv $<TARGET_FILE:${TARGET_NAME}>{,.engine}
+                COMMAND libtool -static $<TARGET_FILE:${TARGET_NAME}>.engine ${ARCHIVES} -o $<TARGET_FILE:${TARGET_NAME}>
+                COMMAND rm $<TARGET_FILE:${TARGET_NAME}>.engine
+                COMMENT "Merging all archives into a single static library using libtool")
+        elseif (EMSCRIPTEN OR CMAKE_BINARY_DIR MATCHES " ")
+            # Emscripten emar (llvm-ar) neither takes archives directly as input nor supports MRI-style script, so do it the hard way by first extracting the object (bitcode) files and appending them to final archive
+            # Also do that when the build tree path contains spaces because MRI script does not support it (even with proper escape)
+            get_filename_component (AR ${CMAKE_AR} NAME_WE)
+            if (CMAKE_HOST_WIN32)
+                add_custom_command (TARGET ${TARGET_NAME} POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E remove_directory archives
+                    COMMAND ${CMAKE_COMMAND} -E echo "Merging all archives into a single static library using ${AR}")
+                foreach (ARCHIVE ${ARCHIVES})
+                    # Merge per library because Window cmd shell does not handle long argument list
+                    add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E make_directory archives)
+                    add_custom_command (TARGET ${TARGET_NAME} POST_BUILD
+                        COMMAND ${CMAKE_AR} x ${ARCHIVE}
+                        COMMAND ${CMAKE_COMMAND} -E echo_append "\\\"${CMAKE_AR}\\\"" q \\\"$<TARGET_FILE:${TARGET_NAME}>\\\" " " >merge.bat
+                        COMMAND for /F %%i in ('dir /B') do ${CMAKE_COMMAND} -E echo_append %%i" " >>merge.bat
+                        COMMAND merge.bat WORKING_DIRECTORY archives)
+                    add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove_directory archives)
+                endforeach ()
+                add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_RANLIB} $<TARGET_FILE:${TARGET_NAME}>)
+            else ()
+                add_custom_command (TARGET ${TARGET_NAME} POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E remove_directory archives
+                    COMMAND ${CMAKE_COMMAND} -E make_directory archives COMMENT "Merging all archives into a single static library using ${AR}")
+                foreach (ARCHIVE ${ARCHIVES})
+                    add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_AR} x ${ARCHIVE} WORKING_DIRECTORY archives)
+                endforeach ()
+                add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_AR} q $<TARGET_FILE:${TARGET_NAME}> `ls -1` WORKING_DIRECTORY archives)
+                add_custom_command (TARGET ${TARGET_NAME} POST_BUILD
+                    COMMAND ${CMAKE_RANLIB} $<TARGET_FILE:${TARGET_NAME}>
+                    COMMAND ${CMAKE_COMMAND} -E remove_directory archives)
+            endif ()
+        else ()
+            # GCC ar does not take archives directly as input like Apple libtool, however, it can be scripted to do so
+            add_custom_command (TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E rename $<TARGET_FILE:${TARGET_NAME}> $<TARGET_FILE:${TARGET_NAME}>.engine
+                COMMAND echo CREATE $<TARGET_FILE:${TARGET_NAME}> >script.ar
+                COMMAND echo ADDLIB $<TARGET_FILE:${TARGET_NAME}>.engine >>script.ar)
+            foreach (ARCHIVE ${ARCHIVES})
+                add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND echo ADDLIB ${ARCHIVE} >>script.ar)
+            endforeach ()
+            add_custom_command (TARGET ${TARGET_NAME} POST_BUILD
+                COMMAND echo SAVE >>script.ar
+                COMMAND echo END >>script.ar
+                COMMAND ${CMAKE_AR} -M <script.ar
+                COMMAND ${CMAKE_COMMAND} -E remove $<TARGET_FILE:${TARGET_NAME}>.engine script.ar
+                COMMENT "Merging all archives into a single static library using ar")
+        endif ()
+    endif ()
+endif ()
+# todo This is a deprecated property in CMake version 2.8.12 - Remove below commands when CMake minimum version is 2.8.12
+if (CMAKE_VERSION VERSION_LESS 2.8.12)
+    set_target_properties (${TARGET_NAME} PROPERTIES LINK_INTERFACE_LIBRARIES "")
+    if (CLOCKWORK_LIB_TYPE STREQUAL SHARED)
+        if (NOT MSVC AND CMAKE_VERSION VERSION_LESS 2.8.11)
+            get_target_property (LINK_LIBRARIES ${TARGET_NAME} LINK_LIBRARIES)
+            target_link_libraries (${TARGET_NAME} LINK_PRIVATE ${LINK_LIBRARIES})
+        endif ()
+    else ()
+        set_target_properties (${TARGET_NAME} PROPERTIES LINK_LIBRARIES "")
+    endif ()
+endif ()
+# end todo
+# Use PIC on platforms that support it (shared library type has this property set to true by default, so we only have to deal with those static ones that the shared library links against)
+if (CLOCKWORK_LIB_TYPE STREQUAL SHARED)
+    set_target_properties (${STATIC_LIBRARY_TARGETS} PROPERTIES POSITION_INDEPENDENT_CODE true)
+    if (NOT MSVC AND NOT (CMAKE_CROSSCOMPILING AND MINGW) AND CMAKE_VERSION VERSION_LESS 2.8.9)  # todo: Remove this when CMake minimum version is 2.8.9
+        set_property (TARGET ${STATIC_LIBRARY_TARGETS} APPEND PROPERTY COMPILE_FLAGS -fPIC)
+    endif ()
+endif ()
+
+# Install headers for using the Clockwork library
+install_header_files (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ DESTINATION ${DEST_INCLUDE_DIR} FILES_MATCHING PATTERN *.h USE_FILE_SYMLINK)    # Note: the trailing slash is significant
+install_header_files (FILES ${CMAKE_CURRENT_BINARY_DIR}/librevision.h ${CMAKE_CURRENT_BINARY_DIR}/Clockwork.h DESTINATION ${DEST_INCLUDE_DIR})
+
+# Generate platform specific pkg-config file for the benefit of Clockwork library users via SDK without CMake
+get_directory_property (CLOCKWORK_COMPILE_DEFINITIONS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} COMPILE_DEFINITIONS)
+# Remove those defines that are only used for building the library and not needed by library user
+list (REMOVE_ITEM CLOCKWORK_COMPILE_DEFINITIONS HAVE_STDINT_H GLEW_STATIC GLEW_NO_GLU CLOCKWORK_IS_BUILDING ODBC_3_OR_LATER)
+if (ABSOLUTE_PATH_LIBS)
+    string (REPLACE ";" "\" \"" CLOCKWORK_ABS_PATH_LIBS "\"${ABSOLUTE_PATH_LIBS}\"")   # Note: need to always "stringify" a variable in list context for replace to work correctly, besides the list could be empty
+    string (REPLACE "${SYSROOT}" "\${pc_sysrootdir}" CLOCKWORK_ABS_PATH_LIBS "${CLOCKWORK_ABS_PATH_LIBS}")
+endif ()
+if (MSVC)
+    # todo: Add a post build command to adjust the LIB_NAME when in Debug configuration (CMake/VS generator is multi-config)
+    set (DASH /)
+    set (LIB_DIR "/LIBPATH:\"\${libdir}\"")
+    string (REPLACE ";" ".lib\" \"" CLOCKWORK_LIBS "\"${LIB_NAME};${LIBS}.lib\"")
+else ()
+    set (DASH -)
+    set (LIB_DIR "-L\"\${libdir}\"")
+    string (REPLACE ";" " -l" CLOCKWORK_LIBS "-l${LIB_NAME};${LIBS}")
+endif ()
+string (REPLACE ";" " ${DASH}D" CLOCKWORK_COMPILE_DEFINITIONS ";${CLOCKWORK_COMPILE_DEFINITIONS}")
+get_directory_property (GLOBAL_INCLUDE_DIRS DIRECTORY ${CMAKE_SOURCE_DIR} INCLUDE_DIRECTORIES)
+if (GLOBAL_INCLUDE_DIRS)
+    string (REPLACE ";" "\" ${DASH}I\"" GLOBAL_INCLUDE_DIRS "${DASH}I\"${GLOBAL_INCLUDE_DIRS}\"")
+    string (REPLACE "${SYSROOT}" "" GLOBAL_INCLUDE_DIRS ${GLOBAL_INCLUDE_DIRS})
+endif ()
+set (ENGINE_INCLUDE_DIRS "${DASH}I\"\${includedir}\" ${DASH}I\"\${includedir}/${PATH_SUFFIX}/ThirdParty\"")
+if (CLOCKWORK_PHYSICS)
+    # Bullet library depends on its own include dir to be added in the header search path
+    # This is more practical than patching its header files in many places to make them work with relative path
+    set (ENGINE_INCLUDE_DIRS "${ENGINE_INCLUDE_DIRS} ${DASH}I\"\${includedir}/${PATH_SUFFIX}/ThirdParty/Bullet\"")
+endif ()
+# todo: Reevaluate the command below when the CMake minimum required version is set to 2.8.12 (and remove only when the deprected add_compiler_export_flags() is not used anymore)
+string (REGEX REPLACE " -fvisibility[^ ]+" "" CLEANED_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})   # Remove visibility compiler options that are only used for building the library
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/Clockwork.pc.in ${CMAKE_CURRENT_BINARY_DIR}/Clockwork.pc @ONLY)
+if (ANDROID)
+    set (RENAME RENAME Clockwork-${ANDROID_NDK_ABI_NAME}.pc)
+endif ()
+install (FILES ${CMAKE_CURRENT_BINARY_DIR}/Clockwork.pc DESTINATION ${DEST_PKGCONFIG_DIR} ${RENAME})
+
+# Define post build steps
+if (ANDROID_NDK_GDB)
+    # Copy the library while it still has debug symbols for ndk-gdb
+    add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:${TARGET_NAME}> ${NDK_GDB_SOLIB_PATH}
+        COMMENT "Copying Clockwork library with debug symbols to ${NDK_GDB_SOLIB_PATH} directory")
+endif ()
+if (CLOCKWORK_LIB_TYPE STREQUAL SHARED AND (ANDROID OR RPI OR IOS))
+    # Strip the output shared library for embedded devices
+    add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND ${CMAKE_STRIP} $<TARGET_FILE:${TARGET_NAME}>
+        COMMENT "Stripping Clockwork shared library")
+endif ()
+if (CLOCKWORK_SCP_TO_TARGET)
+    # Ensure SCP is the last command
+    add_custom_command (TARGET ${TARGET_NAME} POST_BUILD COMMAND scp $<TARGET_FILE:${TARGET_NAME}> ${CLOCKWORK_SCP_TO_TARGET} || exit 0
+        COMMENT "Scp-ing Clockwork library to target system")
+endif ()

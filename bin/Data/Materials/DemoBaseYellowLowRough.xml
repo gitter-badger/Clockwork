@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<material>
+	<technique name="Techniques/Diff.xml" quality="0" loddistance="0" />
+	<texture unit="diffuse" name="Textures/Demo/Yellow.png" />
+	<parameter name="UOffset" value="4 0 0 0" />
+	<parameter name="VOffset" value="0 4 0 0" />
+	<parameter name="MatDiffColor" value="1 1 1 1" />
+	<parameter name="MatEmissiveColor" value="0 0 0" />
+	<parameter name="MatEnvMapColor" value="1 1 1" />
+	<parameter name="MatSpecColor" value="1 1 1 1" />
+<<<<<<< HEAD
+	<parameter name="RoughnessControl" value="0.1 0" />
+	<parameter name="MetalicControl" value="0 0" />
+=======
+	<parameter name="RoughnessControl" value="0.2 0" />
+>>>>>>> parent of a062f56... Fixed Artifacts on PBR renderer
+	<cull value="ccw" />
+	<shadowcull value="ccw" />
+	<fill value="solid" />
+	<depthbias constant="0" slopescaled="0" />
+	<renderorder value="128" />
+</material>

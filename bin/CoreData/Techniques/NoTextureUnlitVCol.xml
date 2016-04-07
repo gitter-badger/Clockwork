@@ -1,0 +1,5 @@
+<technique vs="Unlit" ps="Unlit" vsdefines="VERTEXCOLOR NOUV" psdefines="VERTEXCOLOR">
+  <pass name="base" />
+  <pass name="pbrdeferred" psdefines="DEFERRED PBR" />
+  <pass name="depth" vs="Depth" ps="Depth" />
+</technique>
