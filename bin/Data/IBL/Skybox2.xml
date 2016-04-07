@@ -1,9 +1,0 @@
-<cubemap>
-    <face name="FactoryWalkway_right.PNG" />
-    <face name="FactoryWalkway_left.PNG" />
-    <face name="FactoryWalkway_top.PNG" />
-    <face name="FactoryWalkway_bottom.PNG" />
-    <face name="FactoryWalkway_front.PNG" />
-    <face name="FactoryWalkway_back.PNG" />
-    <quality low="0" />
-</cubemap>
