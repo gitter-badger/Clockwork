@@ -1,23 +1,11 @@
-::
-:: Copyright (c) 2008-2015 the Clockwork project.
-::
-:: Permission is hereby granted, free of charge, to any person obtaining a copy
-:: of this software and associated documentation files (the "Software"), to deal
-:: in the Software without restriction, including without limitation the rights
-:: to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-:: copies of the Software, and to permit persons to whom the Software is
-:: furnished to do so, subject to the following conditions:
-::
-:: The above copyright notice and this permission notice shall be included in
-:: all copies or substantial portions of the Software.
-::
-:: THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-:: IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-:: FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-:: AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-:: LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-:: OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-:: THE SOFTWARE.
-::
-
-@"%~dp0cmake_generic.bat" %* -VS=14
+@ECHO OFF
+@echo:
+@echo:
+ECHO Generating Visual Studio Solution, this process will take a few minutes
+@echo:
+@echo:
+PAUSE
+Build\Windows\node\node.exe Build\node_modules\jake\bin\cli.js -f ./Build/Scripts/Bootstrap.js build:genvs2015
+@echo:
+@echo:
+PAUSE
