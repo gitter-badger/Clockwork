@@ -2,13 +2,13 @@ var fs = require('fs-extra');
 var path = require("path");
 var host = require("./Host");
 var os = require('os');
-var clockworkRoot = host.clockworkRoot;
+var atomicRoot = host.atomicRoot;
 
 var buildDir = host.artifactsRoot + "Build/Android/";
 
 namespace('build', function() {
 
-  task('android_player', ["build:clockworkeditor"], {
+  task('android_player', ["build:atomiceditor"], {
     async: true
   }, function() {
 
@@ -20,7 +20,7 @@ namespace('build', function() {
     var cmds = [];
 
     var scriptModules = host.getScriptModules("ANDROID");
-    var bindCmd = host.clockworkTool + " bind \"" + clockworkRoot + "\" ";
+    var bindCmd = host.atomicTool + " bind \"" + atomicRoot + "\" ";
 
     // Generate bindings for each script package
     for (var pkgName in scriptModules) {
@@ -28,7 +28,7 @@ namespace('build', function() {
     }
 
     if (os.platform() == "win32") {
-      cmds.push(clockworkRoot + "Build/Scripts/Windows/CompileAndroid.bat");
+      cmds.push(atomicRoot + "Build/Scripts/Windows/CompileAndroid.bat");
     }
     else {
       cmds.push("cmake -G \"Unix Makefiles\" -DCMAKE_TOOLCHAIN_FILE=../../../Build/CMake/Toolchains/android.toolchain.cmake -DCMAKE_BUILD_TYPE=Release ../../../");
@@ -37,11 +37,11 @@ namespace('build', function() {
 
     jake.exec(cmds, function() {
 
-      var editorAppFolder = host.artifactsRoot + (os.platform() == "win32" ? "ClockworkEditor/" : "ClockworkEditor/ClockworkEditor.app/");
+      var editorAppFolder = host.artifactsRoot + (os.platform() == "win32" ? "AtomicEditor/" : "AtomicEditor/AtomicEditor.app/");
 
       // Install Deployment
-      fs.copySync(buildDir + "Source/ClockworkPlayer/Application/libClockworkPlayer.so",
-        editorAppFolder + "Resources/ToolData/Deployment/Android/libs/armeabi-v7a/libClockworkPlayer.so");
+      fs.copySync(buildDir + "Source/AtomicPlayer/Application/libAtomicPlayer.so",
+        editorAppFolder + "Resources/ToolData/Deployment/Android/libs/armeabi-v7a/libAtomicPlayer.so");
 
       complete();
 

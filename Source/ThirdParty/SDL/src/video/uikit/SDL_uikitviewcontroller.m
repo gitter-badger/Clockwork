@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "../../SDL_internal.h"
 
@@ -124,7 +124,7 @@
 
 - (BOOL)prefersStatusBarHidden
 {
-    // Clockwork: always prefer the status bar hidden
+    // Urho3D: always prefer the status bar hidden
     return YES;
 }
 

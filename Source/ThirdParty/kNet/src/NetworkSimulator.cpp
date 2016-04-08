@@ -12,9 +12,9 @@
    See the License for the specific language governing permissions and
    limitations under the License. */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
-// Clockwork: MessageConnection.h already includes NetworkSimulator.h, make sure WS2Include.h is included before windows.h / winsock.h
+// Urho3D: MessageConnection.h already includes NetworkSimulator.h, make sure WS2Include.h is included before windows.h / winsock.h
 #include "kNet/MessageConnection.h"
 
 namespace kNet

@@ -1,7 +1,7 @@
 #ifndef RAPIDJSON_PRETTYWRITER_H_
 #define RAPIDJSON_PRETTYWRITER_H_
 
-// Modified by Ali Kamarainen for Clockwork
+// Modified by Ali Kamarainen for Urho3D
 
 #include "writer.h"
 
@@ -33,7 +33,7 @@ public:
 		\note The default indentation is 4 spaces.
 	*/
 	PrettyWriter& SetIndent(Ch indentChar, unsigned indentCharCount) {
-		// Clockwork: in order to be consistent witht the XMLFile API, allow any character.
+		// Urho3D: in order to be consistent witht the XMLFile API, allow any character.
 		// RAPIDJSON_ASSERT(indentChar == ' ' || indentChar == '\t' || indentChar == '\n' || indentChar == '\r');
 		indentChar_ = indentChar;
 		indentCharCount_ = indentCharCount;

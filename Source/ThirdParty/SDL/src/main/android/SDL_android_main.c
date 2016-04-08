@@ -2,22 +2,21 @@
     SDL_android_main.c, placed in the public domain by Sam Lantinga  3/13/14
 */
 
-// Modified by Lasse Oorni and Yao Wei Tjong for Clockwork
+// Modified by Lasse Oorni and Yao Wei Tjong for Urho3D
 
-// Clockwork - use SDK include dir
-#include <SDL/SDL_internal.h>
+#include "../../SDL_internal.h"
 
 #ifdef __ANDROID__
 
-/* Include the SDL main definition header */ // Clockwork - use SDK include dir
-#include <SDL/SDL_main.h>
+/* Include the SDL main definition header */ // Urho3D - use SDK include dir
+#include <SDL/include/SDL_main.h>
 
 /*******************************************************************************
                  Functions called by JNI
 *******************************************************************************/
 #include <jni.h>
 
-// Clockwork: added extra filesDir parameter
+// Urho3D: added extra filesDir parameter
 /* Called before SDL_main() to initialize JNI bindings in SDL library */
 extern void SDL_Android_Init(JNIEnv* env, jclass cls, jstring filesDir);
 

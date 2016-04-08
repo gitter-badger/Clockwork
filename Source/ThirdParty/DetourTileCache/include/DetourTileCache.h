@@ -1,11 +1,8 @@
 #ifndef DETOURTILECACHE_H
 #define DETOURTILECACHE_H
 
-// Modified by Lasse Oorni for Clockwork
-
-#include "DetourStatus.h"
-
-
+#include <Detour/include/DetourStatus.h>
+// Modified by Lasse Oorni for Urho3D
 
 typedef unsigned int dtObstacleRef;
 
@@ -123,7 +120,7 @@ public:
 	
 	void getObstacleBounds(const struct dtTileCacheObstacle* ob, float* bmin, float* bmax) const;
 	
-    // Clockwork: added function to know when we have too many obstacle requests without update
+    // Urho3D: added function to know when we have too many obstacle requests without update
     bool isObstacleQueueFull() const { return m_nreqs >= MAX_REQUESTS; }
 
 	/// Encodes a tile id.

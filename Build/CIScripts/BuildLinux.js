@@ -10,9 +10,9 @@ namespace('build', function() {
     async: true
   }, function() {
 
-    var clockworkTool = host.getClockworkToolBinary();
+    var atomicTool = host.getAtomicToolBinary();
 
-    var playerBuildDir = buildDir + "ClockworkPlayer/";
+    var playerBuildDir = buildDir + "AtomicPlayer/";
 
     bcommon.cleanCreateDir(playerBuildDir);
     bcommon.cleanCreateDir(bcommon.getGenScriptRootDir("LINUX"));
@@ -20,15 +20,15 @@ namespace('build', function() {
     process.chdir(playerBuildDir);
 
     var cmds = [
-      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/Clockwork/ LINUX",
-      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/ClockworkPlayer/ LINUX",
-      "cmake -DCLOCKWORK_DEV_BUILD=0 -DLINUX=1 ../../../../",
+      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/Atomic/ LINUX",
+      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/AtomicPlayer/ LINUX",
+      "cmake -DATOMIC_DEV_BUILD=0 -DLINUX=1 ../../../../",
       "make"
     ];
 
     jake.exec(cmds, function() {
-      var macPlayerBinary = playerBuildDir + "Source/ClockworkPlayer/Application/Release/Contents/Linux/ClockworkPlayer";
-      fs.copySync(macPlayerBinary, buildDir + "Bin/ClockworkPlayer");
+      var macPlayerBinary = playerBuildDir + "Source/AtomicPlayer/Application/Release/Contents/Linux/AtomicPlayer";
+      fs.copySync(macPlayerBinary, buildDir + "Bin/AtomicPlayer");
       console.log("Built Linux Player");
       complete();
 
@@ -42,28 +42,28 @@ namespace('build', function() {
     async: true
   }, function() {
 
-    var clockworkTool = host.getClockworkToolBinary();
+    var atomicTool = host.getAtomicToolBinary();
 
-    var editorBuildDir = buildDir + "ClockworkEditor/";
+    var editorBuildDir = buildDir + "AtomicEditor/";
 
     bcommon.cleanCreateDir(editorBuildDir);
 
     process.chdir(editorBuildDir);
 
     var cmds = [
-      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/Clockwork/ LINUX",
-      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/ClockworkPlayer/ LINUX",
-      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/ToolCore/ LINUX",
-      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/Editor/ LINUX",
-      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/ClockworkNET/ LINUX",
-      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/WebView/ LINUX",
-      "cmake -DCLOCKWORK_DEV_BUILD=0 -DLINUX=1 ../../../../",
+      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/Atomic/ LINUX",
+      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/AtomicPlayer/ LINUX",
+      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/ToolCore/ LINUX",
+      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/Editor/ LINUX",
+      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/AtomicNET/ LINUX",
+      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/WebView/ LINUX",
+      "cmake -DATOMIC_DEV_BUILD=0 -DLINUX=1 ../../../../",
       "make"
     ];
 
     jake.exec(cmds, function() {
-      var macEditorBinary = editorBuildDir + "Source/ClockworkEditor/Release/Contents/Linux/ClockworkEditor";
-      fs.copySync(macEditorBinary, buildDir + "Bin/ClockworkEditor");
+      var macEditorBinary = editorBuildDir + "Source/AtomicEditor/Release/Contents/Linux/AtomicEditor";
+      fs.copySync(macEditorBinary, buildDir + "Bin/AtomicEditor");
       console.log("Built Linux Editor");
       complete();
 

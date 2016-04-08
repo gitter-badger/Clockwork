@@ -1,11 +1,11 @@
 
-project (Clockwork)
+project (Atomic)
 
 cmake_minimum_required (VERSION 2.8)
 
 set (CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/Build/CMake/Modules)
 
-include(ClockworkUtils)
+include(AtomicUtils)
 
 add_definitions(-DATOMIC_ROOT_SOURCE_DIR="${CMAKE_SOURCE_DIR}" -DATOMIC_ROOT_BUILD_DIR="${CMAKE_BINARY_DIR}")
 
@@ -19,13 +19,13 @@ if (ATOMIC_DEV_BUILD)
     add_definitions("-DATOMIC_DEV_BUILD=1")
 endif()
 
-# Disable until https://github.com/ClockworkGameEngine/ClockworkGameEngine/issues/554 is addressed
+# Disable until https://github.com/AtomicGameEngine/AtomicGameEngine/issues/554 is addressed
 # add_definitions("-DATOMIC_SOURCE_BUILD=1")
 
-# this is here as QtCreator is having trouble picking up #include <Clockwork/*> without it
-include_directories(${CMAKE_SOURCE_DIR}/Source ${CMAKE_SOURCE_DIR}/Source/ClockworkEditor/Source)
+# this is here as QtCreator is having trouble picking up #include <Atomic/*> without it
+include_directories(${CMAKE_SOURCE_DIR}/Source ${CMAKE_SOURCE_DIR}/Source/AtomicEditor/Source)
 
-set (ATOMIC_LINK_LIBRARIES Clockwork Box2D Duktape TurboBadger FreeType JO LZ4 PugiXml STB)
+set (ATOMIC_LINK_LIBRARIES Atomic Box2D Duktape TurboBadger FreeType JO LZ4 PugiXml STB)
 
 if (NOT ATOMIC_BUILD_2D)
     add_definitions( -DATOMIC_PHYSICS -DATOMIC_3D)
@@ -41,33 +41,33 @@ add_definitions( -DATOMIC_WEB )
 
 if (MSVC)
 
-    include(ClockworkWindows)
+    include(AtomicWindows)
 
 elseif(APPLE)
 
     if (IOS)
-        include(ClockworkIOS)
+        include(AtomicIOS)
     else()
-        include(ClockworkMac)
+        include(AtomicMac)
     endif()
 
 elseif(LINUX)
 
-  include(ClockworkLinux)
+  include(AtomicLinux)
 
 elseif(ANDROID)
 
-    include(ClockworkAndroid)
+    include(AtomicAndroid)
 
 elseif(EMSCRIPTEN)
 
-    include(ClockworkWeb)
+	include(AtomicWeb)
 
 endif()
 
 find_program(CLDOC cldoc)
 if(CLDOC)
-   add_custom_target(docs DEPENDS ClockworkEngineDocs)
+   add_custom_target(docs DEPENDS AtomicEngineDocs)
 endif()
 
 if (ATOMIC_WEBVIEW)

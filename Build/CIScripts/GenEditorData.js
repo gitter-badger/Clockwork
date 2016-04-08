@@ -4,10 +4,8 @@ var host = require("./Host");
 
 var buildDir = bcommon.artifactsRoot + "Build/EditorData/";
 var jsDocFolder = bcommon.artifactsRoot + "Build/JSDoc/";
-var clockworkRoot = bcommon.clockworkRoot;
-var clockworkTool = host.getClockworkToolBinary();
-var glob = require("glob");
-var Tslint = require("tslint");
+var atomicRoot = bcommon.atomicRoot;
+var atomicTool = host.getAtomicToolBinary();
 
 namespace('build', function() {
 
@@ -18,14 +16,14 @@ namespace('build', function() {
     bcommon.cleanCreateDir(buildDir);
     bcommon.cleanCreateDir(jsDocFolder);
 
-    var bindCmd = clockworkTool + " bind \"" + clockworkRoot + "\" ";
+    var bindCmd = atomicTool + " bind \"" + atomicRoot + "\" ";
 
     var cmds = [
-      bindCmd + "Script/Packages/Clockwork/ WINDOWS",
-      bindCmd + "Script/Packages/ClockworkPlayer/ WINDOWS",
+      bindCmd + "Script/Packages/Atomic/ WINDOWS",
+      bindCmd + "Script/Packages/AtomicPlayer/ WINDOWS",
       bindCmd + "Script/Packages/ToolCore/ WINDOWS",
       bindCmd + "Script/Packages/Editor/ WINDOWS",
-      bindCmd + "Script/Packages/ClockworkNET/ WINDOWS",
+      bindCmd + "Script/Packages/AtomicNET/ WINDOWS",
       bindCmd + "Script/Packages/WebView/ WINDOWS",
     ];
 
@@ -47,14 +45,14 @@ namespace('build', function() {
 
     console.log("Generating Examples & JSDocs");
 
-    fs.copySync(clockworkRoot + "Build/Docs/Readme.md", jsDocFolder + "/Readme.md");
-    fs.copySync(clockworkRoot + "Build/Docs/jsdoc.conf", jsDocFolder + "/jsdoc.conf");
+    fs.copySync(atomicRoot + "Build/Docs/Readme.md", jsDocFolder + "/Readme.md");
+    fs.copySync(atomicRoot + "Build/Docs/jsdoc.conf", jsDocFolder + "/jsdoc.conf");
 
     cmds = [
-      "git clone https://github.com/ClockworkGameEngine/ClockworkExamples " + buildDir + "ClockworkExamples && rm -rf " + buildDir + "ClockworkExamples/.git",
+      "git clone https://github.com/AtomicGameEngine/AtomicExamples " + buildDir + "AtomicExamples && rm -rf " + buildDir + "AtomicExamples/.git",
       "cd " + jsDocFolder + " && npm install git+https://github.com/jsdoc3/jsdoc",
-      "cd " + jsDocFolder + " && git clone https://github.com/ClockworkGameEngine/jaguarjs-jsdoc && cd jaguarjs-jsdoc && git checkout clockwork_master",
-      "cd " + jsDocFolder + " && ./node_modules/.bin/jsdoc ./Clockwork.js -t ./jaguarjs-jsdoc/ -c ./jsdoc.conf Readme.md",
+      "cd " + jsDocFolder + " && git clone https://github.com/AtomicGameEngine/jaguarjs-jsdoc && cd jaguarjs-jsdoc && git checkout atomic_master",
+      "cd " + jsDocFolder + " && ./node_modules/.bin/jsdoc ./Atomic.js -t ./jaguarjs-jsdoc/ -c ./jsdoc.conf Readme.md",
     ];
 
     jake.exec(cmds, function() {
@@ -79,7 +77,7 @@ namespace('build', function() {
 
     process.chdir(iosDeploybuildDir);
 
-    jake.exec("git clone https://github.com/ClockworkGameEngine/ios-deploy && cd ios-deploy && make ios-deploy",
+    jake.exec("git clone https://github.com/AtomicGameEngine/ios-deploy && cd ios-deploy && make ios-deploy",
       function() {
 
         complete();
@@ -89,87 +87,32 @@ namespace('build', function() {
 
   });
 
-  // Linting task
-  task('lint_typescript', {
-      async: true
-  }, function(fileMask, failOnError) {
-
-    console.log("TSLINT: Linting files in " + fileMask);
-    var lintConfig = JSON.parse(fs.readFileSync("./Script/tslint.json"));
-    var options = {
-        configuration: lintConfig,
-        formatter: "prose"
-    };
-
-    // lint
-    // Since TSLint does not yet support recursively searching for files, then we need to
-    // create a command per file.  The main issue with this is that it will abort on the first error instead
-    // of listing out all lint errors
-    glob(fileMask, function(err, results) {
-      var lintErrors = [];
-      results.forEach(function(filename) {
-
-        var contents = fs.readFileSync(filename, "utf8");
-
-        var ll = new Tslint(filename, contents, options);
-        var result = ll.lint();
-        if (result.failureCount > 0) {
-            lintErrors.push(result.output);
-        }
-      });
-      if (lintErrors.length > 0) {
-          console.warn("TSLINT: WARNING - Lint errors detected");
-          console.warn(lintErrors.join(''));
-          if (failOnError) {
-              fail("TSLint errors detected");
-          }
-      }
-      complete();
-    });
-  });
-
   task('compileeditorscripts', ["build:genscriptbindings"],{
     async: true
   }, function() {
 
     console.log("Compiling Editor Scripts");
 
-    process.chdir(clockworkRoot);
+    process.chdir(atomicRoot);
 
     var tsc = "./Build/node_modules/typescript/lib/tsc";
 
     cmds = [
-      clockworkRoot + "Build/Mac/node/node " + tsc + " -p ./Script",
-      clockworkRoot + "Build/Mac/node/node " + tsc + " -p ./Script/ClockworkWebViewEditor"
+      atomicRoot + "Build/Mac/node/node " + tsc + " -p ./Script",
+      atomicRoot + "Build/Mac/node/node " + tsc + " -p ./Script/AtomicWebViewEditor"
     ];
+
+    jake.exec(cmds, function() {
 
       // will be copied when editor resources are copied
 
-    var lintTask = jake.Task['build:lint_typescript'];
+      complete();
 
-    lintTask.addListener('complete', function () {
-      console.log("\n\nLint: Typescript linting complete.\n\n");
-      jake.exec(cmds, function() {
-
-          // copy some external dependencies into the editor modules directory
-         var editorModulesDir = "./Artifacts/Build/Resources/EditorData/ClockworkEditor/EditorScripts/ClockworkEditor/modules";
-         var webeditorModulesDir = "./Data/ClockworkEditor/CodeEditor/source/editorCore/modules";
-         var nodeModulesDir = "./Build/node_modules";
-         fs.mkdirsSync(editorModulesDir);
-         // TypeScript
-         fs.copySync(nodeModulesDir + "/typescript/lib/typescript.js", webeditorModulesDir + "/typescript.js")
-
-         // copy lib.core.d.ts into the tool data directory
-         fs.mkdirsSync("./Artifacts/Build/Resources/EditorData/ClockworkEditor/EditorScripts/ClockworkEditor/TypeScriptSupport");
-         fs.copySync("./Build/node_modules/typescript/lib/lib.core.d.ts","./Data/ClockworkEditor/TypeScriptSupport/lib.core.d.ts")
-         complete();
-
-      }, {
-        printStdout: true
-      });
+    }, {
+      printStdout: true
     });
 
-    lintTask.invoke("{./Script/ClockworkEditor/**/*.ts,./Script/ClockworkWebViewEditor/**/*.ts}", false);
+
   });
 
   task('geneditordata', ["build:compileeditorscripts", "build:ios_deploy", "build:gendocs"], {
@@ -178,58 +121,58 @@ namespace('build', function() {
 
     // Mac App
 
-    fs.copySync(clockworkRoot + "Build/CIScripts/Mac/PlayerApp/",
+    fs.copySync(atomicRoot + "Build/CIScripts/Mac/PlayerApp/",
       buildDir + "MacApps/PlayerApp/");
 
     // Editor Binaries
 
-    fs.copySync(bcommon.artifactsRoot + "Build/Mac/Bin/ClockworkEditor.zip",
-      buildDir + "EditorBinaries/Mac/ClockworkEditor.zip");
+    fs.copySync(bcommon.artifactsRoot + "Build/Mac/Bin/AtomicEditor.zip",
+      buildDir + "EditorBinaries/Mac/AtomicEditor.zip");
 
-    fs.copySync(bcommon.artifactsRoot + "Build/Windows/Bin/ClockworkEditor.exe",
-      buildDir + "EditorBinaries/Windows/ClockworkEditor.exe");
+    fs.copySync(bcommon.artifactsRoot + "Build/Windows/Bin/AtomicEditor.exe",
+      buildDir + "EditorBinaries/Windows/AtomicEditor.exe");
 
     fs.copySync(bcommon.artifactsRoot + "Build/Windows/Bin/D3DCompiler_47.dll",
       buildDir + "EditorBinaries/Windows/D3DCompiler_47.dll");
 
     // Resources
 
-    fs.copySync(clockworkRoot + "Resources/CoreData", buildDir + "Resources/CoreData");
-    fs.copySync(clockworkRoot + "Resources/EditorData", buildDir + "Resources/EditorData");
-    fs.copySync(clockworkRoot + "Resources/PlayerData", buildDir + "Resources/PlayerData");
-    fs.copySync(clockworkRoot + "/Data/ClockworkEditor", buildDir + "Resources/ToolData");
+    fs.copySync(atomicRoot + "Resources/CoreData", buildDir + "Resources/CoreData");
+    fs.copySync(atomicRoot + "Resources/EditorData", buildDir + "Resources/EditorData");
+    fs.copySync(atomicRoot + "Resources/PlayerData", buildDir + "Resources/PlayerData");
+    fs.copySync(atomicRoot + "/Data/AtomicEditor", buildDir + "Resources/ToolData");
 
-    fs.copySync(clockworkRoot + "Artifacts/Build/Resources/EditorData/ClockworkEditor/EditorScripts",
-      buildDir + "Resources/EditorData/ClockworkEditor/EditorScripts");
+    fs.copySync(atomicRoot + "Artifacts/Build/Resources/EditorData/AtomicEditor/EditorScripts",
+      buildDir + "Resources/EditorData/AtomicEditor/EditorScripts");
 
     // root deployment
     var deployRoot = buildDir + "Resources/ToolData/Deployment/";
 
-    fs.copySync(clockworkRoot + "/Data/ClockworkEditor/Deployment/", deployRoot);
+    fs.copySync(atomicRoot + "/Data/AtomicEditor/Deployment/", deployRoot);
 
     // Android
-    fs.copySync(bcommon.artifactsRoot + "Build/Android/Bin/libClockworkPlayer.so",
-      deployRoot + "Android/libs/armeabi-v7a/libClockworkPlayer.so");
+    fs.copySync(bcommon.artifactsRoot + "Build/Android/Bin/libAtomicPlayer.so",
+      deployRoot + "Android/libs/armeabi-v7a/libAtomicPlayer.so");
 
     // Mac
-    fs.copySync(bcommon.artifactsRoot + "Build/Mac/Bin/ClockworkPlayer",
-      deployRoot + "MacOS/ClockworkPlayer.app/Contents/MacOS/ClockworkPlayer");
+    fs.copySync(bcommon.artifactsRoot + "Build/Mac/Bin/AtomicPlayer",
+      deployRoot + "MacOS/AtomicPlayer.app/Contents/MacOS/AtomicPlayer");
 
     // IOS
     fs.copySync(bcommon.artifactsRoot + "Build/IOSDeploy/ios-deploy/ios-deploy",
       deployRoot + "IOS/ios-deploy/ios-deploy");
-    fs.copySync(bcommon.artifactsRoot + "Build/IOS/Bin/ClockworkPlayer",
-      deployRoot + "IOS/ClockworkPlayer.app/ClockworkPlayer");
+    fs.copySync(bcommon.artifactsRoot + "Build/IOS/Bin/AtomicPlayer",
+      deployRoot + "IOS/AtomicPlayer.app/AtomicPlayer");
 
     // Web
-    fs.copySync(bcommon.artifactsRoot + "Build/Web/Bin/ClockworkPlayer.js",
-      deployRoot + "Web/ClockworkPlayer.js");
-    fs.copySync(bcommon.artifactsRoot + "Build/Web/Bin/ClockworkPlayer.html.mem",
-      deployRoot + "Web/ClockworkPlayer.html.mem");
+    fs.copySync(bcommon.artifactsRoot + "Build/Web/Bin/AtomicPlayer.js",
+      deployRoot + "Web/AtomicPlayer.js");
+    fs.copySync(bcommon.artifactsRoot + "Build/Web/Bin/AtomicPlayer.html.mem",
+      deployRoot + "Web/AtomicPlayer.html.mem");
 
     // Windows
-    fs.copySync(bcommon.artifactsRoot + "Build/Windows/Bin/ClockworkPlayer.exe",
-      deployRoot + "Windows/x64/ClockworkPlayer.exe");
+    fs.copySync(bcommon.artifactsRoot + "Build/Windows/Bin/AtomicPlayer.exe",
+      deployRoot + "Windows/x64/AtomicPlayer.exe");
     fs.copySync(bcommon.artifactsRoot + "Build/Windows/Bin/D3DCompiler_47.dll",
       deployRoot + "Windows/x64/D3DCompiler_47.dll");
 

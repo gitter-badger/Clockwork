@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "../SDL_internal.h"
 
@@ -139,7 +139,7 @@ int SDL_SaveAllDollarTemplates(SDL_RWops *dst)
     for (i = 0; i < SDL_numGestureTouches; i++) {
         SDL_GestureTouch* touch = &SDL_gestureTouch[i];
         for (j = 0; j < touch->numDollarTemplates; j++) {
-            // Clockwork: fix index variable (i -> j)
+            // Urho3D: fix index variable (i -> j)
             rtrn += SaveTemplate(&touch->dollarTemplate[j], dst);
         }
     }
@@ -152,7 +152,7 @@ int SDL_SaveDollarTemplate(SDL_GestureID gestureId, SDL_RWops *dst)
     for (i = 0; i < SDL_numGestureTouches; i++) {
         SDL_GestureTouch* touch = &SDL_gestureTouch[i];
         for (j = 0; j < touch->numDollarTemplates; j++) {
-            // Clockwork: gesture IDs are stored as 32bit, so check the low bits only. Fix index variable (i -> j)
+            // Urho3D: gesture IDs are stored as 32bit, so check the low bits only. Fix index variable (i -> j)
             if ((touch->dollarTemplate[j].hash & 0xffffffff) == (gestureId & 0xffffffff)) {
                 return SaveTemplate(&touch->dollarTemplate[j], dst);
             }
@@ -161,7 +161,7 @@ int SDL_SaveDollarTemplate(SDL_GestureID gestureId, SDL_RWops *dst)
     return SDL_SetError("Unknown gestureId");
 }
 
-// Clockwork: added function
+// Urho3D: added function
 static void SDL_RemoveDollarTemplate_one(SDL_GestureTouch* inTouch, int index)
 {
     if (index < inTouch->numDollarTemplates - 1) {
@@ -179,14 +179,14 @@ static void SDL_RemoveDollarTemplate_one(SDL_GestureTouch* inTouch, int index)
     --inTouch->numDollarTemplates;
 }
 
-// Clockwork: added function
+// Urho3D: added function
 int SDL_RemoveDollarTemplate(SDL_GestureID gestureId)
 {
     int i,j,ret = 0;
     for (i = 0; i < SDL_numGestureTouches; i++) {
         SDL_GestureTouch* touch = &SDL_gestureTouch[i];
         for (j = 0; j < touch->numDollarTemplates; j++) {
-            // Clockwork: gesture IDs are stored as 32bit, so check the low bits only
+            // Urho3D: gesture IDs are stored as 32bit, so check the low bits only
             if ((touch->dollarTemplate[j].hash & 0xffffffff) == (gestureId & 0xffffffff)) {
                 SDL_RemoveDollarTemplate_one(touch, j);
                 ret = 1;
@@ -196,7 +196,7 @@ int SDL_RemoveDollarTemplate(SDL_GestureID gestureId)
     return ret;
 }
 
-// Clockwork: added function
+// Urho3D: added function
 void SDL_RemoveAllDollarTemplates(void)
 {
     int i;
@@ -505,7 +505,7 @@ static int SDL_SendGestureDollar(SDL_GestureTouch* touch,
     SDL_Event event;
     event.dgesture.type = SDL_DOLLARGESTURE;
     event.dgesture.touchId = touch->id;
-    // Clockwork: fixed to store x,y into event.dgesture instead of event.mgesture
+    // Urho3D: fixed to store x,y into event.dgesture instead of event.mgesture
     event.dgesture.x = touch->centroid.x;
     event.dgesture.y = touch->centroid.y;
     event.dgesture.gestureId = gestureId;

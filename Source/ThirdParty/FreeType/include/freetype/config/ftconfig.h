@@ -15,7 +15,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
   /*************************************************************************/
   /*                                                                       */
@@ -369,7 +369,7 @@ FT_BEGIN_HEADER
 
 #ifdef __GNUC__
 
-// Clockwork: restored previous architecture check to prevent iOS build failure
+// Urho3D: restored previous architecture check to prevent iOS build failure
 #if defined( __arm__ ) && !defined( __thumb__ )    && \
     !( defined( __CC_ARM ) || defined( __ARMCC__ ) )
 #define FT_MULFIX_ASSEMBLER  FT_MulFix_arm

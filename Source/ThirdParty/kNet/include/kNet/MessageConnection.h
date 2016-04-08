@@ -16,7 +16,7 @@
 /** @file MessageConnection.h
 	@brief The MessageConnection and ConnectionStatistics classes. */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include <vector>
 #include <map>
@@ -24,7 +24,7 @@
 #include <set>
 
 #include "kNetBuildConfig.h"
-// Clockwork: include Socket.h first to make sure WS2Include.h is included before windows.h / winsock.h
+// Urho3D: include Socket.h first to make sure WS2Include.h is included before windows.h / winsock.h
 #include "Socket.h"
 #include "WaitFreeQueue.h"
 #include "LockFreePoolAllocator.h"

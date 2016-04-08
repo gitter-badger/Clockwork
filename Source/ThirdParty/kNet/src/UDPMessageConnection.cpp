@@ -16,7 +16,7 @@
 	@brief Implements the UDP-specific code of MessageConnection.
 	\todo Flow control currently disabled since testing out the performance of UDT. */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include <cmath>
 #include <cstdio>

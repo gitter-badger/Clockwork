@@ -1,4 +1,4 @@
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "stb_image.h"
 #define STB_IMAGE_IMPLEMENTATION
@@ -126,8 +126,8 @@ typedef unsigned char validate_uint32[sizeof(stbi__uint32)==4 ? 1 : -1];
 #define STBI__X86_TARGET
 #endif
 
-// Clockwork: do not use SIMD instructions if CLOCKWORK_SSE disabled
-#ifndef CLOCKWORK_SSE
+// Urho3D: do not use SIMD instructions if URHO3D_SSE disabled
+#ifndef URHO3D_SSE
 #define STBI_NO_SIMD
 #endif
 

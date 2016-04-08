@@ -20,7 +20,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Yao Wei Tjong for Urho3D
 
 #ifndef _SDL_config_linux_h
 #define _SDL_config_linux_h
@@ -274,7 +274,7 @@
 #define SDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS 1
 #define SDL_VIDEO_DRIVER_X11_HAS_XKBKEYCODETOKEYSYM 1
 
-// Clockwork: Use OpenGL ES 2 implementation from Broadcom VideoCore for Raspberry Pi
+// Urho3D: Use OpenGL ES 2 implementation from Broadcom VideoCore for Raspberry Pi
 #ifdef RPI
 #undef SDL_VIDEO_DRIVER_X11			/* No X */
 #define SDL_VIDEO_DRIVER_RPI 1

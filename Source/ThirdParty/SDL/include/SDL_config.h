@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #ifndef _SDL_config_h
 #define _SDL_config_h
@@ -30,7 +30,7 @@
  *  \file SDL_config.h
  */
 
-// Clockwork: choose from prebuilt config files on all platforms
+// Urho3D: choose from prebuilt config files on all platforms
 #if defined(__WIN32__)
 #include "SDL_config_windows.h"
 #elif defined(__MACOSX__)

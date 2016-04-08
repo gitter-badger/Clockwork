@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 /**
  *  \file SDL_platform.h
@@ -119,7 +119,7 @@
 #if defined(WIN32) || defined(_WIN32) || defined(__CYGWIN__)
 /* Try to find out if we're compiling for WinRT or non-WinRT */
 /* If _USING_V110_SDK71_ is defined it means we are using the v110_xp or v120_xp toolset. */
-// Clockwork: not all MinGW versions contain the winapifamily.h include file. Only check for WinRT
+// Urho3D: not all MinGW versions contain the winapifamily.h include file. Only check for WinRT
 // on Visual Studio
 #if (defined(_MSC_VER) && (_MSC_VER >= 1700) && !_USING_V110_SDK71_)	/* _MSC_VER==1700 for MSVC 2012 */
 #include <winapifamily.h>

@@ -1,122 +1,58 @@
-#
-# Copyright (c) 2008-2015 the Clockwork project.
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
 
-if (NOT CMAKE_PROJECT_NAME STREQUAL Clockwork)
-    # Set project name
-    project (ExternalProject-PackageTool)
 
-    # Set minimum version
-    cmake_minimum_required (VERSION 2.8.6)
+add_executable(PackageTool PackageTool.cpp)
 
-    if (COMMAND cmake_policy)
-        cmake_policy (SET CMP0003 NEW)
-        if (CMAKE_VERSION VERSION_GREATER 2.8.12 OR CMAKE_VERSION VERSION_EQUAL 2.8.12)
-            # INTERFACE_LINK_LIBRARIES defines the link interface
-            cmake_policy (SET CMP0022 NEW)
-        endif ()
-        if (CMAKE_VERSION VERSION_GREATER 3.0.0 OR CMAKE_VERSION VERSION_EQUAL 3.0.0)
-            # Disallow use of the LOCATION target property - therefore we set to OLD as we still need it
-            cmake_policy (SET CMP0026 OLD)
-            # MACOSX_RPATH is enabled by default
-            cmake_policy (SET CMP0042 NEW)
-        endif ()
-    endif ()
+target_link_libraries(PackageTool ${ATOMIC_LINK_LIBRARIES})
 
-    # Set CMake modules search path
-    set (CMAKE_MODULE_PATH ${BAKED_CMAKE_SOURCE_DIR}/CMake/Modules)
 
-    # Include Clockwork Cmake common module
-    include (Clockwork-CMake-common)
+file (GLOB_RECURSE EDITORDATA_FILES ${CMAKE_SOURCE_DIR}/Data/AtomicEditor/Resources/EditorData/*)
+file (GLOB_RECURSE COREDATA_FILES ${CMAKE_SOURCE_DIR}/Data/AtomicPlayer/Resources/CoreData/*)
 
-    # Define additional source files
-    set (MINI_CLOCKWORK_CPP_FILES
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Container/Allocator.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Container/HashBase.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Container/RefCounted.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Container/Str.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Container/VectorBase.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Core/Context.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Core/Mutex.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Core/Object.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Core/ProcessUtils.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Core/Profiler.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Core/StringUtils.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Core/Thread.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Core/Timer.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Core/Variant.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/IO/Deserializer.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/IO/File.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/IO/FileSystem.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/IO/Log.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/IO/MemoryBuffer.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/IO/PackageFile.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/IO/Serializer.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/IO/VectorBuffer.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Math/Color.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Math/Matrix3.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Math/Matrix3x4.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Math/Matrix4.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Math/Quaternion.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Math/Rect.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Math/StringHash.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Math/Vector2.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Math/Vector3.cpp
-        ${BAKED_CMAKE_SOURCE_DIR}/Source/Clockwork/Math/Vector4.cpp
-    )
+if (ATOMIC_BUILD_PAK_FILES)
 
-    # Check existence of stdint.h for LibCpuId
-    include (CheckIncludeFiles)
-    CHECK_INCLUDE_FILES (stdint.h HAVE_STDINT_H)
-    if (HAVE_STDINT_H)
-        add_definitions (-DHAVE_STDINT_H)
-    endif ()
+set (EDITORDATA_PAK "${CMAKE_SOURCE_DIR}/Bin/EditorData.pak")
+set (COREDATA_PAK "${CMAKE_SOURCE_DIR}/Bin/CoreData.pak")
 
-    # Setup SDK-like include dir in the build tree for building the mini-clockwork
-    set (DEST_INCLUDE_DIR include/Clockwork)
-    file (MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${DEST_INCLUDE_DIR}/ThirdParty)
+if (MSVC)
 
-    # Add dependency targets
-    add_subdirectory (${BAKED_CMAKE_SOURCE_DIR}/Source/ThirdParty/LibCpuId host/LibCpuId)
-    add_subdirectory (${BAKED_CMAKE_SOURCE_DIR}/Source/ThirdParty/LZ4 host/LZ4)
-    add_subdirectory (${BAKED_CMAKE_SOURCE_DIR}/Source/ThirdParty/SDL host/SDL)
-    set (INCLUDE_DIRS ${BAKED_CMAKE_BINARY_DIR}/include ${BAKED_CMAKE_BINARY_DIR}/include/Clockwork ${CMAKE_BINARY_DIR}/${DEST_INCLUDE_DIR}/ThirdParty)
-    set (LIBS LibCpuId SDL)
-endif ()
+    add_custom_command(OUTPUT "${EDITORDATA_PAK}"
+                       COMMAND $<TARGET_FILE:PackageTool> "${CMAKE_SOURCE_DIR}/Data/AtomicEditor/Resources/EditorData" "${EDITORDATA_PAK}" -c
+                       COMMAND ${CMAKE_COMMAND}
+                       ARGS -E copy \"${EDITORDATA_PAK}\" \"$<TARGET_FILE_DIR:AtomicEditor>/EditorData.pak\"
+                       DEPENDS PackageTool ${EDITORDATA_FILES})
 
-# Define target name
-if (TARGET PackageTool)     # The target name is already taken by host-tool external project, so use a postfix for the target-tool
-    set (POSTFIX _target)
-endif ()
-set (TARGET_NAME PackageTool${POSTFIX})
+    add_custom_command(OUTPUT "${COREDATA_PAK}"
+                      COMMAND $<TARGET_FILE:PackageTool> "${CMAKE_SOURCE_DIR}/Data/AtomicPlayer/Resources/CoreData" "${COREDATA_PAK}" -c
+                      COMMAND ${CMAKE_COMMAND}
+                      ARGS -E copy \"${COREDATA_PAK}\" \"$<TARGET_FILE_DIR:AtomicEditor>/CoreData.pak\"
+                      DEPENDS PackageTool ${COREDATA_FILES})
 
-# Define source files
-define_source_files (EXTRA_CPP_FILES ${MINI_CLOCKWORK_CPP_FILES})
+elseif (APPLE)
 
-# Define dependency libs
-list (APPEND LIBS LZ4)
+    add_custom_command(OUTPUT "${EDITORDATA_PAK}"
+                       COMMAND $<TARGET_FILE:PackageTool> "${CMAKE_SOURCE_DIR}/Data/AtomicEditor/Resources/EditorData" "${EDITORDATA_PAK}" -c
+                       COMMAND rsync -u "${EDITORDATA_PAK}" "$<TARGET_FILE_DIR:AtomicEditor>/../Resources/EditorData.pak"
+                       DEPENDS PackageTool ${EDITORDATA_FILES})
 
-# Setup target
-if (APPLE)
-    setup_macosx_linker_flags (CMAKE_EXE_LINKER_FLAGS)
-endif ()
-setup_executable ()
-adjust_target_name ()   # Remove postfix from the executable/binary name
+    add_custom_command(OUTPUT "${COREDATA_PAK}"
+                      COMMAND $<TARGET_FILE:PackageTool> "${CMAKE_SOURCE_DIR}/Data/AtomicPlayer/Resources/CoreData" "${COREDATA_PAK}" -c
+                      COMMAND rsync -u "${COREDATA_PAK}" "$<TARGET_FILE_DIR:AtomicEditor>/../Resources/CoreData.pak"
+                      DEPENDS PackageTool ${COREDATA_FILES})
+
+elseif (LINUX)
+
+    add_custom_command(OUTPUT "${EDITORDATA_PAK}"
+                       COMMAND $<TARGET_FILE:PackageTool> "${CMAKE_SOURCE_DIR}/Data/AtomicEditor/Resources/EditorData" "${EDITORDATA_PAK}" -c
+                       COMMAND rsync -u "${EDITORDATA_PAK}" "$<TARGET_FILE_DIR:AtomicEditor>/EditorData.pak"
+                       DEPENDS PackageTool ${EDITORDATA_FILES})
+
+    add_custom_command(OUTPUT "${COREDATA_PAK}"
+                      COMMAND $<TARGET_FILE:PackageTool> "${CMAKE_SOURCE_DIR}/Data/AtomicPlayer/Resources/CoreData" "${COREDATA_PAK}" -c
+                      COMMAND rsync -u "${COREDATA_PAK}" "$<TARGET_FILE_DIR:AtomicEditor>/CoreData.pak"
+                      DEPENDS PackageTool ${COREDATA_FILES})
+
+endif()
+
+add_custom_target(BuildEditorFiles ALL DEPENDS AtomicEditor "${EDITORDATA_PAK}" "${COREDATA_PAK}")
+
+endif()

@@ -599,7 +599,7 @@ static bool mergeRegions(rcRegion& rega, rcRegion& regb)
 	unsigned short aid = rega.id;
 	unsigned short bid = regb.id;
 	
-	// Duplicate current neighboclockworkod.
+	// Duplicate current neighbourhood.
 	rcIntArray acon;
 	acon.resize(rega.connections.size());
 	for (int i = 0; i < rega.connections.size(); ++i)

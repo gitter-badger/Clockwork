@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni & OvermindDL1 for Clockwork
+// Modified by Lasse Oorni & OvermindDL1 for Urho3D
 
 #include "../../SDL_internal.h"
 
@@ -93,7 +93,7 @@ void _uikit_keyboard_init() ;
         if (!leftFingerDown) {
             CGPoint locationInView = [self touchLocation:touch shouldNormalize:NO];
 
-            // Clockwork: do not send emulated mouse events
+            // Urho3D: do not send emulated mouse events
             /* send moved event */
             //SDL_SendMouseMotion(NULL, SDL_TOUCH_MOUSEID, 0, locationInView.x, locationInView.y);
 

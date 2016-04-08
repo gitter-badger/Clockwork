@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "../../SDL_internal.h"
 
@@ -862,7 +862,7 @@ SetWindowStyle(SDL_Window * window, unsigned int style)
         /* Make the origin the upper left instead of the lower left */
         y = 1.0f - y;
 
-        // Clockwork: disable touch events from the touchpad, as touch in Clockwork is understood
+        // Urho3D: disable touch events from the touchpad, as touch in Urho3D is understood
         // to originate from absolute positioning devices like touch screens
         switch (type) {
         case COCOA_TOUCH_DOWN:

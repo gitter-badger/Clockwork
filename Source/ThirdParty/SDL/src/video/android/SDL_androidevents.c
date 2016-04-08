@@ -19,14 +19,14 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "../../SDL_internal.h"
 
 #if SDL_VIDEO_DRIVER_ANDROID
 
 /* We're going to do this by default */
-// Clockwork: do not block on pause to allow exiting the application
+// Urho3D: do not block on pause to allow exiting the application
 //#define SDL_ANDROID_BLOCK_ON_PAUSE  1
 
 #include "SDL_androidevents.h"
@@ -40,9 +40,9 @@ void
 android_egl_context_restore()
 {
     SDL_WindowData *data = (SDL_WindowData *) Android_Window->driverdata;
-    // Clockwork: make sure there is a valid stored context to restore
+    // Urho3D: make sure there is a valid stored context to restore
     if (data->egl_context && SDL_GL_MakeCurrent(Android_Window, (SDL_GLContext) data->egl_context) < 0) {
-        // Clockwork: if the old context could not be restored, leave it to the Graphics subsystem to create a new one
+        // Urho3D: if the old context could not be restored, leave it to the Graphics subsystem to create a new one
         data->egl_context = NULL;
     }
 }

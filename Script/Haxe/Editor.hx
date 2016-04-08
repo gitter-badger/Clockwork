@@ -1,23 +1,23 @@
-package clockwork;
+package atomic;
 
-@:native("Clockwork")
+@:native("Atomic")
 extern enum EditMode {
     EDIT_SELECT;
     EDIT_MOVE;
     EDIT_ROTATE;
     EDIT_SCALE;
 }
-@:native("Clockwork")
+@:native("Atomic")
 extern enum AxisMode {
     AXIS_WORLD;
     AXIS_LOCAL;
 }
-@:native("Clockwork")
+@:native("Atomic")
 extern enum SceneEditType {
     SCENEEDIT_UNKNOWN;
     SCENEEDIT_SELECTION;
 }
-//Clockwork Haxe Definitions
+//Atomic Haxe Definitions
 
 extern class Editor {
 
@@ -39,7 +39,7 @@ extern class Editor {
 //----------------------------------------------------
 
 
-@:native("Clockwork.FileUtils")
+@:native("Atomic.FileUtils")
 extern class FileUtils extends AObject {
 
     var mobileProvisionPath: String;
@@ -59,7 +59,7 @@ extern class FileUtils extends AObject {
 
 }
 
-@:native("Clockwork.EditorMode")
+@:native("Atomic.EditorMode")
 extern class EditorMode extends AObject {
 
       // Construct.
@@ -70,7 +70,7 @@ extern class EditorMode extends AObject {
 
 }
 
-@:native("Clockwork.PlayerMode")
+@:native("Atomic.PlayerMode")
 extern class PlayerMode extends AObject {
 
       // Construct.
@@ -80,10 +80,10 @@ extern class PlayerMode extends AObject {
 
 }
 
-@:native("Clockwork.JSResourceEditor")
+@:native("Atomic.JSResourceEditor")
 extern class JSResourceEditor extends ResourceEditor {
 
-    function new(fullpath: String, container: Clockwork.UITabContainer);
+    function new(fullpath: String, container: Atomic.UITabContainer);
 
     @:overload(function(findText: String, flags: UInt): Bool{})
     override function findText(text: String, flags: UInt): Bool;
@@ -99,17 +99,17 @@ extern class JSResourceEditor extends ResourceEditor {
 
 }
 
-@:native("Clockwork.ResourceEditor")
+@:native("Atomic.ResourceEditor")
 extern class ResourceEditor extends AObject {
 
-    var button: Clockwork.UIButton;
+    var button: Atomic.UIButton;
     var fullPath: String;
-    var rootContentWidget: Clockwork.UIWidget;
+    var rootContentWidget: Atomic.UIWidget;
     var modified: Bool;
 
-    function new(fullpath: String, container: Clockwork.UITabContainer);
+    function new(fullpath: String, container: Atomic.UITabContainer);
 
-    function getButton(): Clockwork.UIButton;
+    function getButton(): Atomic.UIButton;
     function hasUnsavedModifications(): Bool;
     function setFocus(): Void;
     function close(?navigateToAvailableResource: Bool): Void;
@@ -120,22 +120,20 @@ extern class ResourceEditor extends AObject {
     function undo(): Void;
     function redo(): Void;
     function save(): Bool;
-    function projectUnloaded(): Void;
-    function delete(): Void;
-    function getRootContentWidget(): Clockwork.UIWidget;
+    function getRootContentWidget(): Atomic.UIWidget;
     function invokeShortcut(shortcut: String): Void;
     function requestClose(): Void;
     function setModified(modified: Bool): Void;
 
 }
 
-@:native("Clockwork.Gizmo3D")
+@:native("Atomic.Gizmo3D")
 extern class Gizmo3D extends AObject {
 
     var view: SceneView3D;
     var axisMode: AxisMode;
     var editMode: EditMode;
-    var gizmoNode: Clockwork.Node;
+    var gizmoNode: Atomic.Node;
     var snapTranslationX: Float;
     var snapTranslationY: Float;
     var snapTranslationZ: Float;
@@ -152,7 +150,7 @@ extern class Gizmo3D extends AObject {
     function show(): Void;
     function hide(): Void;
     function update(): Void;
-    function getGizmoNode(): Clockwork.Node;
+    function getGizmoNode(): Atomic.Node;
     function getSnapTranslationX(): Float;
     function getSnapTranslationY(): Float;
     function getSnapTranslationZ(): Float;
@@ -166,21 +164,21 @@ extern class Gizmo3D extends AObject {
 
 }
 
-@:native("Clockwork.SceneEditor3D")
+@:native("Atomic.SceneEditor3D")
 extern class SceneEditor3D extends ResourceEditor {
 
     var selection: SceneSelection;
     var sceneView3D: SceneView3D;
-    var scene: Clockwork.Scene;
+    var scene: Atomic.Scene;
     var gizmo: Gizmo3D;
 
-    function new(fullpath: String, container: Clockwork.UITabContainer);
+    function new(fullpath: String, container: Atomic.UITabContainer);
 
     function getSelection(): SceneSelection;
     function getSceneView3D(): SceneView3D;
-    function registerNode(node: Clockwork.Node): Void;
-    function reparentNode(node: Clockwork.Node, newParent: Clockwork.Node): Void;
-    function getScene(): Clockwork.Scene;
+    function registerNode(node: Atomic.Node): Void;
+    function reparentNode(node: Atomic.Node, newParent: Atomic.Node): Void;
+    function getScene(): Atomic.Scene;
     function getGizmo(): Gizmo3D;
     @:overload(function(): Void{})
     override function setFocus(): Void;
@@ -199,11 +197,11 @@ extern class SceneEditor3D extends ResourceEditor {
     function paste(): Void;
     @:overload(function(shortcut: String): Void{})
     override function invokeShortcut(shortcut: String): Void;
-    function getSceneEditor(scene: Clockwork.Scene): SceneEditor3D;
+    function getSceneEditor(scene: Atomic.Scene): SceneEditor3D;
 
 }
 
-@:native("Clockwork.SceneSelection")
+@:native("Atomic.SceneSelection")
 extern class SceneSelection extends AObject {
 
     var selectedNodeCount: UInt;
@@ -215,22 +213,22 @@ extern class SceneSelection extends AObject {
     function paste(): Void;
     function delete(): Void;
       // Add a node to the selection, if clear specified removes current nodes first
-    function addNode(node: Clockwork.Node, ?clear: Bool): Void;
-    function removeNode(node: Clockwork.Node, ?quiet: Bool): Void;
-    function getBounds(bbox: Clockwork.BoundingBox): Void;
-    function contains(node: Clockwork.Node): Bool;
-    function getSelectedNode(index: UInt): Clockwork.Node;
+    function addNode(node: Atomic.Node, ?clear: Bool): Void;
+    function removeNode(node: Atomic.Node, ?quiet: Bool): Void;
+    function getBounds(bbox: Atomic.BoundingBox): Void;
+    function contains(node: Atomic.Node): Bool;
+    function getSelectedNode(index: UInt): Atomic.Node;
     function getSelectedNodeCount(): UInt;
     function clear(): Void;
 
 }
 
-@:native("Clockwork.SceneView3D")
+@:native("Atomic.SceneView3D")
 extern class SceneView3D extends UISceneView {
 
     var pitch: Float;
     var yaw: Float;
-    var debugRenderer: Clockwork.DebugRenderer;
+    var debugRenderer: Atomic.DebugRenderer;
     var sceneEditor3D: SceneEditor3D;
 
     function new(sceneEditor: SceneEditor3D);
@@ -243,12 +241,12 @@ extern class SceneView3D extends UISceneView {
     @:overload(function(): Void{})
     override function disable(): Void;
     function isEnabled(): Bool;
-    function getDebugRenderer(): Clockwork.DebugRenderer;
+    function getDebugRenderer(): Atomic.DebugRenderer;
     function getSceneEditor3D(): SceneEditor3D;
 
 }
 
-@:native("Clockwork.CubemapGenerator")
+@:native("Atomic.CubemapGenerator")
 extern class CubemapGenerator extends EditorComponent {
 
     var imageSize: Int;
@@ -262,7 +260,7 @@ extern class CubemapGenerator extends EditorComponent {
 
 }
 
-@:native("Clockwork.EditorComponent")
+@:native("Atomic.EditorComponent")
 extern class EditorComponent extends Component {
 
       // Construct.

@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by OvermindDL1 for Clockwork
+// Modified by OvermindDL1 for Urho3D
 
 #ifndef SDL_BAPP_H
 #define SDL_BAPP_H

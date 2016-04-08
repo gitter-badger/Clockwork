@@ -16,7 +16,7 @@ subject to the following restrictions:
 #ifndef BT_CONSTRAINT_SOLVER_H
 #define BT_CONSTRAINT_SOLVER_H
 
-#include "LinearMath/btScalar.h"
+#include "../../LinearMath/btScalar.h"
 
 class btPersistentManifold;
 class btRigidBody;
@@ -33,7 +33,8 @@ class	btDispatcher;
 enum btConstraintSolverType
 {
 	BT_SEQUENTIAL_IMPULSE_SOLVER=1,
-	BT_MLCP_SOLVER=2
+	BT_MLCP_SOLVER=2,
+	BT_NNCG_SOLVER=4
 };
 
 class btConstraintSolver

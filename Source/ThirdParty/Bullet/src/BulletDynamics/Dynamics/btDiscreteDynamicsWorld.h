@@ -29,7 +29,7 @@ class btPersistentManifold;
 class btIDebugDraw;
 struct InplaceSolverIslandCallback;
 
-#include "LinearMath/btAlignedObjectArray.h"
+#include "../../LinearMath/btAlignedObjectArray.h"
 
 
 ///btDiscreteDynamicsWorld provides discrete rigid body simulation
@@ -151,7 +151,7 @@ public:
 	virtual void	removeCollisionObject(btCollisionObject* collisionObject);
 
 
-	void	debugDrawConstraint(btTypedConstraint* constraint);
+	virtual void	debugDrawConstraint(btTypedConstraint* constraint);
 
 	virtual void	debugDrawWorld();
 

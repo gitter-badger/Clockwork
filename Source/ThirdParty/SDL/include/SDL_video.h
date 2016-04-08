@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 /**
  *  \file SDL_video.h
  *
@@ -419,7 +419,7 @@ extern DECLSPEC SDL_Window * SDLCALL SDL_CreateWindow(const char *title,
  *
  *  \sa SDL_DestroyWindow()
  */
-// Clockwork: added window flags parameter
+// Urho3D: added window flags parameter
 extern DECLSPEC SDL_Window * SDLCALL SDL_CreateWindowFrom(const void *data, Uint32 flags);
 
 /**

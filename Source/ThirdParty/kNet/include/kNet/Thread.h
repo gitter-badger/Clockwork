@@ -16,7 +16,7 @@
 /** @file Thread.h
 	@brief The Thread class. Implements threading either using Boost, native Win32 or pthreads constructs. */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include <string>
 
@@ -24,11 +24,11 @@
 #include <boost/thread.hpp>
 #else
 
-// Clockwork: include Event.h first to make sure WS2Include.h is included before windows.h / winsock.h
+// Urho3D: include Event.h first to make sure WS2Include.h is included before windows.h / winsock.h
 #include "Event.h"
 
 #ifdef WIN32
-// Clockwork: windows.h in lowercase to fix MinGW cross-compiling on a case-sensitive system
+// Urho3D: windows.h in lowercase to fix MinGW cross-compiling on a case-sensitive system
 #include <windows.h>
 #else
 #include <pthread.h>

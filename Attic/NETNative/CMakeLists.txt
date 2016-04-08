@@ -14,14 +14,14 @@ if (NOT MSVC)
     add_definitions (-DUNIX)
 endif()
 
-set (SOURCE_FILES ${CSHARP_SOURCES} ${CSHARP_BINDINGS_SOURCE} ${CSHARPCLOCKWORKPLAYER_BINDINGS_SOURCE})
+set (SOURCE_FILES ${CSHARP_SOURCES} ${CSHARP_BINDINGS_SOURCE} ${CSHARPATOMICPLAYER_BINDINGS_SOURCE})
 
-add_library(ClockworkNETNative SHARED ${SOURCE_FILES})
+add_library(AtomicNETNative SHARED ${SOURCE_FILES})
 
-target_link_libraries(ClockworkNETNative ClockworkJS ClockworkPlayerLib ClockworkPlayerJS NETCore ${CLOCKWORK_LINK_LIBRARIES})
+target_link_libraries(AtomicNETNative AtomicJS AtomicPlayerLib AtomicPlayerJS NETCore ${ATOMIC_LINK_LIBRARIES})
 
 if (APPLE)
 
-target_link_libraries(ClockworkNETNative "-framework AudioUnit -framework Carbon -framework Cocoa -framework CoreAudio -framework ForceFeedback -framework IOKit -framework OpenGL -framework CoreServices -framework Security")
+target_link_libraries(AtomicNETNative "-framework AudioUnit -framework Carbon -framework Cocoa -framework CoreAudio -framework ForceFeedback -framework IOKit -framework OpenGL -framework CoreServices -framework Security")
 
 endif()

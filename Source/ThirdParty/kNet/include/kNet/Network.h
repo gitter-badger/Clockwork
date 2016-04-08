@@ -16,14 +16,14 @@
 /** @file Network.h
 	@brief The class Network. The root point for creating client and server objects. */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #if defined(KNET_UNIX) || defined(ANDROID)
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-// Clockwork: include also unistd.h
+// Urho3D: include also unistd.h
 #include <unistd.h>
 #endif
 

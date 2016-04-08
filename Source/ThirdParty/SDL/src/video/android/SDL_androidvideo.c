@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Yao Wei Tjong for Urho3D
 
 #include "../../SDL_internal.h"
 
@@ -81,7 +81,7 @@ Android_Available(void)
 static void
 Android_DeleteDevice(SDL_VideoDevice * device)
 {
-	// Clockwork: bug fix
+	// Urho3D: bug fix
 	SDL_free(device->driverdata);
     SDL_free(device);
 }
@@ -164,7 +164,7 @@ Android_VideoInit(_THIS)
     mode.refresh_rate = 0;
     mode.driverdata = NULL;
 
-    // Clockwork: merge patch found in https://bugzilla.libsdl.org/show_bug.cgi?id=2291 submitted by Thomas Faller
+    // Urho3D: merge patch found in https://bugzilla.libsdl.org/show_bug.cgi?id=2291 submitted by Thomas Faller
     SDL_PixelFormat pixelFormat;
     Uint32 mask;
     int bitCount;

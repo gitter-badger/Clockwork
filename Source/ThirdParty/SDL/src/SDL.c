@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "./SDL_internal.h"
 
@@ -449,7 +449,7 @@ SDL_GetPlatform()
 #endif
 }
 
-// Clockwork: removed offending _DllMainCRTStartup function which interfered with CRT initialization
+// Urho3D: removed offending _DllMainCRTStartup function which interfered with CRT initialization
 // when building as a shared library
 
 /* vi: set sts=4 ts=4 sw=4 expandtab: */

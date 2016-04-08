@@ -1,15 +1,15 @@
 var fs = require('fs-extra');
 var path = require("path");
 var host = require("./Host");
-var clockworkRoot = host.clockworkRoot;
+var atomicRoot = host.atomicRoot;
 
 var buildDir = host.artifactsRoot + "Build/Windows/";
-var editorAppFolder = host.artifactsRoot + "ClockworkEditor/";
+var editorAppFolder = host.artifactsRoot + "AtomicEditor/";
 
 namespace('build', function() {
 
-  // Builds a standalone Clockwork Editor, which can be distributed out of build tree
-  task('clockworkeditor', {
+  // Builds a standalone Atomic Editor, which can be distributed out of build tree
+  task('atomiceditor', {
     async: true
   }, function() {
 
@@ -28,38 +28,38 @@ namespace('build', function() {
 
     var cmds = [];
 
-    // Build the ClockworkEditor
-    cmds.push(clockworkRoot + "Build/Scripts/Windows/CompileClockworkEditor.bat");
+    // Build the AtomicEditor
+    cmds.push(atomicRoot + "Build/Scripts/Windows/CompileAtomicEditor.bat");
 
     jake.exec(cmds, function() {
 
       // Copy the Editor binaries
-      fs.copySync(buildDir + "Source/ClockworkEditor/Release",
-        host.artifactsRoot + "ClockworkEditor");
+      fs.copySync(buildDir + "Source/AtomicEditor/Release",
+        host.artifactsRoot + "AtomicEditor");
 
       // We need some resources to run
-      fs.copySync(clockworkRoot + "Resources/CoreData",
+      fs.copySync(atomicRoot + "Resources/CoreData",
         editorAppFolder + "Resources/CoreData");
 
-      fs.copySync(clockworkRoot + "Resources/PlayerData",
+      fs.copySync(atomicRoot + "Resources/PlayerData",
         editorAppFolder + "Resources/PlayerData");
 
-      fs.copySync(clockworkRoot + "Data/ClockworkEditor",
+      fs.copySync(atomicRoot + "Data/AtomicEditor",
         editorAppFolder + "Resources/ToolData");
 
-      fs.copySync(clockworkRoot + "Resources/EditorData",
+      fs.copySync(atomicRoot + "Resources/EditorData",
         editorAppFolder + "Resources/EditorData");
 
-      fs.copySync(clockworkRoot + "Artifacts/Build/Resources/EditorData/ClockworkEditor/EditorScripts",
-        editorAppFolder + "Resources/EditorData/ClockworkEditor/EditorScripts");
+      fs.copySync(atomicRoot + "Artifacts/Build/Resources/EditorData/AtomicEditor/EditorScripts",
+        editorAppFolder + "Resources/EditorData/AtomicEditor/EditorScripts");
 
-      fs.copySync(buildDir +  "Source/ClockworkPlayer/Application/Release/ClockworkPlayer.exe",
-        editorAppFolder + "Resources/ToolData/Deployment/Windows/x64/ClockworkPlayer.exe");
+      fs.copySync(buildDir +  "Source/AtomicPlayer/Application/Release/AtomicPlayer.exe",
+        editorAppFolder + "Resources/ToolData/Deployment/Windows/x64/AtomicPlayer.exe");
 
-      fs.copySync(buildDir +  "Source/ClockworkPlayer/Application/Release/D3DCompiler_47.dll",
+      fs.copySync(buildDir +  "Source/AtomicPlayer/Application/Release/D3DCompiler_47.dll",
         editorAppFolder + "Resources/ToolData/Deployment/Windows/x64/D3DCompiler_47.dll");
 
-      console.log("Clockwork Editor build to ", editorAppFolder);
+      console.log("Atomic Editor build to ", editorAppFolder);
 
       complete();
 
@@ -74,7 +74,7 @@ namespace('build', function() {
     async: true
   }, function() {
 
-    var slnRoot = path.resolve(clockworkRoot, "") + "-VS2015\\";
+    var slnRoot = path.resolve(atomicRoot, "") + "-VS2015\\";
 
     if (!fs.existsSync(slnRoot)) {
         jake.mkdirP(slnRoot);
@@ -87,7 +87,7 @@ namespace('build', function() {
 
     var cmds = [];
 
-    cmds.push(clockworkRoot + "Build/Scripts/Windows/GenerateVS2015.bat " + clockworkRoot);
+    cmds.push(atomicRoot + "Build/Scripts/Windows/GenerateVS2015.bat " + atomicRoot);
 
     jake.exec(cmds, function() {
 

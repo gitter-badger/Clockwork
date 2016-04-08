@@ -16,9 +16,9 @@
 /** @file IMessageHandler.h
 	@brief The \ref kNet::IMessageHandler IMessageHandler interface. Implementable by the client application. */
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Yao Wei Tjong for Urho3D
 
-// Clockwork: use relative path
+// Urho3D: use relative path
 #include "Types.h"
 
 namespace kNet

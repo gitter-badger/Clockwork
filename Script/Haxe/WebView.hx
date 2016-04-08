@@ -1,6 +1,6 @@
-package clockwork;
+package atomic;
 
-//Clockwork Haxe Definitions
+//Atomic Haxe Definitions
 
 extern class WebView {
 
@@ -12,7 +12,7 @@ extern class WebView {
 //----------------------------------------------------
 
 
-@:native("Clockwork.UIWebView")
+@:native("Atomic.UIWebView")
 extern class UIWebView extends UIWidget {
 
     var webClient: WebClient;
@@ -27,7 +27,7 @@ extern class UIWebView extends UIWidget {
 
 }
 
-@:native("Clockwork.WebBrowserHost")
+@:native("Atomic.WebBrowserHost")
 extern class WebBrowserHost extends AObject {
 
       // Construct.
@@ -40,7 +40,7 @@ extern class WebBrowserHost extends AObject {
 
 }
 
-@:native("Clockwork.WebClient")
+@:native("Atomic.WebClient")
 extern class WebClient extends AObject {
 
     var webRenderHandler: WebRenderHandler;
@@ -97,7 +97,7 @@ extern class WebClient extends AObject {
 
 }
 
-@:native("Clockwork.WebRenderHandler")
+@:native("Atomic.WebRenderHandler")
 extern class WebRenderHandler extends AObject {
 
     var width: Int;
@@ -120,11 +120,11 @@ extern class WebRenderHandler extends AObject {
 
 }
 
-@:native("Clockwork.WebTexture2D")
+@:native("Atomic.WebTexture2D")
 extern class WebTexture2D extends WebRenderHandler {
 
-    var texture2D: Clockwork.Texture2D;
-    var clearColor: Clockwork.Color;
+    var texture2D: Atomic.Texture2D;
+    var clearColor: Atomic.Color;
 
       // Construct.
     function new();
@@ -136,14 +136,14 @@ extern class WebTexture2D extends WebRenderHandler {
     @:overload(function(): Int{})
     override function getHeight(): Int;
       // Get the Texture2D associated with the WebTexture2D
-    function getTexture2D(): Clockwork.Texture2D;
+    function getTexture2D(): Atomic.Texture2D;
       // get the clear color for the WebTexture
-    function getClearColor(): Clockwork.Color;
+    function getClearColor(): Atomic.Color;
       // Set the dimensions of the texture
     @:overload(function(width: Int, height: Int): Void{})
     override function setSize(width: Int, height: Int): Void;
       // Set the clear color for the WebTexture
-    function setClearColor(color: Clockwork.Color): Void;
+    function setClearColor(color: Atomic.Color): Void;
 
 }
 

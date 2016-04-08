@@ -16,7 +16,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Yao Wei Tjong for Urho3D
 
 #include <float.h>
 #include <string.h>
@@ -714,7 +714,7 @@ dtStatus dtNavMeshQuery::findNearestPoly(const float* center, const float* exten
 {
 	dtAssert(m_nav);
 
-	// Clockwork: null pointer check
+	// Urho3D: null pointer check
 	if (nearestRef)
 		*nearestRef = 0;
 	
@@ -2767,7 +2767,7 @@ dtStatus dtNavMeshQuery::findPolysAroundShape(dtPolyRef startRef, const float* v
 /// If the result arrays are is too small to hold the entire result set, they will 
 /// be filled to capacity.
 /// 
-dtStatus dtNavMeshQuery::findLocalNeighboclockworkod(dtPolyRef startRef, const float* centerPos, const float radius,
+dtStatus dtNavMeshQuery::findLocalNeighbourhood(dtPolyRef startRef, const float* centerPos, const float radius,
 												const dtQueryFilter* filter,
 												dtPolyRef* resultRef, dtPolyRef* resultParent,
 												int* resultCount, const int maxResult) const

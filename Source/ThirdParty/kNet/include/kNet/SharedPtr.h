@@ -16,7 +16,7 @@
 /** @file SharedPtr.h
 	@brief SharedPtr, intrusive reference counting for multiple pointer owners. */
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Yao Wei Tjong for Urho3D
 
 #include <cstdlib>
 #include <cassert>
@@ -133,6 +133,6 @@ bool operator==(const SharedPtr<T> &a, const SharedPtr<T> &b)
 
 } // ~kNet
 
-// Clockwork: use relative path
+// Urho3D: use relative path
 #include "SharedPtr.inl"
 

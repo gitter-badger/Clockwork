@@ -29,9 +29,9 @@
 		THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -----------------------------------------------------------------------*/
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
-// Clockwork: use a namespace to not clash with Clockwork's inbuilt math types
+// Urho3D: use a namespace to not clash with Urho3D's inbuilt math types
 namespace StanHull
 {
 

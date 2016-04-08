@@ -29,7 +29,7 @@
 ** THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include <glew.h>
 
@@ -8929,7 +8929,7 @@ GLenum GLEWAPIENTRY glewContextInit (GLEW_CONTEXT_ARG_DEF_LIST)
     CONST_CAST(GLEW_VERSION_1_1)   = GLEW_VERSION_1_2   == GL_TRUE || ( major == 1 && minor >= 1 ) ? GL_TRUE : GL_FALSE;
   }
 
-  // Clockwork: GLEW does not query extensions properly on an OpenGL 3+ core context. Enable experimental mode in that case.
+  // Urho3D: GLEW does not query extensions properly on an OpenGL 3+ core context. Enable experimental mode in that case.
   // However on OpenGL 2 we need to be strict about not using features that are not listed in extensions (for example
   // instancing) even if the corresponding function pointers are non-null
   if (GLEW_VERSION_3_2)

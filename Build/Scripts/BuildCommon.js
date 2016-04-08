@@ -2,7 +2,7 @@ var fs = require('fs-extra');
 var os = require('os');
 var path = require("path");
 var host = require("./Host");
-var clockworkRoot = host.clockworkRoot;
+var atomicRoot = host.atomicRoot;
 var glob = require('glob');
 
 var Tslint = require("tslint");
@@ -52,10 +52,10 @@ namespace('build', function() {
     async: true
   }, function(platform) {
 
-        process.chdir(clockworkRoot);
+        process.chdir(atomicRoot);
 
         var modules = host.getScriptModules(platform);
-        var bindCmd = host.clockworkTool + " bind \"" + clockworkRoot + "\" ";
+        var bindCmd = host.atomicTool + " bind \"" + atomicRoot + "\" ";
         var node;
         var tsc = "./Build/node_modules/typescript/lib/tsc";
         var tslint = "./Build/node_modules/tslint/lib/tslint-cli";
@@ -80,7 +80,7 @@ namespace('build', function() {
         if (node) {
           // compile
           cmds.push(node + " " + tsc + " -p ./Script");
-          cmds.push(node + " " + tsc + " -p ./Script/ClockworkWebViewEditor");
+          cmds.push(node + " " + tsc + " -p ./Script/AtomicWebViewEditor");
 
           var lintTask = jake.Task['build:lint_typescript'];
 
@@ -88,17 +88,6 @@ namespace('build', function() {
             console.log("\n\nLint: Typescript linting complete.\n\n");
             jake.exec(cmds, function() {
 
-                // copy some external dependencies into the editor modules directory
-               var editorModulesDir = "./Artifacts/Build/Resources/EditorData/ClockworkEditor/EditorScripts/ClockworkEditor/modules";
-               var webeditorModulesDir = "./Data/ClockworkEditor/CodeEditor/source/editorCore/modules";
-               var nodeModulesDir = "./Build/node_modules";
-               fs.mkdirsSync(editorModulesDir);
-               // TypeScript
-               fs.copySync(nodeModulesDir + "/typescript/lib/typescript.js", webeditorModulesDir + "/typescript.js")
-
-               // copy lib.core.d.ts into the tool data directory
-               fs.mkdirsSync("./Artifacts/Build/Resources/EditorData/ClockworkEditor/EditorScripts/ClockworkEditor/TypeScriptSupport");
-               fs.copySync("./Build/node_modules/typescript/lib/lib.core.d.ts","./Data/ClockworkEditor/TypeScriptSupport/lib.core.d.ts")
                complete();
 
             }, {
@@ -106,7 +95,7 @@ namespace('build', function() {
             });
           });
 
-          lintTask.invoke("{./Script/ClockworkEditor/**/*.ts,./Script/ClockworkWebViewEditor/**/*.ts}", false);
+          lintTask.invoke("{./Script/AtomicEditor/**/*.ts,./Script/AtomicWebViewEditor/**/*.ts}", false);
 
         } else {
             throw new Error("Node not configured for this platform: " + os.platform());

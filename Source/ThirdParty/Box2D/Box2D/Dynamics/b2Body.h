@@ -16,7 +16,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #ifndef B2_BODY_H
 #define B2_BODY_H
@@ -468,7 +468,7 @@ private:
 	void* m_userData;
 
 public:
-    /// Clockwork: flag for using fixture mass. If false (custom set mass & inertia) prevents fixture operations resetting mass data. Default true.
+    /// Urho3D: flag for using fixture mass. If false (custom set mass & inertia) prevents fixture operations resetting mass data. Default true.
     bool m_useFixtureMass;
 };
 

@@ -16,7 +16,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2Fixture.h>
@@ -34,7 +34,7 @@ b2Body::b2Body(const b2BodyDef* bd, b2World* world)
 	b2Assert(b2IsValid(bd->linearDamping) && bd->linearDamping >= 0.0f);
 
 	m_flags = 0;
-    // Clockwork: added
+    // Urho3D: added
     m_useFixtureMass = true;
 
 	if (bd->bullet)
@@ -194,7 +194,7 @@ b2Fixture* b2Body::CreateFixture(const b2FixtureDef* def)
 	fixture->m_body = this;
 
 	// Adjust mass properties if needed.
-    // Clockwork: added flag check
+    // Urho3D: added flag check
 	if (fixture->m_density > 0.0f && m_useFixtureMass)
 	{
 		ResetMassData();
@@ -280,7 +280,7 @@ void b2Body::DestroyFixture(b2Fixture* fixture)
 	--m_fixtureCount;
 
 	// Reset the mass data.
-    // Clockwork: added flag check
+    // Urho3D: added flag check
     if (m_useFixtureMass)
         ResetMassData();
 }

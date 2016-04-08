@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "../../SDL_internal.h"
 
@@ -157,7 +157,7 @@ Cocoa_VideoInit(_THIS)
     Cocoa_InitKeyboard(_this);
     Cocoa_InitMouse(_this);
 
-    // Clockwork: disable fullscreen space due to black screen on switch
+    // Urho3D: disable fullscreen space due to black screen on switch
     //const char *hint = SDL_GetHint(SDL_HINT_VIDEO_MAC_FULLSCREEN_SPACES);
     //data->allow_spaces = ( (data->osversion >= 0x1070) && (!hint || (*hint != '0')) );
     data->allow_spaces = SDL_FALSE;

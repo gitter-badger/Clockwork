@@ -1,18 +1,3 @@
-## Clockwork Game Engine™
-------------------
-
-#### Clockwork Studios:
-
-- Joshua Nuttall (Technical Director)
-
-- Kyle Viola (Engine Programmer)
-
-### Contribution Copyright and Licensing
-
-Clockwork Game Engine contribution copyrights are held by their authors.  Each author retains the copyright to their contribution and agrees to irrevocably license the contribution under the Clockwork Game Engine Contribution License `CONTRIBUTION_LICENSE.md`.  Please see `CONTRIBUTING.md` for more details.
-
---------------------------
-
 ## Atomic Game Engine™
 ------------------
 
@@ -50,7 +35,7 @@ Atomic Game Engine contribution copyrights are held by their authors.  Each auth
 
 ##### Urho3D - Website & Credits
 
-The Clockwork Game Engine began as a fork of the Urho3D project in November 2014
+The Atomic Game Engine began as a fork of the Urho3D project in November 2014
 
 ### Urho3D Website
 

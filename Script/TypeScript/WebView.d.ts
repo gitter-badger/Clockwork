@@ -2,9 +2,9 @@
 // IMPORTANT: THIS FILE IS GENERATED, CHANGES WILL BE LOST
 //////////////////////////////////////////////////////////
 
-// Clockwork TypeScript Definitions
+// Atomic TypeScript Definitions
 
-/// <reference path="Clockwork.d.ts" />
+/// <reference path="Atomic.d.ts" />
 
 declare module WebView {
 
@@ -14,7 +14,7 @@ declare module WebView {
 //----------------------------------------------------
 
 
-   export class UIWebView extends Clockwork.UIWidget {
+   export class UIWebView extends Atomic.UIWidget {
 
       webClient: WebClient;
       webTexture2D: WebTexture2D;
@@ -28,7 +28,7 @@ declare module WebView {
 
    }
 
-   export class WebBrowserHost extends Clockwork.AObject {
+   export class WebBrowserHost extends Atomic.AObject {
 
       // Construct.
       constructor();
@@ -40,7 +40,7 @@ declare module WebView {
 
    }
 
-   export class WebClient extends Clockwork.AObject {
+   export class WebClient extends Atomic.AObject {
 
       webRenderHandler: WebRenderHandler;
 
@@ -96,7 +96,7 @@ declare module WebView {
 
    }
 
-   export class WebRenderHandler extends Clockwork.AObject {
+   export class WebRenderHandler extends Atomic.AObject {
 
       width: number;
       height: number;
@@ -122,8 +122,8 @@ declare module WebView {
 
       width: number;
       height: number;
-      texture2D: Clockwork.Texture2D;
-      clearColor: Clockwork.Color;
+      texture2D: Atomic.Texture2D;
+      clearColor: Atomic.Color;
 
       // Construct.
       constructor();
@@ -133,13 +133,13 @@ declare module WebView {
       // Get the current height of the texture
       getHeight(): number;
       // Get the Texture2D associated with the WebTexture2D
-      getTexture2D(): Clockwork.Texture2D;
+      getTexture2D(): Atomic.Texture2D;
       // get the clear color for the WebTexture
-      getClearColor(): Clockwork.Color;
+      getClearColor(): Atomic.Color;
       // Set the dimensions of the texture
       setSize(width: number, height: number): void;
       // Set the clear color for the WebTexture
-      setClearColor(color: Clockwork.Color): void;
+      setClearColor(color: Atomic.Color): void;
 
    }
 

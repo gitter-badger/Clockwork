@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "../../SDL_internal.h"
 
@@ -342,7 +342,7 @@ WIN_CreateWindowFrom(_THIS, SDL_Window * window, const void *data)
         return -1;
     }
 
-    // Clockwork: if window will be used for OpenGL, choose pixel format
+    // Urho3D: if window will be used for OpenGL, choose pixel format
     if (window->flags & SDL_WINDOW_OPENGL) {
         if (WIN_GL_SetupWindow(_this, window) < 0) {
             return -1;

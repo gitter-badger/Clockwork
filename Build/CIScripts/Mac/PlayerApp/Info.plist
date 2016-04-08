@@ -7,9 +7,9 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>ClockworkPlayer</string>
+	<string>AtomicPlayer</string>
 	<key>CFBundleIconFile</key>
-	<string>Clockwork.icns</string>
+	<string>Atomic.icns</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleLongVersionString</key>

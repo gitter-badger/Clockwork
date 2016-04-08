@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "../../SDL_internal.h"
 
@@ -44,7 +44,7 @@ static char **forward_argv;
 static int exit_status;
 static UIWindow *launch_window;
 
-// Clockwork: added variables
+// Urho3D: added variables
 const char* resource_dir = 0;
 const char* documents_dir = 0;
 
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
     return exit_status;
 }
 
-// Clockwork: added function
+// Urho3D: added function
 void SDL_IOS_LogMessage(const char *message)
 {   
     #ifdef _DEBUG
@@ -83,7 +83,7 @@ void SDL_IOS_LogMessage(const char *message)
     #endif
 }
 
-// Clockwork: added function
+// Urho3D: added function
 const char* SDL_IOS_GetResourceDir()
 {
     if (!resource_dir)
@@ -96,7 +96,7 @@ const char* SDL_IOS_GetResourceDir()
     return resource_dir;
 }
 
-// Clockwork: added function
+// Urho3D: added function
 const char* SDL_IOS_GetDocumentsDir()
 {
     if (!documents_dir)

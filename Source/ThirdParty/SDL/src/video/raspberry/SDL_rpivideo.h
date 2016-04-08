@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Yao Wei Tjong for Urho3D
 
 #ifndef __SDL_RPIVIDEO_H__
 #define __SDL_RPIVIDEO_H__
@@ -27,7 +27,7 @@
 #include "../../SDL_internal.h"
 #include "../SDL_sysvideo.h"
 
-// Clockwork
+// Urho3D
 //#include "bcm_host.h"
 #include "GLES/gl.h"
 #include "EGL/egl.h"

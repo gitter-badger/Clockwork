@@ -1,15 +1,15 @@
 var fs = require('fs-extra');
 var path = require("path");
 var host = require("./Host");
-var clockworkRoot = host.clockworkRoot;
+var atomicRoot = host.atomicRoot;
 
 var buildDir = host.artifactsRoot + "Build/Mac/";
-var editorAppFolder = host.artifactsRoot + "/ClockworkEditor/ClockworkEditor.app/";
+var editorAppFolder = host.artifactsRoot + "/AtomicEditor/AtomicEditor.app/";
 
 namespace('build', function() {
 
-// Builds a standalone Clockwork Editor, which can be distributed out of build tree
-task('clockworkeditor', {
+// Builds a standalone Atomic Editor, which can be distributed out of build tree
+task('atomiceditor', {
   async: true
 }, function() {
 
@@ -28,39 +28,39 @@ task('clockworkeditor', {
 
   var cmds = [];
 
-  cmds.push("cmake ../../../ -DCLOCKWORK_DEV_BUILD=0 -G Xcode");
+  cmds.push("cmake ../../../ -DATOMIC_DEV_BUILD=0 -G Xcode");
   cmds.push("xcodebuild -target GenerateScriptBindings -configuration Release -parallelizeTargets -jobs 4")
-  cmds.push("xcodebuild -target ClockworkEditor -target ClockworkPlayer -configuration Release -parallelizeTargets -jobs 4")
+  cmds.push("xcodebuild -target AtomicEditor -target AtomicPlayer -configuration Release -parallelizeTargets -jobs 4")
 
   jake.exec(cmds, function() {
 
-    fs.copySync(buildDir + "Source/ClockworkEditor/Release/ClockworkEditor.app", editorAppFolder);
+    fs.copySync(buildDir + "Source/AtomicEditor/Release/AtomicEditor.app", editorAppFolder);
 
     var resourceDest = editorAppFolder + "/Contents/Resources/"
 
     // We need some resources to run
-    fs.copySync(clockworkRoot + "Resources/CoreData",
+    fs.copySync(atomicRoot + "Resources/CoreData",
       resourceDest + "CoreData");
 
-    fs.copySync(clockworkRoot + "Resources/PlayerData",
+    fs.copySync(atomicRoot + "Resources/PlayerData",
       resourceDest + "PlayerData");
 
-    fs.copySync(clockworkRoot + "Data/ClockworkEditor",
+    fs.copySync(atomicRoot + "Data/AtomicEditor",
       resourceDest + "ToolData");
 
-    fs.copySync(clockworkRoot + "Resources/EditorData",
+    fs.copySync(atomicRoot + "Resources/EditorData",
       resourceDest + "EditorData");
 
-    fs.copySync(clockworkRoot + "Artifacts/Build/Resources/EditorData/ClockworkEditor/EditorScripts",
-      resourceDest + "EditorData/ClockworkEditor/EditorScripts");
+    fs.copySync(atomicRoot + "Artifacts/Build/Resources/EditorData/AtomicEditor/EditorScripts",
+      resourceDest + "EditorData/AtomicEditor/EditorScripts");
 
     // copy the mac player binary to deployment
-    var playerBinary =  buildDir +  "Source/ClockworkPlayer/Application/Release/ClockworkPlayer.app/Contents/MacOS/ClockworkPlayer";
+    var playerBinary =  buildDir +  "Source/AtomicPlayer/Application/Release/AtomicPlayer.app/Contents/MacOS/AtomicPlayer";
 
     fs.copySync(playerBinary,
-      resourceDest + "ToolData/Deployment/MacOS/ClockworkPlayer.app/Contents/MacOS/ClockworkPlayer");
+      resourceDest + "ToolData/Deployment/MacOS/AtomicPlayer.app/Contents/MacOS/AtomicPlayer");
 
-    console.log("\n\nClockwork Editor build to " + editorAppFolder + "\n\n");
+    console.log("\n\nAtomic Editor build to " + editorAppFolder + "\n\n");
 
     complete();
 
@@ -75,7 +75,7 @@ task('genxcode', {
   async: true
 }, function() {
 
-  var xcodeRoot = path.resolve(clockworkRoot, "") + "-XCode";
+  var xcodeRoot = path.resolve(atomicRoot, "") + "-XCode";
 
   if (!fs.existsSync(xcodeRoot)) {
       jake.mkdirP(xcodeRoot);
@@ -88,7 +88,7 @@ task('genxcode', {
 
   var cmds = [];
 
-  cmds.push("cmake ../ClockworkGameEngine -DCLOCKWORK_DEV_BUILD=1 -G Xcode");
+  cmds.push("cmake ../AtomicGameEngine -DATOMIC_DEV_BUILD=1 -G Xcode");
   cmds.push("xcodebuild -target GenerateScriptBindings -configuration Debug")
 
   jake.exec(cmds, function() {

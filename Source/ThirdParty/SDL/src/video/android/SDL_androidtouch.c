@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "../../SDL_internal.h"
 
@@ -88,7 +88,7 @@ void Android_OnTouch(int touch_device_id_in, int pointer_finger_id_in, int actio
         case ACTION_DOWN:
             /* Primary pointer down */
             Android_GetWindowCoordinates(x, y, &window_x, &window_y);
-            // Clockwork: do not send emulated mouse events
+            // Urho3D: do not send emulated mouse events
             /* send moved event */
             //SDL_SendMouseMotion(NULL, SDL_TOUCH_MOUSEID, 0, window_x, window_y);
             /* send mouse down event */

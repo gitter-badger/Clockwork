@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni & OvermindDL1 for Clockwork
+// Modified by Lasse Oorni & OvermindDL1 for Urho3D
 
 #include "../../SDL_internal.h"
 
@@ -323,7 +323,7 @@ WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     SDL_WindowData *data;
     LRESULT returnCode = -1;
 
-    // Clockwork: detect emulated mouse events
+    // Urho3D: detect emulated mouse events
     // Note: if we move mouse cursor manually (relative mouse motion with hidden cursor) we may get emulated mouse
     // events with zero extra info, so we should only center the cursor when it has actually moved
     BOOL emulatedMouse = (GetMessageExtraInfo() & 0xffffff00) == 0xff515700;
@@ -783,9 +783,10 @@ WIN_WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
                     return (0);
                 }
             }
-            // Clockwork: prevent alert bell sounds from Alt key combinations
+
+            // Urho3D: prevent alert bell sounds from Alt key combinations
             if ((wParam & 0xFFF0) == SC_KEYMENU)
-                returnCode = 1;
+                returnCode = 1;            
         }
         break;
 #endif /* System has screensaver support */

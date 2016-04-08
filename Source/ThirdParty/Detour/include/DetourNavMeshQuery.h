@@ -16,7 +16,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Yao Wei Tjong for Urho3D
 
 #ifndef DETOURNAVMESHQUERY_H
 #define DETOURNAVMESHQUERY_H
@@ -88,12 +88,12 @@ public:
 	/// Returns the traversal cost of the area.
 	///  @param[in]		i		The id of the area.
 	/// @returns The traversal cost of the area.
-	inline float getAreaCost(const int i) const { return (i >= 0 && i < DT_MAX_AREAS) ? m_areaCost[i] : 1.f; }  // Clockwork: Out of bound check
+	inline float getAreaCost(const int i) const { return (i >= 0 && i < DT_MAX_AREAS) ? m_areaCost[i] : 1.f; }  // Urho3D: Out of bound check
 
 	/// Sets the traversal cost of the area.
 	///  @param[in]		i		The id of the area.
 	///  @param[in]		cost	The new cost of traversing the area.
-	inline void setAreaCost(const int i, const float cost) { if (i >= 0 && i < DT_MAX_AREAS) m_areaCost[i] = cost; }  // Clockwork: Out of bound check
+	inline void setAreaCost(const int i, const float cost) { if (i >= 0 && i < DT_MAX_AREAS) m_areaCost[i] = cost; }  // Urho3D: Out of bound check
 
 	/// Returns the include flags for the filter.
 	/// Any polygons that include one or more of these flags will be
@@ -278,7 +278,7 @@ public:
 						   const dtQueryFilter* filter,
 						   dtPolyRef* polys, int* polyCount, const int maxPolys) const;
 
-	/// Finds the non-overlapping navigation polygons in the local neighboclockworkod around the center position.
+	/// Finds the non-overlapping navigation polygons in the local neighbourhood around the center position.
 	///  @param[in]		startRef		The reference id of the polygon where the search starts.
 	///  @param[in]		centerPos		The center of the query circle. [(x, y, z)]
 	///  @param[in]		radius			The radius of the query circle.
@@ -289,7 +289,7 @@ public:
 	///  @param[out]	resultCount		The number of polygons found.
 	///  @param[in]		maxResult		The maximum number of polygons the result arrays can hold.
 	/// @returns The status flags for the query.
-	dtStatus findLocalNeighboclockworkod(dtPolyRef startRef, const float* centerPos, const float radius,
+	dtStatus findLocalNeighbourhood(dtPolyRef startRef, const float* centerPos, const float radius,
 									const dtQueryFilter* filter,
 									dtPolyRef* resultRef, dtPolyRef* resultParent,
 									int* resultCount, const int maxResult) const;

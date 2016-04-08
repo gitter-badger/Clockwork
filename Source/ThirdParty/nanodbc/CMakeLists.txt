@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2008-2015 the Clockwork project.
+# Copyright (c) 2008-2015 the Urho3D project.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,5 +37,5 @@ endif ()
 # Setup target
 setup_library ()
 
-# Install headers for building and using the Clockwork library
+# Install headers for building and using the Urho3D library
 install_header_files (DIRECTORY src/ DESTINATION ${DEST_INCLUDE_DIR}/ThirdParty/nanodbc FILES_MATCHING PATTERN *.h)  # Note: the trailing slash is significant

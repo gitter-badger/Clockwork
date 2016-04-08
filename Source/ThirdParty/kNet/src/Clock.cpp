@@ -15,9 +15,9 @@
 /** @file Clock.cpp
 	@brief */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
-// Clockwork: ensure that kNetBuildConfig.h is included for WinXP compatibility
+// Urho3D: ensure that kNetBuildConfig.h is included for WinXP compatibility
 #include "kNetBuildConfig.h"
 
 #if defined(__unix__) || defined(__native_client__) || defined(EMSCRIPTEN) || defined(ANDROID) || defined(__APPLE__) || defined (__CYGWIN__)

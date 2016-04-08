@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "../../SDL_internal.h"
 
@@ -44,7 +44,7 @@
 
 #include <Foundation/Foundation.h>
 
-// Clockwork: iOS 8 window size hack based on work of Alex Szpakowski
+// Urho3D: iOS 8 window size hack based on work of Alex Szpakowski
 // https://bitbucket.org/slime73/sdl-experiments
 @implementation SDL_uikitwindow
 
@@ -53,7 +53,7 @@
     [super layoutSubviews];
 
     // Forcibly set window frame based on screen bounds, which follow the orientation on iOS 8
-    // Note: we compile this hack only when the version define exists (iOS SDK 8.1); Clockwork compiled
+    // Note: we compile this hack only when the version define exists (iOS SDK 8.1); Urho3D compiled
     // on earlier iOS SDK's did not need this behavior, even when running on an iOS 8 device
 #ifdef NSFoundationVersionNumber_iOS_7_1
     if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_7_1) {
@@ -63,7 +63,7 @@
 }
 @end
 
-// Clockwork: use subclass for iOS 8 window size hack
+// Urho3D: use subclass for iOS 8 window size hack
 static int SetupWindowData(_THIS, SDL_Window *window, SDL_uikitwindow *uiwindow, SDL_bool created)
 {
     SDL_VideoDisplay *display = SDL_GetDisplayForWindow(window);
@@ -213,7 +213,7 @@ UIKit_CreateWindow(_THIS, SDL_Window *window)
 
     /* ignore the size user requested, and make a fullscreen window */
     /* !!! FIXME: can we have a smaller view? */
-    // Clockwork: create subclass for iOS 8 window size hack
+    // Urho3D: create subclass for iOS 8 window size hack
     SDL_uikitwindow *uiwindow = [SDL_uikitwindow alloc];
     uiwindow = [uiwindow initWithFrame:[data->uiscreen bounds]];
 

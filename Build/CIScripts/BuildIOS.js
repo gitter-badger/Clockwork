@@ -10,9 +10,9 @@ namespace('build', function() {
     async: true
   }, function() {
 
-    var clockworkTool = host.getClockworkToolBinary();
+    var atomicTool = host.getAtomicToolBinary();
 
-    var playerBuildDir = buildDir + "ClockworkPlayer/";
+    var playerBuildDir = buildDir + "AtomicPlayer/";
 
     bcommon.cleanCreateDir(playerBuildDir);
     bcommon.cleanCreateDir(bcommon.getGenScriptRootDir("IOS"));
@@ -20,8 +20,8 @@ namespace('build', function() {
     process.chdir(playerBuildDir);
 
     var cmds = [
-      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/Clockwork/ IOS",
-      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/ClockworkPlayer/ IOS",
+      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/Atomic/ IOS",
+      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/AtomicPlayer/ IOS",
       "cmake -DIOS=1 -G Xcode ../../../../"
     ];
 
@@ -35,8 +35,8 @@ namespace('build', function() {
     cmds.push("xcodebuild -configuration Release -parallelizeTargets -jobs 4");
 
     jake.exec(cmds, function() {
-      var iosPlayerBinary = playerBuildDir + "Source/ClockworkPlayer/Application/Release-iphoneos/ClockworkPlayer.app/ClockworkPlayer";
-      fs.copySync(iosPlayerBinary, buildDir + "Bin/ClockworkPlayer");
+      var iosPlayerBinary = playerBuildDir + "Source/AtomicPlayer/Application/Release-iphoneos/AtomicPlayer.app/AtomicPlayer";
+      fs.copySync(iosPlayerBinary, buildDir + "Bin/AtomicPlayer");
       console.log("Built IOS Player");
       complete();
 

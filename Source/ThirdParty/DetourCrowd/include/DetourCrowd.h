@@ -16,12 +16,12 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Yao Wei Tjong for Urho3D
 
 #ifndef DETOURCROWD_H
 #define DETOURCROWD_H
 
-#include "DetourNavMeshQuery.h"
+#include <Detour/include/DetourNavMeshQuery.h>
 #include "DetourObstacleAvoidance.h"
 #include "DetourLocalBoundary.h"
 #include "DetourPathCorridor.h"
@@ -200,7 +200,7 @@ struct dtCrowdAgentDebugInfo
 	dtObstacleAvoidanceDebugData* vod;
 };
 
-// Clockwork: Add update callback support
+// Urho3D: Add update callback support
 /// Type for the update callback.
 typedef void (*dtUpdateCallback)(dtCrowdAgent* ag, float dt);
 
@@ -248,7 +248,7 @@ public:
 	dtCrowd();
 	~dtCrowd();
 	
-	// Clockwork: Add update callback support
+	// Urho3D: Add update callback support
 	/// Initializes the crowd.  
 	///  @param[in]		maxAgents		The maximum number of agents the crowd can manage. [Limit: >= 1]
 	///  @param[in]		maxAgentRadius	The maximum radius of any agent that will be added to the crowd. [Limit: > 0]
@@ -282,7 +282,7 @@ public:
 	/// @return The maximum number of agents.
 	int getAgentCount() const;
 
-	// Clockwork: Add missing getter
+	// Urho3D: Add missing getter
 	/// The maximum radius of any agent that will be added to the crowd.
 	/// @return The maximum radius of any agent.
 	float getMaxAgentRadius() const { return m_maxAgentRadius; }

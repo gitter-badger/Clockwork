@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "../SDL_internal.h"
 
@@ -237,7 +237,7 @@ int SDL_tolower(int x) { return ((x) >= 'A') && ((x) <= 'Z') ? ('a'+((x)-'A')) :
 
 
 #ifndef HAVE_LIBC
-// Clockwork: disable MSVC runtime intrinsic replacements
+// Urho3D: disable MSVC runtime intrinsic replacements
 #endif /* !HAVE_LIBC */
 
 /* vi: set ts=4 sw=4 expandtab: */

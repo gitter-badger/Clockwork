@@ -19,7 +19,7 @@
   3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include "../../SDL_internal.h"
 
@@ -521,7 +521,7 @@ SDL_SYS_JoystickUpdate(SDL_Joystick * joystick)
             if (item->joystick) {
                 if (Android_JNI_GetAccelerometerValues(values)) {
                     for ( i = 0; i < 3; i++ ) {
-                        // Clockwork: clamp values to avoid short integer overflow
+                        // Urho3D: clamp values to avoid short integer overflow
                         if (values[i] < -1.0f)
                             values[i] = -1.0f;
                         else if (values[i] > 1.0f)

@@ -19,7 +19,7 @@
  *  3. This notice may not be removed or altered from any source distribution.
  */
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Yao Wei Tjong for Urho3D
 
 #include "../SDL_internal.h"
 
@@ -30,7 +30,7 @@
 #include "SDL_loadso.h"
 #include "SDL_hints.h"
 
-// Clockwork: No need to hardcode the full path, otherwise it won't work for Pidora
+// Urho3D: No need to hardcode the full path, otherwise it won't work for Pidora
 #if SDL_VIDEO_DRIVER_RPI || SDL_VIDEO_DRIVER_ANDROID
 #define DEFAULT_EGL "libEGL.so"
 #define DEFAULT_OGL_ES2 "libGLESv2.so"

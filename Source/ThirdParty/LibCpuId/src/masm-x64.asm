@@ -1,4 +1,4 @@
-; Modified by Yao Wei Tjong for Clockwork
+; Modified by Yao Wei Tjong for Urho3D
 
 .code
 ; procedure exec_cpuid
@@ -40,7 +40,7 @@ cpu_rdtsc Proc
 	ret
 cpu_rdtsc endp
 
-; Clockwork: FIXME dummy implementation
+; Urho3D: FIXME dummy implementation
 ; procedure busy_sse_loop
 ; Signature: void busy_sse_loop(int cycles)
 busy_sse_loop Proc

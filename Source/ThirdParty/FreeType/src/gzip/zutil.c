@@ -5,7 +5,7 @@
 
 /* @(#) $Id$ */
 
-// Modified by Yao Wei Tjong for Clockwork
+// Modified by Yao Wei Tjong for Urho3D
 
 #include "zutil.h"
 
@@ -13,7 +13,7 @@
 extern void exit OF((int));
 #endif
 
-// Clockwork: quick fix for debug build
+// Urho3D: quick fix for debug build
 #ifdef DEBUG
 
 #  ifndef verbose

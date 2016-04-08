@@ -16,13 +16,13 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include <cstring>
 #ifndef B2_GROWABLE_STACK_H
 #define B2_GROWABLE_STACK_H
 #include <Box2D/Common/b2Settings.h>
-// Clockwork: replaced with cstring include for memcpy to work on Android
+// Urho3D: replaced with cstring include for memcpy to work on Android
 // #include <memory.h>
 #include <cstring>
 

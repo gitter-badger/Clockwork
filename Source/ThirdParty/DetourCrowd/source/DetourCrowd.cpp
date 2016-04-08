@@ -16,7 +16,7 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-// Modified by Lasse Oorni and Yao Wei Tjong for Clockwork
+// Modified by Lasse Oorni and Yao Wei Tjong for Urho3D
 
 #define _USE_MATH_DEFINES
 #include <string.h>
@@ -332,7 +332,7 @@ Notes:
 */
 
 dtCrowd::dtCrowd() :
-	// Clockwork: Add update callback support
+	// Urho3D: Add update callback support
 	m_updateCallback(0),
 	m_maxAgents(0),
 	m_agents(0),
@@ -380,7 +380,7 @@ void dtCrowd::purge()
 	m_navquery = 0;
 }
 
-// Clockwork: Add update callback support
+// Urho3D: Add update callback support
 /// @par
 ///
 /// May be called more than once to purge and re-initialize the crowd.
@@ -568,7 +568,7 @@ int dtCrowd::addAgent(const float* pos, const dtCrowdAgentParams* params)
 	
 	ag->active = true;
 
-    // Clockwork: added to fix illegal memory access when ncorners is queried before the agent has updated
+    // Urho3D: added to fix illegal memory access when ncorners is queried before the agent has updated
     ag->ncorners = 0;
 
 	return idx;
@@ -1413,7 +1413,7 @@ void dtCrowd::update(const float dt, dtCrowdAgentDebugInfo* debug)
 			ag->partial = false;
 		}
 
-		// Clockwork: Add update callback support
+		// Urho3D: Add update callback support
 		if (m_updateCallback)
 			(*m_updateCallback)(ag, dt);
 	}

@@ -16,12 +16,12 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #include <Box2D/Collision/Shapes/b2ChainShape.h>
 #include <Box2D/Collision/Shapes/b2EdgeShape.h>
 #include <new>
-// Clockwork: replaced with cstring include for memcpy to work on Android
+// Urho3D: replaced with cstring include for memcpy to work on Android
 // #include <memory.h>
 #include <cstring>
 

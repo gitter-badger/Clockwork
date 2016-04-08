@@ -16,13 +16,13 @@
 /** @file Lockable.h
 	@brief The Lock<T> and Lockable<T> template classes. */
 
-// Modified by Lasse Oorni for Clockwork
+// Modified by Lasse Oorni for Urho3D
 
 #ifdef KNET_USE_BOOST
 #include <boost/thread/recursive_mutex.hpp>
 #include <boost/thread/thread.hpp>
 #elif defined(WIN32)
-// Clockwork: windows.h in lowercase to fix MinGW cross-compiling on a case-sensitive system
+// Urho3D: windows.h in lowercase to fix MinGW cross-compiling on a case-sensitive system
 #include <windows.h>
 #else
 #include <pthread.h>
@@ -65,7 +65,7 @@ public:
 		value = rhs.value;
 
 		rhs.TearDown();
-		return *this;       // Clockwork
+		return *this;       // Urho3D
 	}
 
 	~Lock()
@@ -121,7 +121,7 @@ public:
 		value = rhs.value;
 
 		rhs.TearDown();
-		return *this;       // Clockwork
+		return *this;       // Urho3D
 	}
 
 	~ConstLock()
