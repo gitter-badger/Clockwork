@@ -2,6 +2,8 @@
 ![alt text][AtomicLogo] -->
 ####Editor and Player Source Repository
 
+[![Join the chat at https://gitter.im/dragonCASTjosh/Clockwork](https://badges.gitter.im/dragonCASTjosh/Clockwork.svg)](https://gitter.im/dragonCASTjosh/Clockwork?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This repository contains the **full source code** to the Clockwork Game Engine Runtime, Clockwork Editor, Clockwork CLI, and other tools.  The Clockwork Game Engine is a cross platform authoring solution with **deployment to Windows, OSX, Android, iOS, Linux, and WebGL**
 
 ####LICENSE
