@@ -23,9 +23,9 @@
 #include <Poco/UUID.h>
 #include <Poco/UUIDGenerator.h>
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/IO/FileSystem.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/IO/FileSystem.h>
 
 #include "../ToolEnvironment.h"
 #include "../ToolSystem.h"
@@ -51,10 +51,10 @@ void NETProjectBase::ReplacePathStrings(String& path)
     ToolEnvironment* tenv = GetSubsystem<ToolEnvironment>();
     ToolSystem* tsys = GetSubsystem<ToolSystem>();
 
-    const String& atomicRoot = tenv->GetRootSourceDir();
+    const String& clockworkRoot = tenv->GetRootSourceDir();
     const String& scriptPlatform = projectGen_->GetScriptPlatform();
 
-    path.Replace("$ATOMIC_ROOT$", atomicRoot, false);
+    path.Replace("$CLOCKWORK_ROOT$", clockworkRoot, false);
     path.Replace("$SCRIPT_PLATFORM$", scriptPlatform, false);
 
     Project* project = tsys->GetProject();
@@ -316,7 +316,7 @@ bool NETCSProject::Load(const JSONValue& root)
     if (gameBuild)
     {
         ToolEnvironment* tenv = GetSubsystem<ToolEnvironment>();
-        const String& engineAssemblyPath = tenv->GetAtomicNETEngineAssemblyPath();
+        const String& engineAssemblyPath = tenv->GetClockworkNETEngineAssemblyPath();
         if (assemblySearchPaths_.Length())
         {
             assemblySearchPaths_ += ";";
@@ -342,7 +342,7 @@ bool NETCSProject::Load(const JSONValue& root)
 
     if (gameBuild)
     {
-        references_.Push("AtomicNETEngine");
+        references_.Push("ClockworkNETEngine");
     }
 
     // msvc doesn't like including these
@@ -448,7 +448,7 @@ NETProjectGen::NETProjectGen(Context* context) : Object(context),
     monoBuild_(false), gameBuild_(false)
 {
 
-#ifndef ATOMIC_PLATFORM_WINDOWS
+#ifndef CLOCKWORK_PLATFORM_WINDOWS
     monoBuild_ = true;
 #endif
 

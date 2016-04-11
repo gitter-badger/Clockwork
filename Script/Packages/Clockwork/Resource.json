@@ -1,0 +1,10 @@
+{
+	"name" : "Resource",
+	"sources" : ["Source/Clockwork/Resource"],
+	"classes" : ["Resource", "ResourceCache", "XMLFile", "PListFile", "JSONFile", "Image"],
+	"overloads": {
+		"Image": {
+			"GetPixel": ["int", "int"]
+		}
+	}
+}

@@ -22,23 +22,23 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/ProcessUtils.h>
-#include <Atomic/Core/Context.h>
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/IO/FileSystem.h>
+#include <Clockwork/Core/ProcessUtils.h>
+#include <Clockwork/Core/Context.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/IO/FileSystem.h>
 
-#include <Atomic/Resource/XMLFile.h>
-#include <Atomic/Resource/ResourceCache.h>
+#include <Clockwork/Resource/XMLFile.h>
+#include <Clockwork/Resource/ResourceCache.h>
 
-#include <Atomic/Atomic3D/AnimatedModel.h>
-#include <Atomic/Atomic3D/Animation.h>
-#include <Atomic/Atomic3D/AnimationController.h>
+#include <Clockwork/Clockwork3D/AnimatedModel.h>
+#include <Clockwork/Clockwork3D/Animation.h>
+#include <Clockwork/Clockwork3D/AnimationController.h>
 
-#include <Atomic/Graphics/Geometry.h>
-#include <Atomic/Graphics/IndexBuffer.h>
-#include <Atomic/Graphics/VertexBuffer.h>
-#include <Atomic/Graphics/Material.h>
+#include <Clockwork/Graphics/Geometry.h>
+#include <Clockwork/Graphics/IndexBuffer.h>
+#include <Clockwork/Graphics/VertexBuffer.h>
+#include <Clockwork/Graphics/Material.h>
 
 #include "OpenAssetImporter.h"
 

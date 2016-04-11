@@ -23,9 +23,9 @@
 // THE SOFTWARE.
 //
 
-#include "Atomic/Core/StringUtils.h"
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/Container/ArrayPtr.h>
+#include "Clockwork/Core/StringUtils.h"
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/Container/ArrayPtr.h>
 
 #include <LZ4/lz4.h>
 #include <LZ4/lz4hc.h>
@@ -193,7 +193,7 @@ void ResourcePackager::GeneratePackage(const String& destFilePath)
 
         if (!file.Open(entry->absolutePath_))
         {
-            buildBase_->FailBuild(Atomic::ToString("Could not open resource file %s", entry->absolutePath_.CString()));
+            buildBase_->FailBuild(Clockwork::ToString("Could not open resource file %s", entry->absolutePath_.CString()));
             return;
         }
 

@@ -1,0 +1,25 @@
+
+<head>
+
+<title>Clockwork Web Player - Preview</title>
+
+</head>
+<a href="http://clockwork.sunwells.net/"><img src="Clockwork_Logo_Header.png"></a>
+<center>
+<h3> Clockwork Web Player - Preview Build</h3>
+<iframe id="playerframe" src="ClockworkPlayer.html" width="800" height="512", marginwidth="0", marginheight="0", frameborder="0", scrolling="no"></iframe>
+<br>For more information visit: <a href="http://clockwork.sunwells.net/">http://clockwork.sunwells.net</a>
+</center>
+
+<h4>Notes:</h4>
+* Work in progress, runs best on Firefox<br>
+* Download size not currently optimized (assets and code)
+
+<script>
+function focus()
+{
+    var iframe = document.getElementById('playerframe');
+    iframe.contentWindow.focus();
+}
+window.setInterval(focus, 100);
+</script>

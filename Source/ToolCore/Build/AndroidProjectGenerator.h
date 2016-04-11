@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <Atomic/Container/Str.h>
-#include <Atomic/Core/Object.h>
+#include <Clockwork/Container/Str.h>
+#include <Clockwork/Core/Object.h>
 
 #include "BuildSettings.h"
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

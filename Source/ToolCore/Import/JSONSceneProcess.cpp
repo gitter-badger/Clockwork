@@ -22,28 +22,28 @@
 
 #include <stdint.h>
 
-#include <Atomic/Core/ProcessUtils.h>
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/FileSystem.h>
+#include <Clockwork/Core/ProcessUtils.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/FileSystem.h>
 
-#include <Atomic/Resource/Image.h>
+#include <Clockwork/Resource/Image.h>
 
-#include <Atomic/Graphics/IndexBuffer.h>
-#include <Atomic/Graphics/VertexBuffer.h>
-#include <Atomic/Graphics/Geometry.h>
+#include <Clockwork/Graphics/IndexBuffer.h>
+#include <Clockwork/Graphics/VertexBuffer.h>
+#include <Clockwork/Graphics/Geometry.h>
 
-#include <Atomic/Graphics/Octree.h>
-#include <Atomic/Graphics/Zone.h>
-#include <Atomic/Atomic3D/AnimatedModel.h>
-#include <Atomic/Atomic3D/StaticModel.h>
-#include <Atomic/Atomic3D/LMStaticModel.h>
-#include <Atomic/Atomic3D/Terrain.h>
-#include <Atomic/Atomic3D/Animation.h>
-#include <Atomic/Graphics/DebugRenderer.h>
-#include <Atomic/Physics/CollisionShape.h>
-#include <Atomic/Physics/RigidBody.h>
-#include <Atomic/Physics/PhysicsWorld.h>
-#include <Atomic/Environment/TimeOfDay.h>
+#include <Clockwork/Graphics/Octree.h>
+#include <Clockwork/Graphics/Zone.h>
+#include <Clockwork/Clockwork3D/AnimatedModel.h>
+#include <Clockwork/Clockwork3D/StaticModel.h>
+#include <Clockwork/Clockwork3D/LMStaticModel.h>
+#include <Clockwork/Clockwork3D/Terrain.h>
+#include <Clockwork/Clockwork3D/Animation.h>
+#include <Clockwork/Graphics/DebugRenderer.h>
+#include <Clockwork/Physics/CollisionShape.h>
+#include <Clockwork/Physics/RigidBody.h>
+#include <Clockwork/Physics/PhysicsWorld.h>
+#include <Clockwork/Environment/TimeOfDay.h>
 
 #include "JSONSceneProcess.h"
 #include "JSONSceneImporter.h"

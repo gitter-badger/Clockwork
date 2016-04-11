@@ -1,0 +1,45 @@
+{
+  "author": {
+    "email": "dragonCASTjosh@gmail.com",
+    "name": "Clockwork Game Engine",
+    "url": "http://www.clockwork.sunwells.com"
+  },
+  "bin": { "clockwork-cli" : "./cli.js" },
+  "bugs": {
+    "url": "https://github.com/dragonCASTjosh/Clockwork/issues"
+  },
+  "dependencies": {
+    "adm-zip": "~0.4.3",
+    "argparse": "~0.1.15",
+    "connect": "~2.8.3",
+    "js-yaml": "~2.1.0",
+    "ncp": "~0.4.2",
+    "open": "~0.0.3",
+    "q": "~0.9.6",
+    "watch": "~0.8.0",
+    "websocket": "~1.0.8",
+    "wrench": "~1.5.1",
+    "xmldom": "~0.1.16",
+    "osenv" : "*",
+    "httpreq": "*",
+    "semver" : "*",
+    "mkdirp" : "*"
+  },
+  "description": "CLI for the Clockwork Game Engine",
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "homepage": "http://www.clockwork.sunwells.com",
+   "licenses": [{
+    "type": "Clockwork Game Engine",
+    "url": "https://github.com/dragonCASTjosh/Clockwork/blob/master/LICENSE.md"
+  }],
+  "files" : [
+    "data"
+  ],
+  "main": "index.js",
+  "name": "clockwork-cli",
+  "preferGlobal": true,
+  "repository": "https://github.com/dragonCASTjosh/Clockwork",
+  "version": "0.2.4"
+}

@@ -24,7 +24,7 @@
 
 #include "JSBSourceWriter.h"
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

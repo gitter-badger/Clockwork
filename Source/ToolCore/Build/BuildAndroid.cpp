@@ -20,10 +20,10 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/StringUtils.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/IO/MemoryBuffer.h>
+#include <Clockwork/Core/StringUtils.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/IO/MemoryBuffer.h>
 
 #include "../ToolSystem.h"
 #include "../ToolEnvironment.h"
@@ -74,7 +74,7 @@ void BuildAndroid::RunADBStartActivity()
 
     String stringArgs;
     const char* cpackage = settings->GetPackageName().CString();
-    stringArgs.AppendWithFormat("shell am start -n %s/%s.AtomicGameEngine",cpackage, cpackage);
+    stringArgs.AppendWithFormat("shell am start -n %s/%s.ClockworkGameEngine",cpackage, cpackage);
 
     Vector<String> args = stringArgs.Split(' ');
 
@@ -118,7 +118,7 @@ void BuildAndroid::RunADBInstall()
     SubprocessSystem* subs = GetSubsystem<SubprocessSystem>();
     String adbCommand = platformAndroid_->GetADBCommand();
 
-    Vector<String> args = String("install -r ./bin/Atomic-debug-unaligned.apk").Split(' ');
+    Vector<String> args = String("install -r ./bin/Clockwork-debug-unaligned.apk").Split(' ');
 
     currentBuildPhase_ = ADBInstall;
     Subprocess* subprocess = subs->Launch(adbCommand, args, buildPath_);
@@ -245,7 +245,7 @@ void BuildAndroid::RunAntDebug()
 
     Poco::Process::Env env;
 
-#ifdef ATOMIC_PLATFORM_OSX
+#ifdef CLOCKWORK_PLATFORM_OSX
     String antCommand = tprefs->GetAntPath();
     Vector<String> args;
     args.Push("debug");
@@ -341,10 +341,10 @@ void BuildAndroid::Build(const String& buildPath)
     }
 
     fileSystem->CopyDir(project->GetProjectPath() + "Cache/", buildPath_ + "/assets/Cache");
-    fileSystem->CopyDir(projectResources, buildPath_ + "/assets/AtomicResources");
+    fileSystem->CopyDir(projectResources, buildPath_ + "/assets/ClockworkResources");
 
     // write the manifest
-    SharedPtr<File> mfile(new File(context_, buildPath_ + "/assets/AtomicManifest", FILE_WRITE));
+    SharedPtr<File> mfile(new File(context_, buildPath_ + "/assets/ClockworkManifest", FILE_WRITE));
     mfile->WriteString(manifest);
     mfile->Close();
 

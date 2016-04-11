@@ -20,9 +20,9 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/CoreEvents.h>
-#include <Atomic/Core/Context.h>
-#include <Atomic/IO/FileSystem.h>
+#include <Clockwork/Core/CoreEvents.h>
+#include <Clockwork/Core/Context.h>
+#include <Clockwork/IO/FileSystem.h>
 
 #include "SubprocessSystem.h"
 

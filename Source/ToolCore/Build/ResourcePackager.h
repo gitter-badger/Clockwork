@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include <Atomic/Core/Object.h>
-#include "Atomic/Container/Vector.h"
-#include <Atomic/IO/File.h>
+#include <Clockwork/Core/Object.h>
+#include "Clockwork/Container/Vector.h"
+#include <Clockwork/IO/File.h>
 
 #include "BuildTypes.h"
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

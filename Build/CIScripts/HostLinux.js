@@ -2,7 +2,7 @@ var fs = require('fs-extra');
 var bcommon = require("./BuildCommon");
 
 var buildDir = bcommon.artifactsRoot + "Build/Linux/";
-var atomicToolBinary = buildDir + "Bin/AtomicTool";
+var clockworkToolBinary = buildDir + "Bin/ClockworkTool";
 
 function clean() {
 
@@ -10,34 +10,34 @@ function clean() {
 
 }
 
-function getAtomicToolBinary() {
+function getClockworkToolBinary() {
 
-  return atomicToolBinary;
+  return clockworkToolBinary;
 
 }
 
 namespace('build', function() {
 
-  task('atomictool', {
+  task('clockworktool', {
     async: true
   }, function() {
 
-    var toolBuildDir = buildDir + "AtomicTool/";
+    var toolBuildDir = buildDir + "ClockworkTool/";
 
     bcommon.cleanCreateDir(toolBuildDir);
 
     process.chdir(toolBuildDir);
 
     var cmds = [
-        cmds.push("cmake ../../../ -DATOMIC_DEV_BUILD=0 -DCMAKE_BUILD_TYPE=Release -DATOMIC_BUILD_2D=0 -DLINUX=1 ");
-        cmds.push("make AtomicTool")
+        cmds.push("cmake ../../../ -DCLOCKWORK_DEV_BUILD=0 -DCMAKE_BUILD_TYPE=Release -DCLOCKWORK_BUILD_2D=0 -DLINUX=1 ");
+        cmds.push("make ClockworkTool")
     ]
 
     jake.exec(cmds, function() {
 
-      var srcToolBinary = toolBuildDir + "Source/AtomicTool/Release/AtomicTool"
-      fs.copySync(srcToolBinary, atomicToolBinary);
-      console.log("Built Linux AtomicTool");
+      var srcToolBinary = toolBuildDir + "Source/ClockworkTool/Release/ClockworkTool"
+      fs.copySync(srcToolBinary, clockworkToolBinary);
+      console.log("Built Linux ClockworkTool");
       complete();
 
     }, {
@@ -50,4 +50,4 @@ namespace('build', function() {
 
 
 exports.clean = clean;
-exports.getAtomicToolBinary = getAtomicToolBinary;
+exports.getClockworkToolBinary = getClockworkToolBinary;

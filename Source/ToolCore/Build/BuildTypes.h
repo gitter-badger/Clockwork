@@ -20,11 +20,11 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Container/Str.h>
+#include <Clockwork/Container/Str.h>
 
 #pragma once
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

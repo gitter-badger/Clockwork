@@ -1,0 +1,7 @@
+
+{
+  "name" : "ClockworkPlayer",
+  "namespace" : "ClockworkPlayer",
+  "dependencies" : ["Script/Packages/Clockwork"],
+  "modules" : ["Player"]
+}

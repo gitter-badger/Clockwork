@@ -2,9 +2,9 @@
 // IMPORTANT: THIS FILE IS GENERATED, CHANGES WILL BE LOST
 //////////////////////////////////////////////////////////
 
-// Atomic TypeScript Definitions
+// Clockwork TypeScript Definitions
 
-/// <reference path="Atomic.d.ts" />
+/// <reference path="Clockwork.d.ts" />
 
 declare module Editor {
 
@@ -44,7 +44,7 @@ declare module Editor {
 //----------------------------------------------------
 
 
-   export class FileUtils extends Atomic.AObject {
+   export class FileUtils extends Clockwork.AObject {
 
       mobileProvisionPath: string;
 
@@ -63,7 +63,7 @@ declare module Editor {
 
    }
 
-   export class EditorMode extends Atomic.AObject {
+   export class EditorMode extends Clockwork.AObject {
 
       // Construct.
       constructor();
@@ -73,7 +73,7 @@ declare module Editor {
 
    }
 
-   export class PlayerMode extends Atomic.AObject {
+   export class PlayerMode extends Clockwork.AObject {
 
       // Construct.
       constructor();
@@ -84,7 +84,7 @@ declare module Editor {
 
    export class JSResourceEditor extends ResourceEditor {
 
-      constructor(fullpath: string, container: Atomic.UITabContainer);
+      constructor(fullpath: string, container: Clockwork.UITabContainer);
 
       findText(findText: string, flags: number): boolean;
       findTextClose(): void;
@@ -96,16 +96,16 @@ declare module Editor {
 
    }
 
-   export class ResourceEditor extends Atomic.AObject {
+   export class ResourceEditor extends Clockwork.AObject {
 
-      button: Atomic.UIButton;
+      button: Clockwork.UIButton;
       fullPath: string;
-      rootContentWidget: Atomic.UIWidget;
+      rootContentWidget: Clockwork.UIWidget;
       modified: boolean;
 
-      constructor(fullpath: string, container: Atomic.UITabContainer);
+      constructor(fullpath: string, container: Clockwork.UITabContainer);
 
-      getButton(): Atomic.UIButton;
+      getButton(): Clockwork.UIButton;
       hasUnsavedModifications(): boolean;
       setFocus(): void;
       close(navigateToAvailableResource?: boolean): void;
@@ -116,19 +116,19 @@ declare module Editor {
       undo(): void;
       redo(): void;
       save(): boolean;
-      getRootContentWidget(): Atomic.UIWidget;
+      getRootContentWidget(): Clockwork.UIWidget;
       invokeShortcut(shortcut: string): void;
       requestClose(): void;
       setModified(modified: boolean): void;
 
    }
 
-   export class Gizmo3D extends Atomic.AObject {
+   export class Gizmo3D extends Clockwork.AObject {
 
       view: SceneView3D;
       axisMode: AxisMode;
       editMode: EditMode;
-      gizmoNode: Atomic.Node;
+      gizmoNode: Clockwork.Node;
       snapTranslationX: number;
       snapTranslationY: number;
       snapTranslationZ: number;
@@ -145,7 +145,7 @@ declare module Editor {
       show(): void;
       hide(): void;
       update(): void;
-      getGizmoNode(): Atomic.Node;
+      getGizmoNode(): Clockwork.Node;
       getSnapTranslationX(): number;
       getSnapTranslationY(): number;
       getSnapTranslationZ(): number;
@@ -163,16 +163,16 @@ declare module Editor {
 
       selection: SceneSelection;
       sceneView3D: SceneView3D;
-      scene: Atomic.Scene;
+      scene: Clockwork.Scene;
       gizmo: Gizmo3D;
 
-      constructor(fullpath: string, container: Atomic.UITabContainer);
+      constructor(fullpath: string, container: Clockwork.UITabContainer);
 
       getSelection(): SceneSelection;
       getSceneView3D(): SceneView3D;
-      registerNode(node: Atomic.Node): void;
-      reparentNode(node: Atomic.Node, newParent: Atomic.Node): void;
-      getScene(): Atomic.Scene;
+      registerNode(node: Clockwork.Node): void;
+      reparentNode(node: Clockwork.Node, newParent: Clockwork.Node): void;
+      getScene(): Clockwork.Scene;
       getGizmo(): Gizmo3D;
       setFocus(): void;
       requiresInspector(): boolean;
@@ -184,11 +184,11 @@ declare module Editor {
       copy(): void;
       paste(): void;
       invokeShortcut(shortcut: string): void;
-      static getSceneEditor(scene: Atomic.Scene): SceneEditor3D;
+      static getSceneEditor(scene: Clockwork.Scene): SceneEditor3D;
 
    }
 
-   export class SceneSelection extends Atomic.AObject {
+   export class SceneSelection extends Clockwork.AObject {
 
       selectedNodeCount: number;
 
@@ -199,21 +199,21 @@ declare module Editor {
       paste(): void;
       delete(): void;
       // Add a node to the selection, if clear specified removes current nodes first
-      addNode(node: Atomic.Node, clear?: boolean): void;
-      removeNode(node: Atomic.Node, quiet?: boolean): void;
-      getBounds(bbox: Atomic.BoundingBox): void;
-      contains(node: Atomic.Node): boolean;
-      getSelectedNode(index: number): Atomic.Node;
+      addNode(node: Clockwork.Node, clear?: boolean): void;
+      removeNode(node: Clockwork.Node, quiet?: boolean): void;
+      getBounds(bbox: Clockwork.BoundingBox): void;
+      contains(node: Clockwork.Node): boolean;
+      getSelectedNode(index: number): Clockwork.Node;
       getSelectedNodeCount(): number;
       clear(): void;
 
    }
 
-   export class SceneView3D extends Atomic.UISceneView {
+   export class SceneView3D extends Clockwork.UISceneView {
 
       pitch: number;
       yaw: number;
-      debugRenderer: Atomic.DebugRenderer;
+      debugRenderer: Clockwork.DebugRenderer;
       sceneEditor3D: SceneEditor3D;
 
       constructor(sceneEditor: SceneEditor3D);
@@ -224,7 +224,7 @@ declare module Editor {
       enable(): void;
       disable(): void;
       isEnabled(): boolean;
-      getDebugRenderer(): Atomic.DebugRenderer;
+      getDebugRenderer(): Clockwork.DebugRenderer;
       getSceneEditor3D(): SceneEditor3D;
 
    }
@@ -242,7 +242,7 @@ declare module Editor {
 
    }
 
-   export class EditorComponent extends Atomic.Component {
+   export class EditorComponent extends Clockwork.Component {
 
       // Construct.
       constructor();

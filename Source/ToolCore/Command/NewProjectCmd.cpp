@@ -20,9 +20,9 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/StringUtils.h>
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/File.h>
+#include <Clockwork/Core/StringUtils.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/File.h>
 
 #include "../ToolSystem.h"
 #include "../Project/ProjectFile.h"
@@ -94,7 +94,7 @@ void NewProjectCmd::Run()
 
     String filename("NewProject");
     SharedPtr<ProjectFile> pfile(new ProjectFile(context_));
-    pfile->WriteNewProject(projectPath_ + "/" + filename + ".atomic");
+    pfile->WriteNewProject(projectPath_ + "/" + filename + ".clockwork");
 
     Finished();
 }

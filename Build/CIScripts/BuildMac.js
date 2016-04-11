@@ -10,9 +10,9 @@ namespace('build', function() {
     async: true
   }, function() {
 
-    var atomicTool = host.getAtomicToolBinary();
+    var clockworkTool = host.getClockworkToolBinary();
 
-    var playerBuildDir = buildDir + "AtomicPlayer/";
+    var playerBuildDir = buildDir + "ClockworkPlayer/";
 
     bcommon.cleanCreateDir(playerBuildDir);
     bcommon.cleanCreateDir(bcommon.getGenScriptRootDir("MACOSX"));
@@ -20,15 +20,15 @@ namespace('build', function() {
     process.chdir(playerBuildDir);
 
     var cmds = [
-      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/Atomic/ MACOSX",
-      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/AtomicPlayer/ MACOSX",
-      "cmake -DATOMIC_DEV_BUILD=0 -G Xcode ../../../../",
-      "xcodebuild -target AtomicPlayer -configuration Release -parallelizeTargets -jobs 4"
+      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/Clockwork/ MACOSX",
+      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/ClockworkPlayer/ MACOSX",
+      "cmake -DCLOCKWORK_DEV_BUILD=0 -G Xcode ../../../../",
+      "xcodebuild -target ClockworkPlayer -configuration Release -parallelizeTargets -jobs 4"
     ];
 
     jake.exec(cmds, function() {
-      var macPlayerBinary = playerBuildDir + "Source/AtomicPlayer/Application/Release/AtomicPlayer.app/Contents/MacOS/AtomicPlayer";
-      fs.copySync(macPlayerBinary, buildDir + "Bin/AtomicPlayer");
+      var macPlayerBinary = playerBuildDir + "Source/ClockworkPlayer/Application/Release/ClockworkPlayer.app/Contents/MacOS/ClockworkPlayer";
+      fs.copySync(macPlayerBinary, buildDir + "Bin/ClockworkPlayer");
       console.log("Built Mac Player");
       complete();
 
@@ -42,24 +42,24 @@ namespace('build', function() {
     async: true
   }, function() {
 
-    var atomicTool = host.getAtomicToolBinary();
+    var clockworkTool = host.getClockworkToolBinary();
 
-    var editorBuildDir = buildDir + "AtomicEditor/";
+    var editorBuildDir = buildDir + "ClockworkEditor/";
 
     bcommon.cleanCreateDir(editorBuildDir);
 
     process.chdir(editorBuildDir);
 
     var cmds = [
-      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/Atomic/ MACOSX",
-      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/AtomicPlayer/ MACOSX",
-      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/ToolCore/ MACOSX",
-      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/Editor/ MACOSX",
-      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/AtomicNET/ MACOSX",
-      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/WebView/ MACOSX",
-      "cmake -DATOMIC_DEV_BUILD=0 -G Xcode ../../../../",
-      "xcodebuild -target AtomicEditor -configuration Release -parallelizeTargets -jobs 4",
-      "cd " + editorBuildDir + "Source/AtomicEditor/Release && zip -r -X " + buildDir + "Bin/AtomicEditor.zip ./AtomicEditor.app"
+      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/Clockwork/ MACOSX",
+      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/ClockworkPlayer/ MACOSX",
+      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/ToolCore/ MACOSX",
+      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/Editor/ MACOSX",
+      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/ClockworkNET/ MACOSX",
+      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/WebView/ MACOSX",
+      "cmake -DCLOCKWORK_DEV_BUILD=0 -G Xcode ../../../../",
+      "xcodebuild -target ClockworkEditor -configuration Release -parallelizeTargets -jobs 4",
+      "cd " + editorBuildDir + "Source/ClockworkEditor/Release && zip -r -X " + buildDir + "Bin/ClockworkEditor.zip ./ClockworkEditor.app"
     ];
 
     jake.exec(cmds, function() {

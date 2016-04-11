@@ -20,12 +20,12 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/Resource/ResourceCache.h>
-#include <Atomic/Resource/Image.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/Resource/ResourceCache.h>
+#include <Clockwork/Resource/Image.h>
 
-#include <AtomicJS/Javascript/JSComponentFile.h>
+#include <ClockworkJS/Javascript/JSComponentFile.h>
 
 #include "Asset.h"
 #include "AssetDatabase.h"
@@ -70,7 +70,7 @@ bool JavascriptImporter::Import()
 
     file->Close();
 
-    if (strstr(buffer, "\"atomic component\"") || strstr(buffer, "'atomic component'"))
+    if (strstr(buffer, "\"clockwork component\"") || strstr(buffer, "'clockwork component'"))
         isComponentFile_ = true;
 
     return true;

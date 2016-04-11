@@ -24,10 +24,10 @@
 #include <rapidjson/filestream.h>
 #include <rapidjson/prettywriter.h>
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/File.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/File.h>
 
-#include <Atomic/Resource/JSONFile.h>
+#include <Clockwork/Resource/JSONFile.h>
 
 #include "../ToolSystem.h"
 #include "../ToolEvents.h"
@@ -130,7 +130,7 @@ bool Project::Load(const String& fullpath)
 {
     loading_ = true;
 
-    if (fullpath.Contains(".atomic")) {
+    if (fullpath.Contains(".clockwork")) {
 
         projectPath_ = AddTrailingSlash(GetPath(fullpath));
         projectFilePath_ = fullpath;
@@ -139,7 +139,7 @@ bool Project::Load(const String& fullpath)
     else
     {
         projectPath_ = AddTrailingSlash(fullpath);
-        projectFilePath_ = projectPath_ + GetFileName(RemoveTrailingSlash(projectPath_)) + ".atomic";
+        projectFilePath_ = projectPath_ + GetFileName(RemoveTrailingSlash(projectPath_)) + ".clockwork";
 
     }
 

@@ -20,9 +20,9 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/File.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/Resource/ResourceCache.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/Resource/ResourceCache.h>
 
 #include "../ToolSystem.h"
 #include "../ToolEnvironment.h"
@@ -64,10 +64,10 @@ String BuildIOS::GenerateInfoPlist()
     plist += "<string>English</string>\n";
 
     plist += "<key>CFBundleExecutable</key>\n";
-    plist += "<string>AtomicPlayer</string>\n";
+    plist += "<string>ClockworkPlayer</string>\n";
 
     plist += "<key>CFBundleGetInfoString</key>\n";
-    plist += "<string>\"Atomic Player\"</string>\n";
+    plist += "<string>\"Clockwork Player\"</string>\n";
 
     plist += "<key>CFBundleIconFile</key>\n";
     plist += "<string></string>\n";
@@ -168,7 +168,7 @@ void BuildIOS::RunConvertPList()
 {
     SubprocessSystem* subs = GetSubsystem<SubprocessSystem>();
 
-    Vector<String> args = String("-convert binary1 ./AtomicPlayer.app/Info.plist").Split(' ');
+    Vector<String> args = String("-convert binary1 ./ClockworkPlayer.app/Info.plist").Split(' ');
 
     currentBuildPhase_ = ConvertPList;
     Subprocess* subprocess = subs->Launch("/usr/bin/plutil", args, buildPath_);
@@ -214,8 +214,8 @@ void BuildIOS::RunCodeSign()
     args.Push("--sign");
     args.Push("iPhone Developer");
     args.Push("--entitlements");
-    args.Push("./AtomicPlayer.app.xcent");
-    args.Push("./AtomicPlayer.app");
+    args.Push("./ClockworkPlayer.app.xcent");
+    args.Push("./ClockworkPlayer.app");
 
     Poco::Process::Env env;
     env["CODESIGN_ALLOCATE"] =  "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/codesign_allocate";
@@ -266,7 +266,7 @@ void BuildIOS::RunDeploy()
     // args.Push("--uninstall");
 
     args.Push("--bundle");
-    args.Push("./AtomicPlayer.app");
+    args.Push("./ClockworkPlayer.app");
 
     currentBuildPhase_ = Deploy;
 
@@ -316,18 +316,18 @@ void BuildIOS::Build(const String& buildPath)
 
     String buildSourceDir = tenv->GetToolDataDir();
 
-    String buildAppSourceDir = buildSourceDir + "Deployment/IOS/AtomicPlayer.app";
+    String buildAppSourceDir = buildSourceDir + "Deployment/IOS/ClockworkPlayer.app";
 
     fileSystem->CreateDir(buildPath_);
 
-    String buildDestDist = buildPath_ + "/AtomicPlayer.app";
+    String buildDestDist = buildPath_ + "/ClockworkPlayer.app";
 
     fileSystem->CreateDir(buildDestDist);
 
-    String resourcePackagePath = buildDestDist + "/AtomicResources" + PAK_EXTENSION;
+    String resourcePackagePath = buildDestDist + "/ClockworkResources" + PAK_EXTENSION;
     GenerateResourcePackage(resourcePackagePath);
 
-    fileSystem->Copy(buildAppSourceDir + "/AtomicPlayer", buildDestDist + "/AtomicPlayer");
+    fileSystem->Copy(buildAppSourceDir + "/ClockworkPlayer", buildDestDist + "/ClockworkPlayer");
     fileSystem->Copy(buildAppSourceDir + "/PkgInfo", buildDestDist + "/PkgInfo");
 
     fileSystem->Copy(iosSettings->GetProvisionFile(), buildDestDist + "/embedded.mobileprovision");
@@ -335,7 +335,7 @@ void BuildIOS::Build(const String& buildPath)
     String entitlements = GenerateEntitlements();
     String plist = GenerateInfoPlist();
 
-    File file(context_, buildPath_ + "/AtomicPlayer.app.xcent", FILE_WRITE);
+    File file(context_, buildPath_ + "/ClockworkPlayer.app.xcent", FILE_WRITE);
 
     if (file.IsOpen())
     {

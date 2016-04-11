@@ -24,13 +24,13 @@
 
 #include "AssetImporter.h"
 
-namespace Atomic
+namespace Clockwork
 {
     class Node;
     class Animation;
 }
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {
@@ -87,7 +87,7 @@ public:
 
     Resource* GetResource(const String& typeName = String::EMPTY);
 
-    void GetAnimations(PODVector<Atomic::Animation *>& animations);
+    void GetAnimations(PODVector<Clockwork::Animation *>& animations);
 
     AnimationImportInfo* GetAnimationInfo(unsigned index) { return animationInfo_[index]; }
 

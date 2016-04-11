@@ -20,8 +20,8 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/CoreEvents.h>
-#include <Atomic/Core/Context.h>
+#include <Clockwork/Core/CoreEvents.h>
+#include <Clockwork/Core/Context.h>
 #include "CurlManager.h"
 #include <curl/curl.h>
 

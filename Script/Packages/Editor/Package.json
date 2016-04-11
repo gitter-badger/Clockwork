@@ -1,8 +1,8 @@
 
 {
   "name" : "Editor",
-  "namespace" : "AtomicEditor",
-  "dependencies" : ["Script/Packages/Atomic"],
+  "namespace" : "ClockworkEditor",
+  "dependencies" : ["Script/Packages/Clockwork"],
   "modules" : ["Editor"],
   "platforms" : ["WINDOWS", "MACOSX", "LINUX"]
 }

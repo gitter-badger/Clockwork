@@ -20,12 +20,12 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/Resource/ResourceCache.h>
-#include <Atomic/Resource/Image.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/Resource/ResourceCache.h>
+#include <Clockwork/Resource/Image.h>
 
-#include <AtomicNET/NETScript/CSComponentAssembly.h>
+#include <ClockworkNET/NETScript/CSComponentAssembly.h>
 
 #include "../NETTools/NETToolSystem.h"
 

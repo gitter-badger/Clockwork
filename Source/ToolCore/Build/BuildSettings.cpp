@@ -21,9 +21,9 @@
 //
 
 /*
-#include "AtomicEditor.h"
-#include <Atomic/Core/CoreEvents.h>
-#include "AtomicEditor.h"
+#include "ClockworkEditor.h"
+#include <Clockwork/Core/CoreEvents.h>
+#include "ClockworkEditor.h"
 #include "BuildSettings.h"
 
 namespace ToolCore

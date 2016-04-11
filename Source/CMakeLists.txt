@@ -1,23 +1,23 @@
 
 add_subdirectory(ThirdParty)
-add_subdirectory(Atomic)
-add_subdirectory(AtomicJS)
+add_subdirectory(Clockwork)
+add_subdirectory(ClockworkJS)
 
 
-if (ATOMIC_WEBVIEW)
-    add_subdirectory(AtomicWebView)    
+if (CLOCKWORK_WEBVIEW)
+    add_subdirectory(ClockworkWebView)    
 endif()
 
-add_subdirectory(AtomicPlayer)
-add_subdirectory(AtomicPlayerJS)
+add_subdirectory(ClockworkPlayer)
+add_subdirectory(ClockworkPlayerJS)
 
 if (NOT IOS AND NOT ANDROID AND NOT EMSCRIPTEN)
     add_subdirectory(ToolCore)
     add_subdirectory(ToolCoreJS)
-    add_subdirectory(AtomicEditor)
-    add_subdirectory(AtomicTool)
+    add_subdirectory(ClockworkEditor)
+    add_subdirectory(ClockworkTool)
     add_subdirectory(Tools)
-    add_subdirectory(AtomicNET)
+    add_subdirectory(ClockworkNET)
 endif()
 
-include(AtomicDocList)
+include(ClockworkDocList)

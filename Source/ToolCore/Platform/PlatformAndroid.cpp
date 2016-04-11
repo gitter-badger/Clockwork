@@ -20,9 +20,9 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/MemoryBuffer.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/IO/Log.h>
+#include <Clockwork/IO/MemoryBuffer.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/IO/Log.h>
 
 #include "../ToolEnvironment.h"
 #include "../Subprocess/SubprocessSystem.h"
@@ -51,7 +51,7 @@ BuildBase* PlatformAndroid::NewBuild(Project *project)
 
 void PlatformAndroid::PrependAndroidCommandArgs(Vector<String> args)
 {
-#ifdef ATOMIC_PLATFORM_WINDOWS
+#ifdef CLOCKWORK_PLATFORM_WINDOWS
     // android is a batch file on windows, so have to run with cmd /c
     args.Push("/c");
     args.Push("\"" + GetAndroidCommand() + "\"");
@@ -139,7 +139,7 @@ String PlatformAndroid::GetADBCommand() const
 
     String adbCommand = prefs->GetAndroidSDKPath();
 
-#ifdef ATOMIC_PLATFORM_OSX
+#ifdef CLOCKWORK_PLATFORM_OSX
     adbCommand += "/platform-tools/adb";
 #else
     adbCommand += "/platform-tools/adb.exe";
@@ -158,7 +158,7 @@ String PlatformAndroid::GetAndroidCommand() const
     if (!androidCommand.Length())
         return String::EMPTY;
 
-#ifdef ATOMIC_PLATFORM_OSX
+#ifdef CLOCKWORK_PLATFORM_OSX
     //Vector<String> args = String("list targets").Split(' ');
     androidCommand += "/tools/android";
 #else

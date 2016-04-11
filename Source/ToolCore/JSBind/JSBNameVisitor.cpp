@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Atomic.h>
+#include <Clockwork/Clockwork.h>
 
 #include "JSBNameVisitor.h"
 

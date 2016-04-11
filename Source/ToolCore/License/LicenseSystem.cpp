@@ -22,7 +22,7 @@
 
 // BEGIN LICENSE MANAGEMENT
 
-#ifdef ATOMIC_PLATFORM_WINDOWS
+#ifdef CLOCKWORK_PLATFORM_WINDOWS
 #ifndef _MSC_VER
 #define _WIN32_IE 0x501
 #endif
@@ -34,12 +34,12 @@
 #include <sys/utime.h>
 #endif
 
-#include <Atomic/Core/CoreEvents.h>
-#include <Atomic/Core/Context.h>
-#include <Atomic/Core/Timer.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/IO/Log.h>
+#include <Clockwork/Core/CoreEvents.h>
+#include <Clockwork/Core/Context.h>
+#include <Clockwork/Core/Timer.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/IO/Log.h>
 
 #include "LicenseEvents.h"
 #include "LicenseSystem.h"
@@ -57,7 +57,7 @@ LicenseSystem::LicenseSystem(Context* context) :
 {
     FileSystem* filesystem = GetSubsystem<FileSystem>();
 
-    licenseFilePath_ = filesystem->GetAppPreferencesDir("AtomicEditor", "License");
+    licenseFilePath_ = filesystem->GetAppPreferencesDir("ClockworkEditor", "License");
     licenseFilePath_ = AddTrailingSlash(licenseFilePath_);
 
     if (!filesystem->DirExists(licenseFilePath_))
@@ -68,11 +68,11 @@ LicenseSystem::LicenseSystem(Context* context) :
 
     licenseCachePath_ = licenseFilePath_;
 
-    licenseCachePath_ += "AtomicLicenseCache";
+    licenseCachePath_ += "ClockworkLicenseCache";
 
-    licenseFilePath_ += "AtomicLicense";
+    licenseFilePath_ += "ClockworkLicense";
 
-    eulaAgreementPath_ = filesystem->GetAppPreferencesDir("AtomicEditor", "License");
+    eulaAgreementPath_ = filesystem->GetAppPreferencesDir("ClockworkEditor", "License");
     eulaAgreementPath_ = AddTrailingSlash(eulaAgreementPath_);
     eulaAgreementPath_ += "EulaConfirmed";
 
@@ -126,7 +126,7 @@ void LicenseSystem::LicenseAgreementConfirmed()
 
 String LicenseSystem::GenerateMachineID()
 {
-#if defined(ATOMIC_PLATFORM_OSX) || defined(ATOMIC_PLATFORM_LINUX)
+#if defined(CLOCKWORK_PLATFORM_OSX) || defined(CLOCKWORK_PLATFORM_LINUX)
     String path = getenv("HOME");
 #else
     wchar_t pathName[MAX_PATH];
@@ -156,7 +156,7 @@ void LicenseSystem::ResetLicense()
 bool LicenseSystem::LoadLicense()
 {
 
-    key_ = "ATOMIC-XXXX-XXXX-XXXX-XXXX";
+    key_ = "CLOCKWORK-XXXX-XXXX-XXXX-XXXX";
     licenseWindows_ = true;
     licenseMac_ = true;
     licenseAndroid_ = true;
@@ -198,7 +198,7 @@ bool LicenseSystem::LoadLicense()
 
 bool LicenseSystem::ValidateKey(const String& key)
 {
-    if (!key.StartsWith("ATOMIC-"))
+    if (!key.StartsWith("CLOCKWORK-"))
         return false;
 
     Vector<String> elements = key.Split('-');
@@ -294,7 +294,7 @@ void LicenseSystem::RequestServerVerification(const String& key)
     String id = GenerateMachineID();
     post.AppendWithFormat("key=%s&id=%s", key.CString(), id.CString());
 
-    serverVerification_ = cm->MakeRequest("https://store.atomicgameengine.com/licenses/license_verify.php", post);
+    serverVerification_ = cm->MakeRequest("https://store.clockworkgameengine.com/licenses/license_verify.php", post);
 
     SubscribeToEvent(serverVerification_, E_CURLCOMPLETE, HANDLER(LicenseSystem, HandleVerification));
 }
@@ -393,7 +393,7 @@ bool LicenseSystem::Deactivate()
     String id = GenerateMachineID();
     post.AppendWithFormat("key=%s&id=%s", key_.CString(), id.CString());
 
-    deactivate_ = cm->MakeRequest("https://store.atomicgameengine.com/licenses/license_deactivate.php", post);
+    deactivate_ = cm->MakeRequest("https://store.clockworkgameengine.com/licenses/license_deactivate.php", post);
 
     SubscribeToEvent(deactivate_, E_CURLCOMPLETE, HANDLER(LicenseSystem, HandleDeactivate));
 
@@ -522,7 +522,7 @@ void LicenseSystem::HandleVerification(StringHash eventType, VariantMap& eventDa
 
     if (licenseError)
     {
-        LOGINFO("There was an issue with the atomic-cli activation.  Please reactivate or contact sales@atomicgameengine.com if this problem persists");
+        LOGINFO("There was an issue with the clockwork-cli activation.  Please reactivate or contact sales@clockworkgameengine.com if this problem persists");
         SendEvent(E_LICENSE_ERROR);
     }
 
@@ -598,14 +598,14 @@ void LicenseSystem::HandleActivationResult(StringHash eventType, VariantMap& eve
         else if (code == 1)
         {
             // TODO: check for CLI and prompt to use CLI command to return license
-            String message = "Activations Exceeded:\nThis key has 2 activations in use.\n\nPlease return a license from Atomic Editor - Manage License menu on one of these active computers.\n\nIf you are unable to do so, please contact sales@atomicgameengine.com providing the key to reset it";
+            String message = "Activations Exceeded:\nThis key has 2 activations in use.\n\nPlease return a license from Clockwork Editor - Manage License menu on one of these active computers.\n\nIf you are unable to do so, please contact sales@clockworkgameengine.com providing the key to reset it";
             eventDataOut[LicenseActivationError::P_MESSAGE] = message;
             SendEvent(E_LICENSE_ACTIVATIONERROR, eventDataOut);
 
         }
         else if (code == 2)
         {
-            String message = "License Error:\nThere was a problem with the license key.\n\nPlease check the key and try again.\n\nIf the problem persists please contact sales@atomicgameengine.com";
+            String message = "License Error:\nThere was a problem with the license key.\n\nPlease check the key and try again.\n\nIf the problem persists please contact sales@clockworkgameengine.com";
             eventDataOut[LicenseActivationError::P_MESSAGE] = message;
             SendEvent(E_LICENSE_ACTIVATIONERROR, eventDataOut);
 
@@ -613,7 +613,7 @@ void LicenseSystem::HandleActivationResult(StringHash eventType, VariantMap& eve
         }
         else if (code == 3)
         {
-            String message ="Activation Server Error:\nThere was an error on the activation server\n\nIf the problem persists please contact sales@atomicgameengine.com";
+            String message ="Activation Server Error:\nThere was an error on the activation server\n\nIf the problem persists please contact sales@clockworkgameengine.com";
             eventDataOut[LicenseActivationError::P_MESSAGE] = message;
             SendEvent(E_LICENSE_ACTIVATIONERROR, eventDataOut);
         }
@@ -638,7 +638,7 @@ void LicenseSystem::RequestServerActivation(const String& key)
     post.AppendWithFormat("key=%s&id=%s", key.CString(), id.CString());
 
     // todo, this should be a verify url (shouldn't auto add id)
-    serverActivation_ = cm->MakeRequest("https://store.atomicgameengine.com/licenses/license_activate.php", post);
+    serverActivation_ = cm->MakeRequest("https://store.clockworkgameengine.com/licenses/license_activate.php", post);
 
     SubscribeToEvent(serverActivation_, E_CURLCOMPLETE, HANDLER(LicenseSystem, HandleActivationResult));
 }
@@ -646,7 +646,7 @@ void LicenseSystem::RequestServerActivation(const String& key)
 bool LicenseSystem::GetSourceBuild()
 {
 
-#ifdef ATOMIC_SOURCE_BUILD
+#ifdef CLOCKWORK_SOURCE_BUILD
     return true;
 #else
     return false;

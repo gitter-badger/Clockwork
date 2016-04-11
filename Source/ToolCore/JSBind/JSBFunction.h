@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <Atomic/IO/Log.h>
+#include <Clockwork/IO/Log.h>
 #include "JSBClass.h"
 #include "JSBType.h"
 #include "JSBSymbol.h"
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

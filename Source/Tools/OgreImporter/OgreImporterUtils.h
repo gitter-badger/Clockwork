@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include <Atomic/Graphics/Animation.h>
-#include <Atomic/Math/BoundingBox.h>
-#include <Atomic/Graphics/Graphics.h>
-#include <Atomic/IO/Serializer.h>
-#include <Atomic/Math/Matrix3x4.h>
+#include <Clockwork/Graphics/Animation.h>
+#include <Clockwork/Math/BoundingBox.h>
+#include <Clockwork/Graphics/Graphics.h>
+#include <Clockwork/IO/Serializer.h>
+#include <Clockwork/Math/Matrix3x4.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 struct Triangle
 {

@@ -48,7 +48,7 @@ protected:
 
 private:
 
-    void BuildAtomicNET();
+    void BuildClockworkNET();
 
 };
 

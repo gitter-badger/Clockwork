@@ -20,10 +20,10 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Resource/ResourceCache.h>
-#include <Atomic/Resource/Image.h>
-#include <Atomic/Atomic2D/Sprite2D.h>
-#include <Atomic/Atomic2D/StaticSprite2D.h>
+#include <Clockwork/Resource/ResourceCache.h>
+#include <Clockwork/Resource/Image.h>
+#include <Clockwork/Clockwork2D/Sprite2D.h>
+#include <Clockwork/Clockwork2D/StaticSprite2D.h>
 
 #include "Asset.h"
 #include "AssetDatabase.h"

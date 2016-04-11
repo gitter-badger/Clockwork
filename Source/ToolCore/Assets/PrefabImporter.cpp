@@ -20,13 +20,13 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Resource/ResourceCache.h>
-#include <Atomic/Resource/XMLFile.h>
-#include <Atomic/Scene/Scene.h>
-#include <Atomic/Scene/PrefabEvents.h>
-#include <Atomic/Scene/PrefabComponent.h>
-#include <Atomic/Atomic2D/AnimatedSprite2D.h>
-#include <Atomic/IO/FileSystem.h>
+#include <Clockwork/Resource/ResourceCache.h>
+#include <Clockwork/Resource/XMLFile.h>
+#include <Clockwork/Scene/Scene.h>
+#include <Clockwork/Scene/PrefabEvents.h>
+#include <Clockwork/Scene/PrefabComponent.h>
+#include <Clockwork/Clockwork2D/AnimatedSprite2D.h>
+#include <Clockwork/IO/FileSystem.h>
 
 #include "Asset.h"
 #include "AssetDatabase.h"

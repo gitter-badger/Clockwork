@@ -1,0 +1,12 @@
+
+{
+	"name" : "Clockwork",
+	"namespace" : "Clockwork",
+
+	"modules" : ["Container", "Math", "Core", "Scene", "Graphics", "Clockwork3D", "Clockwork2D", "Audio",
+	"Physics", "Navigation", "Input", "UI", "Resource", "Network", "IO",
+	"Engine", "Script", "Javascript", "Environment", "Web"],
+	"moduleExclude" : {
+		"WEB" : ["Network", "Navigation"]
+	}
+}

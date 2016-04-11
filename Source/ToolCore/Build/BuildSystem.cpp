@@ -20,10 +20,10 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/Context.h>
-#include <Atomic/Core/StringUtils.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/IO/Log.h>
+#include <Clockwork/Core/Context.h>
+#include <Clockwork/Core/StringUtils.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/IO/Log.h>
 
 #include "../ToolSystem.h"
 #include "../Project/Project.h"

@@ -20,10 +20,10 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/Object.h>
-#include <Atomic/IO/FileSystem.h>
+#include <Clockwork/Core/Object.h>
+#include <Clockwork/IO/FileSystem.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 #include "../Platform/Platform.h"
 

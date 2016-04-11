@@ -20,8 +20,8 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/Resource/ResourceCache.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/Resource/ResourceCache.h>
 
 #include "../ToolSystem.h"
 #include "../ToolEnvironment.h"
@@ -89,7 +89,7 @@ void BuildMac::Build(const String& buildPath)
     if (!BuildCreateDirectory(buildPath_))
         return;
 
-    buildPath_ += "/AtomicPlayer.app";
+    buildPath_ += "/ClockworkPlayer.app";
 
     if (!BuildCreateDirectory(buildPath_))
         return;
@@ -100,22 +100,22 @@ void BuildMac::Build(const String& buildPath)
     if (!BuildCreateDirectory(buildPath_ + "/Contents/Resources"))
         return;
 
-    String resourcePackagePath = buildPath_ + "/Contents/Resources/AtomicResources" + PAK_EXTENSION;
+    String resourcePackagePath = buildPath_ + "/Contents/Resources/ClockworkResources" + PAK_EXTENSION;
     GenerateResourcePackage(resourcePackagePath);
 
-    if (!BuildCopyFile(appSrcPath + "/Contents/Resources/Atomic.icns", buildPath_ + "/Contents/Resources/Atomic.icns"))
+    if (!BuildCopyFile(appSrcPath + "/Contents/Resources/Clockwork.icns", buildPath_ + "/Contents/Resources/Clockwork.icns"))
         return;
 
     if (!BuildCopyFile(appSrcPath + "/Contents/Info.plist", buildPath_ + "/Contents/Info.plist"))
         return;
 
-    if (!BuildCopyFile(appSrcPath + "/Contents/MacOS/AtomicPlayer", buildPath_ + "/Contents/MacOS/AtomicPlayer"))
+    if (!BuildCopyFile(appSrcPath + "/Contents/MacOS/ClockworkPlayer", buildPath_ + "/Contents/MacOS/ClockworkPlayer"))
         return;
 
-#ifdef ATOMIC_PLATFORM_OSX
+#ifdef CLOCKWORK_PLATFORM_OSX
     Vector<String> args;
     args.Push("+x");
-    args.Push(buildPath_ + "/Contents/MacOS/AtomicPlayer");
+    args.Push(buildPath_ + "/Contents/MacOS/ClockworkPlayer");
     fileSystem->SystemRun("chmod", args);
 #endif
 

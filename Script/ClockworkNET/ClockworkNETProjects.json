@@ -1,0 +1,54 @@
+{
+  "solution" : {
+    "name" : "ClockworkNET",
+    "outputPath" : "$CLOCKWORK_ROOT$/Artifacts/ClockworkNET/Build/"
+  },
+  "projects" : [
+    {
+      "name": "ClockworkNETBootstrap",
+      "outputType" : "Library",
+      "rootNamespace" : "Clockwork.Bootstrap",
+      "assemblyName" : "ClockworkNETBootstrap",
+      "assemblyOutputPath" : "$CLOCKWORK_ROOT$/Artifacts/ClockworkNET/TPA/",
+      "references" : [
+        "System.Runtime", "System.Collections", "System.Collections.Concurrent", "System.Linq"
+      ],
+      "sources" : [
+        "$CLOCKWORK_ROOT$/Script/ClockworkNET/ClockworkNET/ClockworkNETBootstrap/"
+      ]
+    },
+    {
+      "name": "ClockworkNETEngine",
+      "outputType" : "Library",
+      "rootNamespace" : "ClockworkEngine",
+      "assemblyName" : "ClockworkNETEngine",
+      "assemblyOutputPath" : "$CLOCKWORK_ROOT$/Artifacts/ClockworkNET/",
+      "references" : [
+        "System.Runtime" , "System.Linq"
+      ],
+      "sources" : [
+        "$CLOCKWORK_ROOT$/Script/ClockworkNET/ClockworkNET/ClockworkNETEngine/",
+        "$CLOCKWORK_ROOT$/Build/Source/Generated/$SCRIPT_PLATFORM$/CSharp/Packages/Clockwork/Managed/",
+        "$CLOCKWORK_ROOT$/Build/Source/Generated/$SCRIPT_PLATFORM$/CSharp/Packages/ClockworkNET/Managed/",
+        "$CLOCKWORK_ROOT$/Build/Source/Generated/$SCRIPT_PLATFORM$/CSharp/Packages/ClockworkPlayer/Managed/"
+      ]
+    },
+    {
+      "name": "ClockworkNETTools",
+      "outputType" : "Library",
+      "rootNamespace" : "ClockworkTools",
+      "assemblyName" : "ClockworkNETTools",
+      "assemblyOutputPath" : "$CLOCKWORK_ROOT$/Artifacts/ClockworkNET/",
+      "assemblySearchPaths" : "$CLOCKWORK_ROOT$/Artifacts/ClockworkNET/",
+      "references" : [
+        "System.Runtime" , "System.IO",
+        "System.Reflection.Metadata", "System.Reflection.Primitives", "System.Collections.Immutable",
+        "System.Linq",
+        "ClockworkNETEngine"
+      ],
+      "sources" : [
+        "$CLOCKWORK_ROOT$/Script/ClockworkNET/ClockworkNET/ClockworkNETTools/"
+      ]
+    }
+  ]
+}

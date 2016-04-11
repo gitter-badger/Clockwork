@@ -20,11 +20,11 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Atomic.h>
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/Core/ProcessUtils.h>
-#include <Atomic/Resource/ResourceCache.h>
+#include <Clockwork/Clockwork.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/Core/ProcessUtils.h>
+#include <Clockwork/Resource/ResourceCache.h>
 
 #include "JSBind.h"
 #include "JSBPackage.h"
@@ -51,13 +51,13 @@ static String GetScriptType(JSBFunctionType* ftype)
         scriptType = "string";
 
     if (ftype->type_->asEnumType())
-        scriptType = "Atomic." + ftype->type_->asEnumType()->enum_->GetName();
+        scriptType = "Clockwork." + ftype->type_->asEnumType()->enum_->GetName();
 
     if (ftype->type_->asEnumType())
-        scriptType = "Atomic." + ftype->type_->asEnumType()->enum_->GetName();
+        scriptType = "Clockwork." + ftype->type_->asEnumType()->enum_->GetName();
 
     if (ftype->type_->asClassType())
-        scriptType = "Atomic." + ftype->type_->asClassType()->class_->GetName();
+        scriptType = "Clockwork." + ftype->type_->asClassType()->class_->GetName();
 
     return scriptType;
 
@@ -69,9 +69,9 @@ void JSBDoc::Begin()
     source_ += "// IMPORTANT: THIS FILE IS GENERATED, CHANGES WILL BE LOST\n";
     source_ += "//////////////////////////////////////////////////////////\n\n";
 
-    source_ += "//Atomic JSDoc Definitions\n\n";
+    source_ += "//Clockwork JSDoc Definitions\n\n";
 
-    source_ += "/**\n * Atomic Game Engine\n * @namespace\n*/\n var " + package_->GetName() + " = {}\n\n";
+    source_ += "/**\n * Clockwork Game Engine\n * @namespace\n*/\n var " + package_->GetName() + " = {}\n\n";
 }
 
 void JSBDoc::End()
@@ -93,7 +93,7 @@ String JSBDoc::GenFunctionDoc(JSBFunction* function)
 
         String scriptType = GetScriptType(ftype);
 
-        if (scriptType == "Atomic.Context")
+        if (scriptType == "Clockwork.Context")
             continue;
 
         // mark as optional
@@ -117,7 +117,7 @@ String JSBDoc::GenFunctionDoc(JSBFunction* function)
     }
     else
     {
-        docString.AppendWithFormat(" * %s\n * @memberof Atomic.%s.prototype\n%s%s\n",
+        docString.AppendWithFormat(" * %s\n * @memberof Clockwork.%s.prototype\n%s%s\n",
                                    function->GetDocString().CString(),
                                    function->GetClass()->GetName().CString(),
                                    params.CString(),
@@ -141,10 +141,10 @@ void JSBDoc::ExportModuleClasses(JSBModule* module)
     {
         JSBClass* klass = classes.At(i);
 
-        source_ += "/**\n * @class\n* @memberof Atomic\n";
+        source_ += "/**\n * @class\n* @memberof Clockwork\n";
 
         if (klass->GetBaseClass())
-            source_ += " * @augments Atomic." + klass->GetBaseClass()->GetName()+ "\n";
+            source_ += " * @augments Clockwork." + klass->GetBaseClass()->GetName()+ "\n";
 
         // PROPERTIES
         Vector<String> propertyNames;
@@ -249,7 +249,7 @@ void JSBDoc::ExportModuleConstants(JSBModule* module)
     {
         const String& cname = constants.At(i);
 
-        source_ += "/**\n * @memberof Atomic\n * @type {number}\n */\nvar " + cname + ";\n";
+        source_ += "/**\n * @memberof Clockwork\n * @type {number}\n */\nvar " + cname + ";\n";
     }
 
     source_ += "\n";
@@ -264,7 +264,7 @@ void JSBDoc::ExportModuleEnums(JSBModule* module)
     {
         JSBEnum* _enum = enums.At(i);
 
-        source_ += "/**\n * @memberof Atomic\n * @readonly\n * @enum {number}\n */\n";
+        source_ += "/**\n * @memberof Clockwork\n * @readonly\n * @enum {number}\n */\n";
 
         source_ += " var " + _enum->GetName() + " =  {\n";
 

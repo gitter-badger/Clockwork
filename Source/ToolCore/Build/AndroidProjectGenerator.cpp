@@ -22,8 +22,8 @@
 
 #include <Poco/File.h>
 
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/IO/File.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/IO/File.h>
 
 #include "../ToolSystem.h"
 #include "../ToolEnvironment.h"
@@ -102,11 +102,11 @@ bool AndroidProjectGenerator::GenerateActivitySource()
 
     source += "import org.libsdl.app.SDLActivity;\n";
 
-    source += "public class AtomicGameEngine extends SDLActivity {\n";
+    source += "public class ClockworkGameEngine extends SDLActivity {\n";
 
     source += "}\n";
 
-    File file(context_, path + "/AtomicGameEngine.java", FILE_WRITE);
+    File file(context_, path + "/ClockworkGameEngine.java", FILE_WRITE);
 
     if (!file.IsOpen())
         return false;
@@ -221,7 +221,7 @@ bool AndroidProjectGenerator::GenerateAndroidManifest()
     }
 
     // TODO: from settings
-    String activityName = "AtomicGameEngine";
+    String activityName = "ClockworkGameEngine";
     if (!activityName.Length())
     {
         errorText_ = "Invalid Activity Name";

@@ -1,5 +1,5 @@
 {
-  "name": "atomic-editor",
+  "name": "clockwork-editor",
   "dependencies": {
     "ansi-styles": {
       "version": "1.0.0",

@@ -1,0 +1,7 @@
+{
+	"name" : "Navigation",
+	"requires" : ["3D"],
+	"sources" : ["Source/Clockwork/Navigation"],
+	"includes" : ["<Clockwork/Scene/Node.h>"],
+	"classes" : ["Navigable", "NavigationMesh", "OffMeshConnection"]
+}

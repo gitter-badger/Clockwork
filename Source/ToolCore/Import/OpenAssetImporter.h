@@ -26,10 +26,10 @@
 
 #include "OpenAssetUtils.h"
 
-#include <Atomic/Core/Object.h>
-#include <Atomic/Scene/Node.h>
+#include <Clockwork/Core/Object.h>
+#include <Clockwork/Scene/Node.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

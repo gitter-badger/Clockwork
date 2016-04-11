@@ -175,7 +175,7 @@ static inline int classify9(const char *s) {
                             if (s[6] == 'm') {
                                 if (s[7] == 'i') {
                                     if (s[8] == 'c') {
-                                        return Token_nonatomic;
+                                        return Token_nonclockwork;
                                     }
                                 }
                             }

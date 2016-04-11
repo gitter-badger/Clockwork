@@ -5,13 +5,13 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>English</string>
     <key>CFBundleExecutable</key>
-    <string>AtomicPlayer</string>
+    <string>ClockworkPlayer</string>
     <key>CFBundleGetInfoString</key>
-    <string>"Atomic Player"</string>
+    <string>"Clockwork Player"</string>
     <key>CFBundleIconFile</key>
     <string>${MACOSX_BUNDLE_ICON_FILE}</string>
     <key>CFBundleIdentifier</key>
-    <string>com.atomicgameengine.atomicplayer</string>
+    <string>com.clockworkgameengine.clockworkplayer</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleLongVersionString</key>

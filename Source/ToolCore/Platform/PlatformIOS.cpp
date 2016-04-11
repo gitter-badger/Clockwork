@@ -26,7 +26,7 @@
 #include "../License/LicenseSystem.h"
 #include "PlatformIOS.h"
 
-#ifdef ATOMIC_PLATFORM_OSX
+#ifdef CLOCKWORK_PLATFORM_OSX
 
 #include "PlatformIOSUtils.h"
 
@@ -47,7 +47,7 @@ PlatformIOS::~PlatformIOS()
 
 String PlatformIOS::ParseProvisionAppIdentifierPrefix(const String& provisionFile)
 {
-#if defined(ATOMIC_PLATFORM_WINDOWS) || defined(ATOMIC_PLATFORM_LINUX)
+#if defined(CLOCKWORK_PLATFORM_WINDOWS) || defined(CLOCKWORK_PLATFORM_LINUX)
 
     return String::EMPTY;
 

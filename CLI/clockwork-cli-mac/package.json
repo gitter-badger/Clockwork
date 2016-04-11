@@ -1,0 +1,28 @@
+{
+  "author": {
+    "email": "dragonCASTjosh@gmail.com",
+    "name": "Clockwork Game Engine",
+    "url": "http://www.clockwork.sunwells.net"
+  },
+  "bugs": {
+    "url": "https://github.com/dragonCASTjosh/Clockwork/issues"
+  },
+  "dependencies": {
+    // "clockwork-cli-mac-data" : "http://docs.clockworkgameengine.com/npm/clockwork-cli-mac-data-0.0.4.tgz"
+  },
+  "description": "Mac dependencies for clockwork-cli package",
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "homepage": "http://www.clockwork.sunwells.net",
+   "licenses": [{
+    "type": "Clockwork Game Engine",
+    "url": "https://github.com/dragonCASTjosh/Clockwork/blob/master/LICENSE.md"
+  }],
+  "main": "./index.js",
+  "name": "clockwork-cli-mac",
+  "preferGlobal": true,
+  "repository": "https://github.com/dragonCASTjosh/Clockwork",
+  "version": "0.0.6",
+  "os" : ["darwin"]
+}

@@ -19,7 +19,7 @@ enum {
   Token_setter,
   Token_oneway,
   Token_readonly,
-  Token_nonatomic,
+  Token_nonclockwork,
   Token_readwrite,
   Token_identifier
 };

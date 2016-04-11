@@ -22,13 +22,13 @@
 
 #include <Poco/MD5Engine.h>
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/Math/Random.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/Math/Random.h>
 
-#include <Atomic/Resource/ResourceEvents.h>
-#include <Atomic/Resource/ResourceCache.h>
+#include <Clockwork/Resource/ResourceEvents.h>
+#include <Clockwork/Resource/ResourceCache.h>
 
 #include "../ToolEvents.h"
 #include "../ToolSystem.h"
@@ -559,7 +559,7 @@ String AssetDatabase::GetResourceImporterName(const String& resourceTypeName)
         resourceTypeToImporterType_["Animation"] = "ModelImporter";
 
 
-#ifdef ATOMIC_DOTNET
+#ifdef CLOCKWORK_DOTNET
         resourceTypeToImporterType_["CSComponentAssembly"] = "NETAssemblyImporter";
 #endif
 

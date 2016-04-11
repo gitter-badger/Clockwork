@@ -70,9 +70,9 @@ public:
         : Literal(chars, size), _quotedString(false)
     { }
 
-    // ATOMIC BEGIN
+    // CLOCKWORK BEGIN
     bool _quotedString;
-    // ATOMIC END
+    // CLOCKWORK END
 };
 
 class CPLUSPLUS_EXPORT NumericLiteral: public Literal

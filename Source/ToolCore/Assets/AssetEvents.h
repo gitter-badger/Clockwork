@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/Object.h>
+#include <Clockwork/Core/Object.h>
 
 namespace ToolCore
 {

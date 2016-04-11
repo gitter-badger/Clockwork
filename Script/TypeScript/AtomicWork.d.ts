@@ -1,10 +1,10 @@
-/// <reference path="Atomic.d.ts" />
+/// <reference path="Clockwork.d.ts" />
 /// <reference path="ToolCore.d.ts" />
 /// <reference path="Editor.d.ts" />
-/// <reference path="AtomicPlayer.d.ts" />
+/// <reference path="ClockworkPlayer.d.ts" />
 
 
-declare module Atomic {
+declare module Clockwork {
 
     export function print(...args: any[]);
 
@@ -21,7 +21,7 @@ declare module Atomic {
     export var network: Network;
     export var ui: UI;
     export var audio: Audio;
-    export var player: AtomicPlayer.Player;
+    export var player: ClockworkPlayer.Player;
 
     export var editorMode: Editor.EditorMode;
 
@@ -50,7 +50,7 @@ declare module Atomic {
 
         // keycode
         key: number;
-        //  Atomic.QUAL_SHIFT, Atomic.QUAL_CTRL, Atomic.QUAL_ALT, Atomic.QUAL_ANY
+        //  Clockwork.QUAL_SHIFT, Clockwork.QUAL_CTRL, Clockwork.QUAL_ALT, Clockwork.QUAL_ANY
         qualifiers: number;
 
         // mouse buttons down
@@ -62,7 +62,7 @@ declare module Atomic {
 
         // keycode
         key: number;
-        //  Atomic.QUAL_SHIFT, Atomic.QUAL_CTRL, Atomic.QUAL_ALT, Atomic.QUAL_ANY
+        //  Clockwork.QUAL_SHIFT, Clockwork.QUAL_CTRL, Clockwork.QUAL_ALT, Clockwork.QUAL_ANY
         qualifiers: number;
         // mouse buttons down
         buttons: number;
@@ -73,7 +73,7 @@ declare module Atomic {
 
         // keycode
         key: number;
-        //  Atomic.QUAL_SHIFT, Atomic.QUAL_CTRL, Atomic.QUAL_ALT, Atomic.QUAL_ANY
+        //  Clockwork.QUAL_SHIFT, Clockwork.QUAL_CTRL, Clockwork.QUAL_ALT, Clockwork.QUAL_ANY
         qualifiers: number;
 
     }
@@ -87,24 +87,24 @@ declare module Atomic {
 
     export interface NodeAddedEvent {
 
-        scene: Atomic.Scene;
-        parent: Atomic.Node;
-        node: Atomic.Node;
+        scene: Clockwork.Scene;
+        parent: Clockwork.Node;
+        node: Clockwork.Node;
 
     }
 
     export interface NodeRemovedEvent {
 
-        scene: Atomic.Scene;
-        parent: Atomic.Node;
-        node: Atomic.Node;
+        scene: Clockwork.Scene;
+        parent: Clockwork.Node;
+        node: Clockwork.Node;
 
     }
 
     export interface NodeNameChangedEvent {
 
-        scene: Atomic.Scene;
-        node: Atomic.Node;
+        scene: Clockwork.Scene;
+        node: Clockwork.Node;
 
     }
 
@@ -165,23 +165,23 @@ declare module Atomic {
 
     export interface TemporaryChangedEvent {
 
-        serializable: Atomic.Serializable;
+        serializable: Clockwork.Serializable;
 
     }
 
     export interface ComponentAddedEvent {
 
-        scene: Atomic.Scene;
-        node: Atomic.Node;
-        component: Atomic.Component;
+        scene: Clockwork.Scene;
+        node: Clockwork.Node;
+        component: Clockwork.Component;
 
     }
 
     export interface ComponentRemovedEvent {
 
-        scene: Atomic.Scene;
-        node: Atomic.Node;
-        component: Atomic.Component;
+        scene: Clockwork.Scene;
+        node: Clockwork.Node;
+        component: Clockwork.Component;
 
     }
 
@@ -230,17 +230,17 @@ declare module Atomic {
     export function getGraphics(): Graphics;
     export function getFileSystem(): FileSystem;
     export function getResourceCache(): ResourceCache;
-    export function getRenderer(): Atomic.Renderer;
-    export function getNetwork(): Atomic.Network;
-    export function getUI(): Atomic.UI;
+    export function getRenderer(): Clockwork.Renderer;
+    export function getNetwork(): Clockwork.Network;
+    export function getUI(): Clockwork.UI;
 
     export function assert();
     export function js_module_read_file(path: string);
     export function openConsoleWindow();
     export function script(script: string): boolean;
-    export function destroy(node: Atomic.Node): boolean;
-    export function destroy(scene: Atomic.Scene): boolean;
-    export function destroy(component: Atomic.JSComponent): boolean;
+    export function destroy(node: Clockwork.Node): boolean;
+    export function destroy(scene: Clockwork.Scene): boolean;
+    export function destroy(component: Clockwork.JSComponent): boolean;
 
     export function getParentPath(path: string): string;
     export function addTrailingSlash(path: string): string;
@@ -250,7 +250,7 @@ declare module Atomic {
 
 }
 
-declare module AtomicNET {
+declare module ClockworkNET {
 
     export interface CSComponentClassChangedEvent {
 
@@ -264,8 +264,8 @@ declare module AtomicNET {
 declare module Editor {
 
     export interface SceneNodeSelectedEvent {
-        scene: Atomic.Scene;
-        node: Atomic.Node;
+        scene: Clockwork.Scene;
+        node: Clockwork.Node;
         selected: boolean;
         quiet: boolean;
     }
@@ -279,36 +279,36 @@ declare module Editor {
 
     export interface SceneEditNodeAddedEvent {
 
-        scene: Atomic.Scene;
-        parent: Atomic.Node;
-        node: Atomic.Node;
+        scene: Clockwork.Scene;
+        parent: Clockwork.Node;
+        node: Clockwork.Node;
 
     }
 
     export interface SceneEditNodeRemovedEvent {
 
-        scene: Atomic.Scene;
-        parent: Atomic.Node;
-        node: Atomic.Node;
+        scene: Clockwork.Scene;
+        parent: Clockwork.Node;
+        node: Clockwork.Node;
 
     }
 
     export interface SceneEditComponentAddedRemovedEvent {
 
-        scene: Atomic.Scene;
-        node: Atomic.Node;
-        component: Atomic.Component;
+        scene: Clockwork.Scene;
+        node: Clockwork.Node;
+        component: Clockwork.Component;
         removed: boolean;
     }
 
     export interface SceneEditStateChangeEvent {
 
-        serializable: Atomic.Serializable;
+        serializable: Clockwork.Serializable;
 
     }
 
     export interface SceneEditNodeCreatedEvent {
-        node: Atomic.Node;
+        node: Clockwork.Node;
     }
 
     export interface GizmoEditModeChangedEvent {

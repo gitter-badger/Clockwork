@@ -26,12 +26,12 @@
 #include <Poco/Pipe.h>
 #include <Poco/PipeStream.h>
 
-#include <Atomic/Container/Str.h>
-#include <Atomic/Core/Mutex.h>
-#include <Atomic/Core/Thread.h>
-#include <Atomic/Core/Object.h>
+#include <Clockwork/Container/Str.h>
+#include <Clockwork/Core/Mutex.h>
+#include <Clockwork/Core/Thread.h>
+#include <Clockwork/Core/Object.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

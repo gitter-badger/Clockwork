@@ -20,8 +20,8 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/FileSystem.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/FileSystem.h>
 
 #include "../Subprocess/SubprocessSystem.h"
 #include "../Project/Project.h"
@@ -55,7 +55,7 @@ BuildBase::~BuildBase()
     }
 }
 
-#ifdef ATOMIC_PLATFORM_WINDOWS
+#ifdef CLOCKWORK_PLATFORM_WINDOWS
 
 bool BuildBase::BuildClean(const String& path)
 {

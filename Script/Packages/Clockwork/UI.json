@@ -1,0 +1,22 @@
+{
+	"name" : "UI",
+	"sources" : ["Source/Clockwork/UI"],
+	"includes" : ["<Clockwork/Graphics/Material.h>", "<Clockwork/Scene/Node.h>", "<Clockwork/Scene/Scene.h>", "<Clockwork/Graphics/Texture2D.h>",
+								"<Clockwork/UI/UIBatch.h>"],
+	"classes" : ["UI", "UIWidget", "UILayout", "UIView", "UIWindow", "UIButton", "UITextField",
+								"UISelectItem", "UISelectItemSource", "UIMenuWindow", "UIEditField",
+								"UIImageWidget", "UIClickLabel", "UICheckBox", "UIMenuItem", "UIMenuItemSource",
+								"UISelectList", "UIListView", "UIMessageWindow", "UILayoutParams", "UIFontDescription",
+								"UISkinImage", "UITabContainer", "UISceneView", "UIPreferredSize", "UIDragObject",
+								"UIContainer", "UISection", "UIInlineSelect", "UITextureWidget",
+								"UIScrollContainer", "UISeparator", "UIDimmer", "UISelectDropdown"],
+	"overloads" : {
+	},
+	"typescript_decl" : {
+
+		"UIButton" : [
+			"onClick: () => void;"
+		]
+	}
+
+}

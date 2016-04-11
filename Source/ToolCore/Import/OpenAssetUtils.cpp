@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/ProcessUtils.h>
-#include <Atomic/Graphics/Geometry.h>
+#include <Clockwork/Core/ProcessUtils.h>
+#include <Clockwork/Graphics/Geometry.h>
 
 #include "OpenAssetUtils.h"
 

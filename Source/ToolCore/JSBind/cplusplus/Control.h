@@ -181,7 +181,7 @@ public:
     const Identifier *objcAssignId() const;
     const Identifier *objcRetainId() const;
     const Identifier *objcCopyId() const;
-    const Identifier *objcNonatomicId() const;
+    const Identifier *objcNonclockworkId() const;
     // C++11 context keywords
     const Identifier *cpp11Override() const;
     const Identifier *cpp11Final() const;

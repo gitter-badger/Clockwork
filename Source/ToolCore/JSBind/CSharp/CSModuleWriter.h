@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include <Atomic/Container/Str.h>
+#include <Clockwork/Container/Str.h>
 
 #include "../JSBModuleWriter.h"
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

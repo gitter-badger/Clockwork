@@ -24,7 +24,7 @@
 
 #include "Command.h"
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

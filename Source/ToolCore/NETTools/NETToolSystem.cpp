@@ -20,9 +20,9 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/FileSystem.h>
-#include <AtomicNET/NETCore/NETCore.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <ClockworkNET/NETCore/NETCore.h>
 
 #include "../Project/ProjectEvents.h"
 #include "../ToolEnvironment.h"
@@ -38,9 +38,9 @@ NETToolSystem::NETToolSystem(Context* context) : Object(context)
     if (context->GetEditorContext())
     {
         NETCore* core = GetSubsystem<NETCore>();
-        if (!core->CreateDelegate("AtomicNETTools", "AtomicTools.AtomicTools", "InspectAssembly", (void**) &inspectAssemblyFunction_))
+        if (!core->CreateDelegate("ClockworkNETTools", "ClockworkTools.ClockworkTools", "InspectAssembly", (void**) &inspectAssemblyFunction_))
         {
-            LOGERROR("NETToolSystem::NETToolSystem - Unable to resolve delagate AtomicNETTools.InspectAssembly");
+            LOGERROR("NETToolSystem::NETToolSystem - Unable to resolve delagate ClockworkNETTools.InspectAssembly");
         }
 
         SubscribeToEvent(E_PROJECTLOADED, HANDLER(NETToolSystem, HandleProjectLoaded));
@@ -63,13 +63,13 @@ void NETToolSystem::HandleProjectLoaded(StringHash eventType, VariantMap& eventD
 
     SplitPath(projectPath, pathName, fileName, ext);
 
-    String netJSONPath = AddTrailingSlash(pathName) + "AtomicNET.json";
+    String netJSONPath = AddTrailingSlash(pathName) + "ClockworkNET.json";
 
     if (fileSystem->FileExists(netJSONPath))
     {
         SharedPtr<NETProjectGen> gen(new NETProjectGen(context_));
 
-#ifdef ATOMIC_PLATFORM_OSX
+#ifdef CLOCKWORK_PLATFORM_OSX
         gen->SetScriptPlatform("MACOSX");
 #else
         gen->SetScriptPlatform("WINDOWS");

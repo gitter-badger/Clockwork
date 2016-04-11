@@ -2,7 +2,7 @@ var fs = require('fs-extra');
 var bcommon = require("./BuildCommon");
 var host = require("./Host");
 
-var atomicRoot = bcommon.atomicRoot;
+var clockworkRoot = bcommon.clockworkRoot;
 var srcDir = bcommon.artifactsRoot + "Build/EditorData/";
 var dstDir = bcommon.artifactsRoot + "Build/WindowsEditor/";
 
@@ -16,21 +16,21 @@ namespace('build', function() {
 
     bcommon.cleanCreateDir(bcommon.artifactsRoot + "Build/WindowsInstaller");
 
-    var installerName = "AtomicEditorSetup_" + bcommon.buildSHA + ".exe";
+    var installerName = "ClockworkEditorSetup_" + bcommon.buildSHA + ".exe";
     var installerPath = bcommon.artifactsRoot + "Build/WindowsInstaller/" + installerName;
 
-    var nsisDefines = "/DATOMIC_ROOT=" + atomicRoot;
+    var nsisDefines = "/DCLOCKWORK_ROOT=" + clockworkRoot;
     nsisDefines += " /DEDITOR_VERSION=1";
     nsisDefines += " /DINSTALLER_NAME=" + installerName;
 
-    var makeNSISCmd = atomicRoot + "\\Build\\CIScripts\\Windows\\CreateInstaller.bat";
+    var makeNSISCmd = clockworkRoot + "\\Build\\CIScripts\\Windows\\CreateInstaller.bat";
 
-    makeNSISCmd += " " + nsisDefines + " " + atomicRoot + "/Build/CIScripts/Windows/Installer/AtomicEditor.nsi";
+    makeNSISCmd += " " + nsisDefines + " " + clockworkRoot + "/Build/CIScripts/Windows/Installer/ClockworkEditor.nsi";
 
-    var editorExe = dstDir + "AtomicEditor/AtomicEditor.exe";
+    var editorExe = dstDir + "ClockworkEditor/ClockworkEditor.exe";
 
-    var pfxFile = process.env.ATOMIC_PFX_FILE;
-    var pfxPW = process.env.ATOMIC_PFX_PW;
+    var pfxFile = process.env.CLOCKWORK_PFX_FILE;
+    var pfxPW = process.env.CLOCKWORK_PFX_PW;
 
     var signBaseCmd = "signtool.exe sign /f " + pfxFile;
     signBaseCmd += " /p " + pfxPW;
@@ -58,16 +58,16 @@ namespace('build', function() {
 
     process.chdir(srcDir);
 
-    cmds = [ atomicRoot + "Build/Windows/7z/7z.exe x -y EditorData.zip"];
+    cmds = [ clockworkRoot + "Build/Windows/7z/7z.exe x -y EditorData.zip"];
 
     jake.exec(cmds, function() {
 
       console.log("Generating Windows Editor");
 
-      var editorAppFolder = dstDir + "AtomicEditor/";
+      var editorAppFolder = dstDir + "ClockworkEditor/";
 
-      fs.copySync(srcDir + "EditorBinaries/Windows/AtomicEditor.exe",
-      editorAppFolder + "AtomicEditor.exe");
+      fs.copySync(srcDir + "EditorBinaries/Windows/ClockworkEditor.exe",
+      editorAppFolder + "ClockworkEditor.exe");
 
       fs.copySync(srcDir + "EditorBinaries/Windows/D3DCompiler_47.dll",
       editorAppFolder + "D3DCompiler_47.dll");
@@ -84,14 +84,14 @@ namespace('build', function() {
       fs.copySync(srcDir + "Resources/ToolData",
       editorAppFolder + "Resources/ToolData");
 
-      fs.copySync(srcDir + "AtomicExamples",
-      editorAppFolder + "Resources/ToolData/AtomicExamples");
+      fs.copySync(srcDir + "ClockworkExamples",
+      editorAppFolder + "Resources/ToolData/ClockworkExamples");
 
       fs.copySync(srcDir + "Docs",
       editorAppFolder + "Resources/ToolData/Docs/JSDocs");
 
       // CEF
-      var cefRoot = atomicRoot + "Submodules/CEF/Windows/64bit/";
+      var cefRoot = clockworkRoot + "Submodules/CEF/Windows/64bit/";
 
       fs.copySync(cefRoot + "Release", editorAppFolder);
       fs.copySync(cefRoot + "Resources", editorAppFolder);

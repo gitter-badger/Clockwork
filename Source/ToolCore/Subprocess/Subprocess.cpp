@@ -20,8 +20,8 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/Core/Timer.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/Core/Timer.h>
 
 #include "Subprocess.h"
 #include "SubprocessSystem.h"

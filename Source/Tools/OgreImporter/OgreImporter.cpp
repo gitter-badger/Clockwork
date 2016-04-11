@@ -20,16 +20,16 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Atomic.h>
+#include <Clockwork/Clockwork.h>
 
-#include <Atomic/Core/Context.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/Container/HashSet.h>
-#include <Atomic/Core/ProcessUtils.h>
-#include <Atomic/Container/Sort.h>
-#include <Atomic/Graphics/Tangent.h>
-#include <Atomic/Resource/XMLFile.h>
+#include <Clockwork/Core/Context.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/Container/HashSet.h>
+#include <Clockwork/Core/ProcessUtils.h>
+#include <Clockwork/Container/Sort.h>
+#include <Clockwork/Graphics/Tangent.h>
+#include <Clockwork/Resource/XMLFile.h>
 
 #include "OgreImporterUtils.h"
 
@@ -40,7 +40,7 @@
 #include <cstddef>
 #include <cstring>
 
-#include <Atomic/DebugNew.h>
+#include <Clockwork/DebugNew.h>
 
 static const int VERTEX_CACHE_SIZE = 32;
 

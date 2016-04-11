@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2014-2016 THUNDERBEAST GAMES LLC
+// Copyright (c) 2014-2016 CLOCKWORK STUDIOS
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -20,9 +20,9 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Atomic3D/Animation.h>
+#include <Clockwork/Clockwork3D/Animation.h>
 
-#include <AtomicJS/Javascript/JSVM.h>
+#include <ClockworkJS/Javascript/JSVM.h>
 #include <ToolCore/ToolEnvironment.h>
 #include <ToolCore/ToolSystem.h>
 #include <ToolCore/Assets/AssetDatabase.h>
@@ -32,9 +32,9 @@
 
 #include <ToolCore/Assets/ModelImporter.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
-namespace Atomic
+namespace Clockwork
 {
 
     extern void jsb_package_toolcore_init(JSVM* vm);
@@ -44,28 +44,28 @@ namespace Atomic
 namespace ToolCore
 {
 
-static int js_atomic_GetToolEnvironment(duk_context* ctx)
+static int js_clockwork_GetToolEnvironment(duk_context* ctx)
 {
     JSVM* vm = JSVM::GetJSVM(ctx);
     js_push_class_object_instance(ctx, vm->GetSubsystem<ToolEnvironment>());
     return 1;
 }
 
-static int js_atomic_GetToolSystem(duk_context* ctx)
+static int js_clockwork_GetToolSystem(duk_context* ctx)
 {
     JSVM* vm = JSVM::GetJSVM(ctx);
     js_push_class_object_instance(ctx, vm->GetSubsystem<ToolSystem>());
     return 1;
 }
 
-static int js_atomic_GetLicenseSystem(duk_context* ctx)
+static int js_clockwork_GetLicenseSystem(duk_context* ctx)
 {
     JSVM* vm = JSVM::GetJSVM(ctx);
     js_push_class_object_instance(ctx, vm->GetSubsystem<LicenseSystem>());
     return 1;
 }
 
-static int js_atomic_GetAssetDatabase(duk_context* ctx)
+static int js_clockwork_GetAssetDatabase(duk_context* ctx)
 {
     JSVM* vm = JSVM::GetJSVM(ctx);
     js_push_class_object_instance(ctx, vm->GetSubsystem<AssetDatabase>());
@@ -152,13 +152,13 @@ void jsapi_init_toolcore(JSVM* vm)
 
     duk_get_global_string(ctx, "ToolCore");
 
-    duk_push_c_function(ctx, js_atomic_GetToolEnvironment, 0);
+    duk_push_c_function(ctx, js_clockwork_GetToolEnvironment, 0);
     duk_put_prop_string(ctx, -2, "getToolEnvironment");
 
     js_push_class_object_instance(ctx, vm->GetSubsystem<ToolEnvironment>(), "ToolEnvironment");
     duk_put_prop_string(ctx, -2, "toolEnvironment");
 
-    duk_push_c_function(ctx, js_atomic_GetToolSystem, 0);
+    duk_push_c_function(ctx, js_clockwork_GetToolSystem, 0);
     duk_put_prop_string(ctx, -2, "getToolSystem");
 
     js_push_class_object_instance(ctx, vm->GetSubsystem<ToolSystem>(), "ToolSystem");
@@ -167,13 +167,13 @@ void jsapi_init_toolcore(JSVM* vm)
     js_push_class_object_instance(ctx, vm->GetSubsystem<BuildSystem>(), "BuildSystem");
     duk_put_prop_string(ctx, -2, "buildSystem");
 
-    duk_push_c_function(ctx, js_atomic_GetLicenseSystem, 0);
+    duk_push_c_function(ctx, js_clockwork_GetLicenseSystem, 0);
     duk_put_prop_string(ctx, -2, "getLicenseSystem");
 
     js_push_class_object_instance(ctx, vm->GetSubsystem<LicenseSystem>(), "LicenseSystem");
     duk_put_prop_string(ctx, -2, "licenseSystem");
 
-    duk_push_c_function(ctx, js_atomic_GetAssetDatabase, 0);
+    duk_push_c_function(ctx, js_clockwork_GetAssetDatabase, 0);
     duk_put_prop_string(ctx, -2, "getAssetDatabase");
 
     js_push_class_object_instance(ctx, vm->GetSubsystem<AssetDatabase>(), "AssetDatabase");

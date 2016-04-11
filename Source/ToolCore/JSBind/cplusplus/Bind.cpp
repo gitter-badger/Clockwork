@@ -1893,7 +1893,7 @@ bool Bind::visit(SimpleDeclarationAST *ast)
         }
         else
         {
-            // ATOMIC BEGIN
+            // CLOCKWORK BEGIN
             // store initializer
             const ExpressionAST *initializer = it->value->initializer;
             if (initializer)
@@ -1902,7 +1902,7 @@ bool Bind::visit(SimpleDeclarationAST *ast)
                 unsigned endOfExpression = initializer->lastToken();
                 decl->setInitializer(asStringLiteral(startOfExpression, endOfExpression));
             }
-            // ATOMIC END
+            // CLOCKWORK END
         }
 
         if (_scope->isClass()) {

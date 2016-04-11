@@ -1,0 +1,8 @@
+
+{
+  "name" : "ClockworkNET",
+  "namespace" : "Clockwork",
+  "dependencies" : ["Script/Packages/Clockwork"],
+  "modules" : ["NETCore", "NETScript"],
+  "platforms" : ["WINDOWS", "MACOSX","LINUX"]
+}

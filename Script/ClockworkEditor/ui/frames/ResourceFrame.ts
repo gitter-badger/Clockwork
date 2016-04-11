@@ -1,0 +1,286 @@
+//
+// Copyright (c) 2014-2016 THUNDERBEAST GAMES LLC
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+//
+
+import ScriptWidget = require("ui/ScriptWidget");
+import EditorEvents = require("editor/EditorEvents");
+import UIEvents = require("ui/UIEvents");
+
+// the root content of editor widgets (rootContentWidget property) are extended with an editor field
+// so we can access the editor they belong to from the widget itself
+interface EditorRootContentWidget extends Clockwork.UIWidget {
+    editor: Editor.ResourceEditor;
+}
+
+class ResourceFrame extends ScriptWidget {
+
+    tabcontainer: Clockwork.UITabContainer;
+    resourceLayout: Clockwork.UILayout;
+    resourceViewContainer: Clockwork.UILayout;
+    currentResourceEditor: Editor.ResourceEditor;
+    wasClosed: boolean;
+
+    // editors have a rootCotentWidget which is what is a child of the tab container
+
+    // editors can be looked up by the full path of what they are editing
+    editors: { [path: string]: Editor.ResourceEditor; } = {};
+
+    show(value: boolean) {
+
+        if (value) {
+
+        }
+
+    }
+
+    handleSaveResource(ev: EditorEvents.SaveResourceEvent) {
+
+        if (this.currentResourceEditor) {
+            this.currentResourceEditor.save();
+        }
+
+    }
+
+    handleSaveAllResources(data) {
+
+        for (var i in this.editors) {
+            this.editors[i].save();
+        }
+
+    }
+
+    handleEditResource(ev: EditorEvents.EditResourceEvent) {
+
+        var path = ev.path;
+
+        if (this.editors[path]) {
+
+            this.navigateToResource(path);
+
+            return;
+
+        }
+
+        var ext = Clockwork.getExtension(path);
+
+        var editor: Editor.ResourceEditor = null;
+
+        if (ext == ".js" || ext == ".txt" || ext == ".json" || ext == ".ts") {
+
+            editor = new Editor.JSResourceEditor(path, this.tabcontainer);
+
+        } else if (ext == ".scene") {
+
+            var sceneEditor3D = new Editor.SceneEditor3D(path, this.tabcontainer);
+            editor = sceneEditor3D;
+            this.sendEvent(EditorEvents.ActiveSceneEditorChange, { sceneEditor: sceneEditor3D });
+
+        }
+
+        if (editor) {
+
+            // cast and add editor lookup on widget itself
+            (<EditorRootContentWidget> editor.rootContentWidget).editor = editor;
+
+            this.editors[path] = editor;
+            this.tabcontainer.currentPage = this.tabcontainer.numPages - 1;
+            editor.setFocus();
+        }
+
+
+    }
+
+    navigateToResource(fullpath: string, lineNumber = -1, tokenPos: number = -1) {
+        if (this.wasClosed) return;
+
+        if (!this.editors[fullpath]) {
+            return;
+        }
+
+        var editor = this.editors[fullpath];
+
+        if (this.currentResourceEditor == editor) return;
+
+        var root = this.tabcontainer.contentRoot;
+
+        var i = 0;
+
+        for (var child = root.firstChild; child; child = child.next, i++) {
+            if (editor.rootContentWidget == child) {
+                break;
+            }
+        }
+
+        if (i < this.tabcontainer.numPages) {
+
+            this.tabcontainer.currentPage = i;
+
+            editor.setFocus();
+
+            // this cast could be better
+            var ext = Clockwork.getExtension(fullpath);
+
+            if (ext == ".js" && lineNumber != -1) {
+                (<Editor.JSResourceEditor>editor).gotoLineNumber(lineNumber);
+            }
+            else if (ext == ".js" && tokenPos != -1) {
+                (<Editor.JSResourceEditor>editor).gotoTokenPos(tokenPos);
+            }
+
+        }
+
+    }
+
+    handleCloseResource(ev: EditorEvents.EditorCloseResourceEvent) {
+        this.wasClosed = false;
+        var editor = ev.editor;
+        var navigate = ev.navigateToAvailableResource;
+
+        if (!editor)
+            return;
+
+        editor.unsubscribeFromAllEvents();
+
+        var editors = Object.keys(this.editors);
+
+        var closedIndex = editors.indexOf(editor.fullPath);
+
+        if (editor.typeName == "SceneEditor3D") {
+
+            this.sendEvent(EditorEvents.ActiveSceneEditorChange, { sceneEditor: (<Editor.SceneEditor3D> null) });
+
+        }
+
+
+        // remove from lookup
+        delete this.editors[editor.fullPath];
+
+        var root = this.tabcontainer.contentRoot;
+
+        root.removeChild(editor.rootContentWidget);
+
+        if (editor != this.currentResourceEditor) {
+            this.wasClosed = true;
+            return;
+        } else {
+            this.currentResourceEditor = null;
+            this.tabcontainer.currentPage = -1;
+        }
+
+        if (navigate) {
+            var nextEditor = editors[closedIndex + 1];
+            if (nextEditor) {
+                this.navigateToResource(nextEditor);
+            } else {
+                this.navigateToResource(editors[closedIndex - 1]);
+            }
+        }
+
+    }
+
+    handleResourceEditorChanged(data) {
+
+        var editor = <Editor.ResourceEditor> data.editor;
+        this.currentResourceEditor = editor;
+
+    }
+
+    handleWidgetEvent(ev: Clockwork.UIWidgetEvent) {
+
+        if (ev.type == Clockwork.UI_EVENT_TYPE_TAB_CHANGED && ev.target == this.tabcontainer) {
+            var w = <EditorRootContentWidget> this.tabcontainer.currentPageWidget;
+
+            if (w && w.editor) {
+
+                if (this.currentResourceEditor != w.editor) {
+
+                    if (w.editor.typeName == "SceneEditor3D") {
+
+                        this.sendEvent(EditorEvents.ActiveSceneEditorChange, { sceneEditor: (<Editor.SceneEditor3D> w.editor) });
+
+                    }
+
+                    this.sendEvent(UIEvents.ResourceEditorChanged, { editor: w.editor });
+
+                }
+
+            }
+
+        }
+
+        if (ev.type == Clockwork.UI_EVENT_TYPE_POINTER_UP) {
+            this.wasClosed = false;
+        }
+
+        // bubble
+        return false;
+
+    }
+
+    shutdown() {
+
+        // on exit close all open editors
+        for (var path in this.editors) {
+
+            this.sendEvent(EditorEvents.EditorResourceClose, { editor: this.editors[path], navigateToAvailableResource: false });
+
+        }
+
+    }
+
+    handleProjectUnloaded(data) {
+
+      for (var i in this.editors) {
+          this.editors[i].close();
+      }
+
+    }
+
+    constructor(parent: Clockwork.UIWidget) {
+
+        super();
+
+        this.load("ClockworkEditor/editor/ui/resourceframe.tb.txt");
+
+        this.gravity = Clockwork.UI_GRAVITY_ALL;
+
+        this.resourceViewContainer = <Clockwork.UILayout> parent.getWidget("resourceviewcontainer");
+        this.tabcontainer = <Clockwork.UITabContainer> this.getWidget("tabcontainer");
+        this.resourceLayout = <Clockwork.UILayout> this.getWidget("resourcelayout");
+
+        this.resourceViewContainer.addChild(this);
+
+        this.subscribeToEvent("ProjectUnloaded", (data) => this.handleProjectUnloaded(data));
+        this.subscribeToEvent(EditorEvents.EditResource, (data) => this.handleEditResource(data));
+        this.subscribeToEvent(EditorEvents.SaveResource, (data) => this.handleSaveResource(data));
+        this.subscribeToEvent(EditorEvents.SaveAllResources, (data) => this.handleSaveAllResources(data));
+        this.subscribeToEvent(EditorEvents.EditorResourceClose, (ev: EditorEvents.EditorCloseResourceEvent) => this.handleCloseResource(ev));
+
+        this.subscribeToEvent(UIEvents.ResourceEditorChanged, (data) => this.handleResourceEditorChanged(data));
+
+
+        this.subscribeToEvent("WidgetEvent", (data) => this.handleWidgetEvent(data));
+
+    }
+
+}
+
+export = ResourceFrame;

@@ -20,10 +20,10 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/StringUtils.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/Resource/ResourceCache.h>
+#include <Clockwork/Core/StringUtils.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/Resource/ResourceCache.h>
 
 #include "../ToolSystem.h"
 #include "../ToolEnvironment.h"
@@ -89,17 +89,17 @@ void BuildWeb::Build(const String& buildPath)
 
     fileSystem->CreateDir(buildPath_);
 
-    String resourcePackagePath = buildPath_ + "/AtomicResources.data";
+    String resourcePackagePath = buildPath_ + "/ClockworkResources.data";
     GenerateResourcePackage(resourcePackagePath);
 
-    fileSystem->Copy(buildSourceDir + "/AtomicPlayer.html", buildPath_ + "/AtomicPlayer.html");
-    fileSystem->Copy(buildSourceDir + "/AtomicPlayer.html.mem", buildPath_ + "/AtomicPlayer.html.mem");
-    fileSystem->Copy(buildSourceDir + "/AtomicPlayer.js", buildPath_ + "/AtomicPlayer.js");
-    fileSystem->Copy(buildSourceDir + "/AtomicLoader.js", buildPath_ + "/AtomicLoader.js");
+    fileSystem->Copy(buildSourceDir + "/ClockworkPlayer.html", buildPath_ + "/ClockworkPlayer.html");
+    fileSystem->Copy(buildSourceDir + "/ClockworkPlayer.html.mem", buildPath_ + "/ClockworkPlayer.html.mem");
+    fileSystem->Copy(buildSourceDir + "/ClockworkPlayer.js", buildPath_ + "/ClockworkPlayer.js");
+    fileSystem->Copy(buildSourceDir + "/ClockworkLoader.js", buildPath_ + "/ClockworkLoader.js");
     fileSystem->Copy(buildSourceDir + "/index.html", buildPath_ + "/index.html");
-    fileSystem->Copy(buildSourceDir + "/Atomic_Logo_Header.png", buildPath_ + "/Atomic_Logo_Header.png");
+    fileSystem->Copy(buildSourceDir + "/Clockwork_Logo_Header.png", buildPath_ + "/Clockwork_Logo_Header.png");
 
-    File file(context_, buildSourceDir + "/AtomicResources_js.template", FILE_READ);
+    File file(context_, buildSourceDir + "/ClockworkResources_js.template", FILE_READ);
     unsigned size = file.GetSize();
 
     SharedArrayPtr<char> buffer(new char[size + 1]);
@@ -110,17 +110,17 @@ void BuildWeb::Build(const String& buildPath)
 
     file.Close();
 
-    file.Open(buildPath_ + "/AtomicResources.data", FILE_READ);
+    file.Open(buildPath_ + "/ClockworkResources.data", FILE_READ);
     int rsize = (int) file.GetSize();
     file.Close();
 
     String request;
-    request.AppendWithFormat("new DataRequest(0, %i, 0, 0).open('GET', '/AtomicResources%s');", rsize, PAK_EXTENSION);
+    request.AppendWithFormat("new DataRequest(0, %i, 0, 0).open('GET', '/ClockworkResources%s');", rsize, PAK_EXTENSION);
 
     resourcejs.Replace("$$REMOTE_PACKAGE_SIZE$$", ToString("%i", rsize));
-    resourcejs.Replace("$$ATOMIC_RESOURCES_DATA_REQUEST$$", request);
+    resourcejs.Replace("$$CLOCKWORK_RESOURCES_DATA_REQUEST$$", request);
 
-    file.Open(buildPath_ + "/AtomicResources.js", FILE_WRITE);
+    file.Open(buildPath_ + "/ClockworkResources.js", FILE_WRITE);
     file.Write(resourcejs.CString(), resourcejs.Length());
     file.Close();
 

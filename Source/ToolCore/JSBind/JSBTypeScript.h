@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <Atomic/Container/Str.h>
+#include <Clockwork/Container/Str.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 class JSBFunction;
 class JSBPackage;

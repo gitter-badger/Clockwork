@@ -20,10 +20,10 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/ProcessUtils.h>
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/Resource/JSONFile.h>
+#include <Clockwork/Core/ProcessUtils.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/Resource/JSONFile.h>
 
 #include "JSBType.h"
 #include "JSBModule.h"

@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/FileSystem.h>
+#include <Clockwork/IO/FileSystem.h>
 
 #include "../JSBind.h"
 #include "../JSBModule.h"
@@ -180,7 +180,7 @@ void CSFunctionWriter::WriteNativeFunction(String& source)
 
     String line;
 
-    line = ToString("ATOMIC_EXPORT_API %s %s\n",
+    line = ToString("CLOCKWORK_EXPORT_API %s %s\n",
                     returnType.CString(), functionSig.CString());
 
     source += IndentLine(line);

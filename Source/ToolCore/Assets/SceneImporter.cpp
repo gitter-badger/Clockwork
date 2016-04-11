@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/StringUtils.h>
+#include <Clockwork/Core/StringUtils.h>
 
 #include "Asset.h"
 #include "AssetDatabase.h"

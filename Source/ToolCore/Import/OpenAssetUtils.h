@@ -31,19 +31,19 @@
 
 #include <cstring>
 
-#include <Atomic/Container/Str.h>
-#include <Atomic/Container/Sort.h>
-#include <Atomic/Container/Hash.h>
-#include <Atomic/Container/HashSet.h>
+#include <Clockwork/Container/Str.h>
+#include <Clockwork/Container/Sort.h>
+#include <Clockwork/Container/Hash.h>
+#include <Clockwork/Container/HashSet.h>
 
-#include <Atomic/Core/StringUtils.h>
+#include <Clockwork/Core/StringUtils.h>
 
-#include <Atomic/Math/Vector3.h>
-#include <Atomic/Math/Quaternion.h>
-#include <Atomic/Math/Matrix3x4.h>
-#include <Atomic/Math/BoundingBox.h>
+#include <Clockwork/Math/Vector3.h>
+#include <Clockwork/Math/Quaternion.h>
+#include <Clockwork/Math/Matrix3x4.h>
+#include <Clockwork/Math/BoundingBox.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

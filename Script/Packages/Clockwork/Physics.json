@@ -1,0 +1,13 @@
+{
+	"name" : "Physics",
+	"requires" : ["3D"],
+	"sources" : ["Source/Clockwork/Physics"],
+	"includes" : ["<Clockwork/Clockwork3D/Model.h>"],
+	"classes" : ["CollisionShape", "Constraint", "PhysicsWorld", "RigidBody"],
+ 	"overloads" : {
+		"RigidBody" : {
+			"ApplyImpulse" : ["Vector3"]
+		}
+
+	}
+}

@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include <Atomic/Core/Object.h>
-#include <Atomic/Resource/JSONValue.h>
+#include <Clockwork/Core/Object.h>
+#include <Clockwork/Resource/JSONValue.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

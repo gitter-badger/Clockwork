@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include <Atomic/Container/Str.h>
+#include <Clockwork/Container/Str.h>
 
 #include "cplusplus/CPlusPlus.h"
 using namespace CPlusPlus;
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

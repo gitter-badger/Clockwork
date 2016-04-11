@@ -20,13 +20,13 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Atomic.h>
+#include <Clockwork/Clockwork.h>
 
-#include <Atomic/Core/Context.h>
-#include <Atomic/Container/ArrayPtr.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/Core/ProcessUtils.h>
+#include <Clockwork/Core/Context.h>
+#include <Clockwork/Container/ArrayPtr.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/Core/ProcessUtils.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -37,9 +37,9 @@
 #include <ThirdParty/LZ4/lz4.h>
 #include <ThirdParty/LZ4/lz4hc.h>
 
-#include <Atomic/DebugNew.h>
+#include <Clockwork/DebugNew.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 static const unsigned COMPRESSED_BLOCK_SIZE = 32768;
 

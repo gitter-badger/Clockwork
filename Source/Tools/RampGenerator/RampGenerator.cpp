@@ -20,12 +20,12 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Atomic.h>
+#include <Clockwork/Clockwork.h>
 
-#include <Atomic/Container/ArrayPtr.h>
-#include <Atomic/Math/MathDefs.h>
-#include <Atomic/Core/ProcessUtils.h>
-#include <Atomic/Core/StringUtils.h>
+#include <Clockwork/Container/ArrayPtr.h>
+#include <Clockwork/Math/MathDefs.h>
+#include <Clockwork/Core/ProcessUtils.h>
+#include <Clockwork/Core/StringUtils.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -34,9 +34,9 @@
 #include <STB/stb_image.h>
 #include <STB/stb_image_write.h>
 
-#include <Atomic/DebugNew.h>
+#include <Clockwork/DebugNew.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 int main(int argc, char** argv);
 void Run(const Vector<String>& arguments);

@@ -1,15 +1,15 @@
 var fs = require('fs-extra');
 var path = require("path");
 var host = require("./Host");
-var atomicRoot = host.atomicRoot;
+var clockworkRoot = host.clockworkRoot;
 
 var buildDir = host.artifactsRoot + "Build/Linux/";
-var editorAppFolder = host.artifactsRoot + "AtomicEditor/";
+var editorAppFolder = host.artifactsRoot + "ClockworkEditor/";
 
 namespace('build', function() {
 
-// Builds a standalone Atomic Editor, which can be distributed out of build tree
-task('atomiceditor', {
+// Builds a standalone Clockwork Editor, which can be distributed out of build tree
+task('clockworkeditor', {
   async: true
 }, function() {
 
@@ -28,44 +28,44 @@ task('atomiceditor', {
 
   var cmds = [];
 
-  cmds.push("cmake ../../../ -DATOMIC_DEV_BUILD=0 -DCMAKE_BUILD_TYPE=Release");
+  cmds.push("cmake ../../../ -DCLOCKWORK_DEV_BUILD=0 -DCMAKE_BUILD_TYPE=Release");
   cmds.push("make -j4 GenerateScriptBindings")
-  cmds.push("make -j4 AtomicEditor AtomicPlayer")
+  cmds.push("make -j4 ClockworkEditor ClockworkPlayer")
 
   jake.exec(cmds, function() {
 
       // Copy the Editor binaries
-      fs.copySync(buildDir + "Source/AtomicEditor/AtomicEditor",
-        host.artifactsRoot + "AtomicEditor/AtomicEditor");
+      fs.copySync(buildDir + "Source/ClockworkEditor/ClockworkEditor",
+        host.artifactsRoot + "ClockworkEditor/ClockworkEditor");
 
       // We need some resources to run
-      fs.copySync(atomicRoot + "Resources/CoreData",
+      fs.copySync(clockworkRoot + "Resources/CoreData",
         editorAppFolder + "Resources/CoreData");
 
-      fs.copySync(atomicRoot + "Resources/PlayerData",
+      fs.copySync(clockworkRoot + "Resources/PlayerData",
         editorAppFolder + "Resources/PlayerData");
 
-      fs.copySync(atomicRoot + "Data/AtomicEditor",
+      fs.copySync(clockworkRoot + "Data/ClockworkEditor",
         editorAppFolder + "Resources/ToolData");
 
-      fs.copySync(atomicRoot + "Resources/EditorData",
+      fs.copySync(clockworkRoot + "Resources/EditorData",
         editorAppFolder + "Resources/EditorData");
 
-      fs.copySync(atomicRoot + "Artifacts/Build/Resources/EditorData/AtomicEditor/EditorScripts",
-        editorAppFolder + "Resources/EditorData/AtomicEditor/EditorScripts");
+      fs.copySync(clockworkRoot + "Artifacts/Build/Resources/EditorData/ClockworkEditor/EditorScripts",
+        editorAppFolder + "Resources/EditorData/ClockworkEditor/EditorScripts");
 
-      fs.copySync(buildDir +  "Source/AtomicPlayer/Application/AtomicPlayer",
-        editorAppFolder + "Resources/ToolData/Deployment/Linux/AtomicPlayer");
+      fs.copySync(buildDir +  "Source/ClockworkPlayer/Application/ClockworkPlayer",
+        editorAppFolder + "Resources/ToolData/Deployment/Linux/ClockworkPlayer");
 
       // Copy CEF support files
-      fs.copySync(atomicRoot + "Submodules/CEF/Linux/Resources/icudtl.dat",
+      fs.copySync(clockworkRoot + "Submodules/CEF/Linux/Resources/icudtl.dat",
         editorAppFolder+"/icudtl.dat");
-      fs.copySync(atomicRoot + "Submodules/CEF/Linux/Release/natives_blob.bin",
+      fs.copySync(clockworkRoot + "Submodules/CEF/Linux/Release/natives_blob.bin",
         editorAppFolder+"/natives_blob.bin");
-      fs.copySync(atomicRoot + "Submodules/CEF/Linux/Release/snapshot_blob.bin",
+      fs.copySync(clockworkRoot + "Submodules/CEF/Linux/Release/snapshot_blob.bin",
         editorAppFolder+"/snapshot_blob.bin");
 
-    console.log("\n\nAtomic Editor build to " + editorAppFolder + "\n\n");
+    console.log("\n\nClockwork Editor build to " + editorAppFolder + "\n\n");
 
     complete();
 

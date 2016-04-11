@@ -1,0 +1,6 @@
+{
+	"name" : "NETCore",
+	"sources" : ["Source/ClockworkNET/NETCore"],
+	"classes" : ["NETCore", "NETVariantMap"]
+
+}

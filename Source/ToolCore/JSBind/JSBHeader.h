@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include <Atomic/Container/Vector.h>
-#include <Atomic/Container/Str.h>
-#include <Atomic/Container/ArrayPtr.h>
+#include <Clockwork/Container/Vector.h>
+#include <Clockwork/Container/Str.h>
+#include <Clockwork/Container/ArrayPtr.h>
 
-#include <Atomic/Core/Object.h>
+#include <Clockwork/Core/Object.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace CPlusPlus
 {

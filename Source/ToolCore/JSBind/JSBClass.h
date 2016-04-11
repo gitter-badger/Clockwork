@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <Atomic/Core/Object.h>
+#include <Clockwork/Core/Object.h>
 
 #include "JSBHeader.h"
 #include "JSBModule.h"
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {
@@ -81,7 +81,7 @@ public:
 
         bool allUpper = true;
 
-        // TODO: https://github.com/AtomicGameEngine/AtomicGameEngine/issues/587
+        // TODO: https://github.com/ClockworkGameEngine/ClockworkGameEngine/issues/587
         if (name_ == "URLEnabled")
         {
             return "urlEnabled";

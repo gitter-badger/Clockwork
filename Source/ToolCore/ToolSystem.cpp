@@ -20,9 +20,9 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/Context.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/Resource/ResourceCache.h>
+#include <Clockwork/Core/Context.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/Resource/ResourceCache.h>
 
 #include "Platform/PlatformWeb.h"
 #include "Platform/PlatformMac.h"
@@ -44,7 +44,7 @@
 #include "Project/ProjectEvents.h"
 #include "Project/ProjectUserPrefs.h"
 
-#ifdef ATOMIC_DOTNET
+#ifdef CLOCKWORK_DOTNET
 #include "NETTools/NETToolSystem.h"
 #endif
 
@@ -60,7 +60,7 @@ ToolSystem::ToolSystem(Context* context) : Object(context),
     context_->RegisterSubsystem(new BuildSystem(context_));
     context_->RegisterSubsystem(new SubprocessSystem(context_));
 
-#ifdef ATOMIC_DOTNET
+#ifdef CLOCKWORK_DOTNET
     context_->RegisterSubsystem(new NETToolSystem(context_));
 #endif
 
@@ -86,7 +86,7 @@ bool ToolSystem::LoadProject(const String& fullpath)
 
     String path;
 
-    if (ext == ".atomic")
+    if (ext == ".clockwork")
     {
         path = RemoveTrailingSlash(GetPath(AddTrailingSlash(pathName)));
     }

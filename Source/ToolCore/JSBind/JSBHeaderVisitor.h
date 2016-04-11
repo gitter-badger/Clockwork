@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/Core/ProcessUtils.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/Core/ProcessUtils.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 
 #include "JSBHeader.h"
@@ -89,8 +89,8 @@ public:
             NamedType* ntype = type->asNamedType();
             String classname = getNameString(ntype->name());
 
-            if (classname.StartsWith("Atomic::"))
-                classname.Replace("Atomic::", "");
+            if (classname.StartsWith("Clockwork::"))
+                classname.Replace("Clockwork::", "");
 
             if (classname == "Vector")
             {

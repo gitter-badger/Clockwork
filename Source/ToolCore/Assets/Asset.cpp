@@ -20,9 +20,9 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/IO/FileSystem.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/IO/FileSystem.h>
 
 #include "../ToolSystem.h"
 #include "../Project/Project.h"
@@ -259,7 +259,7 @@ bool Asset::CreateImporter()
     }
     else
     {
-        String ext = Atomic::GetExtension(path_);
+        String ext = Clockwork::GetExtension(path_);
 
         name_ = GetFileName(path_);
 
@@ -325,7 +325,7 @@ bool Asset::CreateImporter()
         else if (ext == ".dll")
         {
             // TODO: check for native dll
-#ifdef ATOMIC_DOTNET
+#ifdef CLOCKWORK_DOTNET
             importer_ = new NETAssemblyImporter(context_, this);
 #endif
         }
@@ -354,7 +354,7 @@ String Asset::GetCachePath() const
 String Asset::GetExtension() const
 {
 
-    return Atomic::GetExtension(path_);
+    return Clockwork::GetExtension(path_);
 
 }
 

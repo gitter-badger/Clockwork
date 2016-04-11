@@ -20,7 +20,7 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/FileSystem.h>
+#include <Clockwork/IO/FileSystem.h>
 
 #include "../JSBind.h"
 #include "../JSBModule.h"
@@ -71,7 +71,7 @@ void CSClassWriter::GenerateNativeSource(String& sourceOut)
 
     JSBPackage* package = klass_->GetPackage();
 
-    source.AppendWithFormat("ATOMIC_EXPORT_API ClassID csb_%s_%s_GetClassIDStatic()\n{\n", package->GetName().CString(),klass_->GetName().CString());
+    source.AppendWithFormat("CLOCKWORK_EXPORT_API ClassID csb_%s_%s_GetClassIDStatic()\n{\n", package->GetName().CString(),klass_->GetName().CString());
     source.AppendWithFormat("   return %s::GetClassIDStatic();\n}\n\n", klass_->GetNativeName().CString());
 
     WriteNativeFunctions(source);

@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include <Atomic/Core/Object.h>
+#include <Clockwork/Core/Object.h>
 #include "BuildTypes.h"
 #include "../Platform/Platform.h"
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

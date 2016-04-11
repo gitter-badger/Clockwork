@@ -20,10 +20,10 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Atomic.h>
-#include <Atomic/IO/Log.h>
-#include <Atomic/Core/ProcessUtils.h>
-#include <Atomic/Resource/ResourceCache.h>
+#include <Clockwork/Clockwork.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/Core/ProcessUtils.h>
+#include <Clockwork/Resource/ResourceCache.h>
 
 #include "JSBind.h"
 #include "JSBPackage.h"
@@ -91,11 +91,11 @@ namespace ToolCore
 
     void JSBHaxe::Begin()
     {
-        source_ += "//Atomic Haxe Definitions\n\n";
+        source_ += "//Clockwork Haxe Definitions\n\n";
 
         source_ += "extern class " + package_->GetName() + " {\n\n";
 
-        if (package_->GetName() == "Atomic") {
+        if (package_->GetName() == "Clockwork") {
             //hand written data
             source_ += "    public static var engine : Engine;\n";
             source_ += "    public static var graphics: Graphics;\n";
@@ -173,7 +173,7 @@ namespace ToolCore
 
                     String scriptType = GetScriptType(ftype);
 
-                    if (scriptType == "Context" || scriptType == "Atomic.Context")
+                    if (scriptType == "Context" || scriptType == "Clockwork.Context")
                         continue;
 
                     String name = ftype->name_;
@@ -213,7 +213,7 @@ namespace ToolCore
 
             String scriptType = GetScriptType(ftype);
 
-            if (scriptType == "Context" || scriptType == "Atomic.Context")
+            if (scriptType == "Context" || scriptType == "Clockwork.Context")
                 continue;
 
             String name = ftype->name_;
@@ -293,7 +293,7 @@ namespace ToolCore
                 continue;
             }
 
-            source_ += "@:native(\"Atomic." + klass->GetName() + "\")\n";
+            source_ += "@:native(\"Clockwork." + klass->GetName() + "\")\n";
 
             source_ += "extern class " + klass->GetName();
 
@@ -412,7 +412,7 @@ namespace ToolCore
         {
             JSBEnum* _enum = enums[i];
 
-            source_ += "@:native(\"Atomic\")\n";
+            source_ += "@:native(\"Clockwork\")\n";
             source_ += "extern enum " + _enum->GetName() + " {\n";
 
             HashMap<String, String>& values = _enum->GetValues();
@@ -450,7 +450,7 @@ namespace ToolCore
 
         Vector<SharedPtr<JSBModule>>& modules = package->GetModules();
 
-        source_ += "package atomic;\n\n";
+        source_ += "package clockwork;\n\n";
 
         for (unsigned i = 0; i < modules.Size(); i++)
         {

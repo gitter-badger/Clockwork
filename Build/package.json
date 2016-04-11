@@ -1,5 +1,5 @@
 {
-  "name": "atomic-editor",
+  "name": "clockwork-editor",
   "dependencies": {
     "fs-extra": "^0.24.0",
     "glob": "^6.0.3",

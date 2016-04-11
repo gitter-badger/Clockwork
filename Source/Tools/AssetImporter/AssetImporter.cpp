@@ -20,36 +20,36 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Atomic.h>
+#include <Clockwork/Clockwork.h>
 
-#include <Atomic/Graphics/AnimatedModel.h>
-#include <Atomic/Graphics/Animation.h>
-#include <Atomic/Core/Context.h>
-#include <Atomic/Graphics/DebugRenderer.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/Graphics/Geometry.h>
-#include <Atomic/Graphics/Graphics.h>
-#include <Atomic/Graphics/IndexBuffer.h>
-#include <Atomic/Graphics/Light.h>
-#include <Atomic/Graphics/Material.h>
-#include <Atomic/Graphics/Model.h>
-#include <Atomic/Graphics/Octree.h>
-#ifdef ATOMIC_PHYSICS
-#include <Atomic/Physics/PhysicsWorld.h>
+#include <Clockwork/Graphics/AnimatedModel.h>
+#include <Clockwork/Graphics/Animation.h>
+#include <Clockwork/Core/Context.h>
+#include <Clockwork/Graphics/DebugRenderer.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/Graphics/Geometry.h>
+#include <Clockwork/Graphics/Graphics.h>
+#include <Clockwork/Graphics/IndexBuffer.h>
+#include <Clockwork/Graphics/Light.h>
+#include <Clockwork/Graphics/Material.h>
+#include <Clockwork/Graphics/Model.h>
+#include <Clockwork/Graphics/Octree.h>
+#ifdef CLOCKWORK_PHYSICS
+#include <Clockwork/Physics/PhysicsWorld.h>
 #endif
-#include <Atomic/Core/ProcessUtils.h>
-#include <Atomic/Math/Quaternion.h>
-#include <Atomic/Resource/ResourceCache.h>
-#include <Atomic/Scene/Scene.h>
-#include <Atomic/Core/StringUtils.h>
-#include <Atomic/Math/Vector3.h>
-#include <Atomic/Graphics/VertexBuffer.h>
-#include <Atomic/Core/WorkQueue.h>
-#include <Atomic/Resource/XMLFile.h>
-#include <Atomic/Graphics/Zone.h>
+#include <Clockwork/Core/ProcessUtils.h>
+#include <Clockwork/Math/Quaternion.h>
+#include <Clockwork/Resource/ResourceCache.h>
+#include <Clockwork/Scene/Scene.h>
+#include <Clockwork/Core/StringUtils.h>
+#include <Clockwork/Math/Vector3.h>
+#include <Clockwork/Graphics/VertexBuffer.h>
+#include <Clockwork/Core/WorkQueue.h>
+#include <Clockwork/Resource/XMLFile.h>
+#include <Clockwork/Graphics/Zone.h>
 
-#include <Atomic/Container/Sort.h>
+#include <Clockwork/Container/Sort.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -62,9 +62,9 @@
 
 #include <cstring>
 
-#include <Atomic/DebugNew.h>
+#include <Clockwork/DebugNew.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 struct OutModel
 {
@@ -256,7 +256,7 @@ void Run(const Vector<String>& arguments)
     context_->RegisterSubsystem(new WorkQueue(context_));
     RegisterSceneLibrary(context_);
     RegisterGraphicsLibrary(context_);
-#ifdef ATOMIC_PHYSICS
+#ifdef CLOCKWORK_PHYSICS
     RegisterPhysicsLibrary(context_);
 #endif
     
@@ -1354,7 +1354,7 @@ void BuildAndSaveScene(OutScene& scene, bool asPrefab)
     
     if (!asPrefab)
     {
-        #ifdef ATOMIC_PHYSICS
+        #ifdef CLOCKWORK_PHYSICS
         /// \todo Make the physics properties configurable
         outScene->CreateComponent<PhysicsWorld>();
         #endif

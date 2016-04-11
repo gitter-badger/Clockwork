@@ -3,7 +3,7 @@ var bcommon = require("./BuildCommon");
 var host = require("./Host");
 
 var buildDir = bcommon.artifactsRoot + "Build/Android/";
-var playerBuildDir = buildDir + "AtomicPlayer/";
+var playerBuildDir = buildDir + "ClockworkPlayer/";
 
 namespace('build', function() {
 
@@ -14,22 +14,22 @@ namespace('build', function() {
     bcommon.cleanCreateDir(playerBuildDir);
     bcommon.cleanCreateDir(bcommon.getGenScriptRootDir("ANDROID"));
 
-    var atomicTool = host.getAtomicToolBinary();
+    var clockworkTool = host.getClockworkToolBinary();
 
     process.chdir(playerBuildDir);
 
     var cmds = [
-      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/Atomic/ ANDROID",
-      atomicTool + " bind " + bcommon.atomicRoot + " Script/Packages/AtomicPlayer/ ANDROID"
+      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/Clockwork/ ANDROID",
+      clockworkTool + " bind " + bcommon.clockworkRoot + " Script/Packages/ClockworkPlayer/ ANDROID"
     ];
 
-    cmds.push("cmake -G \"Unix Makefiles\" -DCMAKE_TOOLCHAIN_FILE=" + bcommon.atomicRoot + "Build//CMake/Toolchains/android.toolchain.cmake -DCMAKE_BUILD_TYPE=Release ../../../../");
+    cmds.push("cmake -G \"Unix Makefiles\" -DCMAKE_TOOLCHAIN_FILE=" + bcommon.clockworkRoot + "Build//CMake/Toolchains/android.toolchain.cmake -DCMAKE_BUILD_TYPE=Release ../../../../");
     cmds.push("make -j4");
 
     jake.exec(cmds, function() {
 
-      var androidPlayerBinary = playerBuildDir + "Source/AtomicPlayer/Application/libAtomicPlayer.so";
-      fs.copySync(androidPlayerBinary, buildDir + "Bin/libAtomicPlayer.so");
+      var androidPlayerBinary = playerBuildDir + "Source/ClockworkPlayer/Application/libClockworkPlayer.so";
+      fs.copySync(androidPlayerBinary, buildDir + "Bin/libClockworkPlayer.so");
 
       console.log("Built Android Player");
 

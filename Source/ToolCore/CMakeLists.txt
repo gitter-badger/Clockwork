@@ -22,7 +22,7 @@ if (LINUX)
 endif()
 
 GroupSources("Assets")
-GroupSources("AtomicNET")
+GroupSources("ClockworkNET")
 GroupSources("Build")
 GroupSources("Command")
 GroupSources("Import")

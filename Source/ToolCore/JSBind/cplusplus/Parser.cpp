@@ -6382,7 +6382,7 @@ bool Parser::parseObjCMethodPrototype(ObjCMethodPrototypeAST *&node)
 // objc-property-attribute ::= assign
 // objc-property-attribute ::= retain
 // objc-property-attribute ::= copy
-// objc-property-attribute ::= nonatomic
+// objc-property-attribute ::= nonclockwork
 bool Parser::parseObjCPropertyAttribute(ObjCPropertyAttributeAST *&node)
 {
     DEBUG_THIS_RULE();
@@ -6399,7 +6399,7 @@ bool Parser::parseObjCPropertyAttribute(ObjCPropertyAttributeAST *&node)
     case Token_retain:
     case Token_readonly:
     case Token_readwrite:
-    case Token_nonatomic:
+    case Token_nonclockwork:
         node->attribute_identifier_token = consumeToken();
         return true;
 

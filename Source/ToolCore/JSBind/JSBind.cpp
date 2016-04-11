@@ -20,8 +20,8 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/ProcessUtils.h>
-#include <Atomic/IO/FileSystem.h>
+#include <Clockwork/Core/ProcessUtils.h>
+#include <Clockwork/IO/FileSystem.h>
 
 #include "JSBPackage.h"
 #include "JSBind.h"

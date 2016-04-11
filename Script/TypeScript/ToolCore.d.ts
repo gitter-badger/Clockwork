@@ -2,9 +2,9 @@
 // IMPORTANT: THIS FILE IS GENERATED, CHANGES WILL BE LOST
 //////////////////////////////////////////////////////////
 
-// Atomic TypeScript Definitions
+// Clockwork TypeScript Definitions
 
-/// <reference path="Atomic.d.ts" />
+/// <reference path="Clockwork.d.ts" />
 
 declare module ToolCore {
 
@@ -27,7 +27,7 @@ declare module ToolCore {
 //----------------------------------------------------
 
 
-   export class ToolEnvironment extends Atomic.AObject {
+   export class ToolEnvironment extends Clockwork.AObject {
 
       rootSourceDir: string;
       toolPrefs: ToolPrefs;
@@ -41,7 +41,7 @@ declare module ToolCore {
       nETCoreCLRAbsPath: string;
       nETAssemblyLoadPaths: string;
       nETTPAPaths: string;
-      atomicNETEngineAssemblyPath: string;
+      clockworkNETEngineAssemblyPath: string;
       deploymentDataDir: string;
       toolDataDir: string;
       devConfigFilename: string;
@@ -51,7 +51,7 @@ declare module ToolCore {
       constructor();
 
       initFromPackage(): boolean;
-      initFromJSON(atomicTool?: boolean): boolean;
+      initFromJSON(clockworkTool?: boolean): boolean;
       // Root source and build directories for development source tree builds
       setRootSourceDir(sourceDir: string): void;
       setRootBuildDir(buildDir: string, setBinaryPaths?: boolean): void;
@@ -68,11 +68,11 @@ declare module ToolCore {
       getCoreDataDir(): string;
       getPlayerDataDir(): string;
       getEditorDataDir(): string;
-      // AtomicNET
+      // ClockworkNET
       getNETCoreCLRAbsPath(): string;
       getNETAssemblyLoadPaths(): string;
       getNETTPAPaths(): string;
-      getAtomicNETEngineAssemblyPath(): string;
+      getClockworkNETEngineAssemblyPath(): string;
       // Data directories
       getDeploymentDataDir(): string;
       getToolDataDir(): string;
@@ -83,7 +83,7 @@ declare module ToolCore {
 
    }
 
-   export class ToolPrefs extends Atomic.AObject {
+   export class ToolPrefs extends Clockwork.AObject {
 
       androidSDKPath: string;
       jDKRootPath: string;
@@ -104,7 +104,7 @@ declare module ToolCore {
 
    }
 
-   export class ToolSystem extends Atomic.AObject {
+   export class ToolSystem extends Clockwork.AObject {
 
       project: Project;
       dataPath: string;
@@ -127,7 +127,7 @@ declare module ToolCore {
 
    }
 
-   export class Project extends Atomic.AObject {
+   export class Project extends Clockwork.AObject {
 
       resourcePath: string;
       componentsPath: string;
@@ -175,7 +175,7 @@ declare module ToolCore {
 
    }
 
-   export class MacBuildSettings extends Atomic.RefCounted {
+   export class MacBuildSettings extends Clockwork.RefCounted {
 
       appName: string;
       packageName: string;
@@ -195,7 +195,7 @@ declare module ToolCore {
 
    }
 
-   export class WebBuildSettings extends Atomic.RefCounted {
+   export class WebBuildSettings extends Clockwork.RefCounted {
 
       appName: string;
       packageName: string;
@@ -215,7 +215,7 @@ declare module ToolCore {
 
    }
 
-   export class WindowsBuildSettings extends Atomic.RefCounted {
+   export class WindowsBuildSettings extends Clockwork.RefCounted {
 
       appName: string;
       packageName: string;
@@ -235,7 +235,7 @@ declare module ToolCore {
 
    }
 
-   export class AndroidBuildSettings extends Atomic.RefCounted {
+   export class AndroidBuildSettings extends Clockwork.RefCounted {
 
       appName: string;
       packageName: string;
@@ -264,7 +264,7 @@ declare module ToolCore {
 
    }
 
-   export class IOSBuildSettings extends Atomic.RefCounted {
+   export class IOSBuildSettings extends Clockwork.RefCounted {
 
       appName: string;
       packageName: string;
@@ -290,7 +290,7 @@ declare module ToolCore {
 
    }
 
-   export class ProjectBuildSettings extends Atomic.AObject {
+   export class ProjectBuildSettings extends Clockwork.AObject {
 
       macBuildSettings: MacBuildSettings;
       windowsBuildSettings: WindowsBuildSettings;
@@ -311,7 +311,7 @@ declare module ToolCore {
 
    }
 
-   export class ProjectFile extends Atomic.AObject {
+   export class ProjectFile extends Clockwork.AObject {
 
       // Construct.
       constructor();
@@ -322,7 +322,7 @@ declare module ToolCore {
 
    }
 
-   export class ProjectUserPrefs extends Atomic.AObject {
+   export class ProjectUserPrefs extends Clockwork.AObject {
 
       defaultPlatform: PlatformID;
       lastBuildPath: string;
@@ -351,7 +351,7 @@ declare module ToolCore {
 
    }
 
-   export class Platform extends Atomic.AObject {
+   export class Platform extends Clockwork.AObject {
 
       license: boolean;
       name: string;
@@ -449,7 +449,7 @@ declare module ToolCore {
 
    }
 
-   export class Command extends Atomic.AObject {
+   export class Command extends Clockwork.AObject {
 
       constructor();
 
@@ -471,10 +471,10 @@ declare module ToolCore {
 
    }
 
-   export class OpenAssetImporter extends Atomic.AObject {
+   export class OpenAssetImporter extends Clockwork.AObject {
 
       errorMessage: string;
-      importNode: Atomic.Node;
+      importNode: Clockwork.Node;
       startTime: number;
       endTime: number;
       scale: number;
@@ -486,7 +486,7 @@ declare module ToolCore {
       load(assetPath: string): boolean;
       getErrorMessage(): string;
       exportModel(outName: string, animName?: string, animationOnly?: boolean): boolean;
-      setImportNode(node: Atomic.Node): void;
+      setImportNode(node: Clockwork.Node): void;
       setStartTime(startTime: number): void;
       setEndTime(endTime: number): void;
       setScale(scale: number): void;
@@ -495,7 +495,7 @@ declare module ToolCore {
 
    }
 
-   export class Asset extends Atomic.AObject {
+   export class Asset extends Clockwork.AObject {
 
       guid: string;
       name: string;
@@ -524,7 +524,7 @@ declare module ToolCore {
       // Get the path relative to project
       getRelativePath(): string;
       getCachePath(): string;
-      getResource(typeName?: string): Atomic.Resource;
+      getResource(typeName?: string): Clockwork.Resource;
       getImporterType(): string;
       getImporterTypeName(): string;
       getImporter(): AssetImporter;
@@ -545,11 +545,11 @@ declare module ToolCore {
       load(): boolean;
       save(): boolean;
       // Instantiate a node from the asset
-      instantiateNode(parent: Atomic.Node, name: string): Atomic.Node;
+      instantiateNode(parent: Clockwork.Node, name: string): Clockwork.Node;
 
    }
 
-   export class AssetDatabase extends Atomic.AObject {
+   export class AssetDatabase extends Clockwork.AObject {
 
       cachePath: string;
 
@@ -572,7 +572,7 @@ declare module ToolCore {
 
    }
 
-   export class AssetImporter extends Atomic.AObject {
+   export class AssetImporter extends Clockwork.AObject {
 
       asset: Asset;
 
@@ -582,10 +582,10 @@ declare module ToolCore {
       setDefaults(): void;
       preload(): boolean;
       getAsset(): Asset;
-      getResource(typeName?: string): Atomic.Resource;
+      getResource(typeName?: string): Clockwork.Resource;
       requiresCacheFile(): boolean;
       // Instantiate a node from the asset
-      instantiateNode(parent: Atomic.Node, name: string): Atomic.Node;
+      instantiateNode(parent: Clockwork.Node, name: string): Clockwork.Node;
       rename(newName: string): boolean;
       move(newPath: string): boolean;
 
@@ -597,7 +597,7 @@ declare module ToolCore {
       constructor(asset: Asset);
 
       setDefaults(): void;
-      getResource(typeName?: string): Atomic.Resource;
+      getResource(typeName?: string): Clockwork.Resource;
 
    }
 
@@ -608,7 +608,7 @@ declare module ToolCore {
 
       setDefaults(): void;
       isComponentFile(): boolean;
-      getResource(typeName?: string): Atomic.Resource;
+      getResource(typeName?: string): Clockwork.Resource;
 
    }
 
@@ -618,7 +618,7 @@ declare module ToolCore {
       constructor(asset: Asset);
 
       setDefaults(): void;
-      getResource(typeName?: string): Atomic.Resource;
+      getResource(typeName?: string): Clockwork.Resource;
 
    }
 
@@ -629,11 +629,11 @@ declare module ToolCore {
 
       setDefaults(): void;
       saveMaterial(): void;
-      getResource(typeName?: string): Atomic.Resource;
+      getResource(typeName?: string): Clockwork.Resource;
 
    }
 
-   export class AnimationImportInfo extends Atomic.AObject {
+   export class AnimationImportInfo extends Clockwork.AObject {
 
       name: string;
       startTime: number;
@@ -666,11 +666,11 @@ declare module ToolCore {
       setImportAnimations(importAnimations: boolean): void;
       getAnimationCount(): number;
       setAnimationCount(count: number): void;
-      getResource(typeName?: string): Atomic.Resource;
+      getResource(typeName?: string): Clockwork.Resource;
       getAnimationInfo(index: number): AnimationImportInfo;
       // Instantiate a node from the asset
-      instantiateNode(parent: Atomic.Node, name: string): Atomic.Node;
-      getAnimations():Atomic.Animation[];
+      instantiateNode(parent: Clockwork.Node, name: string): Clockwork.Node;
+      getAnimations():Clockwork.Animation[];
 
    }
 
@@ -680,7 +680,7 @@ declare module ToolCore {
       constructor(asset: Asset);
 
       setDefaults(): void;
-      getResource(typeName?: string): Atomic.Resource;
+      getResource(typeName?: string): Clockwork.Resource;
 
    }
 
@@ -690,7 +690,7 @@ declare module ToolCore {
       constructor(asset: Asset);
 
       setDefaults(): void;
-      getResource(typeName: string): Atomic.Resource;
+      getResource(typeName: string): Clockwork.Resource;
 
    }
 
@@ -702,7 +702,7 @@ declare module ToolCore {
       setDefaults(): void;
       preload(): boolean;
       // Instantiate a node from the asset
-      instantiateNode(parent: Atomic.Node, name: string): Atomic.Node;
+      instantiateNode(parent: Clockwork.Node, name: string): Clockwork.Node;
 
    }
 
@@ -712,8 +712,8 @@ declare module ToolCore {
       constructor(asset: Asset);
 
       setDefaults(): void;
-      getResource(typeName?: string): Atomic.Resource;
-      instantiateNode(parent: Atomic.Node, name: string): Atomic.Node;
+      getResource(typeName?: string): Clockwork.Resource;
+      instantiateNode(parent: Clockwork.Node, name: string): Clockwork.Node;
 
    }
 
@@ -723,12 +723,12 @@ declare module ToolCore {
       constructor(asset: Asset);
 
       setDefaults(): void;
-      getResource(typeName?: string): Atomic.Resource;
-      instantiateNode(parent: Atomic.Node, name: string): Atomic.Node;
+      getResource(typeName?: string): Clockwork.Resource;
+      instantiateNode(parent: Clockwork.Node, name: string): Clockwork.Node;
 
    }
 
-   export class LicenseSystem extends Atomic.AObject {
+   export class LicenseSystem extends Clockwork.AObject {
 
       sourceBuild: boolean;
       licenseWindows: boolean;
@@ -779,7 +779,7 @@ declare module ToolCore {
 
    }
 
-   export class BuildBase extends Atomic.AObject {
+   export class BuildBase extends Clockwork.AObject {
 
       buildSubfolder: string;
 
@@ -819,7 +819,7 @@ declare module ToolCore {
 
    }
 
-   export class BuildSystem extends Atomic.AObject {
+   export class BuildSystem extends Clockwork.AObject {
 
       buildPath: string;
 
@@ -856,7 +856,7 @@ declare module ToolCore {
 
    }
 
-   export class Subprocess extends Atomic.AObject {
+   export class Subprocess extends Clockwork.AObject {
 
       // Construct.
       constructor();
@@ -864,7 +864,7 @@ declare module ToolCore {
 
    }
 
-   export class SubprocessSystem extends Atomic.AObject {
+   export class SubprocessSystem extends Clockwork.AObject {
 
       // Construct.
       constructor();

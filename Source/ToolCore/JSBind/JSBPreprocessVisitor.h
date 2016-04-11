@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <Atomic/IO/Log.h>
+#include <Clockwork/IO/Log.h>
 
 #include "JSBNameVisitor.h"
 

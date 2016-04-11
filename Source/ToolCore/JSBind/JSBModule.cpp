@@ -20,12 +20,12 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/File.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/Resource/JSONFile.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/File.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/Resource/JSONFile.h>
 
-#include "Atomic/Core/ProcessUtils.h"
+#include "Clockwork/Core/ProcessUtils.h"
 
 #include "JSBind.h"
 #include "JSBPackage.h"
@@ -485,18 +485,18 @@ bool JSBModule::Load(const String& jsonFilename)
 #ifdef _MSC_VER
         if (jsbind->GetPlatform() == "ANDROID" || jsbind->GetPlatform() == "WEB")
         {
-            sourceDirs_.Push("Source/Atomic/Graphics/OpenGL");
+            sourceDirs_.Push("Source/Clockwork/Graphics/OpenGL");
         }
         else
         {
-#ifdef ATOMIC_D3D11
-            sourceDirs_.Push("Source/Atomic/Graphics/Direct3D11");
+#ifdef CLOCKWORK_D3D11
+            sourceDirs_.Push("Source/Clockwork/Graphics/Direct3D11");
 #else
-            sourceDirs_.Push("Source/Atomic/Graphics/Direct3D9");
+            sourceDirs_.Push("Source/Clockwork/Graphics/Direct3D9");
 #endif
         }
 #else
-        sourceDirs_.Push("Source/Atomic/Graphics/OpenGL");
+        sourceDirs_.Push("Source/Clockwork/Graphics/OpenGL");
 #endif
     }
 

@@ -2,7 +2,7 @@ var fs = require('fs-extra');
 var bcommon = require("./BuildCommon");
 
 var buildDir = bcommon.artifactsRoot + "Build/Mac/";
-var atomicToolBinary = buildDir + "Bin/AtomicTool";
+var clockworkToolBinary = buildDir + "Bin/ClockworkTool";
 
 function clean() {
 
@@ -10,34 +10,34 @@ function clean() {
 
 }
 
-function getAtomicToolBinary() {
+function getClockworkToolBinary() {
 
-  return atomicToolBinary;
+  return clockworkToolBinary;
 
 }
 
 namespace('build', function() {
 
-  task('atomictool', {
+  task('clockworktool', {
     async: true
   }, function() {
 
-    var toolBuildDir = buildDir + "AtomicTool/";
+    var toolBuildDir = buildDir + "ClockworkTool/";
 
     bcommon.cleanCreateDir(toolBuildDir);
 
     process.chdir(toolBuildDir);
 
     var cmds = [
-      'cmake ../../../../ -DATOMICTOOL_NOGEN=1 -G Xcode',
-      'xcodebuild -target AtomicTool -configuration Release -parallelizeTargets -jobs 4'
+      'cmake ../../../../ -DCLOCKWORKTOOL_NOGEN=1 -G Xcode',
+      'xcodebuild -target ClockworkTool -configuration Release -parallelizeTargets -jobs 4'
     ]
 
     jake.exec(cmds, function() {
 
-      var srcToolBinary = toolBuildDir + "Source/AtomicTool/Release/AtomicTool"
-      fs.copySync(srcToolBinary, atomicToolBinary);
-      console.log("Built MacOSX AtomicTool");
+      var srcToolBinary = toolBuildDir + "Source/ClockworkTool/Release/ClockworkTool"
+      fs.copySync(srcToolBinary, clockworkToolBinary);
+      console.log("Built MacOSX ClockworkTool");
       complete();
 
     }, {
@@ -50,4 +50,4 @@ namespace('build', function() {
 
 
 exports.clean = clean;
-exports.getAtomicToolBinary = getAtomicToolBinary;
+exports.getClockworkToolBinary = getClockworkToolBinary;

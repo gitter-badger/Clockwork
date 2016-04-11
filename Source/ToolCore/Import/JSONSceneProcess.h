@@ -22,17 +22,17 @@
 
 #pragma once
 
-#include <Atomic/Container/HashMap.h>
-#include <Atomic/Container/List.h>
+#include <Clockwork/Container/HashMap.h>
+#include <Clockwork/Container/List.h>
 
-#include <Atomic/Resource/ResourceCache.h>
-#include <Atomic/Graphics/Technique.h>
-#include <Atomic/Graphics/Texture2D.h>
-#include <Atomic/Graphics/Material.h>
-#include <Atomic/Atomic3D/Model.h>
-#include <Atomic/Scene/Scene.h>
+#include <Clockwork/Resource/ResourceCache.h>
+#include <Clockwork/Graphics/Technique.h>
+#include <Clockwork/Graphics/Texture2D.h>
+#include <Clockwork/Graphics/Material.h>
+#include <Clockwork/Clockwork3D/Model.h>
+#include <Clockwork/Scene/Scene.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

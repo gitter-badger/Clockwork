@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include <Atomic/Core/Object.h>
+#include <Clockwork/Core/Object.h>
 
 #include "ToolPrefs.h"
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {
@@ -34,7 +34,7 @@ namespace ToolCore
 // the tool environment contains paths for various
 // binaries, data paths, example folder, etc
 
-// it is either built from the cli, AtomicEditor, environment variables,
+// it is either built from the cli, ClockworkEditor, environment variables,
 // or a json config file, this avoids needing to symlink folders, etc
 
 class ToolEnvironment : public Object
@@ -49,7 +49,7 @@ public:
     bool InitFromPackage();
 
     // dev build init env from json
-    bool InitFromJSON(bool atomicTool = false);
+    bool InitFromJSON(bool clockworkTool = false);
 
     /// Root source and build directories for development source tree builds
     void SetRootSourceDir(const String& sourceDir);
@@ -72,11 +72,11 @@ public:
     const String& GetPlayerDataDir() { return resourcePlayerDataDir_; }
     const String& GetEditorDataDir() { return resourceEditorDataDir_; }
 
-    /// AtomicNET
+    /// ClockworkNET
     const String& GetNETCoreCLRAbsPath() { return netCoreCLRAbsPath_; }
     const String& GetNETAssemblyLoadPaths() { return netAssemblyLoadPaths_; }
     const String& GetNETTPAPaths() { return netTPAPaths_; }
-    const String& GetAtomicNETEngineAssemblyPath() { return netAtomicNETEngineAssemblyPath_; }
+    const String& GetClockworkNETEngineAssemblyPath() { return netClockworkNETEngineAssemblyPath_; }
 
     /// Data directories
     const String& GetDeploymentDataDir() { return toolBinary_; }
@@ -101,25 +101,25 @@ private:
     // root build directory (for development builds)
     String rootBuildDir_;
 
-    // path to the Atomic Editor binary
+    // path to the Clockwork Editor binary
     String editorBinary_;
 
-    // path to Atomic player binary used when running content from the editor or cli
+    // path to Clockwork player binary used when running content from the editor or cli
     String playerBinary_;
 
-    // path to Atomic player app (OSX)
+    // path to Clockwork player app (OSX)
     String playerAppFolder_;
 
-    // path to the AtomicTool command line binary
+    // path to the ClockworkTool command line binary
     String toolBinary_;
 
     String toolDataDir_;
 
-    // AtomicNET
+    // ClockworkNET
     String netCoreCLRAbsPath_;
     String netAssemblyLoadPaths_;
     String netTPAPaths_;
-    String netAtomicNETEngineAssemblyPath_;
+    String netClockworkNETEngineAssemblyPath_;
 
     // resources
     String resourceCoreDataDir_;

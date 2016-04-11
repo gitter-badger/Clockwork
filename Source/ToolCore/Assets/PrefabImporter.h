@@ -24,7 +24,7 @@
 
 #include "AssetImporter.h"
 
-namespace Atomic
+namespace Clockwork
 {
 class Scene;
 }
@@ -59,7 +59,7 @@ private:
 
     void HandlePrefabSave(StringHash eventType, VariantMap& eventData);
 
-   SharedPtr<Atomic::Scene> preloadResourceScene_;
+   SharedPtr<Clockwork::Scene> preloadResourceScene_;
 
 };
 

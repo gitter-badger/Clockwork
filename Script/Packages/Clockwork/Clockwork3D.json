@@ -1,0 +1,43 @@
+{
+	"name" : "Clockwork3D",
+	"sources" : ["Source/Clockwork/Clockwork3D"],
+	"requires" : ["3D"],
+	"includes" : ["<Clockwork/Container/ArrayPtr.h>","<Clockwork/Scene/Scene.h>", "<Clockwork/Clockwork3D/Animation.h>", "<Clockwork/Graphics/OcclusionBuffer.h>",
+			      "<Clockwork/Scene/ValueAnimation.h>", "<Clockwork/Graphics/Material.h>", "<Clockwork/Resource/Image.h>"],
+	"classes" : ["Model",
+				 "StaticModel",
+				 "Animation", "AnimatedModel", "AnimationController", "AnimationState", "Billboard", "BillboardSet", "CustomGeometry",
+				 "DecalSet", "ParticleEffect", "ParticleEmitter",
+				 "Skybox", "StaticModelGroup", "Terrain", "TerrainPatch"],
+	"overloads" : {
+		"StaticModel" : {
+			"SetMaterial" : ["Material"]
+		},
+		"AnimationState" : {
+			"AnimationState" : ["AnimatedModel", "Animation"]
+		},
+		"CustomGeometry" : {
+			"SetMaterial" : ["Material"]
+		}
+
+	},
+	"typescript_decl" : {
+		"StaticModel" : [
+			"setMaterialIndex(index:number, material:Material);"
+		],
+		"CustomGeometry" : [
+			"setMaterialIndex(index:number, material:Material);"
+		]
+	},
+
+	"haxe_decl" : {
+		"StaticModel" : [
+			"function setMaterialIndex(index:UInt, material:Material):Void;"
+		],
+		"CustomGeometry" : [
+			"function setMaterialIndex(index:UInt, material:Material):Void;"
+		]
+	}
+
+
+}

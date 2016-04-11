@@ -20,10 +20,10 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Atomic.h>
-#include <Atomic/IO/Log.h>
-#include <Atomic/Core/ProcessUtils.h>
-#include <Atomic/Resource/ResourceCache.h>
+#include <Clockwork/Clockwork.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/Core/ProcessUtils.h>
+#include <Clockwork/Resource/ResourceCache.h>
 
 #include "JSBind.h"
 #include "JSBPackage.h"
@@ -94,11 +94,11 @@ void JSBTypeScript::Begin()
     source_ += "// IMPORTANT: THIS FILE IS GENERATED, CHANGES WILL BE LOST\n";
     source_ += "//////////////////////////////////////////////////////////\n\n";
 
-    source_ += "// Atomic TypeScript Definitions\n\n";
+    source_ += "// Clockwork TypeScript Definitions\n\n";
 
-    if (package_->GetName() != "Atomic")
+    if (package_->GetName() != "Clockwork")
     {
-        source_ += "/// <reference path=\"Atomic.d.ts\" />\n\n";
+        source_ += "/// <reference path=\"Clockwork.d.ts\" />\n\n";
     }
 
     source_ += "declare module "+ package_->GetName() + " {\n\n";
@@ -142,7 +142,7 @@ void JSBTypeScript::ExportFunction(JSBFunction* function)
 
         String scriptType = GetScriptType(ftype);
 
-        if (scriptType == "Context" || scriptType == "Atomic.Context")
+        if (scriptType == "Context" || scriptType == "Clockwork.Context")
             continue;
 
         String name = ftype->name_;

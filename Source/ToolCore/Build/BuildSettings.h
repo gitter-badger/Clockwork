@@ -27,10 +27,10 @@
 #include <rapidjson/filestream.h>
 #include <rapidjson/prettywriter.h>
 
-#include <Atomic/Container/Str.h>
-#include <Atomic/Core/Object.h>
+#include <Clockwork/Container/Str.h>
+#include <Clockwork/Core/Object.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

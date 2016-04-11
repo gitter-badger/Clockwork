@@ -25,9 +25,9 @@
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/filestream.h>
 
-#include <Atomic/IO/Log.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/IO/File.h>
+#include <Clockwork/IO/Log.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/IO/File.h>
 
 #include "ToolEnvironment.h"
 
@@ -54,41 +54,41 @@ bool ToolEnvironment::InitFromPackage()
 
     FileSystem* fileSystem = GetSubsystem<FileSystem>();
 
-#ifdef ATOMIC_PLATFORM_WINDOWS
-	editorBinary_ = fileSystem->GetProgramDir() + "AtomicEditor.exe";
+#ifdef CLOCKWORK_PLATFORM_WINDOWS
+	editorBinary_ = fileSystem->GetProgramDir() + "ClockworkEditor.exe";
     String resourcesDir = fileSystem->GetProgramDir() + "Resources/";
-#elif ATOMIC_PLATFORM_LINUX
-    editorBinary_ = fileSystem->GetProgramDir() + "AtomicEditor";
+#elif CLOCKWORK_PLATFORM_LINUX
+    editorBinary_ = fileSystem->GetProgramDir() + "ClockworkEditor";
     String resourcesDir = fileSystem->GetProgramDir() + "Resources/";
 #else
-    editorBinary_ = fileSystem->GetProgramDir() + "AtomicEditor";
+    editorBinary_ = fileSystem->GetProgramDir() + "ClockworkEditor";
     String resourcesDir = GetPath(RemoveTrailingSlash(fileSystem->GetProgramDir())) + "Resources/";
 #endif
 
     //TODO: move this to deployment stuff
-    playerAppFolder_ = resourcesDir + "ToolData/Deployment/MacOS/AtomicPlayer.app/";
-    playerBinary_ = resourcesDir + "ToolData/Deployment/Windows/x64/AtomicPlayer.exe";
+    playerAppFolder_ = resourcesDir + "ToolData/Deployment/MacOS/ClockworkPlayer.app/";
+    playerBinary_ = resourcesDir + "ToolData/Deployment/Windows/x64/ClockworkPlayer.exe";
 
     resourceCoreDataDir_ = resourcesDir + "CoreData";
     resourcePlayerDataDir_ = resourcesDir + "PlayerData";
 
     toolDataDir_ =  resourcesDir + "ToolData/";
 
-    // AtomicNET
-    netAssemblyLoadPaths_ = GetNativePath(ToString("%sAtomicNET/Windows/Atomic/", resourcesDir.CString()));
+    // ClockworkNET
+    netAssemblyLoadPaths_ = GetNativePath(ToString("%sClockworkNET/Windows/Clockwork/", resourcesDir.CString()));
 
-#ifdef ATOMIC_PLATFORM_WINDOWS
-    netCoreCLRAbsPath_ = GetNativePath(ToString("%sAtomicNET/Windows/x64/", resourcesDir.CString()));
-    netTPAPaths_ = ToString("%sAtomicNET/Windows/Atomic/TPA/", resourcesDir.CString());
+#ifdef CLOCKWORK_PLATFORM_WINDOWS
+    netCoreCLRAbsPath_ = GetNativePath(ToString("%sClockworkNET/Windows/x64/", resourcesDir.CString()));
+    netTPAPaths_ = ToString("%sClockworkNET/Windows/Clockwork/TPA/", resourcesDir.CString());
 #else
-    netCoreCLRAbsPath_ = GetNativePath(ToString("%sAtomicNET/Windows/x64/", resourcesDir.CString()));
-    netTPAPaths_ = ToString("%sAtomicNET/Windows/Atomic/TPA/", resourcesDir.CString());
+    netCoreCLRAbsPath_ = GetNativePath(ToString("%sClockworkNET/Windows/x64/", resourcesDir.CString()));
+    netTPAPaths_ = ToString("%sClockworkNET/Windows/Clockwork/TPA/", resourcesDir.CString());
 #endif
 
     return true;
 }
 
-bool ToolEnvironment::InitFromJSON(bool atomicTool)
+bool ToolEnvironment::InitFromJSON(bool clockworkTool)
 {
 
     toolPrefs_->Load();
@@ -98,25 +98,25 @@ bool ToolEnvironment::InitFromJSON(bool atomicTool)
 
     FileSystem* fileSystem = GetSubsystem<FileSystem>();
 
-    if (atomicTool || !fileSystem->FileExists(devConfigFilename_))
+    if (clockworkTool || !fileSystem->FileExists(devConfigFilename_))
     {
         // default to build directories
 
-        SetRootSourceDir(ATOMIC_ROOT_SOURCE_DIR);
-        SetRootBuildDir(ATOMIC_ROOT_BUILD_DIR, true);
+        SetRootSourceDir(CLOCKWORK_ROOT_SOURCE_DIR);
+        SetRootBuildDir(CLOCKWORK_ROOT_BUILD_DIR, true);
 
-        netAssemblyLoadPaths_ = GetNativePath(ToString("%s/Artifacts/AtomicNET/", ATOMIC_ROOT_SOURCE_DIR));
-        netAtomicNETEngineAssemblyPath_ = ToString("%s/Artifacts/AtomicNET/", ATOMIC_ROOT_SOURCE_DIR);
+        netAssemblyLoadPaths_ = GetNativePath(ToString("%s/Artifacts/ClockworkNET/", CLOCKWORK_ROOT_SOURCE_DIR));
+        netClockworkNETEngineAssemblyPath_ = ToString("%s/Artifacts/ClockworkNET/", CLOCKWORK_ROOT_SOURCE_DIR);
 
-#ifdef ATOMIC_PLATFORM_WINDOWS
-        netCoreCLRAbsPath_ = GetNativePath(ToString("%s/Submodules/CoreCLR/Windows/Release/x64/", ATOMIC_ROOT_SOURCE_DIR));
-#elif ATOMIC_PLATFORM_LINUX
-        netCoreCLRAbsPath_ = GetNativePath(ToString("%s/Submodules/CoreCLR/Linux/Debug/x64/", ATOMIC_ROOT_SOURCE_DIR));
+#ifdef CLOCKWORK_PLATFORM_WINDOWS
+        netCoreCLRAbsPath_ = GetNativePath(ToString("%s/Submodules/CoreCLR/Windows/Release/x64/", CLOCKWORK_ROOT_SOURCE_DIR));
+#elif CLOCKWORK_PLATFORM_LINUX
+        netCoreCLRAbsPath_ = GetNativePath(ToString("%s/Submodules/CoreCLR/Linux/Debug/x64/", CLOCKWORK_ROOT_SOURCE_DIR));
 #else
-        netCoreCLRAbsPath_ = GetNativePath(ToString("%s/Submodules/CoreCLR/MacOSX/Debug/x64/", ATOMIC_ROOT_SOURCE_DIR));
+        netCoreCLRAbsPath_ = GetNativePath(ToString("%s/Submodules/CoreCLR/MacOSX/Debug/x64/", CLOCKWORK_ROOT_SOURCE_DIR));
 #endif
 
-        netTPAPaths_ = ToString("%s/Artifacts/AtomicNET/TPA/", ATOMIC_ROOT_SOURCE_DIR);
+        netTPAPaths_ = ToString("%s/Artifacts/ClockworkNET/TPA/", CLOCKWORK_ROOT_SOURCE_DIR);
 
         return true;
     }
@@ -163,12 +163,12 @@ const String& ToolEnvironment::GetDevConfigFilename()
 
     FileSystem* fileSystem = GetSubsystem<FileSystem>();
 
-#ifdef ATOMIC_PLATFORM_OSX
-    devConfigFilename_ = fileSystem->GetUserDocumentsDir() + ".atomicgameengine/toolEnv.json";
-#elif ATOMIC_PLATFORM_WINDOWS
-    devConfigFilename_ = fileSystem->GetUserDocumentsDir() + "AtomicGameEngine/toolEnv.json";
+#ifdef CLOCKWORK_PLATFORM_OSX
+    devConfigFilename_ = fileSystem->GetUserDocumentsDir() + ".clockworkgameengine/toolEnv.json";
+#elif CLOCKWORK_PLATFORM_WINDOWS
+    devConfigFilename_ = fileSystem->GetUserDocumentsDir() + "ClockworkGameEngine/toolEnv.json";
 #else
-    devConfigFilename_ = fileSystem->GetUserDocumentsDir() + ".atomicgameengine/toolEnv.json";
+    devConfigFilename_ = fileSystem->GetUserDocumentsDir() + ".clockworkgameengine/toolEnv.json";
 #endif
 
     return devConfigFilename_;
@@ -181,7 +181,7 @@ void ToolEnvironment::SetRootSourceDir(const String& sourceDir)
     resourcePlayerDataDir_ = rootSourceDir_ + "Resources/PlayerData";
     resourceEditorDataDir_ = rootSourceDir_ + "Resources/EditorData";
 
-    toolDataDir_ = rootSourceDir_ + "Data/AtomicEditor/";
+    toolDataDir_ = rootSourceDir_ + "Data/ClockworkEditor/";
 }
 
 void ToolEnvironment::SetRootBuildDir(const String& buildDir, bool setBinaryPaths)
@@ -192,38 +192,38 @@ void ToolEnvironment::SetRootBuildDir(const String& buildDir, bool setBinaryPath
 
     if (setBinaryPaths)
     {
-#ifdef ATOMIC_PLATFORM_WINDOWS
+#ifdef CLOCKWORK_PLATFORM_WINDOWS
 
 #ifdef _DEBUG
-        playerBinary_ = rootBuildDir_ + "Source/AtomicPlayer/Application/Debug/AtomicPlayer.exe";
-        editorBinary_ = rootBuildDir_ + "Source/AtomicEditor/Debug/AtomicEditor.exe";
+        playerBinary_ = rootBuildDir_ + "Source/ClockworkPlayer/Application/Debug/ClockworkPlayer.exe";
+        editorBinary_ = rootBuildDir_ + "Source/ClockworkEditor/Debug/ClockworkEditor.exe";
 #else
-        playerBinary_ = rootBuildDir_ + "Source/AtomicPlayer/Application/Release/AtomicPlayer.exe";
-        editorBinary_ = rootBuildDir_ + "Source/AtomicEditor/Release/AtomicEditor.exe";
+        playerBinary_ = rootBuildDir_ + "Source/ClockworkPlayer/Application/Release/ClockworkPlayer.exe";
+        editorBinary_ = rootBuildDir_ + "Source/ClockworkEditor/Release/ClockworkEditor.exe";
 #endif
 
         // some build tools like ninja don't use Release/Debug folders
         if (!fileSystem->FileExists(playerBinary_))
-                playerBinary_ = rootBuildDir_ + "Source/AtomicPlayer/Application/AtomicPlayer.exe";
+                playerBinary_ = rootBuildDir_ + "Source/ClockworkPlayer/Application/ClockworkPlayer.exe";
         if (!fileSystem->FileExists(editorBinary_))
-                editorBinary_ = rootBuildDir_ + "Source/AtomicEditor/AtomicEditor.exe";
+                editorBinary_ = rootBuildDir_ + "Source/ClockworkEditor/ClockworkEditor.exe";
 
-        playerAppFolder_ = rootSourceDir_ + "Data/AtomicEditor/Deployment/MacOS/AtomicPlayer.app";
+        playerAppFolder_ = rootSourceDir_ + "Data/ClockworkEditor/Deployment/MacOS/ClockworkPlayer.app";
 
-#elif ATOMIC_PLATFORM_OSX
+#elif CLOCKWORK_PLATFORM_OSX
 
-#ifdef ATOMIC_XCODE
-        playerBinary_ = rootBuildDir_ + "Source/AtomicPlayer/" + CMAKE_INTDIR + "/AtomicPlayer.app/Contents/MacOS/AtomicPlayer";
-        editorBinary_ = rootBuildDir_ + "Source/AtomicEditor/" + CMAKE_INTDIR + "/AtomicEditor.app/Contents/MacOS/AtomicEditor";
+#ifdef CLOCKWORK_XCODE
+        playerBinary_ = rootBuildDir_ + "Source/ClockworkPlayer/" + CMAKE_INTDIR + "/ClockworkPlayer.app/Contents/MacOS/ClockworkPlayer";
+        editorBinary_ = rootBuildDir_ + "Source/ClockworkEditor/" + CMAKE_INTDIR + "/ClockworkEditor.app/Contents/MacOS/ClockworkEditor";
 #else
-        playerBinary_ = rootBuildDir_ + "Source/AtomicPlayer/Application/AtomicPlayer.app/Contents/MacOS/AtomicPlayer";
-        playerAppFolder_ = rootBuildDir_ + "Source/AtomicPlayer/Application/AtomicPlayer.app/";
-        editorBinary_ = rootBuildDir_ + "Source/AtomicEditor/AtomicEditor.app/Contents/MacOS/AtomicEditor";
+        playerBinary_ = rootBuildDir_ + "Source/ClockworkPlayer/Application/ClockworkPlayer.app/Contents/MacOS/ClockworkPlayer";
+        playerAppFolder_ = rootBuildDir_ + "Source/ClockworkPlayer/Application/ClockworkPlayer.app/";
+        editorBinary_ = rootBuildDir_ + "Source/ClockworkEditor/ClockworkEditor.app/Contents/MacOS/ClockworkEditor";
 #endif
 
 #else
-        playerBinary_ = rootBuildDir_ + "Source/AtomicPlayer/Application/AtomicPlayer";
-        editorBinary_ = rootBuildDir_ + "Source/AtomicEditor/AtomicEditor";
+        playerBinary_ = rootBuildDir_ + "Source/ClockworkPlayer/Application/ClockworkPlayer";
+        editorBinary_ = rootBuildDir_ + "Source/ClockworkEditor/ClockworkEditor";
 
 #endif
     }

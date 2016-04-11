@@ -216,7 +216,7 @@ public:
         , objcAssignId(0)
         , objcRetainId(0)
         , objcCopyId(0)
-        , objcNonatomicId(0)
+        , objcNonclockworkId(0)
         , cpp11Override(0)
         , cpp11Final(0)
         , processor(0)
@@ -518,7 +518,7 @@ public:
     const Identifier *objcAssignId;
     const Identifier *objcRetainId;
     const Identifier *objcCopyId;
-    const Identifier *objcNonatomicId;
+    const Identifier *objcNonclockworkId;
     const Identifier *cpp11Override;
     const Identifier *cpp11Final;
     TopLevelDeclarationProcessor *processor;
@@ -538,7 +538,7 @@ Control::Control()
     d->objcAssignId = identifier("assign");
     d->objcRetainId = identifier("retain");
     d->objcCopyId = identifier("copy");
-    d->objcNonatomicId = identifier("nonatomic");
+    d->objcNonclockworkId = identifier("nonclockwork");
 
     d->cpp11Override = identifier("override");
     d->cpp11Final = identifier("final");
@@ -782,8 +782,8 @@ const Identifier *Control::objcRetainId() const
 const Identifier *Control::objcCopyId() const
 { return d->objcCopyId; }
 
-const Identifier *Control::objcNonatomicId() const
-{ return d->objcNonatomicId; }
+const Identifier *Control::objcNonclockworkId() const
+{ return d->objcNonclockworkId; }
 
 const Identifier *Control::cpp11Override() const
 { return d->cpp11Override; }

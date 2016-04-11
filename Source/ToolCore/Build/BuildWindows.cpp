@@ -20,9 +20,9 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Core/StringUtils.h>
-#include <Atomic/IO/FileSystem.h>
-#include <Atomic/Resource/ResourceCache.h>
+#include <Clockwork/Core/StringUtils.h>
+#include <Clockwork/IO/FileSystem.h>
+#include <Clockwork/Resource/ResourceCache.h>
 
 #include "../ToolSystem.h"
 #include "../ToolEnvironment.h"
@@ -68,9 +68,9 @@ void BuildWindows::Initialize()
 
 }
 
-void BuildWindows::BuildAtomicNET()
+void BuildWindows::BuildClockworkNET()
 {
-    // AtomicNET
+    // ClockworkNET
 
     FileSystem* fileSystem = GetSubsystem<FileSystem>();
     ToolEnvironment* tenv = GetSubsystem<ToolEnvironment>();
@@ -80,27 +80,27 @@ void BuildWindows::BuildAtomicNET()
 
     String assembliesPath = projectResources + "Assemblies/";
 
-    // if no assemblies path, no need to install AtomicNET
+    // if no assemblies path, no need to install ClockworkNET
     if (!fileSystem->DirExists(assembliesPath))
         return;
 
     Vector<String> results;
     fileSystem->ScanDir(results, assembliesPath, "*.dll", SCAN_FILES, true);
 
-    // if no assembiles in Assemblies path, no need to install AtomicNET
+    // if no assembiles in Assemblies path, no need to install ClockworkNET
     if (!results.Size())
         return;
 
-    BuildLog("Building AtomicNET");
+    BuildLog("Building ClockworkNET");
 
-    fileSystem->CreateDir(buildPath_ + "/AtomicPlayer_Resources/AtomicNET");
-    fileSystem->CreateDir(buildPath_ + "/AtomicPlayer_Resources/AtomicNET/Atomic");
-    fileSystem->CreateDir(buildPath_ + "/AtomicPlayer_Resources/AtomicNET/Atomic/Assemblies");
+    fileSystem->CreateDir(buildPath_ + "/ClockworkPlayer_Resources/ClockworkNET");
+    fileSystem->CreateDir(buildPath_ + "/ClockworkPlayer_Resources/ClockworkNET/Clockwork");
+    fileSystem->CreateDir(buildPath_ + "/ClockworkPlayer_Resources/ClockworkNET/Clockwork/Assemblies");
 
-    fileSystem->CopyDir(tenv->GetNETCoreCLRAbsPath(), buildPath_ + "/AtomicPlayer_Resources/AtomicNET/CoreCLR");
-    fileSystem->CopyDir(tenv->GetNETTPAPaths(), buildPath_ + "/AtomicPlayer_Resources/AtomicNET/Atomic/TPA");
+    fileSystem->CopyDir(tenv->GetNETCoreCLRAbsPath(), buildPath_ + "/ClockworkPlayer_Resources/ClockworkNET/CoreCLR");
+    fileSystem->CopyDir(tenv->GetNETTPAPaths(), buildPath_ + "/ClockworkPlayer_Resources/ClockworkNET/Clockwork/TPA");
 
-    // Atomic Assemblies
+    // Clockwork Assemblies
 
     const String& assemblyLoadPaths = tenv->GetNETAssemblyLoadPaths();
     Vector<String> paths = assemblyLoadPaths.Split(';');
@@ -115,10 +115,10 @@ void BuildWindows::BuildAtomicNET()
             String pathName, fileName, ext;
             SplitPath(loadResults[j], pathName, fileName, ext);
 
-            if (fileName != "AtomicNETEngine")
+            if (fileName != "ClockworkNETEngine")
                 continue;
 
-            fileSystem->Copy(paths[i] + "/" + loadResults[j], ToString("%s/AtomicPlayer_Resources/AtomicNET/Atomic/Assemblies/%s.dll", buildPath_.CString(), fileName.CString()));
+            fileSystem->Copy(paths[i] + "/" + loadResults[j], ToString("%s/ClockworkPlayer_Resources/ClockworkNET/Clockwork/Assemblies/%s.dll", buildPath_.CString(), fileName.CString()));
         }
 
     }
@@ -128,7 +128,7 @@ void BuildWindows::BuildAtomicNET()
     {
         String pathName, fileName, ext;
         SplitPath(results[i], pathName, fileName, ext);
-        fileSystem->Copy(assembliesPath + results[i], ToString("%s/AtomicPlayer_Resources/AtomicNET/Atomic/Assemblies/%s.dll", buildPath_.CString(), fileName.CString()));
+        fileSystem->Copy(assembliesPath + results[i], ToString("%s/ClockworkPlayer_Resources/ClockworkNET/Clockwork/Assemblies/%s.dll", buildPath_.CString(), fileName.CString()));
     }
 
 
@@ -159,10 +159,10 @@ void BuildWindows::Build(const String& buildPath)
     if (!BuildCreateDirectory(buildPath_))
         return;
 
-    if (!BuildCreateDirectory(buildPath_ + "/AtomicPlayer_Resources"))
+    if (!BuildCreateDirectory(buildPath_ + "/ClockworkPlayer_Resources"))
         return;
 
-    String resourcePackagePath = buildPath_ + "/AtomicPlayer_Resources/AtomicResources" + PAK_EXTENSION;
+    String resourcePackagePath = buildPath_ + "/ClockworkPlayer_Resources/ClockworkResources" + PAK_EXTENSION;
     GenerateResourcePackage(resourcePackagePath);
     if (buildFailed_)
         return;
@@ -178,13 +178,13 @@ void BuildWindows::Build(const String& buildPath)
             return;
     }
 
-    if (!BuildCopyFile(playerBinary, buildPath_ + "/AtomicPlayer.exe"))
+    if (!BuildCopyFile(playerBinary, buildPath_ + "/ClockworkPlayer.exe"))
         return;
 
     if (!BuildCopyFile(d3d9dll, buildPath_ + "/D3DCompiler_47.dll"))
         return;
 
-    BuildAtomicNET();
+    BuildClockworkNET();
 
     BuildLog("Windows Deployment Complete");
 

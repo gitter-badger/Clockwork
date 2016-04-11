@@ -1,8 +1,8 @@
 
 {
   "name" : "WebView",
-  "namespace" : "Atomic",
-  "dependencies" : ["Script/Packages/Atomic"],
+  "namespace" : "Clockwork",
+  "dependencies" : ["Script/Packages/Clockwork"],
   "modules" : ["WebView"],
   "platforms" : ["WINDOWS", "MACOSX", "LINUX"]
 }

@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <Atomic/Core/Object.h>
+#include <Clockwork/Core/Object.h>
 
-#include <Atomic/Resource/XMLFile.h>
-#include <Atomic/Resource/JSONFile.h>
+#include <Clockwork/Resource/XMLFile.h>
+#include <Clockwork/Resource/JSONFile.h>
 
-using namespace Atomic;
+using namespace Clockwork;
 
 namespace ToolCore
 {

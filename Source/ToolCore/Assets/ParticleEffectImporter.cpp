@@ -20,9 +20,9 @@
 // THE SOFTWARE.
 //
 
-#include <Atomic/Resource/ResourceCache.h>
-#include <Atomic/Resource/Image.h>
-#include <Atomic/Atomic3D/ParticleEffect.h>
+#include <Clockwork/Resource/ResourceCache.h>
+#include <Clockwork/Resource/Image.h>
+#include <Clockwork/Clockwork3D/ParticleEffect.h>
 
 #include "Asset.h"
 #include "AssetDatabase.h"

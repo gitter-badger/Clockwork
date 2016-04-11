@@ -2,7 +2,7 @@ var fs = require('fs-extra');
 var os = require('os');
 var path = require("path");
 var host = require("./Host");
-var atomicRoot = host.atomicRoot;
+var clockworkRoot = host.clockworkRoot;
 var glob = require('glob');
 
 var Tslint = require("tslint");
@@ -52,10 +52,10 @@ namespace('build', function() {
     async: true
   }, function(platform) {
 
-        process.chdir(atomicRoot);
+        process.chdir(clockworkRoot);
 
         var modules = host.getScriptModules(platform);
-        var bindCmd = host.atomicTool + " bind \"" + atomicRoot + "\" ";
+        var bindCmd = host.clockworkTool + " bind \"" + clockworkRoot + "\" ";
         var node;
         var tsc = "./Build/node_modules/typescript/lib/tsc";
         var tslint = "./Build/node_modules/tslint/lib/tslint-cli";
@@ -80,7 +80,7 @@ namespace('build', function() {
         if (node) {
           // compile
           cmds.push(node + " " + tsc + " -p ./Script");
-          cmds.push(node + " " + tsc + " -p ./Script/AtomicWebViewEditor");
+          cmds.push(node + " " + tsc + " -p ./Script/ClockworkWebViewEditor");
 
           var lintTask = jake.Task['build:lint_typescript'];
 
@@ -95,7 +95,7 @@ namespace('build', function() {
             });
           });
 
-          lintTask.invoke("{./Script/AtomicEditor/**/*.ts,./Script/AtomicWebViewEditor/**/*.ts}", false);
+          lintTask.invoke("{./Script/ClockworkEditor/**/*.ts,./Script/ClockworkWebViewEditor/**/*.ts}", false);
 
         } else {
             throw new Error("Node not configured for this platform: " + os.platform());

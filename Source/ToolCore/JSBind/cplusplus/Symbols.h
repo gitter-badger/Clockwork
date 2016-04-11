@@ -859,7 +859,7 @@ public:
         ReadWrite = 1 << 4,
         Getter = 1 << 5,
         Setter = 1 << 6,
-        NonAtomic = 1 << 7,
+        NonClockwork = 1 << 7,
 
         WritabilityMask = ReadOnly | ReadWrite,
         SetterSemanticsMask = Assign | Retain | Copy

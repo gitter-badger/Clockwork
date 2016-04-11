@@ -2,13 +2,13 @@ var fs = require('fs-extra');
 var bcommon = require("./BuildCommon");
 var host = require("./Host");
 
-var atomicRoot = bcommon.atomicRoot;
+var clockworkRoot = bcommon.clockworkRoot;
 var buildDir = bcommon.artifactsRoot + "Build/Windows/";
-var atomicToolBinary = buildDir + "Source/AtomicTool/Release/AtomicTool.exe";
+var clockworkToolBinary = buildDir + "Source/ClockworkTool/Release/ClockworkTool.exe";
 
 namespace('build', function() {
 
-  task('atomic', {
+  task('clockwork', {
     async: true
   }, function() {
 
@@ -17,31 +17,31 @@ namespace('build', function() {
 
     process.chdir(buildDir);
 
-    var bindCmd = atomicToolBinary + " bind \"" + atomicRoot + "\" ";
+    var bindCmd = clockworkToolBinary + " bind \"" + clockworkRoot + "\" ";
 
     var cmds = [
-      atomicRoot + "/Build/CIScripts/Windows/CompileAtomicTool.bat",
-      bindCmd + "Script/Packages/Atomic/ WINDOWS",
-      bindCmd + "Script/Packages/AtomicPlayer/ WINDOWS",
+      clockworkRoot + "/Build/CIScripts/Windows/CompileClockworkTool.bat",
+      bindCmd + "Script/Packages/Clockwork/ WINDOWS",
+      bindCmd + "Script/Packages/ClockworkPlayer/ WINDOWS",
       bindCmd + "Script/Packages/ToolCore/ WINDOWS",
       bindCmd + "Script/Packages/Editor/ WINDOWS",
-      bindCmd + "Script/Packages/AtomicNET/ WINDOWS",
+      bindCmd + "Script/Packages/ClockworkNET/ WINDOWS",
       bindCmd + "Script/Packages/WebView/ WINDOWS",
-      atomicRoot + "/Build/CIScripts/Windows/CompileAtomic.bat",
+      clockworkRoot + "/Build/CIScripts/Windows/CompileClockwork.bat",
     ]
 
     jake.exec(cmds, function() {
 
-      var winEditorBinary = buildDir + "Source/AtomicEditor/Release/AtomicEditor.exe";
-      var winEditorD3DBinary = buildDir + "Source/AtomicEditor/Release/D3DCompiler_47.dll";
-      var winPlayerBinary = buildDir + "Source/AtomicPlayer/Application/Release/AtomicPlayer.exe";
-      var winPlayerD3DBinary = buildDir + "Source/AtomicPlayer/Application/Release/D3DCompiler_47.dll";
+      var winEditorBinary = buildDir + "Source/ClockworkEditor/Release/ClockworkEditor.exe";
+      var winEditorD3DBinary = buildDir + "Source/ClockworkEditor/Release/D3DCompiler_47.dll";
+      var winPlayerBinary = buildDir + "Source/ClockworkPlayer/Application/Release/ClockworkPlayer.exe";
+      var winPlayerD3DBinary = buildDir + "Source/ClockworkPlayer/Application/Release/D3DCompiler_47.dll";
 
-      fs.copySync(winEditorBinary, buildDir + "Bin/AtomicEditor.exe");
+      fs.copySync(winEditorBinary, buildDir + "Bin/ClockworkEditor.exe");
       fs.copySync(winEditorD3DBinary, buildDir + "Bin/D3DCompiler_47.dll");
-      fs.copySync(winPlayerBinary, buildDir + "Bin/AtomicPlayer.exe");
+      fs.copySync(winPlayerBinary, buildDir + "Bin/ClockworkPlayer.exe");
 
-      console.log("Built Windows AtomicEditor & Player");
+      console.log("Built Windows ClockworkEditor & Player");
 
       complete();
 

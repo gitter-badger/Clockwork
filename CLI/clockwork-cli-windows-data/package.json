@@ -1,0 +1,13 @@
+{
+  "description": "Windows data for clockwork-cli-windows package",
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "homepage": "http://www.clockwork.sunwells.com",
+  "files" : ["data"],
+  "main": "./data/index.js",
+  "name": "clockwork-cli-windows-data",
+  "version": "0.0.3",
+  "os" : ["win32"]
+
+}

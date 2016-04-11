@@ -1,6 +1,6 @@
-package atomic;
+package clockwork;
 
-@:native("Atomic")
+@:native("Clockwork")
 extern enum PlatformID {
     PLATFORMID_UNDEFINED;
     PLATFORMID_WINDOWS;
@@ -9,7 +9,7 @@ extern enum PlatformID {
     PLATFORMID_IOS;
     PLATFORMID_WEB;
 }
-//Atomic Haxe Definitions
+//Clockwork Haxe Definitions
 
 extern class ToolCore {
 
@@ -24,7 +24,7 @@ extern class ToolCore {
 //----------------------------------------------------
 
 
-@:native("Atomic.ToolEnvironment")
+@:native("Clockwork.ToolEnvironment")
 extern class ToolEnvironment extends AObject {
 
     var rootSourceDir: String;
@@ -39,7 +39,7 @@ extern class ToolEnvironment extends AObject {
     var nETCoreCLRAbsPath: String;
     var nETAssemblyLoadPaths: String;
     var nETTPAPaths: String;
-    var atomicNETEngineAssemblyPath: String;
+    var clockworkNETEngineAssemblyPath: String;
     var deploymentDataDir: String;
     var toolDataDir: String;
     var devConfigFilename: String;
@@ -49,7 +49,7 @@ extern class ToolEnvironment extends AObject {
     function new();
 
     function initFromPackage(): Bool;
-    function initFromJSON(?atomicTool: Bool): Bool;
+    function initFromJSON(?clockworkTool: Bool): Bool;
       // Root source and build directories for development source tree builds
     function setRootSourceDir(sourceDir: String): Void;
     function setRootBuildDir(buildDir: String, ?setBinaryPaths: Bool): Void;
@@ -66,11 +66,11 @@ extern class ToolEnvironment extends AObject {
     function getCoreDataDir(): String;
     function getPlayerDataDir(): String;
     function getEditorDataDir(): String;
-      // AtomicNET
+      // ClockworkNET
     function getNETCoreCLRAbsPath(): String;
     function getNETAssemblyLoadPaths(): String;
     function getNETTPAPaths(): String;
-    function getAtomicNETEngineAssemblyPath(): String;
+    function getClockworkNETEngineAssemblyPath(): String;
       // Data directories
     function getDeploymentDataDir(): String;
     function getToolDataDir(): String;
@@ -81,7 +81,7 @@ extern class ToolEnvironment extends AObject {
 
 }
 
-@:native("Atomic.ToolPrefs")
+@:native("Clockwork.ToolPrefs")
 extern class ToolPrefs extends AObject {
 
     var androidSDKPath: String;
@@ -103,7 +103,7 @@ extern class ToolPrefs extends AObject {
 
 }
 
-@:native("Atomic.ToolSystem")
+@:native("Clockwork.ToolSystem")
 extern class ToolSystem extends AObject {
 
     var project: Project;
@@ -127,7 +127,7 @@ extern class ToolSystem extends AObject {
 
 }
 
-@:native("Atomic.Project")
+@:native("Clockwork.Project")
 extern class Project extends AObject {
 
     var resourcePath: String;
@@ -176,7 +176,7 @@ extern class Project extends AObject {
 
 }
 
-@:native("Atomic.MacBuildSettings")
+@:native("Clockwork.MacBuildSettings")
 extern class MacBuildSettings extends RefCounted {
 
     var appName: String;
@@ -197,7 +197,7 @@ extern class MacBuildSettings extends RefCounted {
 
 }
 
-@:native("Atomic.WebBuildSettings")
+@:native("Clockwork.WebBuildSettings")
 extern class WebBuildSettings extends RefCounted {
 
     var appName: String;
@@ -218,7 +218,7 @@ extern class WebBuildSettings extends RefCounted {
 
 }
 
-@:native("Atomic.WindowsBuildSettings")
+@:native("Clockwork.WindowsBuildSettings")
 extern class WindowsBuildSettings extends RefCounted {
 
     var appName: String;
@@ -239,7 +239,7 @@ extern class WindowsBuildSettings extends RefCounted {
 
 }
 
-@:native("Atomic.AndroidBuildSettings")
+@:native("Clockwork.AndroidBuildSettings")
 extern class AndroidBuildSettings extends RefCounted {
 
     var appName: String;
@@ -269,7 +269,7 @@ extern class AndroidBuildSettings extends RefCounted {
 
 }
 
-@:native("Atomic.IOSBuildSettings")
+@:native("Clockwork.IOSBuildSettings")
 extern class IOSBuildSettings extends RefCounted {
 
     var appName: String;
@@ -296,7 +296,7 @@ extern class IOSBuildSettings extends RefCounted {
 
 }
 
-@:native("Atomic.ProjectBuildSettings")
+@:native("Clockwork.ProjectBuildSettings")
 extern class ProjectBuildSettings extends AObject {
 
     var macBuildSettings: MacBuildSettings;
@@ -318,7 +318,7 @@ extern class ProjectBuildSettings extends AObject {
 
 }
 
-@:native("Atomic.ProjectFile")
+@:native("Clockwork.ProjectFile")
 extern class ProjectFile extends AObject {
 
       // Construct.
@@ -330,7 +330,7 @@ extern class ProjectFile extends AObject {
 
 }
 
-@:native("Atomic.ProjectUserPrefs")
+@:native("Clockwork.ProjectUserPrefs")
 extern class ProjectUserPrefs extends AObject {
 
     var defaultPlatform: PlatformID;
@@ -360,7 +360,7 @@ extern class ProjectUserPrefs extends AObject {
 
 }
 
-@:native("Atomic.Platform")
+@:native("Clockwork.Platform")
 extern class Platform extends AObject {
 
     var license: Bool;
@@ -376,7 +376,7 @@ extern class Platform extends AObject {
 
 }
 
-@:native("Atomic.PlatformAndroid")
+@:native("Clockwork.PlatformAndroid")
 extern class PlatformAndroid extends Platform {
 
     var androidCommand: String;
@@ -400,7 +400,7 @@ extern class PlatformAndroid extends Platform {
 
 }
 
-@:native("Atomic.PlatformIOS")
+@:native("Clockwork.PlatformIOS")
 extern class PlatformIOS extends Platform {
 
 
@@ -418,7 +418,7 @@ extern class PlatformIOS extends Platform {
 
 }
 
-@:native("Atomic.PlatformMac")
+@:native("Clockwork.PlatformMac")
 extern class PlatformMac extends Platform {
 
 
@@ -435,7 +435,7 @@ extern class PlatformMac extends Platform {
 
 }
 
-@:native("Atomic.PlatformWeb")
+@:native("Clockwork.PlatformWeb")
 extern class PlatformWeb extends Platform {
 
 
@@ -452,7 +452,7 @@ extern class PlatformWeb extends Platform {
 
 }
 
-@:native("Atomic.PlatformWindows")
+@:native("Clockwork.PlatformWindows")
 extern class PlatformWindows extends Platform {
 
 
@@ -469,7 +469,7 @@ extern class PlatformWindows extends Platform {
 
 }
 
-@:native("Atomic.Command")
+@:native("Clockwork.Command")
 extern class Command extends AObject {
 
     function new();
@@ -484,7 +484,7 @@ extern class Command extends AObject {
 
 }
 
-@:native("Atomic.PlayCmd")
+@:native("Clockwork.PlayCmd")
 extern class PlayCmd extends Command {
 
     function new();
@@ -494,11 +494,11 @@ extern class PlayCmd extends Command {
 
 }
 
-@:native("Atomic.OpenAssetImporter")
+@:native("Clockwork.OpenAssetImporter")
 extern class OpenAssetImporter extends AObject {
 
     var errorMessage: String;
-    var importNode: Atomic.Node;
+    var importNode: Clockwork.Node;
     var startTime: Float;
     var endTime: Float;
     var scale: Float;
@@ -510,7 +510,7 @@ extern class OpenAssetImporter extends AObject {
     function load(assetPath: String): Bool;
     function getErrorMessage(): String;
     function exportModel(outName: String, ?animName: String, ?animationOnly: Bool): Bool;
-    function setImportNode(node: Atomic.Node): Void;
+    function setImportNode(node: Clockwork.Node): Void;
     function setStartTime(startTime: Float): Void;
     function setEndTime(endTime: Float): Void;
     function setScale(scale: Float): Void;
@@ -519,7 +519,7 @@ extern class OpenAssetImporter extends AObject {
 
 }
 
-@:native("Atomic.Asset")
+@:native("Clockwork.Asset")
 extern class Asset extends AObject {
 
     var guid: String;
@@ -549,7 +549,7 @@ extern class Asset extends AObject {
       // Get the path relative to project
     function getRelativePath(): String;
     function getCachePath(): String;
-    function getResource(?typeName: String): Atomic.Resource;
+    function getResource(?typeName: String): Clockwork.Resource;
     function getImporterType(): String;
     function getImporterTypeName(): String;
     function getImporter(): AssetImporter;
@@ -570,11 +570,11 @@ extern class Asset extends AObject {
     function load(): Bool;
     function save(): Bool;
       // Instantiate a node from the asset
-    function instantiateNode(parent: Atomic.Node, name: String): Atomic.Node;
+    function instantiateNode(parent: Clockwork.Node, name: String): Clockwork.Node;
 
 }
 
-@:native("Atomic.AssetDatabase")
+@:native("Clockwork.AssetDatabase")
 extern class AssetDatabase extends AObject {
 
     var cachePath: String;
@@ -596,7 +596,7 @@ extern class AssetDatabase extends AObject {
 
 }
 
-@:native("Atomic.AssetImporter")
+@:native("Clockwork.AssetImporter")
 extern class AssetImporter extends AObject {
 
     var asset: Asset;
@@ -607,16 +607,16 @@ extern class AssetImporter extends AObject {
     function setDefaults(): Void;
     function preload(): Bool;
     function getAsset(): Asset;
-    function getResource(?typeName: String): Atomic.Resource;
+    function getResource(?typeName: String): Clockwork.Resource;
     function requiresCacheFile(): Bool;
       // Instantiate a node from the asset
-    function instantiateNode(parent: Atomic.Node, name: String): Atomic.Node;
+    function instantiateNode(parent: Clockwork.Node, name: String): Clockwork.Node;
     function rename(newName: String): Bool;
     function move(newPath: String): Bool;
 
 }
 
-@:native("Atomic.AudioImporter")
+@:native("Clockwork.AudioImporter")
 extern class AudioImporter extends AssetImporter {
 
       // Construct.
@@ -624,12 +624,12 @@ extern class AudioImporter extends AssetImporter {
 
     @:overload(function(): Void{})
     override function setDefaults(): Void;
-    @:overload(function(?typeName: String): Atomic.Resource{})
-    override function getResource(?typeName: String): Atomic.Resource;
+    @:overload(function(?typeName: String): Clockwork.Resource{})
+    override function getResource(?typeName: String): Clockwork.Resource;
 
 }
 
-@:native("Atomic.JavascriptImporter")
+@:native("Clockwork.JavascriptImporter")
 extern class JavascriptImporter extends AssetImporter {
 
       // Construct.
@@ -638,12 +638,12 @@ extern class JavascriptImporter extends AssetImporter {
     @:overload(function(): Void{})
     override function setDefaults(): Void;
     function isComponentFile(): Bool;
-    @:overload(function(?typeName: String): Atomic.Resource{})
-    override function getResource(?typeName: String): Atomic.Resource;
+    @:overload(function(?typeName: String): Clockwork.Resource{})
+    override function getResource(?typeName: String): Clockwork.Resource;
 
 }
 
-@:native("Atomic.JSONImporter")
+@:native("Clockwork.JSONImporter")
 extern class JSONImporter extends AssetImporter {
 
       // Construct.
@@ -651,12 +651,12 @@ extern class JSONImporter extends AssetImporter {
 
     @:overload(function(): Void{})
     override function setDefaults(): Void;
-    @:overload(function(?typeName: String): Atomic.Resource{})
-    override function getResource(?typeName: String): Atomic.Resource;
+    @:overload(function(?typeName: String): Clockwork.Resource{})
+    override function getResource(?typeName: String): Clockwork.Resource;
 
 }
 
-@:native("Atomic.MaterialImporter")
+@:native("Clockwork.MaterialImporter")
 extern class MaterialImporter extends AssetImporter {
 
       // Construct.
@@ -665,12 +665,12 @@ extern class MaterialImporter extends AssetImporter {
     @:overload(function(): Void{})
     override function setDefaults(): Void;
     function saveMaterial(): Void;
-    @:overload(function(?typeName: String): Atomic.Resource{})
-    override function getResource(?typeName: String): Atomic.Resource;
+    @:overload(function(?typeName: String): Clockwork.Resource{})
+    override function getResource(?typeName: String): Clockwork.Resource;
 
 }
 
-@:native("Atomic.AnimationImportInfo")
+@:native("Clockwork.AnimationImportInfo")
 extern class AnimationImportInfo extends AObject {
 
     var name: String;
@@ -688,7 +688,7 @@ extern class AnimationImportInfo extends AObject {
 
 }
 
-@:native("Atomic.ModelImporter")
+@:native("Clockwork.ModelImporter")
 extern class ModelImporter extends AssetImporter {
 
     var scale: Float;
@@ -706,16 +706,16 @@ extern class ModelImporter extends AssetImporter {
     function setImportAnimations(importAnimations: Bool): Void;
     function getAnimationCount(): UInt;
     function setAnimationCount(count: UInt): Void;
-    @:overload(function(?typeName: String): Atomic.Resource{})
-    override function getResource(?typeName: String): Atomic.Resource;
+    @:overload(function(?typeName: String): Clockwork.Resource{})
+    override function getResource(?typeName: String): Clockwork.Resource;
     function getAnimationInfo(index: UInt): AnimationImportInfo;
       // Instantiate a node from the asset
-    @:overload(function(parent: Atomic.Node, name: String): Atomic.Node{})
-    override function instantiateNode(parent: Atomic.Node, name: String): Atomic.Node;
+    @:overload(function(parent: Clockwork.Node, name: String): Clockwork.Node{})
+    override function instantiateNode(parent: Clockwork.Node, name: String): Clockwork.Node;
 
 }
 
-@:native("Atomic.NETAssemblyImporter")
+@:native("Clockwork.NETAssemblyImporter")
 extern class NETAssemblyImporter extends AssetImporter {
 
       // Construct.
@@ -723,12 +723,12 @@ extern class NETAssemblyImporter extends AssetImporter {
 
     @:overload(function(): Void{})
     override function setDefaults(): Void;
-    @:overload(function(?typeName: String): Atomic.Resource{})
-    override function getResource(?typeName: String): Atomic.Resource;
+    @:overload(function(?typeName: String): Clockwork.Resource{})
+    override function getResource(?typeName: String): Clockwork.Resource;
 
 }
 
-@:native("Atomic.PEXImporter")
+@:native("Clockwork.PEXImporter")
 extern class PEXImporter extends AssetImporter {
 
       // Construct.
@@ -736,12 +736,12 @@ extern class PEXImporter extends AssetImporter {
 
     @:overload(function(): Void{})
     override function setDefaults(): Void;
-    @:overload(function(typeName: String): Atomic.Resource{})
-    override function getResource(?typeName: String): Atomic.Resource;
+    @:overload(function(typeName: String): Clockwork.Resource{})
+    override function getResource(?typeName: String): Clockwork.Resource;
 
 }
 
-@:native("Atomic.PrefabImporter")
+@:native("Clockwork.PrefabImporter")
 extern class PrefabImporter extends AssetImporter {
 
       // Construct.
@@ -752,12 +752,12 @@ extern class PrefabImporter extends AssetImporter {
     @:overload(function(): Bool{})
     override function preload(): Bool;
       // Instantiate a node from the asset
-    @:overload(function(parent: Atomic.Node, name: String): Atomic.Node{})
-    override function instantiateNode(parent: Atomic.Node, name: String): Atomic.Node;
+    @:overload(function(parent: Clockwork.Node, name: String): Clockwork.Node{})
+    override function instantiateNode(parent: Clockwork.Node, name: String): Clockwork.Node;
 
 }
 
-@:native("Atomic.SpriterImporter")
+@:native("Clockwork.SpriterImporter")
 extern class SpriterImporter extends AssetImporter {
 
       // Construct.
@@ -765,14 +765,14 @@ extern class SpriterImporter extends AssetImporter {
 
     @:overload(function(): Void{})
     override function setDefaults(): Void;
-    @:overload(function(?typeName: String): Atomic.Resource{})
-    override function getResource(?typeName: String): Atomic.Resource;
-    @:overload(function(parent: Atomic.Node, name: String): Atomic.Node{})
-    override function instantiateNode(parent: Atomic.Node, name: String): Atomic.Node;
+    @:overload(function(?typeName: String): Clockwork.Resource{})
+    override function getResource(?typeName: String): Clockwork.Resource;
+    @:overload(function(parent: Clockwork.Node, name: String): Clockwork.Node{})
+    override function instantiateNode(parent: Clockwork.Node, name: String): Clockwork.Node;
 
 }
 
-@:native("Atomic.TextureImporter")
+@:native("Clockwork.TextureImporter")
 extern class TextureImporter extends AssetImporter {
 
       // Construct.
@@ -780,14 +780,14 @@ extern class TextureImporter extends AssetImporter {
 
     @:overload(function(): Void{})
     override function setDefaults(): Void;
-    @:overload(function(?typeName: String): Atomic.Resource{})
-    override function getResource(?typeName: String): Atomic.Resource;
-    @:overload(function(parent: Atomic.Node, name: String): Atomic.Node{})
-    override function instantiateNode(parent: Atomic.Node, name: String): Atomic.Node;
+    @:overload(function(?typeName: String): Clockwork.Resource{})
+    override function getResource(?typeName: String): Clockwork.Resource;
+    @:overload(function(parent: Clockwork.Node, name: String): Clockwork.Node{})
+    override function instantiateNode(parent: Clockwork.Node, name: String): Clockwork.Node;
 
 }
 
-@:native("Atomic.LicenseSystem")
+@:native("Clockwork.LicenseSystem")
 extern class LicenseSystem extends AObject {
 
     var sourceBuild: Bool;
@@ -828,7 +828,7 @@ extern class LicenseSystem extends AObject {
 
 }
 
-@:native("Atomic.BuildAndroid")
+@:native("Clockwork.BuildAndroid")
 extern class BuildAndroid extends BuildBase {
 
 
@@ -841,7 +841,7 @@ extern class BuildAndroid extends BuildBase {
 
 }
 
-@:native("Atomic.BuildBase")
+@:native("Clockwork.BuildBase")
 extern class BuildBase extends AObject {
 
     var buildSubfolder: String;
@@ -860,7 +860,7 @@ extern class BuildBase extends AObject {
 
 }
 
-@:native("Atomic.BuildIOS")
+@:native("Clockwork.BuildIOS")
 extern class BuildIOS extends BuildBase {
 
 
@@ -873,7 +873,7 @@ extern class BuildIOS extends BuildBase {
 
 }
 
-@:native("Atomic.BuildMac")
+@:native("Clockwork.BuildMac")
 extern class BuildMac extends BuildBase {
 
 
@@ -886,7 +886,7 @@ extern class BuildMac extends BuildBase {
 
 }
 
-@:native("Atomic.BuildSystem")
+@:native("Clockwork.BuildSystem")
 extern class BuildSystem extends AObject {
 
     var buildPath: String;
@@ -902,7 +902,7 @@ extern class BuildSystem extends AObject {
 
 }
 
-@:native("Atomic.BuildWeb")
+@:native("Clockwork.BuildWeb")
 extern class BuildWeb extends BuildBase {
 
 
@@ -915,7 +915,7 @@ extern class BuildWeb extends BuildBase {
 
 }
 
-@:native("Atomic.BuildWindows")
+@:native("Clockwork.BuildWindows")
 extern class BuildWindows extends BuildBase {
 
 
@@ -928,7 +928,7 @@ extern class BuildWindows extends BuildBase {
 
 }
 
-@:native("Atomic.Subprocess")
+@:native("Clockwork.Subprocess")
 extern class Subprocess extends AObject {
 
       // Construct.
@@ -937,7 +937,7 @@ extern class Subprocess extends AObject {
 
 }
 
-@:native("Atomic.SubprocessSystem")
+@:native("Clockwork.SubprocessSystem")
 extern class SubprocessSystem extends AObject {
 
       // Construct.
